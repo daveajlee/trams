@@ -1,0 +1,44 @@
+<!-- Display a jumbotron component which explains how the upload of GTFS files work in TraMS -->
+<div class="jumbotron" >
+  <h1 class="display-4">Upload GTFS File</h1>
+  <br/>
+  <p class="lead">In TraMS, you can upload and import GTFS data sets. This allows you to run your transportation company in real cities and with real transportation data.</p>
+  <hr class="my-4">
+  <p>In this preview edition you can only upload zip files which are a valid implementation of the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a>.</p>
+</div>
+
+<!-- Display a heading for the file input area -->
+<h1>File</h1>
+<!-- Display a button with the name of the file or select if no file has been selected yet. -->
+<button class="btn-primary" (click)="fileInput.click()">
+  {{ file ? file.name : 'Select' }}
+</button>
+<!-- Set the file content to the server -->
+<input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
+<br/>
+<!-- Show a text input box where route numbers can be added that only those route numbers should be imported. -->
+<p>Routes to Import: <input #routesImport type="text" /></p>
+
+<br/><br/>
+
+<!-- Show a submit button to upload the file -->
+<button
+  [disabled]="!file"
+  type="submit"
+  class="btn-primary"
+  (click)="onSubmit(routesImport.value)"
+>
+  Submit
+</button>
+
+<br/><br/>
+<!-- Show a title with uploading file as long as the process of uploading has been started -->
+<p *ngIf="upload$ | async as download">Progress of uploading file...</p>
+
+<!-- Progress bar for uploading which is only shown after the process of uploading has been started -->
+<mat-progress-bar
+  *ngIf="upload$ | async as download"
+  [mode]="download.state == 'PENDING' ? 'buffer' : 'determinate'"
+  [value]="download.progress"
+>
+</mat-progress-bar>

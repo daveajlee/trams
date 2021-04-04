@@ -1,0 +1,4 @@
+/* Define the font size for the clock display */
+.clock {
+  font-size: 5rem;
+}
