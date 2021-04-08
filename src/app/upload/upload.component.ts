@@ -32,11 +32,23 @@ export class UploadComponent implements OnInit, OnDestroy {
   /**
    * On submission of the form, we start the upload process.
    * @param routesToImport a text which contains the route numbers to import which can be empty if all routes should be imported.
+   * @param fileFormat the format of the file that has been sent - either gtfs or csv.
+   * @param validFromDate the date as a string from which the data is valid
+   * @param validToDate the date as a string until when the data is valid
    */
-  onSubmit(routesToImport: string): void {
+  onSubmit(routesToImport: string, fileFormat: string, validFromDate: string, validToDate: string): void {
     if (this.file) {
-      this.upload$ = this.uploadService.upload(this.file, routesToImport);
+      this.upload$ = this.uploadService.upload(this.file, routesToImport, fileFormat, validFromDate, validToDate);
     }
+  }
+
+  /**
+   * This method enables or disables the valid from and valid to date fields if the file format changes.
+   * @param fileFormat the format of the file which is currently selected.
+   */
+  onFileFormatChange( fileFormat: string ): void {
+    (document.getElementById('validFromDate') as HTMLInputElement).disabled = ( fileFormat === 'General Transit Feed Specification (GTFS)');
+    (document.getElementById('validToDate') as HTMLInputElement).disabled = ( fileFormat === 'General Transit Feed Specification (GTFS)');
   }
 
   /**
