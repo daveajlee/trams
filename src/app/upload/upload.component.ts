@@ -1,7 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {EMPTY, Observable} from 'rxjs';
 import {UploadService} from './upload.service';
-import {Upload} from './upload';
 
 @Component({
   selector: 'app-upload',
@@ -15,7 +13,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   file: File | null = null;
 
-  upload$: Observable<Upload> = EMPTY;
+  // upload$: Observable<Upload> = EMPTY;
 
   /**
    * Create a new upload component which manages the upload process of the file to the server.
@@ -38,7 +36,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    */
   onSubmit(routesToImport: string, fileFormat: string, validFromDate: string, validToDate: string): void {
     if (this.file) {
-      this.upload$ = this.uploadService.upload(this.file, routesToImport, fileFormat, validFromDate, validToDate);
+      this.uploadService.upload(this.file, routesToImport, fileFormat, validFromDate, validToDate);
     }
   }
 
@@ -47,6 +45,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    * @param fileFormat the format of the file which is currently selected.
    */
   onFileFormatChange( fileFormat: string ): void {
+    (document.getElementById('routesImport') as HTMLInputElement).disabled = ( fileFormat === 'Comma Separated Value (CSV)');
     (document.getElementById('validFromDate') as HTMLInputElement).disabled = ( fileFormat === 'General Transit Feed Specification (GTFS)');
     (document.getElementById('validToDate') as HTMLInputElement).disabled = ( fileFormat === 'General Transit Feed Specification (GTFS)');
   }

@@ -2,7 +2,7 @@
 <h1 class="text-center">{{stop.name}} - <app-clock></app-clock></h1>
 
 <!-- Show an iframe with the location of the stop through integration of OpenStreetMap -->
-<iframe class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
+<iframe *ngIf="stop.latitude != 0 && stop.longitude != 0" class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
 
 <!-- Show a heading with next departures -->
 <h3 class="text-center">Next Departures</h3>

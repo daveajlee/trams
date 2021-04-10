@@ -1,14 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
-import {Upload, upload} from './upload';
+import {Router} from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 /**
  * This class provides the html connection for uploading the file to the server.
  */
 export class UploadService {
-  constructor(private http: HttpClient) {}
+  constructor(public router: Router, private http: HttpClient) {}
 
   /**
    * Upload the specified file with the route numbers that should be imported to the server.
@@ -18,19 +17,19 @@ export class UploadService {
    * @param validFromDate the date as a string from which the data is valid
    * @param validToDate the date as a string until when the data is valid
    */
-  upload(file: File, routesToImport: string, fileFormat: string, validFromDate: string, validToDate: string): Observable<Upload> {
+  upload(file: File, routesToImport: string, fileFormat: string, validFromDate: string, validToDate: string): void {
     const data = new FormData();
     data.append('zipFile', file);
     data.append('routesToImport', routesToImport);
     data.append('fileFormat', fileFormat);
     data.append('validFromDate', validFromDate);
     data.append('validToDate', validToDate);
-    return this.http
-      .post('http://localhost:8080/trams-operations/uploadGTFSFile', data, {
-        reportProgress: true,
-        observe: 'events',
-      })
-      .pipe(upload());
+    this.http
+      .post('http://localhost:8080/trams-operations/uploadDataFile', data)
+        .subscribe(
+            () => {
+              this.router.navigate(['routes']);
+            });
   }
 
 }

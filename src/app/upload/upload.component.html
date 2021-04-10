@@ -16,11 +16,6 @@
 <!-- Set the file content to the server -->
 <input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
 <br/><br/>
-<!-- Show an input box where route numbers can be added that only those route numbers should be imported. -->
-<div class="form-group">
-  <label for="routesImport">Routes to Import:</label>
-  <input class="form-control" #routesImport type="text" id="routesImport"/>
-</div>
 <!-- Show a drop down list with the supported file formats -->
 <div class="form-group">
   <label for="fileFormat">File Format:</label>
@@ -28,6 +23,11 @@
     <option>General Transit Feed Specification (GTFS)</option>
     <option>Comma Separated Value (CSV)</option>
   </select>
+</div>
+<!-- Show an input box where route numbers can be added that only those route numbers should be imported. -->
+<div class="form-group">
+  <label for="routesImport">Routes to Import:</label>
+  <input class="form-control" #routesImport type="text" id="routesImport"/>
 </div>
 <!-- Show a date picker to choose valid from date -->
 <div class="form-group">
@@ -51,15 +51,3 @@
 >
   Submit
 </button>
-
-<br/><br/>
-<!-- Show a title with uploading file as long as the process of uploading has been started -->
-<p *ngIf="upload$ | async as download">Progress of uploading file...</p>
-
-<!-- Progress bar for uploading which is only shown after the process of uploading has been started -->
-<mat-progress-bar
-  *ngIf="upload$ | async as download"
-  [mode]="download.state == 'PENDING' ? 'buffer' : 'determinate'"
-  [value]="download.progress"
->
-</mat-progress-bar>
