@@ -23,16 +23,19 @@ export class StopDetailComponent implements OnInit, OnDestroy {
 
   hours: string;
   minutes: string;
+  today: string;
 
   mapUrl: SafeResourceUrl;
 
   departures: RealTimeInfo[];
+  todayDepartures: RealTimeInfo[];
   arrivals: RealTimeInfo[];
 
   idSubscription: Subscription;
 
   departuresSubscription: Subscription;
   arrivalsSubscription: Subscription;
+  todaysDeparturesSubscription: Subscription;
 
   /**
    * Construct a new stop-detail component based on the supplied information.
@@ -58,16 +61,30 @@ export class StopDetailComponent implements OnInit, OnDestroy {
           ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
     });
     // Retrieve departures for first stop id.
+    const time = new Date(Date.now());
+    this.hours = this.leftPadZero(time.getHours());
+    this.minutes = this.leftPadZero(time.getMinutes());
     this.departuresSubscription = this.http.get<RealTimeInfo[]>(
-        'http://localhost:8080/trams-operations/departures?stopName=' + this.stop.name).subscribe(
-            realTimeInfos => {
+        'http://localhost:8080/trams-operations/departures?stopName=' + this.stop.name + '&startingTime=' +
+        this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
       this.departures = realTimeInfos;
     });
     // Retrieve arrivals for first stop id.
-    this.arrivalsSubscription = this.http.get<RealTimeInfo[]>(
-        'http://localhost:8080/trams-operations/arrivals?stopName=' + this.stop.name).subscribe(
-            realTimeInfos => {
+    this.arrivalsSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/arrivals?stopName=' + this.stop.name + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
       this.arrivals = realTimeInfos;
+    });
+    // Retrieve arrivals for first stop id.
+    const month = time.getMonth() + 1;
+    let monthStr = String(month);
+    if ( month < 10 ) { monthStr = '0' + month; }
+    const dayOfMonth = time.getDate() + 1;
+    let dayOfMonthStr = String(dayOfMonth);
+    if ( dayOfMonth < 10 ) { dayOfMonthStr = '0' + dayOfMonth; }
+    this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
+    console.log('today is ' + this.today);
+    this.todaysDeparturesSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/' +
+        'departuresByDate?stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
+      this.todayDepartures = departureInfos;
     });
   }
 
@@ -82,15 +99,6 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * Return the current departures for this stop.
    */
   getDepartures(): RealTimeInfo[] {
-    const time = new Date(Date.now());
-    this.hours = this.leftPadZero(time.getHours());
-    this.minutes = this.leftPadZero(time.getMinutes());
-    this.departuresSubscription.unsubscribe();
-    this.departuresSubscription = this.http.get<RealTimeInfo[]>(
-        'http://localhost:8080/trams-operations/departures?stopName=' + this.stop.name + '&startingTime=' +
-        this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-      this.departures = realTimeInfos;
-    });
     return this.departures;
   }
 
@@ -98,14 +106,14 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * Return the current arrivals for this stop.
    */
   getArrivals(): RealTimeInfo[] {
-    const time = new Date(Date.now());
-    this.hours = this.leftPadZero(time.getHours());
-    this.minutes = this.leftPadZero(time.getMinutes());
-    this.arrivalsSubscription.unsubscribe();
-    this.arrivalsSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/arrivals?stopName=' + this.stop.name + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-      this.arrivals = realTimeInfos;
-    });
     return this.arrivals;
+  }
+
+  /**
+   * Return all of today's departures for this stop.
+   */
+  getDeparturesByDate(): RealTimeInfo[] {
+    return this.todayDepartures;
   }
 
   /**
@@ -123,6 +131,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.idSubscription.unsubscribe();
     this.departuresSubscription.unsubscribe();
     this.arrivalsSubscription.unsubscribe();
+    this.todaysDeparturesSubscription.unsubscribe();
   }
 
 }

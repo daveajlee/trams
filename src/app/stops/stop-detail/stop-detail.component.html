@@ -45,3 +45,34 @@
   </tr>
   </tbody>
 </table>
+
+<!-- Show a heading with today's departures -->
+<h3 class="text-center">Today's departures</h3>
+
+<!-- Show a table with all departures for this date with time, route and destination -->
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Time</th>
+    <th scope="col">Route</th>
+    <th scope="col">Destination</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let todayDeparturesEl of getDeparturesByDate(), let i = index">
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.departureTime}}</td>
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.routeNumber}}</td>
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.destination}}</td>
+  </tr>
+  </tbody>
+</table>
+
