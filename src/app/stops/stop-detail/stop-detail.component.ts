@@ -81,7 +81,6 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     let dayOfMonthStr = String(dayOfMonth);
     if ( dayOfMonth < 10 ) { dayOfMonthStr = '0' + dayOfMonth; }
     this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
-    console.log('today is ' + this.today);
     this.todaysDeparturesSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/' +
         'departuresByDate?stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
       this.todayDepartures = departureInfos;
