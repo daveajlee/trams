@@ -77,7 +77,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     const month = time.getMonth() + 1;
     let monthStr = String(month);
     if ( month < 10 ) { monthStr = '0' + month; }
-    const dayOfMonth = time.getDate() + 1;
+    const dayOfMonth = time.getDate();
     let dayOfMonthStr = String(dayOfMonth);
     if ( dayOfMonth < 10 ) { dayOfMonthStr = '0' + dayOfMonth; }
     this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
