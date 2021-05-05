@@ -16,6 +16,8 @@ import { UploadComponent } from './upload/upload.component';
 import {FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { VehiclesComponent } from './vehicles/vehicles.component';
+import {VehiclesService} from './vehicles/vehicles.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     DropdownDirective,
     StopDetailComponent,
     ClockComponent,
-    UploadComponent
+    UploadComponent,
+    VehiclesComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     BrowserAnimationsModule,
     MatProgressBarModule
   ],
-  providers: [StopsService, RoutesService],
+  providers: [StopsService, RoutesService, VehiclesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
