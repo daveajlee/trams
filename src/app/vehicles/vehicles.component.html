@@ -19,7 +19,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let vehicleEl of vehicles, let i = index">
-                <td><!--<a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">-->{{vehicleEl.fleetNumber}}<!--</a>--></td>
+                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{vehicleEl.fleetNumber}}</a></td>
             </tr>
             </tbody>
         </table>

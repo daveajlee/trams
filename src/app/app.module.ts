@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { VehiclesComponent } from './vehicles/vehicles.component';
 import {VehiclesService} from './vehicles/vehicles.service';
+import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {VehiclesService} from './vehicles/vehicles.service';
     StopDetailComponent,
     ClockComponent,
     UploadComponent,
-    VehiclesComponent
+    VehiclesComponent,
+    VehicleDetailComponent
   ],
   imports: [
     BrowserModule,

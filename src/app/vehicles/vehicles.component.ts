@@ -32,7 +32,6 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.subscription = this.vehiclesService.vehiclesChanged.subscribe((vehicles: Vehicle[]) => {
       this.vehicles = vehicles;
     });
-    this.vehicles = this.vehiclesService.getVehicles();
   }
 
   /**

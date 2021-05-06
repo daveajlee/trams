@@ -5,6 +5,7 @@ import {StopsComponent} from './stops/stops.component';
 import {StopDetailComponent} from './stops/stop-detail/stop-detail.component';
 import {UploadComponent} from './upload/upload.component';
 import {VehiclesComponent} from './vehicles/vehicles.component';
+import {VehicleDetailComponent} from './vehicles/vehicle-detail/vehicle-detail.component';
 
 /**
  * Define the links which work in this application.
@@ -15,7 +16,9 @@ const appRoutes: Routes = [
       { path: ':id', component: StopDetailComponent }
     ] },
   { path: 'upload', component: UploadComponent },
-  { path: 'vehicles', component: VehiclesComponent}
+  { path: 'vehicles', component: VehiclesComponent, children: [
+      { path: ':id', component: VehicleDetailComponent}
+    ]}
 ];
 
 @NgModule({

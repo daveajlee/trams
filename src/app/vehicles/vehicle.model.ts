@@ -9,7 +9,7 @@ export class Vehicle {
     public allocatedTour: string;
     public inspectionStatus: string;
     public nextInspectionDueInDays: number;
-    public additionalVehicleTypeInformation: Map<string, string>;
+    public additionalTypeInformationMap: Map<string, string>;
 
     /**
      * Construct a new model for Vehicles which contains the supplied data.
@@ -19,17 +19,17 @@ export class Vehicle {
      * @param allocatedTour the tour allocated to this vehicle which may be null if no tour has been allocated
      * @param inspectionStatus whether or not the vehicle is due an inspection soon
      * @param nextInspectionDueInDays the number of days until the next inspection
-     * @param additionalVehicleTypeInformation stores the field key/value pair for any additional information of this vehicle.
+     * @param additionalTypeInformationMap stores the field key/value pair for any additional information of this vehicle.
      */
     constructor( fleetNumber: string, vehicleType: string, livery: string, allocatedTour: string, inspectionStatus: string,
-                 nextInspectionDueInDays: number, additionalVehicleTypeInformation: Map<string, string>) {
+                 nextInspectionDueInDays: number, additionalTypeInformationMap: Map<string, string>) {
         this.fleetNumber = fleetNumber;
         this.vehicleType = vehicleType;
         this.livery = livery;
         this.allocatedTour = allocatedTour;
         this.inspectionStatus = inspectionStatus;
         this.nextInspectionDueInDays = nextInspectionDueInDays;
-        this.additionalVehicleTypeInformation = additionalVehicleTypeInformation;
+        this.additionalTypeInformationMap = additionalTypeInformationMap;
     }
 
 }
