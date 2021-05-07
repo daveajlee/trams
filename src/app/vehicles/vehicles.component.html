@@ -11,6 +11,11 @@
  brings up the detailed information for that vehicle -->
 <div class="row">
     <div class="col-md-4">
+        <input type="text" #searchtext class="form-control" placeholder="Search By Fleet Number..."/>
+        <br/>
+        <button class="btn-primary" (click)="searchByFleetNumber(searchtext.value)">Search</button>
+        <br/>
+        <br/>
         <table class="table">
             <thead class="thead-light">
             <tr>
