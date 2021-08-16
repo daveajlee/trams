@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * This class starts the Trams Operations application using Spring Boot.
+ * This class starts the Trams Business application using Spring Boot.
  * @author Dave Lee
  */
 @SpringBootApplication
