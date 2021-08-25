@@ -1,0 +1,5 @@
+# Mac OS file
+.DS_STORE
+
+#Intellij IDE
+.idea
