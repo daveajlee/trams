@@ -12,7 +12,7 @@
     <artifactId>trams-crm</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>trams-crm</name>
-    <description>TraMS CRM is a RESTful Web Service for everything for managing budgets and business of a transport company.</description>
+    <description>TraMS CRM is a RESTful Web Service for everything for managing customer data and tickets of a transport company.</description>
 
     <properties>
         <java.version>11</java.version>
