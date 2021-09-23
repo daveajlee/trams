@@ -51,6 +51,7 @@ public class CustomerTest {
         customer.setAddress("1 Max Way, Musterdorf");
         customer.setTelephoneNumber("01234 567890");
         customer.setEmailAddress("max@mustermann.de");
+        customer.setCompany("Mustermann GmbH");
         assertNotNull(customer.getId());
         assertEquals("Mr", customer.getTitle());
         assertEquals("Max", customer.getFirstName());
@@ -58,6 +59,7 @@ public class CustomerTest {
         assertEquals("1 Max Way, Musterdorf", customer.getAddress());
         assertEquals("01234 567890", customer.getTelephoneNumber());
         assertEquals("max@mustermann.de", customer.getEmailAddress());
+        assertEquals("Mustermann GmbH", customer.getCompany());
     }
 
 }

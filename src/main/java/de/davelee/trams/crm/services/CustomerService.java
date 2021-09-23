@@ -24,4 +24,14 @@ public class CustomerService {
         return customerRepository.save(customer) != null;
     }
 
+    /**
+     * Find a customer according to their email address and company.
+     * @param company a <code>String</code> with the company to retrieve customer for.
+     * @param emailAddress a <code>String</code> with the email address of the company.
+     * @return a <code>Customer</code> representing the customer which has this email address. Returns null if no matching customer.
+     */
+    public Customer findByCompanyAndEmailAddress ( final String company, final String emailAddress ) {
+        return customerRepository.findByCompanyAndEmailAddress(company, emailAddress);
+    }
+
 }

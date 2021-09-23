@@ -12,6 +12,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -42,6 +43,20 @@ public class CustomerServiceTest {
     }
 
     /**
+     * Test case: find a customer by company and email address.
+     * Expected Result: customer is not null.
+     */
+    @Test
+    public void testFindCustomerByCompanyAndEmailAddress() {
+        //Test data
+        Customer customer = generateValidCustomer();
+        //Mock important method in repository.
+        Mockito.when(customerRepository.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(customer);
+        //do actual test.
+        assertNotNull(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de"));
+    }
+
+    /**
      * Private helper method to generate a valid customer.
      * @return a <code>Customer</code> object containing valid test data.
      */
@@ -53,6 +68,7 @@ public class CustomerServiceTest {
                 .emailAddress("max@mustermann.de")
                 .telephoneNumber("01234 567890")
                 .address("1 Max Way, Musterdorf")
+                .company("Mustermann GmbH")
                 .build();
     }
 

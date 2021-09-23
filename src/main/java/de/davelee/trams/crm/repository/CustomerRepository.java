@@ -11,10 +11,11 @@ import org.springframework.data.repository.query.Param;
 public interface CustomerRepository extends MongoRepository<Customer, Long> {
 
     /**
-     * Find a customer according to their email address.
+     * Find a customer according to their email address and company they are registered for.
+     * @Param company a <code>String</code> with the name of the company that the user has registered with.
      * @param emailAddress a <code>String</code> with the email address belonging to the customer who should be retrieved.
-     * @return a <code>Customer</code> representing the customer which has this email address. Returns null if no matching customer.
+     * @return a <code>Customer</code> representing the customer which has this email address and company. Returns null if no matching customer.
      */
-    Customer findByEmailAddress (@Param("emailAddress") final String emailAddress);
+    Customer findByCompanyAndEmailAddress (@Param("company") final String company, @Param("emailAddress") final String emailAddress);
 
 }

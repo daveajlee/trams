@@ -1,10 +1,11 @@
-package de.davelee.trams.crm.request;
+package de.davelee.trams.crm.response;
 
 import lombok.*;
 
 /**
- * This class is part of the TraMS CRM REST API. It represents a request to add the following customer to the server
- * containing title, first name, last name, email address, telephone number, company and address.
+ * This class is part of the TraMS CRM REST API. It represents a response containing
+ * a single customer returned from the server containing title, first name,
+ * last name, email address, telephone number, company and address.
  * @author Dave Lee
  */
 @Builder
@@ -13,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CustomerRequest {
+public class CustomerResponse {
 
     /**
      * Title for this customer e.g. Mr, Mrs, Dr.

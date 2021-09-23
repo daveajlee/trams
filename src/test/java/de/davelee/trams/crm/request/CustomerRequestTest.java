@@ -23,14 +23,16 @@ public class CustomerRequestTest {
                 .lastName("Mustermann")
                 .address("1 Max Way, Musterdorf")
                 .telephoneNumber("01234 567890")
-                .emailAddress("max@mustermann.de").build();
+                .emailAddress("max@mustermann.de")
+                .company("Mustermann GmbH").build();
         assertEquals("Mr", customerRequest.getTitle());
         assertEquals("Max", customerRequest.getFirstName());
         assertEquals("Mustermann", customerRequest.getLastName());
         assertEquals("1 Max Way, Musterdorf", customerRequest.getAddress());
         assertEquals("01234 567890", customerRequest.getTelephoneNumber());
         assertEquals("max@mustermann.de", customerRequest.getEmailAddress());
-        assertEquals("CustomerRequest(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf)", customerRequest.toString());
+        assertEquals("Mustermann GmbH", customerRequest.getCompany());
+        assertEquals("CustomerRequest(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH)", customerRequest.toString());
     }
 
     @Test

@@ -2,7 +2,9 @@ package de.davelee.trams.crm.rest.controllers;
 
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.request.CustomerRequest;
+import de.davelee.trams.crm.response.CustomerResponse;
 import de.davelee.trams.crm.services.CustomerService;
+import de.davelee.trams.crm.utils.CustomerUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * Test cases for the Customer endpoints in the TraMS CRM REST API.
@@ -61,6 +64,36 @@ public class CustomerControllerTest {
     }
 
     /**
+     * Test case: customer exists with the specified company and email address.
+     * Expected Result: ok.
+     */
+    @Test
+    public void testValidFindCustomerFound() {
+        //Mock the important methods in customer service.
+        Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de"))
+                .thenReturn(CustomerUtils.convertCustomerRequestToCustomer(generateValidCustomer()));
+        //Perform tests
+        ResponseEntity<CustomerResponse> responseEntity = customerController.getCustomer("Mustermann GmbH", "max@mustermann.de");
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+    }
+
+    /**
+     * Test case: no customer exists with the specified company and email address.
+     * Expected Result: no content.
+     */
+    @Test
+    public void testValidFindCustomerNotFound() {
+        //Mock the important methods in customer service.
+        Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "bob@mustermann.de")).thenReturn(null);
+        //Perform tests
+        ResponseEntity<CustomerResponse> responseEntity = customerController.getCustomer("Mustermann GmbH", "bob@mustermann.de");
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        //test with empty company.
+        ResponseEntity<CustomerResponse> responseEntity2 = customerController.getCustomer("", "bob@mustermann.de");
+        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
      * Private helper method to generate a valid customer.
      * @return a <code>CustomerRequest</code> object containing valid test data.
      */
@@ -72,6 +105,7 @@ public class CustomerControllerTest {
                 .emailAddress("max@mustermann.de")
                 .telephoneNumber("01234 567890")
                 .address("1 Max Way, Musterdorf")
+                .company("Mustermann GmbH")
                 .build();
     }
 

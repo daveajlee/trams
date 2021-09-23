@@ -49,4 +49,9 @@ public class Customer {
      */
     private String address;
 
+    /**
+     * The company that this customer has registered with.
+     */
+    private String company;
+
 }
