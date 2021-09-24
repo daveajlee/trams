@@ -94,6 +94,44 @@ public class CustomerControllerTest {
     }
 
     /**
+     * Test case: attempt to delete a customer which exists.
+     * Expected Result: ok.
+     */
+    @Test
+    public void testValidDeleteCustomer() {
+        //Mock the important methods in customer service.
+        Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de"))
+                .thenReturn(CustomerUtils.convertCustomerRequestToCustomer(generateValidCustomer()));
+        //Perform tests
+        ResponseEntity<Void> responseEntity = customerController.deleteCustomer("Mustermann GmbH", "max@mustermann.de");
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+    }
+
+    /**
+     * Test case: attempt to delete a customer which does not exist.
+     * Expected Result: no content.
+     */
+    @Test
+    public void testValidDeleteCustomerNotFound() {
+        //Mock the important methods in customer service.
+        Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "bob@mustermann.de"))
+                .thenReturn(null);
+        //Perform tests
+        ResponseEntity<Void> responseEntity = customerController.deleteCustomer("Mustermann GmbH", "bob@mustermann.de");
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Test case: attempt to delete a customer without specifying an email address.
+     * Expected Result: bad request.
+     */
+    @Test
+    public void testInvalidDeleteUser() {
+        ResponseEntity<Void> responseEntity = customerController.deleteCustomer(null, null);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
      * Private helper method to generate a valid customer.
      * @return a <code>CustomerRequest</code> object containing valid test data.
      */

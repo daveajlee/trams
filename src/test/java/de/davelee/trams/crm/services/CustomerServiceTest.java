@@ -57,6 +57,20 @@ public class CustomerServiceTest {
     }
 
     /**
+     * Test case: delete a customer.
+     * Currently void so no validation possible.
+     */
+    @Test
+    public void testDeleteCustomer() {
+        //Test data
+        Customer customer = generateValidCustomer();
+        //Mock important method in repository.
+        Mockito.doNothing().when(customerRepository).delete(customer);
+        //do actual test.
+        customerService.delete(customer);
+    }
+
+    /**
      * Private helper method to generate a valid customer.
      * @return a <code>Customer</code> object containing valid test data.
      */

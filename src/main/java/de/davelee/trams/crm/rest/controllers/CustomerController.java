@@ -53,7 +53,7 @@ public class CustomerController {
      * Find a customer based on their email address and company.
      * @param company a <code>String</code> containing the name of the company.
      * @param emailAddress a <code>String</code> containing the email address.
-     * @return a <code>ResponseEntity</code> containing the user found.
+     * @return a <code>ResponseEntity</code> containing the customer found.
      */
     @ApiOperation(value = "Find a customer", notes="Find a customer in the system.")
     @GetMapping(value="/")
@@ -69,8 +69,34 @@ public class CustomerController {
         if ( customer == null ) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //Convert to UserResponse object and return 200.
+        //Convert to CustomerResponse object and return 200.
         return ResponseEntity.ok(CustomerUtils.convertCustomerToCustomerResponse(customer));
+    }
+
+    /**
+     * Delete a specific customer from the database based on their email address and company.
+     * @param company a <code>String</code> containing the name of the company.
+     * @param emailAddress a <code>String</code> containing the email address.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Delete a customer", notes="Delete a customer from the system.")
+    @DeleteMapping(value="/")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted customer"), @ApiResponse(code=204,message="Successful but no customer found")})
+    public ResponseEntity<Void> deleteCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
+        //First of all, check if any of the fields are empty or null, then return bad request.
+        if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Now retrieve the customer based on the email address.
+        Customer customer = customerService.findByCompanyAndEmailAddress(company, emailAddress);
+        //If customer is null then return 204.
+        if ( customer == null ) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        //Now delete the customer based on the customer found.
+        customerService.delete(customer);
+        //Return 200.
+        return ResponseEntity.status(200).build();
     }
 
 }

@@ -34,4 +34,12 @@ public class CustomerService {
         return customerRepository.findByCompanyAndEmailAddress(company, emailAddress);
     }
 
+    /**
+     * Delete the specified customer object from the database.
+     * @param customer a <code>Customer</code> object to delete from the database.
+     */
+    public void delete ( final Customer customer ) {
+        customerRepository.delete(customer);
+    }
+
 }
