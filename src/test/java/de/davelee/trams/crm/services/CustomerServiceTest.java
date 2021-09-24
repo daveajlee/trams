@@ -12,11 +12,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test cases for the CustomerService class - the UserRepository is mocked.
+ * Test cases for the CustomerService class - the CustomerRepository is mocked.
  * @author Dave Lee
  */
 @SpringBootTest
@@ -33,7 +32,7 @@ public class CustomerServiceTest {
      * Expected Result: true.
      */
     @Test
-    public void testSaveUser() {
+    public void testSaveCustomer() {
         //Test data
         Customer customer = generateValidCustomer();
         //Mock important method in repository.
@@ -68,6 +67,20 @@ public class CustomerServiceTest {
         Mockito.doNothing().when(customerRepository).delete(customer);
         //do actual test.
         customerService.delete(customer);
+    }
+
+    /**
+     * Test case: find all customers of a company.
+     * Expected Result: list has size of 1.
+     */
+    @Test
+    public void testFindCustomersByCompany() {
+        //Test data
+        Customer customer = generateValidCustomer();
+        //Mock important method in repository.
+        Mockito.when(customerRepository.findByCompany("Mustermann GmbH")).thenReturn(List.of(customer));
+        //do actual test.
+        assertEquals(customerService.findByCompany("Mustermann GmbH").size(), 1);
     }
 
     /**

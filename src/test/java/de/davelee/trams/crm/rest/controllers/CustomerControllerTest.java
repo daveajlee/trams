@@ -126,7 +126,7 @@ public class CustomerControllerTest {
      * Expected Result: bad request.
      */
     @Test
-    public void testInvalidDeleteUser() {
+    public void testInvalidDeleteCustomer() {
         ResponseEntity<Void> responseEntity = customerController.deleteCustomer(null, null);
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
     }

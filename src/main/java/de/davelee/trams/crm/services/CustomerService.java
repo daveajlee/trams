@@ -5,6 +5,8 @@ import de.davelee.trams.crm.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Class to provide service operations for customers in TraMS CRM.
  * @author Dave Lee
@@ -40,6 +42,15 @@ public class CustomerService {
      */
     public void delete ( final Customer customer ) {
         customerRepository.delete(customer);
+    }
+
+    /**
+     * Find all customers belonging to a company.
+     * @param company a <code>String</code> with the company to retrieve customers for.
+     * @return a <code>List</code> of <code>Customer</code> objects representing the Customers belonging to this company. Returns null if no matching customers.
+     */
+    public List<Customer> findByCompany (final String company ) {
+        return customerRepository.findByCompany(company);
     }
 
 }
