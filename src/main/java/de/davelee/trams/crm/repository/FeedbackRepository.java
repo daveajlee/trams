@@ -16,10 +16,10 @@ public interface FeedbackRepository extends MongoRepository<Feedback, Long> {
     /**
      * Find all feedbacks for a particular company and customer.
      * @Param company a <code>String</code> with the name of the company that the feedback belongs to.
-     * @param customer a <code>Customer</code> with the customer that the feedback belongs to.
+     * @param emailAddress a <code>String</code> with the email address of the customer that the feedback belongs to.
      * @return a <code>Feedback</code> representing the feedbacks matching this company and customer. Returns null if no matching feedbacks.
      */
-    List<Feedback> findByCompanyAndCustomer (@Param("company") final String company, @Param("customer") final Customer customer);
+    List<Feedback> findByCompanyAndEmailAddress (@Param("company") final String company, @Param("emailAddress") final String emailAddress);
 
     /**
      * Find all feedbacks belonging to a company.

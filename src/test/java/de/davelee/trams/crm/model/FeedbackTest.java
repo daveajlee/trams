@@ -28,10 +28,12 @@ public class FeedbackTest {
                 .message("Best transport company ever.")
                 .extraInfos(Map.of("Punctuality", "10"))
                 .answer("Thanks for the feedback")
+                .emailAddress("max@mustermann.de")
                 .build();
         assertNotNull(feedback.getId());
         assertNotNull(feedback.getCustomer());
         assertEquals("max@mustermann.de", feedback.getCustomer().getEmailAddress());
+        assertEquals("max@mustermann.de", feedback.getEmailAddress());
         assertEquals("Best transport company ever.", feedback.getMessage());
         assertEquals(1, feedback.getExtraInfos().size());
         assertEquals("Thanks for the feedback", feedback.getAnswer());
@@ -52,9 +54,11 @@ public class FeedbackTest {
         feedback.setExtraInfos(Map.of("Punctuality", "10"));
         feedback.setAnswer("Thanks for the feedback");
         feedback.setCompany("Mustermann GmbH");
+        feedback.setEmailAddress("max@mustermann.de");
         assertNotNull(feedback.getId());
         assertNotNull(feedback.getCustomer());
         assertEquals("max@mustermann.de", feedback.getCustomer().getEmailAddress());
+        assertEquals("max@mustermann.de", feedback.getEmailAddress());
         assertEquals("Best transport company ever.", feedback.getMessage());
         assertEquals(1, feedback.getExtraInfos().size());
         assertEquals("Thanks for the feedback", feedback.getAnswer());

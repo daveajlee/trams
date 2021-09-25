@@ -9,9 +9,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Test cases for the FeedbackService class - the FeedbackRepository is mocked.
@@ -31,13 +35,25 @@ public class FeedbackServiceTest {
      * Expected Result: true.
      */
     @Test
-    public void testSaveCustomer() {
+    public void testSaveFeedback() {
         //Test data
         Feedback feedback = generateValidFeedback();
         //Mock important method in repository.
         Mockito.when(feedbackRepository.save(feedback)).thenReturn(feedback);
         //do actual test.
         assertTrue(feedbackService.save(feedback));
+    }
+
+    /**
+     * Test case: get feedbacks for company and customer.
+     * Expected Result: list with size 1.
+     */
+    @Test
+    public void testGetFeedbackCompanyCustomer() {
+        //Mock important method in repository.
+        Mockito.when(feedbackRepository.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(List.of(generateValidFeedback()));
+        //do actual test.
+        assertEquals(1, feedbackService.findByCompanyAndCustomer("Mustermann GmbH", "max@mustermann.de").size());
     }
 
     /**

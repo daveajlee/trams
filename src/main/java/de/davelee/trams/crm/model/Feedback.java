@@ -27,6 +27,11 @@ public class Feedback {
     private Customer customer;
 
     /**
+     * The email address of the customer giving this feedback.
+     */
+    private String emailAddress;
+
+    /**
      * The company getting this feedback.
      */
     private String company;

@@ -59,6 +59,8 @@ public class FeedbackController {
                 .customer(customer)
                 .message(feedbackRequest.getMessage())
                 .extraInfos(feedbackRequest.getExtraInfos())
+                .emailAddress(customer.getEmailAddress())
+                .company(feedbackRequest.getCompany())
                 .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 

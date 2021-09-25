@@ -1,10 +1,5 @@
 package de.davelee.trams.crm.rest.controllers;
 
-/**
- * This class defines the endpoints for the REST API which manipulate customers and delegates the actions to the CustomerService class.
- * @author Dave Lee
- */
-
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.response.CustomerResponse;
 import de.davelee.trams.crm.response.CustomersResponse;
@@ -25,6 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * This class defines the endpoints for the REST API which manipulate customers and delegates the actions to the CustomerService class.
+ * @author Dave Lee
+ */
 @RestController
 @Api(value="/trams-crm/customers")
 @RequestMapping(value="/trams-crm/customers")
@@ -35,7 +34,6 @@ public class CustomersController {
 
     /**
      * Find all customers for a specific company.
-     *
      * @param company a <code>String</code> containing the name of the company.
      * @return a <code>ResponseEntity</code> containing the customers for this company.
      */
