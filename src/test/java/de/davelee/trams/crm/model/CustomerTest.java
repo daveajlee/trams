@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class CustomerTest {
 
-    @Test
     /**
      * Test case: build a <code>Customer</code> object and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testBuilderToString() {
         Customer customer = Customer.builder()
                 .id(ObjectId.get())
@@ -36,12 +36,12 @@ public class CustomerTest {
         assertEquals("max@mustermann.de", customer.getEmailAddress());
     }
 
-    @Test
     /**
      * Test case: construct an empty <code>Customer</code> object
      * fill it with values through setters and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testSettersToString() {
         Customer customer = new Customer();
         customer.setId(ObjectId.get());

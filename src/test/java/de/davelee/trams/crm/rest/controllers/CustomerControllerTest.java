@@ -1,6 +1,5 @@
 package de.davelee.trams.crm.rest.controllers;
 
-import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.request.CustomerRequest;
 import de.davelee.trams.crm.response.CustomerResponse;
 import de.davelee.trams.crm.services.CustomerService;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 /**
  * Test cases for the Customer endpoints in the TraMS CRM REST API.

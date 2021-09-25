@@ -1,6 +1,5 @@
 package de.davelee.trams.crm.response;
 
-import de.davelee.trams.crm.request.CustomerRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class CustomerResponseTest {
 
-    @Test
     /**
      * Test case: build a <code>CustomerResponse</code> object and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testBuilderToString() {
         CustomerResponse customerResponse = CustomerResponse.builder()
                 .title("Mr")
@@ -36,12 +35,12 @@ public class CustomerResponseTest {
         assertEquals("CustomerResponse(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH)", customerResponse.toString());
     }
 
-    @Test
     /**
      * Test case: construct an empty <code>CustomerResponse</code> object
      * fill it with values through setters and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testSettersToString() {
         CustomerResponse customerResponse = new CustomerResponse();
         customerResponse.setTitle("Mr");

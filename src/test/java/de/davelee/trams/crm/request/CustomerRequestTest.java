@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class CustomerRequestTest {
 
-    @Test
     /**
      * Test case: build a <code>CustomerRequest</code> object and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testBuilderToString() {
         CustomerRequest customerRequest = CustomerRequest.builder()
                 .title("Mr")
@@ -35,12 +35,12 @@ public class CustomerRequestTest {
         assertEquals("CustomerRequest(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH)", customerRequest.toString());
     }
 
-    @Test
     /**
      * Test case: construct an empty <code>CustomerRequest</code> object
      * fill it with values through setters and return string of it.
      * Expected Result: valid values and string.
      */
+    @Test
     public void testSettersToString() {
         CustomerRequest customerRequest = new CustomerRequest();
         customerRequest.setTitle("Mr");

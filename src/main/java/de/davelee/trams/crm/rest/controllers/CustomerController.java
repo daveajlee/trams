@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.regex.Pattern;
+
 /**
  * This class defines the endpoints for the REST API which manipulate customers and delegates the actions to the CustomerService class.
  * @author Dave Lee
@@ -40,7 +42,7 @@ public class CustomerController {
         if (StringUtils.isBlank(customerRequest.getFirstName()) || StringUtils.isBlank(customerRequest.getLastName())
                 || StringUtils.isBlank(customerRequest.getEmailAddress()) || StringUtils.isBlank(customerRequest.getTelephoneNumber())
                 || StringUtils.isBlank(customerRequest.getTitle()) || StringUtils.isBlank(customerRequest.getAddress())
-                || StringUtils.isBlank(customerRequest.getCompany())) {
+                || StringUtils.isBlank(customerRequest.getCompany()) || !Pattern.matches(".*@.*[.]?.*$", customerRequest.getEmailAddress()) ) {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to customer object.
