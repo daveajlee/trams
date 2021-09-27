@@ -44,15 +44,45 @@ public class FeedbacksController {
      * @return a <code>ResponseEntity</code> containing the feedbacks for this company and customer.
      */
     @ApiOperation(value = "Find all feedbacks for a company and customer", notes = "Find all feedbacks for a company and customer to the system.")
-    @GetMapping(value = "/")
+    @GetMapping(value = "/customer")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
-    public ResponseEntity<FeedbacksResponse> getFeedbacks(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
+    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompanyAndEmail(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if the company field and/or email address field are empty or null, then return bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the feedback data.
         List<Feedback> feedbacks = feedbackService.findByCompanyAndCustomer(company, emailAddress);
+        //Convert to FeedbackResponse object and return 200.
+        FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
+        for (int i = 0; i < feedbacks.size(); i++) {
+            feedbackResponses[i] = FeedbackResponse.builder()
+                    .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()))
+                    .extraInfos(feedbacks.get(i).getExtraInfos())
+                    .message(feedbacks.get(i).getMessage())
+                    .build();
+        }
+        return ResponseEntity.ok(FeedbacksResponse.builder()
+                .count((long) feedbackResponses.length)
+                .feedbackResponses(feedbackResponses)
+                .build());
+    }
+
+    /**
+     * Find all feedbacks for a specific company.
+     * @param company a <code>String</code> containing the name of the company.
+     * @return a <code>ResponseEntity</code> containing the feedbacks for this company.
+     */
+    @ApiOperation(value = "Find all feedbacks for a company", notes = "Find all feedbacks for a company  to the system.")
+    @GetMapping(value = "/")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
+    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompany(@RequestParam("company") final String company) {
+        //First of all, check if the company field is empty or null, then return bad request.
+        if (StringUtils.isBlank(company)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Now retrieve the feedback data.
+        List<Feedback> feedbacks = feedbackService.findByCompany(company);
         //Convert to FeedbackResponse object and return 200.
         FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
         for (int i = 0; i < feedbacks.size(); i++) {

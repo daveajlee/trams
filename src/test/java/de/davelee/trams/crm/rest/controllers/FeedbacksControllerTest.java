@@ -2,7 +2,6 @@ package de.davelee.trams.crm.rest.controllers;
 
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
-import de.davelee.trams.crm.response.CustomersResponse;
 import de.davelee.trams.crm.response.FeedbacksResponse;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
@@ -47,7 +46,7 @@ public class FeedbacksControllerTest {
         Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(generateValidCustomer());
         Mockito.when(feedbackService.findByCompanyAndCustomer(eq("Mustermann GmbH"), any())).thenReturn(List.of(generateValidFeedback()));
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacks("Mustermann GmbH", "max@mustermann.de");
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
     }
 
@@ -58,7 +57,31 @@ public class FeedbacksControllerTest {
     @Test
     public void testInvalidFindCustomers() {
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacks("Mustermann GmbH", null);
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", null);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Test case: attempt to find feedbacks for a company.
+     * Expected Result: ok.
+     */
+    @Test
+    public void testValidFindCompany() {
+        //Mock the important methods in customer service.
+        Mockito.when(feedbackService.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidFeedback()));
+        //Perform tests
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany("Mustermann GmbH");
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+    }
+
+    /**
+     * Test case: attempt to find feedbacks without specifying a company.
+     * Expected Result: bad request.
+     */
+    @Test
+    public void testInvalidFindCompany() {
+        //Perform tests
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany(null);
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
     }
 

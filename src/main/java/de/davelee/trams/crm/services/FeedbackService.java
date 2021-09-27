@@ -36,5 +36,14 @@ public class FeedbackService {
         return feedbackRepository.findByCompanyAndEmailAddress(company, emailAddress);
     }
 
+    /**
+     * Find feedbacks according to their company.
+     * @param company a <code>String</code> with the company to retrieve customer for.
+     * @return a <code>List</code> of <code>Feedback</code> representing the feedbacks matching the criteria. Returns null if no matching feedback.
+     */
+    public List<Feedback> findByCompany (final String company) {
+        return feedbackRepository.findByCompany(company);
+    }
+
 }
 

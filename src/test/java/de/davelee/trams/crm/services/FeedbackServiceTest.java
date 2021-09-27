@@ -14,8 +14,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Test cases for the FeedbackService class - the FeedbackRepository is mocked.
@@ -54,6 +52,18 @@ public class FeedbackServiceTest {
         Mockito.when(feedbackRepository.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(List.of(generateValidFeedback()));
         //do actual test.
         assertEquals(1, feedbackService.findByCompanyAndCustomer("Mustermann GmbH", "max@mustermann.de").size());
+    }
+
+    /**
+     * Test case: get feedbacks for company.
+     * Expected Result: list with size 1.
+     */
+    @Test
+    public void testGetFeedbackCompany() {
+        //Mock important method in repository.
+        Mockito.when(feedbackRepository.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidFeedback()));
+        //do actual test.
+        assertEquals(1, feedbackService.findByCompany("Mustermann GmbH").size());
     }
 
     /**
