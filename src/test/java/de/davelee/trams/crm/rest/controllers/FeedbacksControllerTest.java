@@ -5,6 +5,7 @@ import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.response.FeedbacksResponse;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -91,6 +92,7 @@ public class FeedbacksControllerTest {
      */
     private Feedback generateValidFeedback( ) {
         return Feedback.builder()
+                .id(new ObjectId("615824bd6d0c882034e85964"))
                 .customer(generateValidCustomer())
                 .message("Very good transport company")
                 .company("Mustermann GmbH")

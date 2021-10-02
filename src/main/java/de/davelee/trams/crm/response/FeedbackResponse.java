@@ -18,6 +18,11 @@ import java.util.Map;
 public class FeedbackResponse {
 
     /**
+     * Unique id for this feedback which can be used to add answers etc.
+     */
+    private String id;
+
+    /**
      * Information about the customer that submitted the feedback.
      */
     private CustomerResponse customerResponse;

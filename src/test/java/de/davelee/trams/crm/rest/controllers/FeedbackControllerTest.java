@@ -2,6 +2,7 @@ package de.davelee.trams.crm.rest.controllers;
 
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
+import de.davelee.trams.crm.request.AnswerRequest;
 import de.davelee.trams.crm.request.CustomerRequest;
 import de.davelee.trams.crm.request.FeedbackRequest;
 import de.davelee.trams.crm.services.CustomerService;
@@ -77,6 +78,45 @@ public class FeedbackControllerTest {
         ResponseEntity<Void> responseEntity2 = feedbackController.addFeedback(feedbackRequest);
         assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
     }
+
+    /**
+     * Test case: add an answer to a feedback to the system based on a valid answer request.
+     * Expected Result: answer added successfully.
+     */
+    @Test
+    public void testValidAddAnswer() {
+        //Mock important methods in customer & feedback service.
+        Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(true);
+        Mockito.when(feedbackService.save(any())).thenReturn(true);
+        //Add answer so that test is successfully.
+        AnswerRequest answerRequest = AnswerRequest.builder()
+                .answer("Thanks for the feedback")
+                .objectId("63645gjg4t996").build();
+        ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+    }
+
+    /**
+     * Test case: add an answer to a feedback to the system based on an invalid answer request.
+     * Expected Result: either bad request or 204.
+     */
+    @Test
+    public void testInvalidAddAnswer() {
+        //Mock important methods in customer & feedback service.
+        Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(false);
+        Mockito.when(feedbackService.save(any())).thenReturn(true);
+        //Add answer so that test is successfully.
+        AnswerRequest answerRequest = AnswerRequest.builder()
+                .answer("Thanks for the feedback")
+                .objectId("").build();
+        ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        //Set object id to test 204.
+        answerRequest.setObjectId("63645gjg4t996");
+        ResponseEntity<Void> responseEntity2 = feedbackController.addAnswer(answerRequest);
+        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+    }
+
 
     /**
      * Private helper method to generate a valid customer.

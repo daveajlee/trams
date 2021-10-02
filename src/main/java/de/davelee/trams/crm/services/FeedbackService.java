@@ -2,6 +2,7 @@ package de.davelee.trams.crm.services;
 
 import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.repository.FeedbackRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,22 @@ public class FeedbackService {
      */
     public List<Feedback> findByCompany (final String company) {
         return feedbackRepository.findByCompany(company);
+    }
+
+    /**
+     * Add an answer to a feedback based on it's object id.
+     * @param answer a <code>String</code> with the answer to add the feedback.
+     * @param objectId a <code>String</code> with the id of the feedback to attach the answer to.
+     * @return a <code>boolean</code> which is true iff the feedback could be found and the answer could be added to the feedback successfully.
+     */
+    public boolean addAnswerToFeedback ( final String answer, final String objectId ) {
+        Feedback feedback = feedbackRepository.findById(new ObjectId(objectId));
+        if ( feedback != null ) {
+            feedback.setAnswer(answer);
+            feedbackRepository.save(feedback);
+            return true;
+        }
+        return false;
     }
 
 }

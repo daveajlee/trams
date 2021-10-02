@@ -57,6 +57,7 @@ public class FeedbacksController {
         FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
         for (int i = 0; i < feedbacks.size(); i++) {
             feedbackResponses[i] = FeedbackResponse.builder()
+                    .id(feedbacks.get(i).getId().toString())
                     .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()))
                     .extraInfos(feedbacks.get(i).getExtraInfos())
                     .message(feedbacks.get(i).getMessage())
@@ -87,6 +88,7 @@ public class FeedbacksController {
         FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
         for (int i = 0; i < feedbacks.size(); i++) {
             feedbackResponses[i] = FeedbackResponse.builder()
+                    .id(feedbacks.get(i).getId().toString())
                     .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()))
                     .extraInfos(feedbacks.get(i).getExtraInfos())
                     .message(feedbacks.get(i).getMessage())

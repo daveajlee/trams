@@ -2,6 +2,8 @@ package de.davelee.trams.crm.model;
 
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
@@ -14,11 +16,13 @@ import java.util.Map;
 @Getter
 @Setter
 @Builder
+@Document
 public class Feedback {
 
     /**
      * A unique id for this feedback.
      */
+    @Id
     private ObjectId id;
 
     /**

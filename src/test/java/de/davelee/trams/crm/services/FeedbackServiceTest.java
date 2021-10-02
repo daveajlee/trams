@@ -3,6 +3,7 @@ package de.davelee.trams.crm.services;
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.repository.FeedbackRepository;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -12,8 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for the FeedbackService class - the FeedbackRepository is mocked.
@@ -67,12 +67,41 @@ public class FeedbackServiceTest {
     }
 
     /**
+     * Test case: add an answer to a feedback.
+     * Expected Result: true.
+     */
+    @Test
+    public void testSaveValidAnswer() {
+        //Test data
+        Feedback feedback = generateValidFeedback();
+        //Mock important method in repository.
+        Mockito.when(feedbackRepository.findById(new ObjectId("615825196d0c882034e85965"))).thenReturn(feedback);
+        //do actual test.
+        assertTrue(feedbackService.addAnswerToFeedback("Thanks for the answer", "615825196d0c882034e85965"));
+    }
+
+    /**
+     * Test case: add an invalid answer to a feedback.
+     * Expected Result: false.
+     */
+    @Test
+    public void testSaveInvalidAnswer() {
+        //Test data
+        Feedback feedback = generateValidFeedback();
+        //Mock important method in repository.
+        Mockito.when(feedbackRepository.findById(new ObjectId("615825196d0c882034e85965"))).thenReturn(null);
+        //do actual test.
+        assertFalse(feedbackService.addAnswerToFeedback("Thanks for the answer", "615825196d0c882034e85965"));
+    }
+
+    /**
      * Private helper method to generate a valid feedback.
      * @return a <code>Feedback</code> object containing valid test data.
      */
     private Feedback generateValidFeedback( ) {
         return Feedback.builder()
                 .customer(generateValidCustomer())
+                .id(new ObjectId("615825196d0c882034e85965"))
                 .message("Very good transport company")
                 .company("Mustermann GmbH")
                 .answer("Thanks for the feedback")

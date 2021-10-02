@@ -23,13 +23,15 @@ public class FeedbackResponseTest {
     @Test
     public void testBuilderToString() {
         FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                .id("63645gjg4t996")
                 .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(generateValidCustomer()))
                 .message("Great transport company")
                 .extraInfos(Map.of("Punctuality", "10")).build();
         assertNotNull(feedbackResponse.getCustomerResponse());
+        assertEquals("63645gjg4t996", feedbackResponse.getId());
         assertEquals("Great transport company", feedbackResponse.getMessage());
         assertEquals(1, feedbackResponse.getExtraInfos().size());
-        assertEquals("FeedbackResponse(customerResponse=CustomerResponse(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH), message=Great transport company, extraInfos={Punctuality=10})", feedbackResponse.toString());
+        assertEquals("FeedbackResponse(id=63645gjg4t996, customerResponse=CustomerResponse(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH), message=Great transport company, extraInfos={Punctuality=10})", feedbackResponse.toString());
     }
 
     /**
@@ -40,6 +42,7 @@ public class FeedbackResponseTest {
     @Test
     public void testSettersToString() {
         FeedbackResponse feedbackResponse = new FeedbackResponse();
+        feedbackResponse.setId("63645gjg4t996");
         feedbackResponse.setCustomerResponse(CustomerUtils.convertCustomerToCustomerResponse(generateValidCustomer()));
         feedbackResponse.setMessage("Great transport company");
         feedbackResponse.setExtraInfos(Map.of("Punctuality", "10"));

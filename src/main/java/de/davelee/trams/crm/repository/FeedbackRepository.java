@@ -2,6 +2,7 @@ package de.davelee.trams.crm.repository;
 
 import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -27,5 +28,11 @@ public interface FeedbackRepository extends MongoRepository<Feedback, Long> {
      * @return a <code>List</code> of <code>Feedback</code> objects representing the feedbacks belonging to this company. Returns null if no matching feedbacks.
      */
     List<Feedback> findByCompany (@Param("company") final String company );
+
+    /**
+     * Find a feedback based on its object id.
+     * @param objectId a <code>ObjectId</code> con
+     */
+    Feedback findById ( @Param("id") final ObjectId objectId);
 
 }
