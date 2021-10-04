@@ -6,6 +6,7 @@ import de.davelee.trams.crm.request.AnswerRequest;
 import de.davelee.trams.crm.request.FeedbackRequest;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
+import de.davelee.trams.crm.services.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -31,6 +32,9 @@ public class FeedbackController {
 
     @Autowired
     private FeedbackService feedbackService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * Add a feedback to the system.
@@ -71,8 +75,13 @@ public class FeedbackController {
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added answer")})
     public ResponseEntity<Void> addAnswer (@RequestBody final AnswerRequest answerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(answerRequest.getObjectId()) || StringUtils.isBlank(answerRequest.getAnswer())) {
+        if (StringUtils.isBlank(answerRequest.getObjectId()) || StringUtils.isBlank(answerRequest.getAnswer()) ||
+            StringUtils.isBlank(answerRequest.getToken())) {
             return ResponseEntity.badRequest().build();
+        }
+        //Check that the user has logged in, otherwise forbidden.
+        if ( !userService.checkAuthToken(answerRequest.getToken()) ) {
+            return ResponseEntity.status(403).build();
         }
         //Return 200 if successful or 204 if unsuccessful.
         return feedbackService.addAnswerToFeedback(answerRequest.getAnswer(), answerRequest.getObjectId()) ?

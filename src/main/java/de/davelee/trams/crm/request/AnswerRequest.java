@@ -25,4 +25,9 @@ public class AnswerRequest {
      */
     private String answer;
 
+    /**
+     * Token to use to authenticate the user adding the answer.
+     */
+    private String token;
+
 }

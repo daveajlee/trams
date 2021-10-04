@@ -5,6 +5,7 @@ import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.response.FeedbacksResponse;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
+import de.davelee.trams.crm.services.UserService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ public class FeedbacksControllerTest {
     @Mock
     private FeedbackService feedbackService;
 
+    @Mock
+    private UserService userService;
+
     /**
      * Test case: attempt to find feedbacks for a company and customer.
      * Expected Result: ok.
@@ -46,8 +50,9 @@ public class FeedbacksControllerTest {
         //Mock the important methods in customer service.
         Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(generateValidCustomer());
         Mockito.when(feedbackService.findByCompanyAndCustomer(eq("Mustermann GmbH"), any())).thenReturn(List.of(generateValidFeedback()));
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de");
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de", "mmustermann-ghgkg");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
     }
 
@@ -57,9 +62,14 @@ public class FeedbacksControllerTest {
      */
     @Test
     public void testInvalidFindCustomers() {
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", null);
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", null, "mmustermann-ghgkg");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        //Perform test for forbidden.
+        ResponseEntity<FeedbacksResponse> responseEntity2 = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de", "mmustermann-djkf");
+        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
     }
 
     /**
@@ -70,8 +80,9 @@ public class FeedbacksControllerTest {
     public void testValidFindCompany() {
         //Mock the important methods in customer service.
         Mockito.when(feedbackService.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidFeedback()));
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany("Mustermann GmbH");
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany("Mustermann GmbH", "mmustermann-ghgkg");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
     }
 
@@ -81,9 +92,14 @@ public class FeedbacksControllerTest {
      */
     @Test
     public void testInvalidFindCompany() {
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Perform tests
-        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany(null);
+        ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany(null, "mmustermann-ghgkg");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        //Perform test for forbidden.
+        ResponseEntity<FeedbacksResponse> responseEntity2 = feedbacksController.getFeedbacksByCompany("Mustermann GmbH", "mmustermann-djkf");
+        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
     }
 
     /**

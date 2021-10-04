@@ -7,6 +7,7 @@ import de.davelee.trams.crm.request.CustomerRequest;
 import de.davelee.trams.crm.request.FeedbackRequest;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
+import de.davelee.trams.crm.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -36,6 +36,9 @@ public class FeedbackControllerTest {
 
     @Mock
     private FeedbackService feedbackService;
+
+    @Mock
+    private UserService userService;
 
     /**
      * Test case: add a feedback to the system based on a valid feedback request.
@@ -88,10 +91,12 @@ public class FeedbackControllerTest {
         //Mock important methods in customer & feedback service.
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(true);
         Mockito.when(feedbackService.save(any())).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Add answer so that test is successfully.
         AnswerRequest answerRequest = AnswerRequest.builder()
                 .answer("Thanks for the feedback")
-                .objectId("63645gjg4t996").build();
+                .objectId("63645gjg4t996")
+                .token("mmustermann-ghgkg").build();
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
     }
@@ -105,16 +110,23 @@ public class FeedbackControllerTest {
         //Mock important methods in customer & feedback service.
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(false);
         Mockito.when(feedbackService.save(any())).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Add answer so that test is successfully.
         AnswerRequest answerRequest = AnswerRequest.builder()
                 .answer("Thanks for the feedback")
-                .objectId("").build();
+                .objectId("")
+                .token("mmustermann-ghgkg").build();
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
         //Set object id to test 204.
         answerRequest.setObjectId("63645gjg4t996");
         ResponseEntity<Void> responseEntity2 = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        //Use a different token to ensure forbidden.
+        answerRequest.setToken("mmustermann-djkf");
+        ResponseEntity<Void> responseEntity3 = feedbackController.addAnswer(answerRequest);
+        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
     }
 
 

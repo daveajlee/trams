@@ -1,11 +1,10 @@
 package de.davelee.trams.crm.rest.controllers;
 
-import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.response.FeedbackResponse;
 import de.davelee.trams.crm.response.FeedbacksResponse;
-import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
+import de.davelee.trams.crm.services.UserService;
 import de.davelee.trams.crm.utils.CustomerUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,24 +31,29 @@ import java.util.List;
 public class FeedbacksController {
 
     @Autowired
-    private CustomerService customerService;
+    private FeedbackService feedbackService;
 
     @Autowired
-    private FeedbackService feedbackService;
+    private UserService userService;
 
     /**
      * Find all feedbacks for a specific company and customer (via email address).
      * @param company a <code>String</code> containing the name of the company.
      * @param emailAddress a <code>String</code> containing the email address of the customer.
+     * @param token a <code>String</code> with the token to verify user is logged in.
      * @return a <code>ResponseEntity</code> containing the feedbacks for this company and customer.
      */
     @ApiOperation(value = "Find all feedbacks for a company and customer", notes = "Find all feedbacks for a company and customer to the system.")
     @GetMapping(value = "/customer")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
-    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompanyAndEmail(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
+    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompanyAndEmail(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress, @RequestParam("token") final String token) {
         //First of all, check if the company field and/or email address field are empty or null, then return bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Check that the user has logged in, otherwise forbidden.
+        if ( !userService.checkAuthToken(token) ) {
+            return ResponseEntity.status(403).build();
         }
         //Now retrieve the feedback data.
         List<Feedback> feedbacks = feedbackService.findByCompanyAndCustomer(company, emailAddress);
@@ -72,15 +76,20 @@ public class FeedbacksController {
     /**
      * Find all feedbacks for a specific company.
      * @param company a <code>String</code> containing the name of the company.
+     * @param token a <code>String</code> with the token to verify user is logged in.
      * @return a <code>ResponseEntity</code> containing the feedbacks for this company.
      */
     @ApiOperation(value = "Find all feedbacks for a company", notes = "Find all feedbacks for a company  to the system.")
     @GetMapping(value = "/")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
-    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompany(@RequestParam("company") final String company) {
+    public ResponseEntity<FeedbacksResponse> getFeedbacksByCompany(@RequestParam("company") final String company, @RequestParam("token") final String token) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Check that the user has logged in, otherwise forbidden.
+        if ( !userService.checkAuthToken(token) ) {
+            return ResponseEntity.status(403).build();
         }
         //Now retrieve the feedback data.
         List<Feedback> feedbacks = feedbackService.findByCompany(company);
