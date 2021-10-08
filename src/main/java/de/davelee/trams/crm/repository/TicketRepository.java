@@ -2,6 +2,9 @@ package de.davelee.trams.crm.repository;
 
 import de.davelee.trams.crm.model.Ticket;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 /**
  * Interface class for database operations on ticket - uses Spring Data Mongo.
@@ -9,6 +12,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface TicketRepository extends MongoRepository<Ticket, Long> {
 
+    /**
+     * Find all tickets belonging to a company.
+     * @param company a <code>String</code> with the company to retrieve tickets for.
+     * @return a <code>List</code> of <code>Feedback</code> objects representing the tickets belonging to this company. Returns null if no matching tickets.
+     */
+    List<Ticket> findByCompany (@Param("company") final String company );
 
 
 }

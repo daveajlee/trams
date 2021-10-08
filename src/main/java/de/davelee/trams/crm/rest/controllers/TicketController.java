@@ -58,7 +58,7 @@ public class TicketController {
                 .company(ticketRequest.getCompany())
                 .description(ticketRequest.getDescription())
                 .sortOrder(ticketRequest.getSortOrder())
-                .priceList(TicketUtils.convertPriceList(ticketRequest.getPriceList()))
+                .priceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()))
                 .company(ticketRequest.getCompany())
                 .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }

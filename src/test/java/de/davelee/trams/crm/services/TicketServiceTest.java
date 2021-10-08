@@ -10,8 +10,10 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -39,6 +41,20 @@ public class TicketServiceTest {
         Mockito.when(ticketRepository.save(ticket)).thenReturn(ticket);
         //do actual test.
         assertTrue(ticketService.save(ticket));
+    }
+
+    /**
+     * Test case: retrieve a ticket.
+     * Expected Result: list of tickets.
+     */
+    @Test
+    public void testGetTicket() {
+        //Mock important methods.
+        Mockito.when(ticketRepository.findByCompany("Mustermann GmbH")).thenReturn(
+                List.of(generateValidTicket())
+        );
+        //do actual test.
+        assertEquals(1, ticketService.findByCompany("Mustermann GmbH").size());
     }
 
     /**
