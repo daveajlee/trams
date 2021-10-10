@@ -1,6 +1,5 @@
 package de.davelee.trams.crm.repository;
 
-import de.davelee.trams.crm.model.Customer;
 import de.davelee.trams.crm.model.Feedback;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

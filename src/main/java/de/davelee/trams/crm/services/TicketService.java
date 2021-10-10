@@ -1,6 +1,5 @@
 package de.davelee.trams.crm.services;
 
-import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.model.Ticket;
 import de.davelee.trams.crm.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +35,12 @@ public class TicketService {
         return ticketRepository.findByCompany(company);
     }
 
+    /**
+     * Find tickets according to their company and type.
+     * @param company a <code>String</code> with the company to retrieve customer for.
+     * @return a <code>List</code> of <code>Ticket</code> representing the tickets matching the criteria. Returns null if no matching tickets.
+     */
+    public List<Ticket> findByCompanyAndType ( final String company, final String type) {
+        return ticketRepository.findByCompanyAndType(company, type);
+    }
 }

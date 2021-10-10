@@ -19,5 +19,12 @@ public interface TicketRepository extends MongoRepository<Ticket, Long> {
      */
     List<Ticket> findByCompany (@Param("company") final String company );
 
+    /**
+     * Find all tickets matching a type and a company - usually this should only be 1.
+     * @param company a <code>String</code> with the company to retrieve tickets for.
+     * @param type a <code>String</code> with the type of ticket to retrieve.
+     * @return a <code>List</code> of <code>Feedback</code> objects representing the tickets belonging to this company. Returns null if no matching tickets.
+     */
+    List<Ticket> findByCompanyAndType (@Param("company") final String company, @Param("type") final String type);
 
 }

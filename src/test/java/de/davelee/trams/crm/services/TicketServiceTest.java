@@ -58,6 +58,20 @@ public class TicketServiceTest {
     }
 
     /**
+     * Test case: retrieve a ticket based on type.
+     * Expected Result: list of tickets.
+     */
+    @Test
+    public void testGetTicketByType() {
+        //Mock important methods.
+        Mockito.when(ticketRepository.findByCompanyAndType("Mustermann GmbH", "Single Ticket")).thenReturn(
+                List.of(generateValidTicket())
+        );
+        //do actual test.
+        assertEquals(1, ticketService.findByCompanyAndType("Mustermann GmbH", "Single Ticket").size());
+    }
+
+    /**
      * Private helper method to generate a valid ticket.
      * @return a <code>Ticket</code> object containing valid test data.
      */
