@@ -22,10 +22,6 @@ eureka:
     instance:
         preferIpAddress: true
 
-bus:
-    inspection:
-        period: 3
-
 train:
     inspection:
         period: 8

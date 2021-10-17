@@ -2,7 +2,6 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.request.ImportZipRequest;
-import de.davelee.trams.operations.response.VehicleResponse;
 import de.davelee.trams.operations.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,11 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * This class provides REST endpoints which can be called by other clients wishing to communicate with the Trams Operations Module.
@@ -150,94 +145,6 @@ public class TramsOperationsRestController {
             }
         }
         return ResponseEntity.unprocessableEntity().build();
-    }
-
-    /**
-     * Endpoint to retrieve vehicle fleet information.
-     * @return a <code>List</code> of <code>VehicleResponse</code> objects which may be null if there are no vehicles in the database.
-     */
-    @GetMapping("/vehicles")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get vehicles", notes="Return all vehicles in the fleet")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles")})
-    public List<VehicleResponse> getVehicles ( ) {
-        return vehicleService.retrieveAllVehicles();
-    }
-
-    /**
-     * Endpoint to retrieve vehicle information that starts with the supplied company name and starts with the supplied
-     * fleet number.
-     * @param company a <code>String</code> containing the name of the company to search for.
-     * @param fleetNumber a <code>String</code> containing the fleet number to search for.
-     * @return a <code>List</code> of <code>VehicleResponse</code> objects which may be null if there are no vehicles found.
-     */
-    @GetMapping("/vehiclesCompanyFleetNumber")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get vehicles", notes="Return all vehicles matching company and fleet number")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles")})
-    public List<VehicleResponse> getVehiclesByCompanyAndFleetNumber (final Optional<String> company, final String fleetNumber ) {
-        if ( company.isPresent() ) {
-            return vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company.get(), fleetNumber);
-        } else {
-            return vehicleService.retrieveVehiclesByFleetNumber(fleetNumber);
-        }
-    }
-
-    /**
-     * Temporary endpoint to add test data which will be removed as soon as data can be added through normal endpoints.
-     * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
-     */
-    @GetMapping("/testdata")
-    @ApiOperation(value = "Populate test data", notes="returns nothing")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added test data")})
-    public ResponseEntity<Void> addTestData ( ) {
-        //Create test bus
-        BusVehicleModel busVehicleModel = BusVehicleModel.builder()
-                .registrationNumber("W234DHDF")
-                .modelName("BendyBus 2000")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .build();
-        //Create test train
-        TrainVehicleModel trainVehicleModel = TrainVehicleModel.builder()
-                .powerMode(TrainPowerMode.DIESEL)
-                .modelName("Train 2000 Di")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("2130")
-                .company("Lee Trains")
-                .build();
-        //Create test tram
-        TramVehicleModel tramVehicleModel = TramVehicleModel.builder()
-                .isBidirectional(true)
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("2310")
-                .company("Lee Trams")
-                .build();
-        //Add all three to databse
-        vehicleService.addBus(busVehicleModel);
-        vehicleService.addTrain(trainVehicleModel);
-        vehicleService.addTram(tramVehicleModel);
-        //Return ok.
-        return ResponseEntity.ok().build();
     }
 
 }

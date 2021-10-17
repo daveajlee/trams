@@ -21,6 +21,11 @@ public class VehicleResponse {
     private String fleetNumber;
 
     /**
+     * The company that owns this vehicle.
+     */
+    private String company;
+
+    /**
      * The type of this vehicle which is mapped from subclasses as appropriate.
      */
     private String vehicleType;

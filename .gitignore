@@ -28,3 +28,6 @@ trams-operations.iml
 
 # Target files
 target/
+
+#Mac files
+*.DS_STORE

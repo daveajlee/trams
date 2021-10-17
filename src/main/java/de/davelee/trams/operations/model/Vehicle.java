@@ -2,6 +2,7 @@ package de.davelee.trams.operations.model;
 
 import lombok.*;
 import java.time.LocalDate;
+import java.util.Map;
 
 /**
  * This class represents a vehicle. A vehicle can contain a fleet number and company,
@@ -11,9 +12,10 @@ import java.time.LocalDate;
  */
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @ToString
-public class VehicleModel {
+public class Vehicle {
 
     /**
      * The fleet number of this vehicle.
@@ -64,5 +66,15 @@ public class VehicleModel {
      * The allocated tour for this vehicle.
      */
     private String allocatedTour;
+
+    /**
+     * The type of this vehicle.
+     */
+    private VehicleType vehicleType;
+
+    /**
+     * Map of type specific infos as key/value pair where additional information can be stored.
+     */
+    private Map<String, String> typeSpecificInfos;
 
 }

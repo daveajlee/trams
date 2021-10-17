@@ -15,6 +15,16 @@ public enum VehicleType {
         public String getTypeName() {
             return "Bus";
         }
+
+        /**
+         * Return the number of years between inspections.
+         * @return a <code>int</code> containing the number of years between inspections.
+         */
+        @Override
+        public int getInspectionPeriod() {
+            return 3;
+        }
+
     },
 
     TRAIN {
@@ -25,6 +35,15 @@ public enum VehicleType {
         @Override
         public String getTypeName() {
             return "Train";
+        }
+
+        /**
+         * Return the number of years between inspections.
+         * @return a <code>int</code> containing the number of years between inspections.
+         */
+        @Override
+        public int getInspectionPeriod() {
+            return 8;
         }
     },
 
@@ -37,6 +56,15 @@ public enum VehicleType {
         public String getTypeName() {
             return "Tram";
         }
+
+        /**
+         * Return the number of years between inspections.
+         * @return a <code>int</code> containing the number of years between inspections.
+         */
+        @Override
+        public int getInspectionPeriod() {
+            return 9;
+        }
     };
 
     /**
@@ -44,5 +72,11 @@ public enum VehicleType {
      * @return a <code>String</code> containing the name of the type.
      */
     public abstract String getTypeName();
+
+    /**
+     * Return the number of years between inspections.
+     * @return a <code>int</code> containing the number of years between inspections.
+     */
+    public abstract int getInspectionPeriod();
 
 }
