@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class RouteModel {
+public class Route {
 
     /**
      * The id of the route.
@@ -25,6 +25,6 @@ public class RouteModel {
     /**
      * The agency or company who runs the route - currently only one company can run a particular route.
      */
-    private String agency;
+    private String company;
 
 }

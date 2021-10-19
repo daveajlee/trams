@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.RouteModel;
+import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.repository.RouteRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -29,14 +29,14 @@ public class RouteServiceTest {
      */
     @Test
     public void testService ( ) {
-        Mockito.when(routeRepository.findAll()).thenReturn(Lists.newArrayList(RouteModel.builder()
+        Mockito.when(routeRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Route.builder()
                 .routeNumber("1A")
                 .id("1")
-                .agency("Mustermann Bus GmbH")
+                .company("Mustermann Bus GmbH")
                 .build()));
-        assertEquals(1, routeService.getRoutes().size());
-        assertEquals("1A", routeService.getRoutes().get(0).getRouteNumber());
-        assertEquals("1", routeService.getRoutes().get(0).getId());
-        assertEquals("Mustermann Bus GmbH", routeService.getRoutes().get(0).getAgency());
+        assertEquals(1, routeService.getRoutesByCompany("Mustermann Bus GmbH").size());
+        assertEquals("1A", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getRouteNumber());
+        assertEquals("1", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getId());
+        assertEquals("Mustermann Bus GmbH", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getCompany());
     }
 }

@@ -32,16 +32,10 @@ public class TramsOperationsRestController {
     private ImportCSVDataService csvDataService;
 
     @Autowired
-    private RouteService routeService;
-
-    @Autowired
     private StopService stopService;
 
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
-
-    @Autowired
-    private VehicleService vehicleService;
 
     /**
      * Return the next 3 departures for this stop within the next 2 hours.
@@ -90,19 +84,6 @@ public class TramsOperationsRestController {
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned departures")})
     public List<StopTimeModel> getDeparturesByDate (final String stopName, final String date ) {
         return stopTimeService.getDeparturesByDate(stopName, date);
-    }
-
-    /**
-     * Return all routes currently stored in the database.
-     * @return a <code>List</code> of <code>RouteModel</code> objects which may be null if there are no routes in the database.
-     */
-    @GetMapping("/routes")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get routes", notes="Return all routes")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned routes")})
-    public List<RouteModel> getRoutes ( ) {
-        return routeService.getRoutes();
     }
 
     /**

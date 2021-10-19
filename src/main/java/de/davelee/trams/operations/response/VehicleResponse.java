@@ -1,7 +1,5 @@
 package de.davelee.trams.operations.response;
 
-import de.davelee.trams.operations.model.InspectionStatus;
-import de.davelee.trams.operations.model.VehicleType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

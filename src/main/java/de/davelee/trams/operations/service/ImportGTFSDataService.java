@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.RouteModel;
+import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
@@ -68,14 +68,14 @@ public class ImportGTFSDataService {
             //Import the route information.
             if (!routesToImport.isEmpty()) {
                 //Import only the selected routes as long as routesToImport is not empty.
-                for (Route route : store.getAllRoutes()) {
+                for (org.onebusaway.gtfs.model.Route route : store.getAllRoutes()) {
                     if (shouldRouteBeImported(route, routesToImport)) {
                         importRoute(route, store.getAgencyForId(route.getAgency().getId()));
                     }
                 }
             } else {
                 //Otherwise import all routes as routesToImport is empty.
-                for (Route route : store.getAllRoutes()) {
+                for (org.onebusaway.gtfs.model.Route route : store.getAllRoutes()) {
                     importRoute(route, store.getAgencyForId(route.getAgency().getId()));
                 }
             }
@@ -120,7 +120,7 @@ public class ImportGTFSDataService {
      * @param routesToImport a <code>List</code> of <code>String</code> objects containing the lists which should be imported.
      * @return a <code>boolean</code> which is true iff the route should be imported.
      */
-    private boolean shouldRouteBeImported ( final Route route, final List<String> routesToImport ) {
+    private boolean shouldRouteBeImported (final org.onebusaway.gtfs.model.Route route, final List<String> routesToImport ) {
         for ( String routeNumber : routesToImport ) {
             if (route.getShortName().contentEquals(routeNumber)) {
                 return true;
@@ -134,9 +134,9 @@ public class ImportGTFSDataService {
      * @param route a <code>Route</code> object which contains the route that should be checked.
      * @return a <code>boolean</code> which is true iff the route has already been imported to the database.
      */
-    private boolean hasRouteAlreadyBeenImported ( final Route route ) {
-        for ( RouteModel existingRouteModel : routeRepository.findAll() ) {
-            if ( existingRouteModel.getRouteNumber().contentEquals(route.getShortName()) ) {
+    private boolean hasRouteAlreadyBeenImported ( final org.onebusaway.gtfs.model.Route route ) {
+        for ( Route existingRoute : routeRepository.findAll() ) {
+            if ( existingRoute.getRouteNumber().contentEquals(route.getShortName()) ) {
                 return true;
             }
         }
@@ -162,12 +162,12 @@ public class ImportGTFSDataService {
      * @param route a <code>Route</code> object which should be imported.
      * @param agency a <code>Agency</code> object which contains the name of the operator of this route.
      */
-    private void importRoute ( final Route route, final Agency agency ) {
+    private void importRoute (final org.onebusaway.gtfs.model.Route route, final Agency agency ) {
         if ( !hasRouteAlreadyBeenImported(route) ) {
-            routeRepository.insert( RouteModel.builder()
+            routeRepository.insert( Route.builder()
                     .routeNumber(route.getShortName())
                     .id(route.getId().getId())
-                    .agency(agency.getName())
+                    .company(agency.getName())
                     .build());
         }
     }

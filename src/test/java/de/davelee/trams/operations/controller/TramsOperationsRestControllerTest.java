@@ -1,6 +1,5 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.RouteModel;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.request.ImportZipRequest;
@@ -34,9 +33,6 @@ public class TramsOperationsRestControllerTest {
 
     @InjectMocks
     private TramsOperationsRestController controller;
-
-    @Mock
-    private RouteService routeService;
 
     @Mock
     private StopTimeService stopTimeService;
@@ -156,21 +152,6 @@ public class TramsOperationsRestControllerTest {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Test the routes endpoint of this controller.
-     */
-    @Test
-    public void testRoutesEndpoint() {
-        Mockito.when(routeService.getRoutes()).thenReturn(Lists.newArrayList(RouteModel.builder()
-                .agency("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .build()));
-        List<RouteModel> routeModelList = controller.getRoutes();
-        assertEquals(1, routeModelList.size());
-        assertEquals("123", routeModelList.get(0).getId());
     }
 
     /**

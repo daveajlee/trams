@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.RouteModel;
+import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.StopModel;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
@@ -154,8 +154,8 @@ public class ImportCSVDataService {
      * @return a <code>boolean</code> which is true iff the route number has already been imported to the database.
      */
     private boolean hasRouteAlreadyBeenImported ( final String routeNumber ) {
-        for ( RouteModel existingRouteModel : routeRepository.findAll() ) {
-            if ( existingRouteModel.getRouteNumber().contentEquals(routeNumber) ) {
+        for ( Route existingRoute : routeRepository.findAll() ) {
+            if ( existingRoute.getRouteNumber().contentEquals(routeNumber) ) {
                 return true;
             }
         }
@@ -183,12 +183,12 @@ public class ImportCSVDataService {
      */
     private void importRoute (final String routeNumber, final String operatorName ) {
         if ( !hasRouteAlreadyBeenImported(routeNumber) ) {
-            RouteModel routeModel = RouteModel.builder()
+            Route route = Route.builder()
                     .routeNumber(routeNumber)
                     .id(UUID.randomUUID().toString())
-                    .agency(operatorName)
+                    .company(operatorName)
                     .build();
-            routeRepository.insert( routeModel );
+            routeRepository.insert(route);
         }
     }
 

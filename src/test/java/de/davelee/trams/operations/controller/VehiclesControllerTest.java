@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
@@ -108,7 +109,7 @@ public class VehiclesControllerTest {
         assertEquals("Bus", responseEntity2.getBody().getVehicleResponses()[0].getVehicleType());
         //Check that days until next inspection is calculated correctly.
         assertEquals("Inspected",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
-        assertEquals(921, responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
+        assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
         //Third test is for retrieving without supplying a company.
         ResponseEntity<VehiclesResponse> responseEntity3 = vehiclesController.getVehiclesByCompanyAndFleetNumber("", Optional.empty());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity3.getStatusCode());
