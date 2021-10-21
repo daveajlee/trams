@@ -87,19 +87,6 @@ public class TramsOperationsRestController {
     }
 
     /**
-     * Return all stops currently stored in the database.
-     * @return a <code>List</code> of <code>StopModel</code> objects which may be null if there are no stops in the database.
-     */
-    @GetMapping("/stops")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get stops", notes="Return all stops")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stops")})
-    public List<StopModel> getStops ( ) {
-        return stopService.getStops();
-    }
-
-    /**
      * Upload a zip file containing files either fulfilling the GTFS specification or the CSV specification.
      * Optionally a list of routes can be provided which should be imported and may be null if all routes should be imported.
      * Optionally a valid from and valid to date can also be provided (which are only read in the csv import).

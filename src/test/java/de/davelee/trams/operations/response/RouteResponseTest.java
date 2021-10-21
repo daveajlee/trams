@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RouteResponseTest {
 
     /**
-     * Ensure that a VehicleResponse class can be correctly instantiated.
+     * Ensure that a RouteResponse class can be correctly instantiated.
      */
     @Test
     public void testCreateResponse() {

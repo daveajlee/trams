@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.StopModel;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
@@ -152,22 +152,6 @@ public class TramsOperationsRestControllerTest {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Test the stops endpoint of this controller.
-     */
-    @Test
-    public void testStopsEndpoint() {
-        Mockito.when(stopService.getStops()).thenReturn(Lists.newArrayList(StopModel.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .build()));
-        List<StopModel> stopModelList = controller.getStops();
-        assertEquals(1, stopModelList.size());
-        assertEquals("Greenfield", stopModelList.get(0).getName());
     }
 
 }

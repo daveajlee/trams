@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.StopModel;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.repository.StopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,13 @@ public class StopService {
     private StopRepository stopRepository;
 
     /**
-     * Return all stops currently stored in the database.
-     * @return a <code>List</code> of <code>StopModel</code> objects which may be null if there are no stops in the database.
+     * Return all stops currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to return stops for.
+     * @return a <code>List</code> of <code>Stop</code> objects which may be null if there are no stops in the database
+     * matching the specified company.
      */
-    public List<StopModel> getStops() {
-        return stopRepository.findAll();
+    public List<Stop> getStopsByCompany(final String company) {
+        return stopRepository.findByCompany(company);
     }
 
 }

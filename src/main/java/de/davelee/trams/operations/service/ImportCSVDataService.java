@@ -1,7 +1,7 @@
 package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.Route;
-import de.davelee.trams.operations.model.StopModel;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopRepository;
@@ -119,8 +119,8 @@ public class ImportCSVDataService {
                 else if ( record.get(0).isEmpty() || record.get(0).startsWith("Circulation:")) {
                     continue;
                 } else {
-                    if (!hasStopAlreadyBeenImported(record.get(0))) {
-                        importStop(record.get(0));
+                    if (!hasStopAlreadyBeenImported(record.get(0), operatorName)) {
+                        importStop(record.get(0), operatorName);
                     }
                     for ( int i = 1; i < record.size(); i++ ) {
                         if ( record.get(i).isEmpty() ) continue;
@@ -165,14 +165,13 @@ public class ImportCSVDataService {
     /**
      * This is a private helper method which determines if the specified stop already exists in the database.
      * @param stopName a <code>String</code> object which contains the name of the stop that should be checked.
+     * @param company a <code>String</code> object which contains the name of the company serving the stop.
      * @return a <code>boolean</code> which is true iff the stop has already been imported to the database.
      */
-    private boolean hasStopAlreadyBeenImported ( final String stopName ) {
-        for ( StopModel stopModel : stopRepository.findAll() ) {
-            if ( stopModel.getName().contentEquals(stopName) ) {
-                return true;
-            }
-        }
+    private boolean hasStopAlreadyBeenImported ( final String stopName, final String company ) {
+        List<Stop> stops = stopRepository.findByCompanyAndName(stopName, company);
+        if ( stops == null || stops.size() == 0 )
+            return true;
         return false;
     }
 
@@ -195,13 +194,15 @@ public class ImportCSVDataService {
     /**
      * This is a private helper method to import the supplied stop to the database.
      * @param stopName a <code>String</code> object containing the name of the stop to add.
+     * @param company a <code>String</code> object containing the name of the company serving the stop.
      */
-    private void importStop ( final String stopName ) {
-        StopModel stopModel = StopModel.builder()
+    private void importStop ( final String stopName, final String company ) {
+        Stop stop = Stop.builder()
                 .id(UUID.randomUUID().toString())
                 .name(stopName)
+                .company(company)
                 .build();
-        stopRepository.insert(stopModel);
+        stopRepository.insert(stop);
     }
 
     /**

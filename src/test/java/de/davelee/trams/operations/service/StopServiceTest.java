@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.StopModel;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.repository.StopRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -29,16 +29,17 @@ public class StopServiceTest {
      */
     @Test
     public void testService ( ) {
-        Mockito.when(stopRepository.findAll()).thenReturn(Lists.newArrayList(StopModel.builder()
+        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
                 .id("123")
                 .name("Greenfield")
                 .latitude(50.03)
                 .longitude(123.04)
+                .company("Mustermann Bus GmbH")
                 .build()));
-        assertEquals(1, stopService.getStops().size());
-        assertEquals("123", stopService.getStops().get(0).getId());
-        assertEquals("Greenfield", stopService.getStops().get(0).getName());
-        assertEquals(50.03, stopService.getStops().get(0).getLatitude());
-        assertEquals(123.04, stopService.getStops().get(0).getLongitude());
+        assertEquals(1, stopService.getStopsByCompany("Mustermann Bus GmbH").size());
+        assertEquals("123", stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getId());
+        assertEquals("Greenfield", stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getName());
+        assertEquals(50.03, stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getLatitude());
+        assertEquals(123.04, stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getLongitude());
     }
 }

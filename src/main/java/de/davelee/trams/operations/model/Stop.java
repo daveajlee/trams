@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class StopModel {
+public class Stop {
 
     /**
      * The id of the stop.
@@ -24,6 +24,11 @@ public class StopModel {
      * The name of the stop.
      */
     private String name;
+
+    /**
+     * The name of the company serving this stop.
+     */
+    private String company;
 
     /**
      * The latitude location of the stop which should be in a valid format for a latitude e.g. 50.0200004

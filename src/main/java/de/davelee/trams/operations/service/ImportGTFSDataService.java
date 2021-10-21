@@ -1,7 +1,7 @@
 package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.Route;
-import de.davelee.trams.operations.model.StopModel;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
@@ -149,8 +149,8 @@ public class ImportGTFSDataService {
      * @return a <code>boolean</code> which is true iff the stop has already been imported to the database.
      */
     private boolean hasStopAlreadyBeenImported ( final String stopName ) {
-        for ( StopModel stopModel : stopRepository.findAll() ) {
-            if ( stopModel.getName().contentEquals(stopName) ) {
+        for ( Stop stop : stopRepository.findAll() ) {
+            if ( stop.getName().contentEquals(stopName) ) {
                 return true;
             }
         }
@@ -176,8 +176,8 @@ public class ImportGTFSDataService {
      * This is a private helper method to import the supplied stop to the database.
      * @param stop a <code>Stop</code> object which should be imported.
      */
-    private void importStop ( final Stop stop ) {
-        stopRepository.insert(StopModel.builder()
+    private void importStop ( final org.onebusaway.gtfs.model.Stop stop ) {
+        stopRepository.insert(Stop.builder()
                 .id(stop.getId().getId())
                 .latitude(stop.getLat())
                 .longitude(stop.getLon())
