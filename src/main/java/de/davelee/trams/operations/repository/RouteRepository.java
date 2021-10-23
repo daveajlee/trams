@@ -13,4 +13,6 @@ public interface RouteRepository extends MongoRepository<Route, String> {
 
     List<Route> findByCompany (final String company);
 
+    List<Route> findByCompanyAndRouteNumber (final String company, final String routeNumber);
+
 }

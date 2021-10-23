@@ -6,6 +6,8 @@ import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
 import de.davelee.trams.operations.repository.StopRepository;
+import de.davelee.trams.operations.utils.RouteUtils;
+import de.davelee.trams.operations.utils.StopUtils;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -85,8 +87,8 @@ public class ImportGTFSDataService {
                 if ((!routesToImport.isEmpty() && shouldRouteBeImported(stopTime.getTrip().getRoute(), routesToImport))) {
 
                     //Do not add duplicate stops to the database.
-                    if (!hasStopAlreadyBeenImported(stopTime.getStop().getName())) {
-                        importStop(stopTime.getStop());
+                    if (!StopUtils.hasStopAlreadyBeenImported(stopTime.getStop().getName(), store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName(), stopRepository)) {
+                        importStop(stopTime.getStop(), store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName());
                     }
 
                     //Add the StopTime information to the database.
@@ -130,40 +132,12 @@ public class ImportGTFSDataService {
     }
 
     /**
-     * This is a private helper method which determines if the specified route already exists in the database.
-     * @param route a <code>Route</code> object which contains the route that should be checked.
-     * @return a <code>boolean</code> which is true iff the route has already been imported to the database.
-     */
-    private boolean hasRouteAlreadyBeenImported ( final org.onebusaway.gtfs.model.Route route ) {
-        for ( Route existingRoute : routeRepository.findAll() ) {
-            if ( existingRoute.getRouteNumber().contentEquals(route.getShortName()) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * This is a private helper method which determines if the specified stop already exists in the database.
-     * @param stopName a <code>String</code> object which contains the name of the stop that should be checked.
-     * @return a <code>boolean</code> which is true iff the stop has already been imported to the database.
-     */
-    private boolean hasStopAlreadyBeenImported ( final String stopName ) {
-        for ( Stop stop : stopRepository.findAll() ) {
-            if ( stop.getName().contentEquals(stopName) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * This is a private helper method to import the supplied route to the database.
      * @param route a <code>Route</code> object which should be imported.
      * @param agency a <code>Agency</code> object which contains the name of the operator of this route.
      */
     private void importRoute (final org.onebusaway.gtfs.model.Route route, final Agency agency ) {
-        if ( !hasRouteAlreadyBeenImported(route) ) {
+        if ( !RouteUtils.hasRouteAlreadyBeenImported(route.getShortName(), agency.getName(), routeRepository) ) {
             routeRepository.insert( Route.builder()
                     .routeNumber(route.getShortName())
                     .id(route.getId().getId())
@@ -175,13 +149,15 @@ public class ImportGTFSDataService {
     /**
      * This is a private helper method to import the supplied stop to the database.
      * @param stop a <code>Stop</code> object which should be imported.
+     * @param company a <code>String</code> with the name of the company serving the stop.
      */
-    private void importStop ( final org.onebusaway.gtfs.model.Stop stop ) {
+    private void importStop ( final org.onebusaway.gtfs.model.Stop stop, final String company ) {
         stopRepository.insert(Stop.builder()
                 .id(stop.getId().getId())
                 .latitude(stop.getLat())
                 .longitude(stop.getLon())
                 .name(stop.getName())
+                .company(company)
                 .build());
     }
 

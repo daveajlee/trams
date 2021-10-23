@@ -6,6 +6,8 @@ import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
+import de.davelee.trams.operations.utils.RouteUtils;
+import de.davelee.trams.operations.utils.StopUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -119,7 +121,7 @@ public class ImportCSVDataService {
                 else if ( record.get(0).isEmpty() || record.get(0).startsWith("Circulation:")) {
                     continue;
                 } else {
-                    if (!hasStopAlreadyBeenImported(record.get(0), operatorName)) {
+                    if (!StopUtils.hasStopAlreadyBeenImported(record.get(0), operatorName, stopRepository)) {
                         importStop(record.get(0), operatorName);
                     }
                     for ( int i = 1; i < record.size(); i++ ) {
@@ -149,39 +151,12 @@ public class ImportCSVDataService {
     }
 
     /**
-     * This is a private helper method which determines if the specified route already exists in the database.
-     * @param routeNumber a <code>String</code> object which contains the route number that should be checked.
-     * @return a <code>boolean</code> which is true iff the route number has already been imported to the database.
-     */
-    private boolean hasRouteAlreadyBeenImported ( final String routeNumber ) {
-        for ( Route existingRoute : routeRepository.findAll() ) {
-            if ( existingRoute.getRouteNumber().contentEquals(routeNumber) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * This is a private helper method which determines if the specified stop already exists in the database.
-     * @param stopName a <code>String</code> object which contains the name of the stop that should be checked.
-     * @param company a <code>String</code> object which contains the name of the company serving the stop.
-     * @return a <code>boolean</code> which is true iff the stop has already been imported to the database.
-     */
-    private boolean hasStopAlreadyBeenImported ( final String stopName, final String company ) {
-        List<Stop> stops = stopRepository.findByCompanyAndName(stopName, company);
-        if ( stops == null || stops.size() == 0 )
-            return true;
-        return false;
-    }
-
-    /**
      * This is a private helper method to import the supplied route to the database.
      * @param routeNumber a <code>String</code> object with the route numnber that should be imported.
      * @param operatorName a <code>String</code> object which contains the name of the operator of this route.
      */
     private void importRoute (final String routeNumber, final String operatorName ) {
-        if ( !hasRouteAlreadyBeenImported(routeNumber) ) {
+        if ( !RouteUtils.hasRouteAlreadyBeenImported(routeNumber, operatorName, routeRepository) ) {
             Route route = Route.builder()
                     .routeNumber(routeNumber)
                     .id(UUID.randomUUID().toString())
