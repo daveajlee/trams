@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
 /**
- * This class tests the TramsOperationsRestController and ensures that the endpoints work successfully. It uses
+ * This class tests the UploadController and ensures that the endpoints work successfully. It uses
  * mocks for the service and database layers.
  * @author Dave Lee
  */
 @SpringBootTest
-public class TramsOperationsRestControllerTest {
+public class UploadControllerTest {
 
     @InjectMocks
-    private TramsOperationsRestController controller;
+    private UploadController controller;
 
     @Mock
     private ImportGTFSDataService importGTFSDataService;

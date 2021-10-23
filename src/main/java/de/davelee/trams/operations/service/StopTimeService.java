@@ -27,7 +27,7 @@ public class StopTimeService {
      * @param stopName a <code>String</code> containing the name of the stop to retrieve departures from.
      * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
      * @param startingTime a <code>String</code> containing the time to start retrieving departures from which may be null if current time should be used.
-     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if no departures were found or there
+     * @return a <code>List</code> of <code>StopTime</code> objects which may be null if no departures were found or there
      * are no departures in next 2 hours.
      */
     public List<StopTime> getDepartures (final String stopName, final String company, final String startingTime ) {
@@ -39,7 +39,7 @@ public class StopTimeService {
      * @param stopName a <code>String</code> containing the name of the stop to retrieve arrivals for.
      * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
      * @param startingTime a <code>String</code> containing the time to start retrieving arrivals from which may be null if current time should be used.
-     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if the stop arrivals were not found or there
+     * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop arrivals were not found or there
      * are no arrivals in next 2 hours.
      */
     public List<StopTime> getArrivals (final String stopName, final String company, final String startingTime ) {
@@ -47,14 +47,14 @@ public class StopTimeService {
     }
 
     /**
-     * Return the next 3 stop time models (either departures or arrivals) for this stop within the next 2 hours.
+     * Return the next 3 stop times (either departures or arrivals) for this stop within the next 2 hours.
      * @param stopName a <code>String</code> containing the name of the stop to retrieve stop times for.
      * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
      * @param startingTime a <code>String</code> containing the time to start retrieving stop times from which may be null if current time should be used.
      * @param type a <code>String</code> which can be either Departure to return the departures or Arrival to return the arrivals.
-     * @param comparator a <code>Comparator</code> of <code>StopTimeModel</code> which defines how the departures or arrivals will be sorted.
-     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if the stop time models were not found or there
-     *       are no stop time models in next 2 hours.
+     * @param comparator a <code>Comparator</code> of <code>StopTime</code> which defines how the departures or arrivals will be sorted.
+     * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop times were not found or there
+     *       are no stop times in next 2 hours.
      */
     public List<StopTime> getTimes (final String stopName, final String company, final String startingTime, final String type, final Comparator<StopTime> comparator ) {
         //Initial time to starting time or current time if no starting time was supplied.
@@ -65,11 +65,11 @@ public class StopTimeService {
             //First of all get stop times between now and midnight.
             List<StopTime> stopTimes = stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                     //Filter stop times which do not run on this day.
-                    .filter(stopTimeModel -> stopTimeModel.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
+                    .filter(stopTime -> stopTime.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
                     //Filter so that stop times in the past are not shown.
-                    .filter(stopTimeModel -> !stopTimeModel.getTime(type).isBefore(time))
+                    .filter(stopTime -> !stopTime.getTime(type).isBefore(time))
                     //Filter remove stop times which lie much further in the future
-                    .filter(stopTimeModel -> !stopTimeModel.getTime(type).isAfter(LocalTime.of(23,59)))
+                    .filter(stopTime -> !stopTime.getTime(type).isAfter(LocalTime.of(23,59)))
                     //Sort the stop times by time.
                     .sorted(comparator)
                     //Only show next 3 stop times.
@@ -82,7 +82,7 @@ public class StopTimeService {
             //Otherwise add the remaining stop times from the next day.
             stopTimes.addAll(stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                     //Filter remove stop times which lie much further in the future
-                    .filter(stopTimeModel -> !stopTimeModel.getTime(type).isAfter(time.plusHours(2)))
+                    .filter(stopTime -> !stopTime.getTime(type).isAfter(time.plusHours(2)))
                     //Sort the stop times by time.
                     .sorted(comparator)
                     //Only show next 3 stop times.
@@ -93,11 +93,11 @@ public class StopTimeService {
         //Normal processing
         List<StopTime> filteredStopTimes = stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
-                .filter(stopTimeModel -> stopTimeModel.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
+                .filter(stopTime -> stopTime.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
                 //Filter so that stop times in the past are not shown.
-                .filter(stopTimeModel -> !stopTimeModel.getTime(type).isBefore(time))
+                .filter(stopTime -> !stopTime.getTime(type).isBefore(time))
                 //Filter remove stop times which lie much further in the future
-                .filter(stopTimeModel -> !stopTimeModel.getTime(type).isAfter(time.plusHours(2)))
+                .filter(stopTime -> !stopTime.getTime(type).isAfter(time.plusHours(2)))
                 //Sort the stop times by time.
                 .sorted(comparator)
                 .collect(Collectors.toList());
@@ -117,12 +117,12 @@ public class StopTimeService {
     }
 
     /**
-     * Return all stop time models for this stop with a departure today.
+     * Return all stop times for this stop with a departure today.
      * @param stopName a <code>String</code> containing the name of the stop to retrieve stop times for.
      * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
      * @param date a <code>String</code> containing the date to retrieve stop times for in format yyyy-MM-dd.
-     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if the stop time models were
-     * not found or there are no stop time models on this date.
+     * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop times were
+     * not found or there are no stop times on this date.
      */
     public List<StopTime> getDeparturesByDate (final String stopName, final String company, final String date ) {
         //Set the date as a local date
@@ -130,11 +130,11 @@ public class StopTimeService {
         //Return the stop times between now and midnight with the filter criteria.
         return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
-                .filter(stopTimeModel -> stopTimeModel.getOperatingDays().contains(departureDate.getDayOfWeek()))
+                .filter(stopTime -> stopTime.getOperatingDays().contains(departureDate.getDayOfWeek()))
                 //Filter stop times that are before the valid from date.
-                .filter(stopTimeModel -> stopTimeModel.getValidFromDate().isBefore(departureDate))
+                .filter(stopTime -> stopTime.getValidFromDate().isBefore(departureDate))
                 //Filter remove stop times are after the valid to date.
-                .filter(stopTimeModel -> stopTimeModel.getValidToDate().isAfter(departureDate))
+                .filter(stopTime -> stopTime.getValidToDate().isAfter(departureDate))
                 //Sort the stop times by time.
                 .sorted(Comparator.comparing(StopTime::getDepartureTime))
                 //Collect list as output.

@@ -10,13 +10,13 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class tests the StopTimeModel class and ensures that its works correctly.
+ * This class tests the StopTime class and ensures that its works correctly.
  * @author Dave Lee
  */
 public class StopTimeTest {
 
     /**
-     * Ensure that a StopTimeModel class can be correctly instantiated.
+     * Ensure that a StopTime class can be correctly instantiated.
      */
     @Test
     public void testBuilderGetterSetterToString ( ) {

@@ -83,30 +83,30 @@ public class ImportGTFSDataService {
             }
 
             //Import the stop time information.
-            for (org.onebusaway.gtfs.model.StopTime stopTime : store.getAllStopTimes()) {
-                if ((!routesToImport.isEmpty() && shouldRouteBeImported(stopTime.getTrip().getRoute(), routesToImport))) {
+            for (org.onebusaway.gtfs.model.StopTime gtfsStopTime : store.getAllStopTimes()) {
+                if ((!routesToImport.isEmpty() && shouldRouteBeImported(gtfsStopTime.getTrip().getRoute(), routesToImport))) {
 
                     //Do not add duplicate stops to the database.
-                    if (!StopUtils.hasStopAlreadyBeenImported(stopTime.getStop().getName(), store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName(), stopRepository)) {
-                        importStop(stopTime.getStop(), store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName());
+                    if (!StopUtils.hasStopAlreadyBeenImported(gtfsStopTime.getStop().getName(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName(), stopRepository)) {
+                        importStop(gtfsStopTime.getStop(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName());
                     }
 
                     //Add the StopTime information to the database.
-                    List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(stopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
-                    StopTime stopTimeModel = StopTime.builder()
+                    List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(gtfsStopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
+                    StopTime stopTime = StopTime.builder()
                             .id(stopTimeCounter)
-                            .company(store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName())
-                            .departureTime(LocalTime.parse(convertTimeToHoursAndMinutes(stopTime.getDepartureTime()), DateTimeFormatter.ofPattern("HH:mm")))
-                            .arrivalTime(LocalTime.parse(convertTimeToHoursAndMinutes(stopTime.getArrivalTime()), DateTimeFormatter.ofPattern("HH:mm")))
-                            .stopName(stopTime.getStop().getName())
-                            .destination(stopTime.getTrip().getTripHeadsign())
-                            .routeNumber(stopTime.getTrip().getRoute().getShortName())
-                            .journeyNumber(stopTime.getTrip().getId().getId())
+                            .company(store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName())
+                            .departureTime(LocalTime.parse(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime()), DateTimeFormatter.ofPattern("HH:mm")))
+                            .arrivalTime(LocalTime.parse(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime()), DateTimeFormatter.ofPattern("HH:mm")))
+                            .stopName(gtfsStopTime.getStop().getName())
+                            .destination(gtfsStopTime.getTrip().getTripHeadsign())
+                            .routeNumber(gtfsStopTime.getTrip().getRoute().getShortName())
+                            .journeyNumber(gtfsStopTime.getTrip().getId().getId())
                             .validFromDate( serviceCalendarList.size() == 1 ? LocalDate.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay()): null )
                             .validToDate( serviceCalendarList.size() == 1 ? LocalDate.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay()): null )
                             .operatingDays(serviceCalendarList.size() == 1 ? getOperatingDays(serviceCalendarList.get(0)) : null)
                             .build();
-                    stopTimeRepository.insert(stopTimeModel);
+                    stopTimeRepository.insert(stopTime);
                     stopTimeCounter++;
                 }
             }

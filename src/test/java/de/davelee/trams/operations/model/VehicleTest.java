@@ -8,13 +8,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class tests the VehicleModel class and ensures that its works correctly.
+ * This class tests the Vehicle class and ensures that its works correctly.
  * @author Dave Lee
  */
 public class VehicleTest {
 
     /**
-     * Ensure that a VehicleModel class can be correctly instantiated.
+     * Ensure that a Vehicle class can be correctly instantiated.
      */
     @Test
     public void testBuilderGetterSetterToString ( ) {

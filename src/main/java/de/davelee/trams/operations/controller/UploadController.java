@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 /**
- * This class provides REST endpoints which can be called by other clients wishing to communicate with the Trams Operations Module.
+ * This class provides REST endpoints which provide operations associated with uploading of data.
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations")
-@RequestMapping(value="/trams-operations")
-public class TramsOperationsRestController {
+@Api(value="/trams-operations/upload")
+@RequestMapping(value="/trams-operations/upload")
+public class UploadController {
 
     @Autowired
     private ImportGTFSDataService gtfsDataService;
@@ -39,7 +39,7 @@ public class TramsOperationsRestController {
      *                            and valid from and valid to dates.
      * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
      */
-    @PostMapping("/uploadDataFile")
+    @PostMapping("/")
     @CrossOrigin
     @ApiOperation(value = "Upload Data file", notes="Upload a GTFS or CSV Zip file to TraMS")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully imported GTFS/CSV Data"), @ApiResponse(code=422,message="Entity could not be processed because zip file was not valid")})

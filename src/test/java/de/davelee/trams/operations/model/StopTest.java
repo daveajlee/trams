@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class tests the StopModel class and ensures that its works correctly.
+ * This class tests the Stop class and ensures that its works correctly.
  * @author Dave Lee
  */
 public class StopTest {
 
     /**
-     * Ensure that a StopModel class can be correctly instantiated.
+     * Ensure that a Stop class can be correctly instantiated.
      */
     @Test
     public void testBuilderGetterSetterToString ( ) {

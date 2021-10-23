@@ -29,9 +29,9 @@ public class StopsController {
     private StopService stopService;
 
     /**
-     * Return all stops currently stored in the database .
+     * Return all stops currently stored in the database for a particular company.
      * @param company a <code>String</code> containing the name of the company to search for.
-     * @return a <code>List</code> of <code>StopModel</code> objects which may be null if there are no stops in the database.
+     * @return a <code>List</code> of <code>Stop</code> objects which may be null if there are no stops in the database.
      */
     @GetMapping("/")
     @CrossOrigin

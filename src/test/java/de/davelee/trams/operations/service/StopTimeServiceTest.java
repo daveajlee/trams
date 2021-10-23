@@ -139,7 +139,7 @@ public class StopTimeServiceTest {
      * @param departureTime a <code>LocalTime</code> object containing the desired departure time.
      * @param journeyNumber a <code>String</code> containing the journey name.
      * @param count a <code>int</code> with the id to use.
-     * @return a <code>StopTimeModel</code> object which contains all data filled for a test StopTimeModel object.
+     * @return a <code>StopTime</code> object which contains all data filled for a test StopTimeModel object.
      */
     private StopTime createStopTime (final LocalTime arrivalTime, final LocalTime departureTime, final String journeyNumber, final int count ) {
         return StopTime.builder()

@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class tests the RouteModel class and ensures that its works correctly.
+ * This class tests the Route class and ensures that its works correctly.
  * @author Dave Lee
  */
 public class RouteTest {
 
     /**
-     * Ensure that a RouteModel class can be correctly instantiated.
+     * Ensure that a Route class can be correctly instantiated.
      */
     @Test
     public void testBuilderGetterSetterToString ( ) {
