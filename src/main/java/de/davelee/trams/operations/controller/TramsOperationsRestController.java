@@ -1,6 +1,5 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
 import io.swagger.annotations.Api;
@@ -23,68 +22,13 @@ import java.util.*;
 public class TramsOperationsRestController {
 
     @Autowired
-    private StopTimeService stopTimeService;
-
-    @Autowired
     private ImportGTFSDataService gtfsDataService;
 
     @Autowired
     private ImportCSVDataService csvDataService;
 
     @Autowired
-    private StopService stopService;
-
-    @Autowired
     private FileSystemStorageService fileSystemStorageService;
-
-    /**
-     * Return the next 3 departures for this stop within the next 2 hours.
-     * @param stopName a <code>String</code> containing the name of the stop to retrieve departures from.
-     * @param startingTime a <code>String</code> containing the time to start retrieving departures from which may be null if current time should be used.
-     * @return a <code>List</code> of <code>StopDeparture</code> objects which may be null if the stop departure was not found or there
-     * are no departures in next 2 hours.
-     */
-    @GetMapping("/departures")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get latest departures", notes="Return the next departures.")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned departures")})
-    public List<StopTimeModel> getDepartures (final String stopName, final String startingTime ) {
-        return stopTimeService.getDepartures(stopName, startingTime);
-    }
-
-    /**
-     * Return the next 3 arrivals for this stop within the next 2 hours.
-     * @param stopName a <code>String</code> containing the name of the stop to retrieve arrivals for.
-     * @param startingTime a <code>String</code> containing the time to start retrieving arrivals from which may be null if current time should be used.
-     * @return a <code>List</code> of <code>StopTimeModel</code> objects which may be null if the stop arrivals were not found or there
-     * are no arrivals in next 2 hours.
-     */
-    @GetMapping("/arrivals")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get latest arrivals", notes="Return the next arrivals.")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned arrivals")})
-    public List<StopTimeModel> getArrivals (final String stopName, final String startingTime ) {
-        return stopTimeService.getArrivals(stopName, startingTime);
-    }
-
-    /**
-     * Return all departures for this stop on the supplied date.
-     * @param stopName a <code>String</code> containing the name of the stop to retrieve departures from.
-     * @param date a <code>String</code> containing the date in format YYYY-mm-dd.
-     * @return a <code>List</code> of <code>StopDeparture</code> objects which may be null if the stop departure was not found or there
-     * are no departures on this date.
-     */
-    @GetMapping("/departuresByDate")
-    @CrossOrigin
-    @ResponseBody
-    @ApiOperation(value = "Get all departures for a particualar date and stop", notes="Return all departures" +
-            " for this stop and date.")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned departures")})
-    public List<StopTimeModel> getDeparturesByDate (final String stopName, final String date ) {
-        return stopTimeService.getDeparturesByDate(stopName, date);
-    }
 
     /**
      * Upload a zip file containing files either fulfilling the GTFS specification or the CSV specification.

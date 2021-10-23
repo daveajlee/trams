@@ -2,7 +2,7 @@ package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.Stop;
-import de.davelee.trams.operations.model.StopTimeModel;
+import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
 import de.davelee.trams.operations.repository.StopRepository;
@@ -83,7 +83,7 @@ public class ImportGTFSDataService {
             }
 
             //Import the stop time information.
-            for (StopTime stopTime : store.getAllStopTimes()) {
+            for (org.onebusaway.gtfs.model.StopTime stopTime : store.getAllStopTimes()) {
                 if ((!routesToImport.isEmpty() && shouldRouteBeImported(stopTime.getTrip().getRoute(), routesToImport))) {
 
                     //Do not add duplicate stops to the database.
@@ -93,8 +93,9 @@ public class ImportGTFSDataService {
 
                     //Add the StopTime information to the database.
                     List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(stopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
-                    StopTimeModel stopTimeModel = StopTimeModel.builder()
+                    StopTime stopTimeModel = StopTime.builder()
                             .id(stopTimeCounter)
+                            .company(store.getAgencyForId(stopTime.getTrip().getId().getAgencyId()).getName())
                             .departureTime(LocalTime.parse(convertTimeToHoursAndMinutes(stopTime.getDepartureTime()), DateTimeFormatter.ofPattern("HH:mm")))
                             .arrivalTime(LocalTime.parse(convertTimeToHoursAndMinutes(stopTime.getArrivalTime()), DateTimeFormatter.ofPattern("HH:mm")))
                             .stopName(stopTime.getStop().getName())

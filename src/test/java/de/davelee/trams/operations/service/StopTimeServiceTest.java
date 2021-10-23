@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.service;
 
-import de.davelee.trams.operations.model.StopTimeModel;
+import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class StopTimeServiceTest {
     @Test
     public void testService ( ) {
         //Test data
-        Mockito.when(stopTimeRepository.findByStopName("Lakeside")).thenReturn(Lists.newArrayList(
+        Mockito.when(stopTimeRepository.findByCompanyAndStopName("Mustermann Bus GmbH", "Lakeside")).thenReturn(Lists.newArrayList(
                 createStopTime(LocalTime.of(16,11), LocalTime.of(16,12), "101", 1),
                 createStopTime(LocalTime.of(16,41), LocalTime.of(16,42), "102", 2),
                 createStopTime(LocalTime.of(17,21), LocalTime.of(17,22), "103", 3),
@@ -47,49 +47,49 @@ public class StopTimeServiceTest {
                 createStopTime(LocalTime.of(0,21), LocalTime.of(0,22), "108", 8)
                 ));
         //Test case 1: 3 Departures in the next 2 hours before 22:00
-        List<StopTimeModel> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "16:00");
+        List<StopTime> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "16:00");
         assertEquals(3, stopTimeTestList1.size());
         assertEquals(1, stopTimeTestList1.get(0).getId());
         assertEquals(2, stopTimeTestList1.get(1).getId());
         assertEquals(3, stopTimeTestList1.get(2).getId());
         //Test case 2: 1 Departure before 22:00 and 1 after
-        List<StopTimeModel> stopTimeTestList2 = stopTimeService.getDepartures("Lakeside", "21:00");
+        List<StopTime> stopTimeTestList2 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "21:00");
         assertEquals(2, stopTimeTestList2.size());
         assertEquals(5, stopTimeTestList2.get(0).getId());
         assertEquals(6, stopTimeTestList2.get(1).getId());
         //Test case 3: 2 Departures before 22:00 and 0 after
-        List<StopTimeModel> stopTimeTestList3 = stopTimeService.getDepartures("Lakeside", "20:05");
+        List<StopTime> stopTimeTestList3 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "20:05");
         assertEquals(2, stopTimeTestList3.size());
         assertEquals(4, stopTimeTestList3.get(0).getId());
         assertEquals(5, stopTimeTestList3.get(1).getId());
         //Test caae 4: 2 Departures between 23:00 and 01:00 on separate days.
-        List<StopTimeModel> stopTimeTestList4 = stopTimeService.getDepartures("Lakeside", "23:00");
+        List<StopTime> stopTimeTestList4 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH","23:00");
         assertEquals(2, stopTimeTestList4.size());
         assertEquals(7, stopTimeTestList4.get(0).getId());
         assertEquals(8, stopTimeTestList4.get(1).getId());
         //Test case 5: 3 Arrivals before 22:00
-        List<StopTimeModel> stopTimeTestArrivalList1 = stopTimeService.getArrivals("Lakeside", "16:00");
+        List<StopTime> stopTimeTestArrivalList1 = stopTimeService.getArrivals("Lakeside", "Mustermann Bus GmbH", "16:00");
         assertEquals(3, stopTimeTestArrivalList1.size());
         assertEquals(1, stopTimeTestArrivalList1.get(0).getId());
         assertEquals(2, stopTimeTestArrivalList1.get(1).getId());
         assertEquals(3, stopTimeTestArrivalList1.get(2).getId());
         //Test case 6: 1 Arrivals before 22:00 and 1 after
-        List<StopTimeModel> stopTimeTestArrivalList2 = stopTimeService.getArrivals("Lakeside", "21:00");
+        List<StopTime> stopTimeTestArrivalList2 = stopTimeService.getArrivals("Lakeside", "Mustermann Bus GmbH", "21:00");
         assertEquals(2, stopTimeTestArrivalList2.size());
         assertEquals(5, stopTimeTestArrivalList2.get(0).getId());
         assertEquals(6, stopTimeTestArrivalList2.get(1).getId());
         //Test case 7: 2 Arrivals before 22:00 and 0 after
-        List<StopTimeModel> stopTimeTestArrivalList3 = stopTimeService.getArrivals("Lakeside", "20:05");
+        List<StopTime> stopTimeTestArrivalList3 = stopTimeService.getArrivals("Lakeside", "Mustermann Bus GmbH", "20:05");
         assertEquals(2, stopTimeTestArrivalList3.size());
         assertEquals(4, stopTimeTestArrivalList3.get(0).getId());
         assertEquals(5, stopTimeTestArrivalList3.get(1).getId());
         //Test caae 8: 2 Arrivals between 23:00 and 01:00 on separate days.
-        List<StopTimeModel> stopTimeTestArrivalList4 = stopTimeService.getArrivals("Lakeside", "23:00");
+        List<StopTime> stopTimeTestArrivalList4 = stopTimeService.getArrivals("Lakeside", "Mustermann Bus GmbH", "23:00");
         assertEquals(2, stopTimeTestArrivalList4.size());
         assertEquals(7, stopTimeTestArrivalList4.get(0).getId());
         assertEquals(8, stopTimeTestArrivalList4.get(1).getId());
         //Test case: test all departures for this date.
-        List<StopTimeModel> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "2021-04-10");
+        List<StopTime> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "Mustermann Bus GmbH", "2021-04-10");
         assertEquals(8, stopTimeDepartureDateList.size());
         assertEquals(8, stopTimeDepartureDateList.get(0).getId());
         assertEquals(7, stopTimeDepartureDateList.get(stopTimeDepartureDateList.size()-1).getId());
@@ -101,13 +101,13 @@ public class StopTimeServiceTest {
     @Test
     public void testStopTimesAfter2200 ( ) {
         //Test data
-        Mockito.when(stopTimeRepository.findByStopName("Lakeside")).thenReturn(Lists.newArrayList(
+        Mockito.when(stopTimeRepository.findByCompanyAndStopName("Mustermann Bus GmbH", "Lakeside")).thenReturn(Lists.newArrayList(
                 createStopTime(LocalTime.of(22,11), LocalTime.of(22,12), "106", 1),
                 createStopTime(LocalTime.of(23,21), LocalTime.of(23,22), "107", 2),
                 createStopTime(LocalTime.of(23,58), LocalTime.of(23,59), "108", 3)
         ));
         //Test case 1: 3 Departures in the next 2 hours after 22:00
-        List<StopTimeModel> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "22:01");
+        List<StopTime> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "22:01");
         assertEquals(3, stopTimeTestList1.size());
         assertEquals(1, stopTimeTestList1.get(0).getId());
         assertEquals(2, stopTimeTestList1.get(1).getId());
@@ -120,14 +120,14 @@ public class StopTimeServiceTest {
     @Test
     public void testStopTimesAfterDuplicate ( ) {
         //Test data
-        Mockito.when(stopTimeRepository.findByStopName("Lakeside")).thenReturn(Lists.newArrayList(
+        Mockito.when(stopTimeRepository.findByCompanyAndStopName("Mustermann Bus GmbH", "Lakeside")).thenReturn(Lists.newArrayList(
                 createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "107", 2),
                 createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "107", 2),
                 createStopTime(LocalTime.of(10,58), LocalTime.of(10,59), "108", 3)
 
         ));
         //Test case 1: Duplicate departures to be removed
-        List<StopTimeModel> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "10:01");
+        List<StopTime> stopTimeTestList1 = stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH","10:01");
         assertEquals(2, stopTimeTestList1.size());
         assertEquals(2, stopTimeTestList1.get(0).getId());
         assertEquals(3, stopTimeTestList1.get(1).getId());
@@ -141,8 +141,8 @@ public class StopTimeServiceTest {
      * @param count a <code>int</code> with the id to use.
      * @return a <code>StopTimeModel</code> object which contains all data filled for a test StopTimeModel object.
      */
-    private StopTimeModel createStopTime ( final LocalTime arrivalTime, final LocalTime departureTime, final String journeyNumber, final int count ) {
-        return StopTimeModel.builder()
+    private StopTime createStopTime (final LocalTime arrivalTime, final LocalTime departureTime, final String journeyNumber, final int count ) {
+        return StopTime.builder()
                 .arrivalTime(arrivalTime)
                 .departureTime(departureTime)
                 .destination("Greenfield")

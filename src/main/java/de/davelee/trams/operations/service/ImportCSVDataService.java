@@ -2,7 +2,7 @@ package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.Stop;
-import de.davelee.trams.operations.model.StopTimeModel;
+import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.repository.RouteRepository;
 import de.davelee.trams.operations.repository.StopRepository;
 import de.davelee.trams.operations.repository.StopTimeRepository;
@@ -126,8 +126,9 @@ public class ImportCSVDataService {
                     }
                     for ( int i = 1; i < record.size(); i++ ) {
                         if ( record.get(i).isEmpty() ) continue;
-                        StopTimeModel stopTimeModel = StopTimeModel.builder()
+                        StopTime stopTime = StopTime.builder()
                             .id(stopTimeCounter)
+                            .company(operatorName)
                             .departureTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
                             .arrivalTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
                             .stopName(record.get(0))
@@ -138,7 +139,7 @@ public class ImportCSVDataService {
                             .operatingDays(operatingDays.get(i-1))
                             .journeyNumber("" + i)
                             .build();
-                        stopTimeRepository.insert(stopTimeModel);
+                        stopTimeRepository.insert(stopTime);
                         stopTimeCounter++;
                     }
                 }

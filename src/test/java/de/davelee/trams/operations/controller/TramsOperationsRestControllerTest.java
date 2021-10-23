@@ -1,7 +1,5 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.Stop;
-import de.davelee.trams.operations.model.StopTimeModel;
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
 import org.assertj.core.util.Lists;
@@ -13,12 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -35,85 +27,13 @@ public class TramsOperationsRestControllerTest {
     private TramsOperationsRestController controller;
 
     @Mock
-    private StopTimeService stopTimeService;
-
-    @Mock
     private ImportGTFSDataService importGTFSDataService;
 
     @Mock
     private ImportCSVDataService csvDataService;
 
     @Mock
-    private StopService stopService;
-
-    @Mock
     private FileSystemStorageService fileSystemStorageService;
-
-    /**
-     * Test the departure endpoint of this controller.
-     */
-    @Test
-    public void testDeparturesEndpoints() {
-        Mockito.when(stopTimeService.getDepartures(anyString(), anyString())).thenReturn(Lists.newArrayList(StopTimeModel.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .id(1)
-                .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .validFromDate(LocalDate.of(2020,12,12))
-                .validToDate(LocalDate.of(2021,12,11))
-                .build()));
-        List<StopTimeModel> stopTimeModelList = controller.getDepartures("Lakeside", "22:00");
-        assertEquals(1, stopTimeModelList.size());
-        assertEquals("101", stopTimeModelList.get(0).getJourneyNumber());
-    }
-
-    /**
-     * Test the arrival endpoint of this controller.
-     */
-    @Test
-    public void testArrivalsEndpoints() {
-        Mockito.when(stopTimeService.getArrivals(anyString(), anyString())).thenReturn(Lists.newArrayList(StopTimeModel.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .id(1)
-                .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .validFromDate(LocalDate.of(2020,12,12))
-                .validToDate(LocalDate.of(2021,12,11))
-                .build()));
-        List<StopTimeModel> stopTimeModelList = controller.getArrivals("Lakeside", "22:00");
-        assertEquals(1, stopTimeModelList.size());
-        assertEquals(LocalTime.of(22,11), stopTimeModelList.get(0).getArrivalTime());
-    }
-
-    /**
-     * Test the departure date endpoint of this controller.
-     */
-    @Test
-    public void testDeparturesDateEndpoints() {
-        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString())).thenReturn(Lists.newArrayList(StopTimeModel.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .id(1)
-                .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .validFromDate(LocalDate.of(2020,12,12))
-                .validToDate(LocalDate.of(2021,12,11))
-                .build()));
-        List<StopTimeModel> stopTimeModelList = controller.getDeparturesByDate("Lakeside", "2021-04-10");
-        assertEquals(1, stopTimeModelList.size());
-        assertEquals("101", stopTimeModelList.get(0).getJourneyNumber());
-    }
 
     /**
      * Test the file upload endpoint of this controller.

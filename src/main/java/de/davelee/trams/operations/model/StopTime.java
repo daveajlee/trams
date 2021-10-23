@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class StopTimeModel {
+public class StopTime {
 
     /**
      * The id of the stop time.
@@ -31,6 +31,11 @@ public class StopTimeModel {
      * The name of the stop where the journey will arrive or depart.
      */
     private String stopName;
+
+    /**
+     * The name of the company operating this journey.
+     */
+    private String company;
 
     /**
      * The arrival time when the journey will arrive which may be null if journey starts here.
