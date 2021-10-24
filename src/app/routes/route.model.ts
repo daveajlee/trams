@@ -5,6 +5,6 @@ export class Route {
 
   public id: string;
   public routeNumber: string;
-  public agency: string;
+  public company: string;
 
 }

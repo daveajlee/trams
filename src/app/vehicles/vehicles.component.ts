@@ -4,6 +4,7 @@ import {Vehicle} from './vehicle.model';
 import {VehiclesService} from './vehicles.service';
 import {DataService} from '../shared/data.service';
 import {HttpClient} from '@angular/common/http';
+import {VehiclesResponse} from './vehicles-response.model';
 
 @Component({
   selector: 'app-vehicles',
@@ -38,9 +39,9 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   searchByFleetNumber(searchValue: string): void {
-    this.searchSubscription = this.http.get<Vehicle[]>('http://localhost:8080/trams-operations/' +
-        'vehiclesCompanyFleetNumber?fleetNumber=' + searchValue).subscribe(vehicleInfos => {
-      this.vehicles = vehicleInfos;
+    this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/trams-operations/' +
+        'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
+      this.vehicles = vehicleInfos.vehicleResponses;
     });
   }
 

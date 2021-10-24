@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Route} from './route.model';
+import {RoutesResponse} from './routes-response.model';
 
 @Injectable()
 /**
@@ -15,10 +16,10 @@ export class RoutesService {
 
   /**
    * Set the list of routes to new routes supplied from the server.
-   * @param routes an array of routes sent from the server
+   * @param routesResponse the response sent from the server with matching routes.
    */
-  setRoutes(routes: Route[]): void {
-    this.routes = routes;
+  setRoutes(routesResponse: RoutesResponse): void {
+    this.routes = routesResponse.routeResponses;
     this.routesChanged.next(this.routes.slice());
   }
 

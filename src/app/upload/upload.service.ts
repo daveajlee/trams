@@ -25,7 +25,7 @@ export class UploadService {
     data.append('validFromDate', validFromDate);
     data.append('validToDate', validToDate);
     this.http
-      .post('http://localhost:8080/trams-operations/uploadDataFile', data)
+      .post('http://localhost:8084/trams-operations/upload/', data)
         .subscribe(
             () => {
               this.router.navigate(['routes']);

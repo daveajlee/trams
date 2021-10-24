@@ -6,6 +6,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {RealTimeInfo} from './realtimeinfos.model';
 import {Subscription} from 'rxjs';
+import {StopTimesResponse} from "./stoptimes-response.model";
 
 @Component({
   selector: 'app-stop-detail',
@@ -60,20 +61,8 @@ export class StopDetailComponent implements OnInit, OnDestroy {
           + (this.stop.longitude - 0.003) + ',' + (this.stop.latitude - 0.003) + ',' + (this.stop.longitude + 0.003) +
           ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
     });
-    // Retrieve departures for first stop id.
+    // Determine current date & time
     const time = new Date(Date.now());
-    this.hours = this.leftPadZero(time.getHours());
-    this.minutes = this.leftPadZero(time.getMinutes());
-    this.departuresSubscription = this.http.get<RealTimeInfo[]>(
-        'http://localhost:8080/trams-operations/departures?stopName=' + this.stop.name + '&startingTime=' +
-        this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-      this.departures = realTimeInfos;
-    });
-    // Retrieve arrivals for first stop id.
-    this.arrivalsSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/arrivals?stopName=' + this.stop.name + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-      this.arrivals = realTimeInfos;
-    });
-    // Retrieve arrivals for first stop id.
     const month = time.getMonth() + 1;
     let monthStr = String(month);
     if ( month < 10 ) { monthStr = '0' + month; }
@@ -81,9 +70,22 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     let dayOfMonthStr = String(dayOfMonth);
     if ( dayOfMonth < 10 ) { dayOfMonthStr = '0' + dayOfMonth; }
     this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
-    this.todaysDeparturesSubscription = this.http.get<RealTimeInfo[]>('http://localhost:8080/trams-operations/' +
-        'departuresByDate?stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
-      this.todayDepartures = departureInfos;
+    this.hours = this.leftPadZero(time.getHours());
+    this.minutes = this.leftPadZero(time.getMinutes());
+    // Retrieve departures for first stop id.
+    this.departuresSubscription = this.http.get<StopTimesResponse>(
+        'http://localhost:8084/trams-operations/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
+        this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
+      this.departures = realTimeInfos.stopTimeResponses;
+    });
+    // Retrieve arrivals for first stop id.
+    this.arrivalsSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/trams-operations/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
+      this.arrivals = realTimeInfos.stopTimeResponses;
+    });
+    // Retrieve departures for complete day.
+
+    this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/trams-operations/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
+      this.todayDepartures = departureInfos.stopTimeResponses;
     });
   }
 

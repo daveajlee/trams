@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Stop} from './stop.model';
+import {StopsResponse} from './stops-response.model';
 
 @Injectable()
 /**
@@ -15,10 +16,10 @@ export class StopsService {
 
   /**
    * Set the list of stops to new stops supplied from the server.
-   * @param stops an array of stops sent from the server
+   * @param stopsResponse the response sent from the server with matching routes.
    */
-  setStops(stops: Stop[]): void {
-    this.stops = stops;
+  setStops(stops: StopsResponse): void {
+    this.stops = stops.stopResponses;
     this.stopsChanged.next(this.stops.slice());
   }
 

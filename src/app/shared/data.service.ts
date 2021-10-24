@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {StopsService} from '../stops/stops.service';
-import {Stop} from '../stops/stop.model';
-import {Route} from '../routes/route.model';
 import {RoutesService} from '../routes/routes.service';
-import {Vehicle} from '../vehicles/vehicle.model';
 import {VehiclesService} from '../vehicles/vehicles.service';
+import {RoutesResponse} from '../routes/routes-response.model';
+import {StopsResponse} from '../stops/stops-response.model';
+import {VehiclesResponse} from '../vehicles/vehicles-response.model';
 
 @Injectable({providedIn: 'root'})
 /**
@@ -22,13 +22,13 @@ export class DataService {
    */
   constructor(private http: HttpClient, private stopsService: StopsService, private routesService: RoutesService,
               private vehiclesService: VehiclesService) {
-    this.http.get<Stop[]>('http://localhost:8080/trams-operations/stops').subscribe(stops => {
+    this.http.get<StopsResponse>('http://localhost:8084/trams-operations/stops/?company=Company').subscribe(stops => {
       this.stopsService.setStops(stops);
     });
-    this.http.get<Route[]>('http://localhost:8080/trams-operations/routes').subscribe(routes => {
+    this.http.get<RoutesResponse>('http://localhost:8084/trams-operations/routes/?company=Company').subscribe(routes => {
       this.routesService.setRoutes(routes);
     });
-    this.http.get<Vehicle[]>('http://localhost:8080/trams-operations/vehicles').subscribe(vehicles => {
+    this.http.get<VehiclesResponse>('http://localhost:8084/trams-operations/vehicles/?company=Company').subscribe(vehicles => {
       this.vehiclesService.setVehicles(vehicles);
     });
   }

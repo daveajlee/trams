@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Vehicle} from './vehicle.model';
+import {VehiclesResponse} from './vehicles-response.model';
 
 @Injectable()
 /**
@@ -17,8 +18,8 @@ export class VehiclesService {
      * Set the list of vehicles to new vehicles supplied from the server.
      * @param vehicles an array of vehicles sent from the server
      */
-    setVehicles(vehicles: Vehicle[]): void {
-        this.vehicles = vehicles;
+    setVehicles(vehicles: VehiclesResponse): void {
+        this.vehicles = vehicles.vehicleResponses;
         this.vehiclesChanged.next(this.vehicles.slice());
     }
 
