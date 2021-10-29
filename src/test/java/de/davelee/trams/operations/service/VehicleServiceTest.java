@@ -128,4 +128,31 @@ public class VehicleServiceTest {
         assertEquals(VehicleType.TRAM, vehicleResponseList.get(0).getVehicleType());
     }
 
+    /**
+     * Test case: add timesheet hours.
+     * Expected result: true.
+     */
+    @Test
+    public void testAddHoursForDate() {
+        //Test data
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        //do actual test.
+        assertTrue(vehicleService.addHoursForDate(vehicle, 8, LocalDate.of(2020,3,1) ));
+        assertTrue(vehicleService.addHoursForDate(vehicle, 1, LocalDate.of(2020,3,1) ));
+    }
+
 }

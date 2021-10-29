@@ -77,4 +77,24 @@ public class Vehicle {
      */
     private Map<String, String> typeSpecificInfos;
 
+    /**
+     * The number of hours that a vehicle was in service on a particular day.
+     */
+    private Map<LocalDate, Integer> timesheet;
+
+    /**
+     * Add a number of hours for a particular day to the timesheet.
+     * @param hours a <code>int</code> with the number of hours to add.
+     * @param date a <code>LocalDate</code> object containing the day to add the hours to.
+     */
+    public void addHoursForDate ( final int hours, final LocalDate date ) {
+        //If the date already exists then add the hours to the hours already there.
+        if ( timesheet.get(date) != null ) {
+            timesheet.put(date, timesheet.get(date).intValue() + hours);
+        } else {
+            //If no hours are present then just add it as first entry.
+            timesheet.put(date, hours);
+        }
+    }
+
 }

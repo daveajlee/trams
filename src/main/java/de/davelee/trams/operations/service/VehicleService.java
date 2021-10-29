@@ -2,13 +2,11 @@ package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.repository.VehicleRepository;
-import de.davelee.trams.operations.response.VehicleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -51,6 +49,21 @@ public class VehicleService {
     public List<Vehicle> retrieveVehiclesByCompany ( final String company) {
         //Return the vehicles found.
         return vehicleRepository.findByCompany(company);
+    }
+
+    /**
+     * Add the number of hours for a particular date to the specified vehicle object.
+     * @param vehicle a <code>Vehicle</code> object to set the hours for.
+     * @param hours a <code>int</code> with the number of hours to add.
+     * @param date a <code>LocalDate</code> object containing the day to add the hours to.
+     * @return a <code>boolean</code> which is true iff the vehicle has been updated successfully.
+     */
+    public boolean addHoursForDate ( final Vehicle vehicle, final int hours, final LocalDate date ) {
+        if ( vehicle.getTimesheet() == null ) {
+            vehicle.setTimesheet(new HashMap<>());
+        }
+        vehicle.addHoursForDate(hours, date);
+        return vehicleRepository.save(vehicle) != null;
     }
 
 }
