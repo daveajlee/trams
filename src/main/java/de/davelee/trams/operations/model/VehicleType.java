@@ -25,6 +25,14 @@ public enum VehicleType {
             return 3;
         }
 
+        /**
+         * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         */
+        @Override
+        public int getMaximumHoursPerDay() {
+            return 16;
+        }
+
     },
 
     TRAIN {
@@ -44,6 +52,14 @@ public enum VehicleType {
         @Override
         public int getInspectionPeriod() {
             return 8;
+        }
+
+        /**
+         * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         */
+        @Override
+        public int getMaximumHoursPerDay() {
+            return 21;
         }
     },
 
@@ -65,6 +81,14 @@ public enum VehicleType {
         public int getInspectionPeriod() {
             return 9;
         }
+
+        /**
+         * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         */
+        @Override
+        public int getMaximumHoursPerDay() {
+            return 20;
+        }
     };
 
     /**
@@ -78,5 +102,10 @@ public enum VehicleType {
      * @return a <code>int</code> containing the number of years between inspections.
      */
     public abstract int getInspectionPeriod();
+
+    /**
+     * Return the maximum number of hours that a vehicle should be in service before taking a break.
+     */
+    public abstract int getMaximumHoursPerDay();
 
 }

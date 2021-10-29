@@ -97,4 +97,18 @@ public class Vehicle {
         }
     }
 
+    /**
+     * Retrieve the number of hours that the vehicle has been in service on a particular day.
+     * @param date a <code>LocalDate</code> object containing the day to retrieve hours for.
+     * @return a <code>int</code> with the number of hours.
+     */
+    public int getHoursForDate ( final LocalDate date ) {
+        //If the date is null then return 0.
+        if ( timesheet.get(date) == null ) {
+            return 0;
+        }
+        //Otherwise return the number of hours.
+        return timesheet.get(date);
+    }
+
 }
