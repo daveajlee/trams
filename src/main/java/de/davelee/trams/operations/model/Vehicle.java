@@ -2,6 +2,8 @@ package de.davelee.trams.operations.model;
 
 import lombok.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,6 +85,11 @@ public class Vehicle {
     private Map<LocalDate, Integer> timesheet;
 
     /**
+     * A log of entries representing the history of this vehicle whilst working for this company.
+     */
+    private List<VehicleHistoryEntry> vehicleHistoryEntryList;
+
+    /**
      * Add a number of hours for a particular day to the timesheet.
      * @param hours a <code>int</code> with the number of hours to add.
      * @param date a <code>LocalDate</code> object containing the day to add the hours to.
@@ -109,6 +116,23 @@ public class Vehicle {
         }
         //Otherwise return the number of hours.
         return timesheet.get(date);
+    }
+
+    /**
+     * Add a new history entry to the list.
+     * @param date a <code>LocalDate</code> containing the date that the entry/event took place.
+     * @param vehicleHistoryReason a <code>VehicleHistoryReason</code> containing the reason that the entry/event took place.
+     * @param comment a <code>String</code> containing the comment about the entry/event.
+     */
+    public void addVehicleHistoryEntry ( final LocalDate date, final VehicleHistoryReason vehicleHistoryReason, final String comment ) {
+        if ( vehicleHistoryEntryList == null ) {
+            vehicleHistoryEntryList = new ArrayList<>();
+        }
+        vehicleHistoryEntryList.add(VehicleHistoryEntry.builder()
+                .date(date)
+                .vehicleHistoryReason(vehicleHistoryReason)
+                .comment(comment)
+                .build());
     }
 
 }

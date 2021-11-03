@@ -1,6 +1,8 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
+import de.davelee.trams.operations.model.VehicleHistoryEntry;
+import de.davelee.trams.operations.model.VehicleHistoryReason;
 import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.response.VehiclesResponse;
 import de.davelee.trams.operations.service.VehicleService;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,11 +105,23 @@ public class VehiclesControllerTest {
                 .company("Lee Buses")
                 .deliveryDate(LocalDate.of(2021,3,25))
                 .inspectionDate(LocalDate.of(2021,4,25))
+                .vehicleHistoryEntryList(List.of(VehicleHistoryEntry.builder()
+                                .vehicleHistoryReason(VehicleHistoryReason.PURCHASED)
+                                .date(LocalDate.of(2021,3,1))
+                                .comment("Purchased!")
+                        .build(), VehicleHistoryEntry.builder()
+                        .vehicleHistoryReason(VehicleHistoryReason.DELIVERED)
+                        .date(LocalDate.of(2021,3,25))
+                        .comment("Delivered!")
+                        .build()))
                 .build()));
         ResponseEntity<VehiclesResponse> responseEntity2 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("21"));
         assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
         assertEquals(1, responseEntity2.getBody().getCount());
         assertEquals("Bus", responseEntity2.getBody().getVehicleResponses()[0].getVehicleType());
+        assertEquals("Purchased!", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
+        assertEquals("Purchased", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getVehicleHistoryReason());
+        assertEquals("01-03-2021", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
         //Check that days until next inspection is calculated correctly.
         assertEquals("Inspected",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
         assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());

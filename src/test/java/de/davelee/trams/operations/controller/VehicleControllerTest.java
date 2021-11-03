@@ -2,6 +2,7 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleType;
+import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
@@ -18,10 +19,9 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 
 /**
  * This class tests the VehiclsController and ensures that the endpoints work successfully. It uses
@@ -160,6 +160,57 @@ public class VehicleControllerTest {
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "212")).thenReturn(Lists.newArrayList());
         ResponseEntity<VehicleHoursResponse> responseEntity3 = vehicleController.getHoursForDate("Lee Buses", "212", "21-10-2021");
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
+    }
+
+    /**
+     * Test case: add a history entry for the specified vehicle.
+     * Expected Result: forbidden or no content or ok depending on request.
+     */
+    @Test
+    public void testAddHistoryEntry() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "213")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .company("Lee Buses")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .timesheet(Map.of(LocalDate.of(2021,10,21), 14))
+                .build()));
+        Mockito.when(vehicleService.addVehicleHistoryEntry(any(), any(), any(), anyString())).thenReturn(true);
+        //Perform tests - valid request
+        AddHistoryEntryRequest addHistoryEntryRequest = AddHistoryEntryRequest.builder()
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .date("01-03-2020")
+                .reason("PURCHASED")
+                .comment("Welcome to the company!")
+                .build();
+        ResponseEntity<Void> responseEntity = vehicleController.addHistoryEntry(addHistoryEntryRequest);
+        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        //Perform tests - fleet number missing
+        AddHistoryEntryRequest addHistoryEntryRequest2 = AddHistoryEntryRequest.builder()
+                .fleetNumber("")
+                .company("Example Company")
+                .date("01-03-2020")
+                .reason("JOINED")
+                .comment("Welcome to the company!")
+                .build();
+        ResponseEntity<Void> responseEntity2 = vehicleController.addHistoryEntry(addHistoryEntryRequest2);
+        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        //Perform tests - no vehicle
+        AddHistoryEntryRequest addHistoryEntryRequest3 = AddHistoryEntryRequest.builder()
+                .fleetNumber("210")
+                .company("Example Company")
+                .date("01-03-2020")
+                .reason("JOINED")
+                .comment("Welcome to the company!")
+                .build();
+        ResponseEntity<Void> responseEntity3 = vehicleController.addHistoryEntry(addHistoryEntryRequest3);
+        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
     }
 
 }

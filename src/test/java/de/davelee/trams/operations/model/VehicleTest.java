@@ -47,7 +47,7 @@ public class VehicleTest {
         assertEquals("1/1", vehicle.getAllocatedTour());
         assertEquals(1, vehicle.getTimesheet().size());
         //Verify the toString method
-        assertEquals("Vehicle(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=1/1, vehicleType=BUS, typeSpecificInfos={Registration Number=W234 DFFKD}, timesheet={2021-10-29=16})", vehicle.toString());
+        assertEquals("Vehicle(fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedTour=1/1, vehicleType=BUS, typeSpecificInfos={Registration Number=W234 DFFKD}, timesheet={2021-10-29=16}, vehicleHistoryEntryList=null)", vehicle.toString());
         //Now use the setter methods
         vehicle.setTypeSpecificInfos(Map.of("Power Mode", "Electric"));
         vehicle.setModelName("BendyTrain 500 Plus");
@@ -62,7 +62,7 @@ public class VehicleTest {
         vehicle.setVehicleType(VehicleType.TRAIN);
         vehicle.setTimesheet(Map.of(LocalDate.of(2021,10,26), 14));
         //And verify again through the toString methods
-        assertEquals("Vehicle(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=BendyTrain 500 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=1/1, vehicleType=TRAIN, typeSpecificInfos={Power Mode=Electric}, timesheet={2021-10-26=14})", vehicle.toString());
+        assertEquals("Vehicle(fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=BendyTrain 500 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedTour=1/1, vehicleType=TRAIN, typeSpecificInfos={Power Mode=Electric}, timesheet={2021-10-26=14}, vehicleHistoryEntryList=null)", vehicle.toString());
     }
 
 }

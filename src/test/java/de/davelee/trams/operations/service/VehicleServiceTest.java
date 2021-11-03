@@ -9,11 +9,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests the VehicleService class and ensures that it works successfully. Mocks are used for the database layer.
@@ -122,10 +122,21 @@ public class VehicleServiceTest {
                 .typeSpecificInfos(Map.of("Bidirectional", "true"))
                 .vehicleType(VehicleType.TRAM)
                 .build();
+        tram.addVehicleHistoryEntry(LocalDate.of(2021,3,1), VehicleHistoryReason.PURCHASED, "Purchased!" );
+        tram.addVehicleHistoryEntry(LocalDate.of(2021,3,25), VehicleHistoryReason.DELIVERED, "Delivered!");
+        tram.addVehicleHistoryEntry(LocalDate.of(2021,4,1), VehicleHistoryReason.INSPECTED, "Inspected!");
+        tram.addVehicleHistoryEntry(LocalDate.of(2021,10,1), VehicleHistoryReason.SOLD, "Sold!");
         Mockito.when(vehicleRepository.findByCompanyAndFleetNumberStartsWith("Lee Buses", "21")).thenReturn(List.of(tram));
         //Now do actual test.
         List<Vehicle> vehicleResponseList = vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "21");
         assertEquals(VehicleType.TRAM, vehicleResponseList.get(0).getVehicleType());
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getVehicleHistoryReason().getText(), "Purchased");
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getDate(), LocalDate.of(2021,3,1));
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getComment(), "Purchased!");
+        assertNull(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getId());
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(1).getVehicleHistoryReason().getText(), "Delivered");
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(2).getVehicleHistoryReason().getText(), "Inspected");
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(3).getVehicleHistoryReason().getText(), "Sold");
     }
 
     /**
@@ -153,6 +164,33 @@ public class VehicleServiceTest {
         //do actual test.
         assertTrue(vehicleService.addHoursForDate(vehicle, 8, LocalDate.of(2020,3,1) ));
         assertTrue(vehicleService.addHoursForDate(vehicle, 1, LocalDate.of(2020,3,1) ));
+    }
+
+    /**
+     * Test case: add a new history entry.
+     * Expected result: true.
+     */
+    @Test
+    public void testAddUserHistoryEntry() {
+        //Test data
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        //do actual test.
+        assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDate.of(2020,3,1), VehicleHistoryReason.PURCHASED, "Welcome to the company!"));
+        assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDate.of(2020,3,31), VehicleHistoryReason.DELIVERED, "Vehicle has been delivered!"));
     }
 
 }

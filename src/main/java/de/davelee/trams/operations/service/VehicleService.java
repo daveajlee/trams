@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,6 +64,22 @@ public class VehicleService {
             vehicle.setTimesheet(new HashMap<>());
         }
         vehicle.addHoursForDate(hours, date);
+        return vehicleRepository.save(vehicle) != null;
+    }
+
+    /**
+     * Add a new history entry to the list.
+     * @param vehicle a <code>Vehicle</code> object to set the hours for.
+     * @param date a <code>LocalDate</code> containing the date that the entry/event took place.
+     * @param vehicleHistoryReason a <code>VehicleHistoryReason</code> containing the reason that the entry/event took place.
+     * @param comment a <code>String</code> containing the comment about the entry/event.
+     * @return a <code>boolean</code> which is true iff the vehicle has been updated successfully.
+     */
+    public boolean addVehicleHistoryEntry (final Vehicle vehicle, final LocalDate date, final VehicleHistoryReason vehicleHistoryReason, final String comment) {
+        if ( vehicle.getVehicleHistoryEntryList() == null ) {
+            vehicle.setVehicleHistoryEntryList(new ArrayList<>());
+        }
+        vehicle.addVehicleHistoryEntry(date, vehicleHistoryReason, comment);
         return vehicleRepository.save(vehicle) != null;
     }
 

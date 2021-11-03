@@ -1,10 +1,14 @@
 package de.davelee.trams.operations.utils;
 
 import de.davelee.trams.operations.model.InspectionStatus;
+import de.davelee.trams.operations.model.VehicleHistoryEntry;
+import de.davelee.trams.operations.response.VehicleHistoryResponse;
 import de.davelee.trams.operations.response.VehicleResponse;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides utility methods for processing related to /vehicle and /vehicles endpoints in the TraMS Operations.
@@ -29,6 +33,25 @@ public class VehicleUtils {
             vehicleResponse.setInspectionStatus(InspectionStatus.INSPECTION_DUE.getInspectionNotice());
             vehicleResponse.setNextInspectionDueInDays(0);
         }
+    }
+
+    /**
+     * This is a private helper method to convert history entries into a suitable response object.
+     * @param vehicleHistoryEntryList a <code>VehicleHistoryEntry</code> List which should be converted
+     * @return a <code>VehicleHistoryResponse</code> List which has been converted.
+     */
+    public static List<VehicleHistoryResponse> convertHistoryEntries (final List<VehicleHistoryEntry> vehicleHistoryEntryList) {
+        List<VehicleHistoryResponse> vehicleHistoryResponseList = new ArrayList<>();
+        if ( vehicleHistoryEntryList != null ) {
+            for (VehicleHistoryEntry vehicleHistoryEntry : vehicleHistoryEntryList) {
+                vehicleHistoryResponseList.add(VehicleHistoryResponse.builder()
+                        .comment(vehicleHistoryEntry.getComment())
+                        .vehicleHistoryReason(vehicleHistoryEntry.getVehicleHistoryReason().getText())
+                        .date(DateUtils.convertLocalDateToDate(vehicleHistoryEntry.getDate()))
+                        .build());
+            }
+        }
+        return vehicleHistoryResponseList;
     }
 
 }

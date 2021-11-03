@@ -32,4 +32,17 @@ public class DateUtils {
         }
     }
 
+    /**
+     * This method converts a LocalDate object to a string date in the format dd-mm-yyyy. If the conversion is not
+     * successful then return null.
+     * @param date a <code>LocalDate</code> with the date to convert
+     * @return a <code>String</code> with the converted String.
+     */
+    public static String convertLocalDateToDate ( final LocalDate date ) {
+        if ( date == null ) {
+            return null;
+        }
+        return date.format(DATE_TIME_FORMATTER);
+    }
+
 }

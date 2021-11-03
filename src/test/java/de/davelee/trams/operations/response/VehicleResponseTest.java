@@ -41,7 +41,7 @@ public class VehicleResponseTest {
         vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", "true"));
         vehicleResponse.setInspectionStatus("Inspection Due!");
         vehicleResponse.setNextInspectionDueInDays(0);
-        assertEquals("VehicleResponse(fleetNumber=1213, company=Lee Buses, vehicleType=Tram, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true})", vehicleResponse.toString());
+        assertEquals("VehicleResponse(fleetNumber=1213, company=Lee Buses, vehicleType=Tram, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true}, userHistory=null)", vehicleResponse.toString());
     }
 
 }

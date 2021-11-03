@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Map;
 
 @Builder
@@ -52,5 +53,10 @@ public class VehicleResponse {
      * The additional parameters relevant to this vehicle type e.g. registration number for buses are stored as key/value pairs.
      */
     private Map<String, String> additionalTypeInformationMap;
+
+    /**
+     * The list of entries in the log history of this vehicle.
+     */
+    private List<VehicleHistoryResponse> userHistory;
 
 }

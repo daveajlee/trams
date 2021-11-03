@@ -70,6 +70,7 @@ public class VehiclesController {
                     .company(vehicles.get(i).getCompany())
                     .additionalTypeInformationMap(vehicles.get(i).getTypeSpecificInfos())
                     .vehicleType(vehicles.get(i).getVehicleType().getTypeName())
+                    .userHistory(VehicleUtils.convertHistoryEntries(vehicles.get(i).getVehicleHistoryEntryList()))
                     .build();
             VehicleUtils.processInspectionDate(vehicleResponses[i], vehicles.get(i).getInspectionDate(), vehicles.get(i).getVehicleType().getInspectionPeriod());
         }

@@ -1,6 +1,8 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
+import de.davelee.trams.operations.model.VehicleHistoryReason;
+import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
@@ -11,6 +13,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +84,32 @@ public class VehicleController {
                         .numberOfHoursAvailable(vehicles.get(0).getVehicleType().getMaximumHoursPerDay()-numberOfHoursSoFar)
                         .numberOfHoursSoFar(numberOfHoursSoFar)
                 .build());
+    }
+
+    /**
+     * Add a new history entry to the list.
+     * @param addHistoryEntryRequest a <code>AddHistoryEntryRequest</code> object containing the information to update.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Add a new history entry", notes="Add a new history entry for a particular vehicle.")
+    @PutMapping(value="/history")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added history entry"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<Void> addHistoryEntry (@RequestBody AddHistoryEntryRequest addHistoryEntryRequest) {
+        //Check valid request
+        if (StringUtils.isBlank(addHistoryEntryRequest.getCompany()) || StringUtils.isBlank(addHistoryEntryRequest.getFleetNumber()) ||
+                StringUtils.isBlank(addHistoryEntryRequest.getComment()) || StringUtils.isBlank(addHistoryEntryRequest.getReason()) ||
+                StringUtils.isBlank(addHistoryEntryRequest.getDate())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Now retrieve the vehicle based on company and fleet number.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(addHistoryEntryRequest.getCompany(), addHistoryEntryRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now add history entry and return 200 or 500 depending on DB success.
+        return vehicleService.addVehicleHistoryEntry(vehicles.get(0), DateUtils.convertDateToLocalDate(addHistoryEntryRequest.getDate()),
+                VehicleHistoryReason.valueOf(addHistoryEntryRequest.getReason()), addHistoryEntryRequest.getComment()) ?
+                ResponseEntity.status(200).build() : ResponseEntity.status(500).build();
     }
 
 }
