@@ -2,6 +2,7 @@ package de.davelee.trams.operations.service;
 
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.repository.VehicleRepository;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,11 @@ public class VehicleService {
      * @return a <code>boolean</code> which is true iff the vehicle was added successfully.
      */
     public boolean addVehicle ( final Vehicle vehicle) {
+        //Validate vehicle according to current rules and return false if not successful.
+        if ( !validateVehicle(vehicle) ) {
+            return false;
+        }
+        //If the vehicle is valid, then attempt to add vehicle to db.
         return vehicleRepository.insert(vehicle) != null;
     }
 
@@ -81,6 +87,32 @@ public class VehicleService {
         }
         vehicle.addVehicleHistoryEntry(date, vehicleHistoryReason, comment);
         return vehicleRepository.save(vehicle) != null;
+    }
+
+    /**
+     * Private helper method to validate a vehicle based on the defined rules.
+     * @param vehicle a <code>Vehicle</code> object to validate
+     * @return a <code>boolean</code> which is true iff the vehicle fulfils all validation rules.
+     */
+    private boolean validateVehicle ( final Vehicle vehicle ) {
+        //Vehicles always have a valid operator, delivery date and model.
+        if (StringUtils.isBlank(vehicle.getCompany()) || StringUtils.isBlank(vehicle.getModelName()) || vehicle.getDeliveryDate() == null ) {
+            return false;
+        }
+        //The seating and standing capacities of a vehicle must be greater than or equal to 0.
+        if ( vehicle.getSeatingCapacity() < 0 || vehicle.getStandingCapacity() < 0 ) {
+            return false;
+        }
+        //Buses always have a registration number.
+        if ( vehicle.getVehicleType() == VehicleType.BUS && vehicle.getTypeSpecificInfos().get("Registration Number") == null ) {
+            return false;
+        }
+        //Trains always have an operating mode.
+        if ( vehicle.getVehicleType() == VehicleType.TRAIN && vehicle.getTypeSpecificInfos().get("Operating Mode") == null ) {
+            return false;
+        }
+        //If all cases fulfilled then return true.
+        return true;
     }
 
 }

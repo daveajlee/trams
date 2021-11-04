@@ -105,6 +105,7 @@ public enum VehicleType {
 
     /**
      * Return the maximum number of hours that a vehicle should be in service before taking a break.
+     * @return a <code>int</code> containing the maximum number of hours that a vehicle may be in service per day.
      */
     public abstract int getMaximumHoursPerDay();
 

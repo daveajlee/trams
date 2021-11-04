@@ -62,6 +62,7 @@ public class VehicleController {
      * @param company a <code>String</code> containing the company that the vehicle belongs to.
      * @param fleetNumber a <code>String</code> containing the fleet number of the vehicle.
      * @param date a <code>String</code> containing the date to retrieve the hours for in format dd-MM-yyyy.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Retrieve the number of hours for a particular vehicle", notes="Add a number of hours to a specified date for a specified vehicle")
     @GetMapping(value="/hours")

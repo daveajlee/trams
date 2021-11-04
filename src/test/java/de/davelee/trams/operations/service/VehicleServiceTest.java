@@ -52,6 +52,51 @@ public class VehicleServiceTest {
     }
 
     /**
+     * Ensure that invalid vehicles cannot be added.
+     */
+    @Test
+    public void testAddInvalidVehicle() {
+        //Test bus without delivery date.
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Bus 2025 Plus")
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Map.of("Registration Number", "HJK234D2"))
+                .build();
+        Mockito.when(vehicleRepository.insert(vehicle)).thenReturn(vehicle);
+        assertFalse(vehicleService.addVehicle(vehicle));
+        //Add delivery date but set seating capacity to -20.
+        vehicle.setDeliveryDate(LocalDate.of(2021,3,25));
+        vehicle.setSeatingCapacity(-20);
+        assertFalse(vehicleService.addVehicle(vehicle));
+        //Set the seating capacity back to 50 but remove registration number.
+        vehicle.setSeatingCapacity(50);
+        vehicle.setTypeSpecificInfos(Map.of("Feedback", "Bus is great"));
+        assertFalse(vehicleService.addVehicle(vehicle));
+        //Test train without operating mode.
+        Vehicle train = Vehicle.builder()
+                .modelName("Elec Train Plus")
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .livery("Green with black slide")
+                .seatingCapacity(200)
+                .standingCapacity(380)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("613")
+                .company("Lee Transport")
+                .vehicleType(VehicleType.TRAIN)
+                .typeSpecificInfos(Map.of("Depot Number", "HJK234D2"))
+                .build();
+        assertFalse(vehicleService.addVehicle(train));
+    }
+
+    /**
      * Ensure that data can be retrieved from the mock database and supplied as a response.
      */
     @Test
