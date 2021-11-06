@@ -4,6 +4,8 @@ import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
+import de.davelee.trams.operations.request.PurchaseVehicleRequest;
+import de.davelee.trams.operations.response.PurchaseVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import org.assertj.core.util.Lists;
@@ -36,6 +38,113 @@ public class VehicleControllerTest {
 
     @Mock
     private VehicleService vehicleService;
+
+    /**
+     * Test the purchase endpoint of this controller with valid requests.
+     */
+    @Test
+    public void testValidPurchaseVehicle() {
+        //Mock important methods
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber(eq("Lee Transport"), any())).thenReturn(null);
+        Mockito.when(vehicleService.addVehicle(any())).thenReturn(true);
+        //Purchase valid bus
+        ResponseEntity<PurchaseVehicleResponse> responseEntity = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
+                        .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                        .modelName("Bendy Bus 2000")
+                        .vehicleType("BUS")
+                        .seatingCapacity(50)
+                        .standingCapacity(100)
+                        .company("Lee Transport")
+                        .livery("Green with red text")
+                        .fleetNumber("213")
+                        .build());
+        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertTrue(responseEntity.getBody().isPurchased());
+        assertEquals(200000, responseEntity.getBody().getPurchasePrice());
+        //Purchase valid train
+        ResponseEntity<PurchaseVehicleResponse> responseEntity2 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
+                .additionalTypeInformationMap(Map.of("Operating Mode", "Electric"))
+                .modelName("Elec Train 2000")
+                .vehicleType("TRAIN")
+                .seatingCapacity(130)
+                .standingCapacity(200)
+                .company("Lee Transport")
+                .livery("Green with red text")
+                .fleetNumber("2300")
+                .build());
+        assertEquals(200, responseEntity2.getStatusCodeValue());
+        assertTrue(responseEntity2.getBody().isPurchased());
+        assertEquals(1000000, responseEntity2.getBody().getPurchasePrice());
+        //Purchase valid tram
+        PurchaseVehicleRequest purchaseVehicleRequest = new PurchaseVehicleRequest();
+        purchaseVehicleRequest.setAdditionalTypeInformationMap(Map.of("Operating Mode", "Electric"));
+        purchaseVehicleRequest.setModelName("Elec Tram 2000");
+        purchaseVehicleRequest.setVehicleType("TRAM");
+        purchaseVehicleRequest.setSeatingCapacity(50);
+        purchaseVehicleRequest.setStandingCapacity(130);
+        purchaseVehicleRequest.setCompany("Lee Transport");
+        purchaseVehicleRequest.setLivery("Green with red text");
+        purchaseVehicleRequest.setFleetNumber("3300");
+        ResponseEntity<PurchaseVehicleResponse> responseEntity3 = vehicleController.purchaseVehicle(purchaseVehicleRequest);
+        assertEquals(200, responseEntity3.getStatusCodeValue());
+        assertTrue(responseEntity3.getBody().isPurchased());
+        assertEquals(700000, responseEntity3.getBody().getPurchasePrice());
+    }
+
+    /**
+     * Test the purchase endpoint of this controller with invalid requests.
+     */
+    @Test
+    public void testInvalidPurchaseVehicle() {
+        //Mock important methods
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "213")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .company("Lee Buses")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .build()));
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "214")).thenReturn(null);
+        Mockito.when(vehicleService.addVehicle(any())).thenReturn(false);
+        //Purchase bus with missing company.
+        ResponseEntity<PurchaseVehicleResponse> responseEntity = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
+                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .modelName("Bendy Bus 2000")
+                .vehicleType("BUS")
+                .seatingCapacity(50)
+                .standingCapacity(100)
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .build());
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        //Purchase bus which already exists.
+        ResponseEntity<PurchaseVehicleResponse> responseEntity2 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
+                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .modelName("Bendy Bus 2000")
+                .vehicleType("BUS")
+                .seatingCapacity(50)
+                .standingCapacity(100)
+                .livery("Green with red text")
+                .company("Lee Buses")
+                .fleetNumber("213")
+                .build());
+        assertEquals(409, responseEntity2.getStatusCodeValue());
+        //Purchase bus which does not exist but does not validate and cannot be added to the database.
+        ResponseEntity<PurchaseVehicleResponse> responseEntity3 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
+                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .modelName("Bendy Bus 2000")
+                .vehicleType("BUS")
+                .seatingCapacity(50)
+                .standingCapacity(100)
+                .livery("Green with red text")
+                .company("Lee Buses")
+                .fleetNumber("214")
+                .build());
+        assertEquals(500, responseEntity3.getStatusCodeValue());
+    }
 
     /**
      * Test the addHoursForDate endpoint of this controller.

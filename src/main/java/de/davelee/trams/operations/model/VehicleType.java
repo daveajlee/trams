@@ -1,5 +1,7 @@
 package de.davelee.trams.operations.model;
 
+import java.math.BigDecimal;
+
 /**
  * This class represents the type of a vehicle as a simple enum which can be returned as part of the vehicle response.
  * @author Dave Lee
@@ -27,10 +29,20 @@ public enum VehicleType {
 
         /**
          * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         * @return a <code>int</code> containing the maximum number of hours that a vehicle may be in service per day.
+         *
          */
         @Override
         public int getMaximumHoursPerDay() {
             return 16;
+        }
+
+        /**
+         * The current purchase price of a bus.
+         */
+        @Override
+        public BigDecimal getPurchasePrice() {
+            return BigDecimal.valueOf(200000);
         }
 
     },
@@ -56,10 +68,19 @@ public enum VehicleType {
 
         /**
          * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         * @return a <code>int</code> containing the maximum number of hours that a vehicle may be in service per day.
          */
         @Override
         public int getMaximumHoursPerDay() {
             return 21;
+        }
+
+        /**
+         * The current purchase price of a train.
+         */
+        @Override
+        public BigDecimal getPurchasePrice() {
+            return BigDecimal.valueOf(1000000);
         }
     },
 
@@ -84,10 +105,20 @@ public enum VehicleType {
 
         /**
          * Return the maximum number of hours that a vehicle should be in service before taking a break.
+         * @return a <code>int</code> containing the maximum number of hours that a vehicle may be in service per day.
          */
         @Override
         public int getMaximumHoursPerDay() {
             return 20;
+        }
+
+        /**
+         * The current purchase price of a train.
+         * @return a <code>BigDecimal</code>
+         */
+        @Override
+        public BigDecimal getPurchasePrice() {
+            return BigDecimal.valueOf(700000);
         }
     };
 
@@ -108,5 +139,11 @@ public enum VehicleType {
      * @return a <code>int</code> containing the maximum number of hours that a vehicle may be in service per day.
      */
     public abstract int getMaximumHoursPerDay();
+
+    /**
+     * The current purchase price of a train.
+     * @return a <code>BigDecimal</code>
+     */
+    public abstract BigDecimal getPurchasePrice();
 
 }

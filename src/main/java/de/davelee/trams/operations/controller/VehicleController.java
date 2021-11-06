@@ -2,8 +2,11 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleHistoryReason;
+import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
+import de.davelee.trams.operations.request.PurchaseVehicleRequest;
+import de.davelee.trams.operations.response.PurchaseVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import de.davelee.trams.operations.utils.DateUtils;
@@ -17,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class provides REST endpoints which provide operations associated with a single vehicle in the TraMS Operations API.
@@ -30,6 +35,48 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
+
+    /**
+     * Purchase a vehicle. Most of the fields are supplied in the request. The purchase price of the bus will be returned.
+     * @param purchaseVehicleRequest a <code>PurchaseVehicleRequest</code> object containing the information about the vehicle which should be purchased.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Purchase a particular vehicle", notes="Purchase a particular vehicle and return the purchase price")
+    @PostMapping(value="/")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully purchased vehicles"), @ApiResponse(code=409,message="Vehicle conflicted with a vehicle that already exists")})
+    public ResponseEntity<PurchaseVehicleResponse> purchaseVehicle (@RequestBody PurchaseVehicleRequest purchaseVehicleRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(purchaseVehicleRequest.getCompany()) || StringUtils.isBlank(purchaseVehicleRequest.getFleetNumber())
+        || StringUtils.isBlank(purchaseVehicleRequest.getVehicleType()) || StringUtils.isBlank(purchaseVehicleRequest.getLivery())
+        || purchaseVehicleRequest.getSeatingCapacity() <= 0 || purchaseVehicleRequest.getStandingCapacity() <= 0 ||
+        StringUtils.isBlank(purchaseVehicleRequest.getModelName())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle does not already exist.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(purchaseVehicleRequest.getCompany(), purchaseVehicleRequest.getFleetNumber());
+        if ( vehicles != null && vehicles.size() != 0 ) {
+            return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(409).build();
+        }
+        //Construct the vehicle and add it to the database.
+        Vehicle vehicle = Vehicle.builder()
+                .company(purchaseVehicleRequest.getCompany())
+                .deliveryDate(LocalDate.now().plusDays(7))
+                .fleetNumber(purchaseVehicleRequest.getFleetNumber())
+                .vehicleType(VehicleType.valueOf(purchaseVehicleRequest.getVehicleType()))
+                .livery(purchaseVehicleRequest.getLivery())
+                .typeSpecificInfos(purchaseVehicleRequest.getAdditionalTypeInformationMap())
+                .seatingCapacity(purchaseVehicleRequest.getSeatingCapacity())
+                .standingCapacity(purchaseVehicleRequest.getStandingCapacity())
+                .modelName(purchaseVehicleRequest.getModelName())
+                .build();
+        vehicle.addVehicleHistoryEntry(LocalDate.now(), VehicleHistoryReason.PURCHASED, "Vehicle Purchased for " + vehicle.getVehicleType().getPurchasePrice());
+        if ( vehicleService.addVehicle(vehicle) ) {
+            //Return the purchase price for the bus if it was purchased successfully.
+            return ResponseEntity.ok(PurchaseVehicleResponse.builder().purchased(true).purchasePrice(vehicle.getVehicleType().getPurchasePrice().doubleValue()).build());
+        }
+        //Otherwise return an empty 500 response.
+        return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(500).build();
+    }
 
     /**
      * Add a number of hours for this vehicle for the particular date. If the vehicle already has hours for this
