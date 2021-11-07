@@ -214,4 +214,51 @@ public class VehicleController {
                 .build());
     }
 
+    /**
+     * Allocate the vehicle matching the supplied company and fleet number to the supplied tour.
+     * @param allocateVehicleRequest a <code>AllocateVehicleRequest</code> object containing the information about the vehicle and the allocation.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Allocate a particular vehicle", notes="Allocate a particular vehicle to a particular tour")
+    @PutMapping(value="/allocate")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully allocated vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<Void> allocateVehicle (@RequestBody AllocateVehicleRequest allocateVehicleRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(allocateVehicleRequest.getCompany()) || StringUtils.isBlank(allocateVehicleRequest.getFleetNumber())
+                || StringUtils.isBlank(allocateVehicleRequest.getAllocatedTour()) ) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise it cannot be allocated.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(allocateVehicleRequest.getCompany(), allocateVehicleRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now allocate the vehicle.
+        return vehicleService.allocateTourToVehicle(vehicles.get(0), allocateVehicleRequest.getAllocatedTour()) ?
+                ResponseEntity.ok().build() : ResponseEntity.status(500).build();
+    }
+
+    /**
+     * Remove the allocation of the vehicle matching the supplied company and fleet number.
+     * @param removeVehicleRequest a <code>RemoveVehicleRequest</code> object containing the information about the vehicle.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Remove a particular allocation", notes="Remove the allocation of a particular vehicle to a particular tour")
+    @DeleteMapping(value="/allocate")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully removed allocation"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<Void> removeVehicleAllocation (@RequestBody RemoveVehicleRequest removeVehicleRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(removeVehicleRequest.getCompany()) || StringUtils.isBlank(removeVehicleRequest.getFleetNumber())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise allocations cannot be removed.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(removeVehicleRequest.getCompany(), removeVehicleRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now remove the allocation of this vehicle.
+        return vehicleService.allocateTourToVehicle(vehicles.get(0), "") ?
+                ResponseEntity.ok().build() : ResponseEntity.status(500).build();
+    }
+
 }

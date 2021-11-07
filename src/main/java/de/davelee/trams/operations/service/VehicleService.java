@@ -119,6 +119,17 @@ public class VehicleService {
     }
 
     /**
+     * Allocate the supplied vehicle to the supplied tour and update the database accordingly.
+     * @param vehicle a <code>Vehicle</code> object which should be allocated.
+     * @param allocatedTour a <code>String</code> with the tour id that the vehicle should be allocated.
+     * @return a <code>boolean</code> which is true iff the vehicle could be allocated successfully.
+     */
+    public boolean allocateTourToVehicle ( final Vehicle vehicle, final String allocatedTour ) {
+        vehicle.setAllocatedTour(allocatedTour);
+        return vehicleRepository.save(vehicle) != null;
+    }
+
+    /**
      * Private helper method to validate a vehicle based on the defined rules.
      * @param vehicle a <code>Vehicle</code> object to validate
      * @return a <code>boolean</code> which is true iff the vehicle fulfils all validation rules.

@@ -301,4 +301,31 @@ public class VehicleServiceTest {
         assertEquals(BigDecimal.ZERO, inspectionPrice2);
     }
 
+    /**
+     * Test case: allocate a tour to the supplied vehicle.
+     * Expected result: the allocation works successfully.
+     */
+    @Test
+    public void testAllocateVehicle () {
+        //Test data
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important methods in Mockito.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        //Do actual test.
+        assertTrue(vehicleService.allocateTourToVehicle(vehicle, "1/1"));
+    }
+
+
 }

@@ -419,4 +419,61 @@ public class VehicleControllerTest {
         assertEquals(VehicleType.BUS.getInspectionPrice().doubleValue(), responseEntity4.getBody().getInspectionPrice());
     }
 
+    /**
+     * Test case: allocate and remove allocations for vehicles.
+     * Expected result: the allocations are allowed or removed as appropriate.
+     */
+    @Test
+    public void testAllocations() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .vehicleType(VehicleType.TRAIN)
+                .typeSpecificInfos(Collections.singletonMap("Operational Mode", "Electric"))
+                .company("Lee Transport")
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        Mockito.when(vehicleService.allocateTourToVehicle(any(), any())).thenReturn(true);
+        //Perform the actual test.
+        ResponseEntity responseEntity = vehicleController.allocateVehicle(AllocateVehicleRequest.builder()
+                .company("Lee Transport")
+                .fleetNumber("223")
+                .allocatedTour("1/1")
+                .build());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        //Remove fleet number.
+        ResponseEntity responseEntity2 = vehicleController.allocateVehicle(AllocateVehicleRequest.builder()
+                .company("Lee Transport")
+                .allocatedTour("1/1")
+                .build());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+        //Test with vehicle that does not exist
+        AllocateVehicleRequest allocateVehicleRequest = new AllocateVehicleRequest();
+        allocateVehicleRequest.setAllocatedTour("1/1");
+        allocateVehicleRequest.setFleetNumber("233");
+        allocateVehicleRequest.setCompany("Lee Transport");
+        ResponseEntity responseEntity3 = vehicleController.allocateVehicle(allocateVehicleRequest);
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
+        //Test remove actual allocation.
+        ResponseEntity responseEntity4 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
+                .company("Lee Transport")
+                .fleetNumber("223")
+                .build());
+        assertEquals(HttpStatus.OK, responseEntity4.getStatusCode());
+        //Remove fleet number.
+        ResponseEntity responseEntity5 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
+                .company("Lee Transport")
+                .build());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity5.getStatusCode());
+        //Test with vehicle that does not exist
+        RemoveVehicleRequest removeVehicleRequest = new RemoveVehicleRequest();
+        removeVehicleRequest.setFleetNumber("233");
+        removeVehicleRequest.setCompany("Lee Transport");
+        ResponseEntity responseEntity6 = vehicleController.removeVehicleAllocation(removeVehicleRequest);
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity6.getStatusCode());
+    }
+
 }
