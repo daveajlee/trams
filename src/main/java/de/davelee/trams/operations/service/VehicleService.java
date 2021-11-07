@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,6 +88,20 @@ public class VehicleService {
         }
         vehicle.addVehicleHistoryEntry(date, vehicleHistoryReason, comment);
         return vehicleRepository.save(vehicle) != null;
+    }
+
+    /**
+     * Sell the supplied vehicle by adding a log entry to the vehicle and returning the price for which it was sold.
+     * @param vehicle a <code>Vehicle</code> object which should be sold.
+     * @return a <code>BigDecimal</code> object with the price that the vehicle was sold for which can be 0 if the vehicle could not be sold.
+     */
+    public BigDecimal sellVehicle (final Vehicle vehicle ) {
+        vehicle.addVehicleHistoryEntry(LocalDate.now(), VehicleHistoryReason.SOLD, "Sold for " + vehicle.getVehicleType().getPurchasePrice());
+        vehicle.setAllocatedTour(""); //Remove allocated tour.
+        if ( vehicleRepository.save(vehicle) != null ) {
+            return vehicle.getVehicleType().getPurchasePrice();
+        }
+        return BigDecimal.ZERO;
     }
 
     /**

@@ -6,7 +6,9 @@ import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
 import de.davelee.trams.operations.request.PurchaseVehicleRequest;
+import de.davelee.trams.operations.request.SellVehicleRequest;
 import de.davelee.trams.operations.response.PurchaseVehicleResponse;
+import de.davelee.trams.operations.response.SellVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import de.davelee.trams.operations.utils.DateUtils;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +40,7 @@ public class VehicleController {
     private VehicleService vehicleService;
 
     /**
-     * Purchase a vehicle. Most of the fields are supplied in the request. The purchase price of the bus will be returned.
+     * Purchase a vehicle. Most of the fields are supplied in the request. The purchase price of the vehicle will be returned.
      * @param purchaseVehicleRequest a <code>PurchaseVehicleRequest</code> object containing the information about the vehicle which should be purchased.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
@@ -158,6 +161,33 @@ public class VehicleController {
         return vehicleService.addVehicleHistoryEntry(vehicles.get(0), DateUtils.convertDateToLocalDate(addHistoryEntryRequest.getDate()),
                 VehicleHistoryReason.valueOf(addHistoryEntryRequest.getReason()), addHistoryEntryRequest.getComment()) ?
                 ResponseEntity.status(200).build() : ResponseEntity.status(500).build();
+    }
+
+    /**
+     * Sell the vehicle matching the supplied company and fleet number. The purchase price of the vehicle will be returned without depreciation.
+     * @param sellVehicleRequest a <code>SellVehicleRequest</code> object containing the information about the vehicle which should be sold.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Sell a particular vehicle", notes="Sell a particular vehicle and return the money gained from the sale")
+    @PutMapping(value="/sell")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully sold vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<SellVehicleResponse> sellVehicle (@RequestBody SellVehicleRequest sellVehicleRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(sellVehicleRequest.getCompany()) || StringUtils.isBlank(sellVehicleRequest.getFleetNumber())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise it cannot be sold.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(sellVehicleRequest.getCompany(), sellVehicleRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now sell the vehicle.
+        BigDecimal soldPrice = vehicleService.sellVehicle(vehicles.get(0));
+        //Return response of selling the vehicle with sold price that is 0 if vehicle could not be sold.
+        return ResponseEntity.ok(SellVehicleResponse.builder()
+                .sold(soldPrice.doubleValue() > 0)
+                .soldPrice(soldPrice.doubleValue())
+                .build());
     }
 
 }

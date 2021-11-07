@@ -1,6 +1,5 @@
 package de.davelee.trams.operations.response;
 
-import de.davelee.trams.operations.request.PurchaseVehicleRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

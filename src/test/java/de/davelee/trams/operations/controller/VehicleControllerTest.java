@@ -5,7 +5,9 @@ import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.AddHistoryEntryRequest;
 import de.davelee.trams.operations.request.AddVehicleHoursRequest;
 import de.davelee.trams.operations.request.PurchaseVehicleRequest;
+import de.davelee.trams.operations.request.SellVehicleRequest;
 import de.davelee.trams.operations.response.PurchaseVehicleResponse;
+import de.davelee.trams.operations.response.SellVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import org.assertj.core.util.Lists;
@@ -320,6 +322,44 @@ public class VehicleControllerTest {
                 .build();
         ResponseEntity<Void> responseEntity3 = vehicleController.addHistoryEntry(addHistoryEntryRequest3);
         assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * Test case: sell a vehicle.
+     * Expected result: the selling price is returned.
+     */
+    @Test
+    public void testSellVehicle() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "213")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .company("Lee Buses")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .timesheet(Map.of(LocalDate.of(2021,10,21), 14))
+                .build()));
+        Mockito.when(vehicleService.sellVehicle(any())).thenReturn(VehicleType.BUS.getPurchasePrice());
+        //Perform the test.
+        ResponseEntity<SellVehicleResponse> responseEntity = vehicleController.sellVehicle(SellVehicleRequest.builder()
+                .company("Lee Buses")
+                .fleetNumber("213")
+                .build());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(responseEntity.getBody().isSold());
+        assertEquals(VehicleType.BUS.getPurchasePrice().doubleValue(), responseEntity.getBody().getSoldPrice());
+        //Perform an unsuccessful test with bad request.
+        SellVehicleRequest sellVehicleRequest = new SellVehicleRequest();
+        sellVehicleRequest.setCompany("Lee Buses");
+        ResponseEntity<SellVehicleResponse> responseEntity2 = vehicleController.sellVehicle(sellVehicleRequest);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+        //Perform an unsuccessful test with no content.
+        sellVehicleRequest.setFleetNumber("214");
+        ResponseEntity<SellVehicleResponse> responseEntity3 = vehicleController.sellVehicle(sellVehicleRequest);
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 
 }

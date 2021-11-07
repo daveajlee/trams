@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -236,6 +237,37 @@ public class VehicleServiceTest {
         //do actual test.
         assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDate.of(2020,3,1), VehicleHistoryReason.PURCHASED, "Welcome to the company!"));
         assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDate.of(2020,3,31), VehicleHistoryReason.DELIVERED, "Vehicle has been delivered!"));
+    }
+
+    /**
+     * Test case: sell the supplied vehicle.
+     * Expected result: selling price of vehicle.
+     */
+    @Test
+    public void testSellVehicle () {
+        //Test data
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important methods in Mockito.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        //Do actual test.
+        BigDecimal sellingPrice = vehicleService.sellVehicle(vehicle);
+        assertEquals(vehicle.getVehicleType().getPurchasePrice(), sellingPrice);
+        //Now mock an error and perform test again.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(null);
+        BigDecimal sellingPrice2 = vehicleService.sellVehicle(vehicle);
+        assertEquals(BigDecimal.ZERO, vehicleService.sellVehicle(vehicle));
     }
 
 }
