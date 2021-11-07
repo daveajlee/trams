@@ -105,6 +105,20 @@ public class VehicleService {
     }
 
     /**
+     * Inspect the supplied vehicle by adding a log entry to the vehicle, updating the inspection date and returning the price for the inspection.
+     * @param vehicle a <code>Vehicle</code> object which should be inspected.
+     * @return a <code>BigDecimal</code> object with the price of performing a inspection on the vehicle which can be 0 if the vehicle could not be inspected.
+     */
+    public BigDecimal inspectVehicle (final Vehicle vehicle ) {
+        vehicle.addVehicleHistoryEntry(LocalDate.now(), VehicleHistoryReason.INSPECTED, "Inspected for " + vehicle.getVehicleType().getInspectionPrice());
+        vehicle.setInspectionDate(LocalDate.now());
+        if ( vehicleRepository.save(vehicle) != null ) {
+            return vehicle.getVehicleType().getInspectionPrice();
+        }
+        return BigDecimal.ZERO;
+    }
+
+    /**
      * Private helper method to validate a vehicle based on the defined rules.
      * @param vehicle a <code>Vehicle</code> object to validate
      * @return a <code>boolean</code> which is true iff the vehicle fulfils all validation rules.

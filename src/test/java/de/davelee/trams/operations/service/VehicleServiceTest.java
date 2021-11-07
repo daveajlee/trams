@@ -267,7 +267,38 @@ public class VehicleServiceTest {
         //Now mock an error and perform test again.
         Mockito.when(vehicleRepository.save(vehicle)).thenReturn(null);
         BigDecimal sellingPrice2 = vehicleService.sellVehicle(vehicle);
-        assertEquals(BigDecimal.ZERO, vehicleService.sellVehicle(vehicle));
+        assertEquals(BigDecimal.ZERO, sellingPrice2);
+    }
+
+    /**
+     * Test case: inspect the supplied vehicle.
+     * Expected result: inspection price of vehicle.
+     */
+    @Test
+    public void testInspectVehicle () {
+        //Test data
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusDays(7))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important methods in Mockito.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        //Do actual test.
+        BigDecimal inspectionPrice = vehicleService.inspectVehicle(vehicle);
+        assertEquals(vehicle.getVehicleType().getInspectionPrice(), inspectionPrice);
+        //Now mock an error and perform test again.
+        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(null);
+        BigDecimal inspectionPrice2 = vehicleService.inspectVehicle(vehicle);
+        assertEquals(BigDecimal.ZERO, inspectionPrice2);
     }
 
 }

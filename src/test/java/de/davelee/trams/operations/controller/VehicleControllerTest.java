@@ -2,10 +2,8 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleType;
-import de.davelee.trams.operations.request.AddHistoryEntryRequest;
-import de.davelee.trams.operations.request.AddVehicleHoursRequest;
-import de.davelee.trams.operations.request.PurchaseVehicleRequest;
-import de.davelee.trams.operations.request.SellVehicleRequest;
+import de.davelee.trams.operations.request.*;
+import de.davelee.trams.operations.response.InspectVehicleResponse;
 import de.davelee.trams.operations.response.PurchaseVehicleResponse;
 import de.davelee.trams.operations.response.SellVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
@@ -360,6 +358,65 @@ public class VehicleControllerTest {
         sellVehicleRequest.setFleetNumber("214");
         ResponseEntity<SellVehicleResponse> responseEntity3 = vehicleController.sellVehicle(sellVehicleRequest);
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
+    }
+
+    /**
+     * Test case: inspect a vehicle.
+     * Expected result: the inspection price is returned.
+     */
+    @Test
+    public void testInspectVehicle() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.TRAIN)
+                .typeSpecificInfos(Collections.singletonMap("Operational Mode", "Electric"))
+                .company("Lee Transport")
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        Mockito.when(vehicleService.inspectVehicle(any())).thenReturn(VehicleType.TRAIN.getInspectionPrice());
+        //Perform the test.
+        ResponseEntity<InspectVehicleResponse> responseEntity = vehicleController.inspectVehicle(InspectVehicleRequest.builder()
+                .company("Lee Transport")
+                .fleetNumber("223")
+                .build());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertTrue(responseEntity.getBody().isInspected());
+        assertEquals(VehicleType.TRAIN.getInspectionPrice().doubleValue(), responseEntity.getBody().getInspectionPrice());
+        //Perform an unsuccessful test with bad request.
+        InspectVehicleRequest inspectVehicleRequest = new InspectVehicleRequest();
+        inspectVehicleRequest.setCompany("Lee Buses");
+        ResponseEntity<InspectVehicleResponse> responseEntity2 = vehicleController.inspectVehicle(inspectVehicleRequest);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+        //Perform an unsuccessful test with no content.
+        inspectVehicleRequest.setFleetNumber("214");
+        ResponseEntity<InspectVehicleResponse> responseEntity3 = vehicleController.inspectVehicle(inspectVehicleRequest);
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
+        //Perform a further test with bus to ensure full test coverage.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "233")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("233")
+                .allocatedTour("1/1")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "HFJK23D"))
+                .company("Lee Transport")
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        Mockito.when(vehicleService.inspectVehicle(any())).thenReturn(VehicleType.BUS.getInspectionPrice());
+        //Perform the test.
+        ResponseEntity<InspectVehicleResponse> responseEntity4 = vehicleController.inspectVehicle(InspectVehicleRequest.builder()
+                .company("Lee Transport")
+                .fleetNumber("233")
+                .build());
+        assertEquals(HttpStatus.OK, responseEntity4.getStatusCode());
+        assertTrue(responseEntity4.getBody().isInspected());
+        assertEquals(VehicleType.BUS.getInspectionPrice().doubleValue(), responseEntity4.getBody().getInspectionPrice());
     }
 
 }

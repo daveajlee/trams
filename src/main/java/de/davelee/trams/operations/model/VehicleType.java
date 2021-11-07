@@ -39,10 +39,20 @@ public enum VehicleType {
 
         /**
          * The current purchase price of a bus.
+         * @return a <code>BigDecimal</code> containing the purchase price of the vehicle.
          */
         @Override
         public BigDecimal getPurchasePrice() {
             return BigDecimal.valueOf(200000);
+        }
+
+        /**
+         * The current inspection price for a bus.
+         * @return a <code>BigDecimal</code> containing the inspection price of the vehicle.
+         */
+        @Override
+        public BigDecimal getInspectionPrice() {
+            return BigDecimal.valueOf(1000);
         }
 
     },
@@ -77,10 +87,20 @@ public enum VehicleType {
 
         /**
          * The current purchase price of a train.
+         * @return a <code>BigDecimal</code> containing the purchase price of the vehicle.
          */
         @Override
         public BigDecimal getPurchasePrice() {
             return BigDecimal.valueOf(1000000);
+        }
+
+        /**
+         * The current inspection price for a train.
+         * @return a <code>BigDecimal</code> containing the inspection price of the vehicle.
+         */
+        @Override
+        public BigDecimal getInspectionPrice() {
+            return BigDecimal.valueOf(2000);
         }
     },
 
@@ -113,12 +133,21 @@ public enum VehicleType {
         }
 
         /**
-         * The current purchase price of a train.
-         * @return a <code>BigDecimal</code>
+         * The current purchase price of a tram.
+         * @return a <code>BigDecimal</code> containing the purchase price of the vehicle.
          */
         @Override
         public BigDecimal getPurchasePrice() {
             return BigDecimal.valueOf(700000);
+        }
+
+        /**
+         * The current inspection price for a tram.
+         * @return a <code>BigDecimal</code> containing the inspection price of the vehicle.
+         */
+        @Override
+        public BigDecimal getInspectionPrice() {
+            return BigDecimal.valueOf(1500);
         }
     };
 
@@ -141,9 +170,15 @@ public enum VehicleType {
     public abstract int getMaximumHoursPerDay();
 
     /**
-     * The current purchase price of a train.
-     * @return a <code>BigDecimal</code>
+     * The current purchase price of a vehicle.
+     * @return a <code>BigDecimal</code> containing the purchase price of the vehicle.
      */
     public abstract BigDecimal getPurchasePrice();
+
+    /**
+     * The current inspection price of a vehicle.
+     * @return a <code>BigDecimal</code> containing the inspection price of the vehicle.
+     */
+    public abstract BigDecimal getInspectionPrice();
 
 }

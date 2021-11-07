@@ -3,10 +3,8 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleHistoryReason;
 import de.davelee.trams.operations.model.VehicleType;
-import de.davelee.trams.operations.request.AddHistoryEntryRequest;
-import de.davelee.trams.operations.request.AddVehicleHoursRequest;
-import de.davelee.trams.operations.request.PurchaseVehicleRequest;
-import de.davelee.trams.operations.request.SellVehicleRequest;
+import de.davelee.trams.operations.request.*;
+import de.davelee.trams.operations.response.InspectVehicleResponse;
 import de.davelee.trams.operations.response.PurchaseVehicleResponse;
 import de.davelee.trams.operations.response.SellVehicleResponse;
 import de.davelee.trams.operations.response.VehicleHoursResponse;
@@ -18,7 +16,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -187,6 +184,33 @@ public class VehicleController {
         return ResponseEntity.ok(SellVehicleResponse.builder()
                 .sold(soldPrice.doubleValue() > 0)
                 .soldPrice(soldPrice.doubleValue())
+                .build());
+    }
+
+    /**
+     * Inspect the vehicle matching the supplied company and fleet number. The inspection price of the vehicle will be returned.
+     * @param inspectVehicleRequest a <code>InspectVehicleRequest</code> object containing the information about the vehicle which should be inspected.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Inspect a particular vehicle", notes="Inspect a particular vehicle and return the cost of the inspection")
+    @PutMapping(value="/inspect")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully inspected vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<InspectVehicleResponse> inspectVehicle (@RequestBody InspectVehicleRequest inspectVehicleRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(inspectVehicleRequest.getCompany()) || StringUtils.isBlank(inspectVehicleRequest.getFleetNumber())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise it cannot be inspected.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(inspectVehicleRequest.getCompany(), inspectVehicleRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now inspect the vehicle.
+        BigDecimal inspectionPrice = vehicleService.inspectVehicle(vehicles.get(0));
+        //Return response of inspecting the vehicle with price that is 0 if vehicle could not be inspected.
+        return ResponseEntity.ok(InspectVehicleResponse.builder()
+                .inspected(inspectionPrice.doubleValue() > 0)
+                .inspectionPrice(inspectionPrice.doubleValue())
                 .build());
     }
 
