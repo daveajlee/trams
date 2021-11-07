@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -77,64 +75,6 @@ public class VehiclesController {
         return ResponseEntity.ok(VehiclesResponse.builder()
                 .count((long) vehicleResponses.length)
                 .vehicleResponses(vehicleResponses).build());
-    }
-
-    /**
-     * Temporary endpoint to add test data which will be removed as soon as data can be added through normal endpoints.
-     * @return a <code>ResponseEntity</code> object which returns the http status of this method if it was successful or not.
-     */
-    @GetMapping("/testdata")
-    @ApiOperation(value = "Populate test data", notes="returns nothing")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added test data")})
-    public ResponseEntity<Void> addTestData ( ) {
-        //Create test bus
-        Vehicle bus = Vehicle.builder()
-                .typeSpecificInfos(Map.of("Registration Number", "W234DHDF"))
-                .modelName("BendyBus 2000")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Transport")
-                .vehicleType(VehicleType.BUS)
-                .build();
-        //Create test train
-        Vehicle train = Vehicle.builder()
-                .modelName("Train 2000 Di")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("2130")
-                .company("Lee Transport")
-                .vehicleType(VehicleType.TRAIN)
-                .typeSpecificInfos(Map.of("Power Mode", "Diesel"))
-                .build();
-        //Create test tram
-        Vehicle tram = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDate.of(2021,3,25))
-                .inspectionDate(LocalDate.of(2021,4,25))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("2310")
-                .company("Lee Transport")
-                .vehicleType(VehicleType.TRAM)
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .build();
-        //Add all three to database
-        vehicleService.addVehicle(bus);
-        vehicleService.addVehicle(train);
-        vehicleService.addVehicle(tram);
-        //Return ok.
-        return ResponseEntity.ok().build();
     }
 
 }

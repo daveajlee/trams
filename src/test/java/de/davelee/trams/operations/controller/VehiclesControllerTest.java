@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the VehiclesController and ensures that the endpoints work successfully. It uses
@@ -37,16 +36,6 @@ public class VehiclesControllerTest {
 
     @Mock
     private VehicleService vehicleService;
-
-    /**
-     * Test the test data endpoint of this controller.
-     */
-    @Test
-    public void testTestDataEndpoint() {
-        Mockito.when(vehicleService.addVehicle(any())).thenReturn(true);
-        ResponseEntity<Void> responseEntity = vehiclesController.addTestData();
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    }
 
     /**
      * Test the get vehicles endpoint of this controller.
