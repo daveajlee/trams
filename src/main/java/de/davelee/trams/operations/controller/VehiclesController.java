@@ -1,9 +1,12 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.*;
+import de.davelee.trams.operations.request.LoadVehicleRequest;
+import de.davelee.trams.operations.request.LoadVehiclesRequest;
 import de.davelee.trams.operations.response.VehicleResponse;
 import de.davelee.trams.operations.response.VehiclesResponse;
 import de.davelee.trams.operations.service.VehicleService;
+import de.davelee.trams.operations.utils.DateUtils;
 import de.davelee.trams.operations.utils.VehicleUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,6 +32,29 @@ public class VehiclesController {
 
     @Autowired
     private VehicleService vehicleService;
+
+    /**
+     * Endpoint to load existing vehicles for a company.
+     * @param loadVehiclesRequest a <code>LoadVehiclesRequest</code> object containing the vehicle information to add.
+     * @return a <code>ResponseEntity</code>
+     */
+    @PostMapping("/")
+    @CrossOrigin
+    @ApiOperation(value = "Load vehicles", notes="Load all vehicles for a particular company")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully loaded vehicles")})
+    public ResponseEntity<Void> loadVehicles (@RequestBody final LoadVehiclesRequest loadVehiclesRequest) {
+        //First of all check that the request is valid i.e. the list is not empty.
+        if (loadVehiclesRequest.getCount() <= 0 || loadVehiclesRequest.getLoadVehicleRequests().length <= 0 ) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Now go through the array and convert to a vehicle and add it,
+        for (LoadVehicleRequest loadVehicleRequest : loadVehiclesRequest.getLoadVehicleRequests()) {
+            if (!vehicleService.addVehicle(VehicleUtils.convertToVehicle(loadVehicleRequest))) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     /**
      * Endpoint to retrieve vehicle information for a particular company and optionally for a supplied fleet number that
@@ -68,7 +94,14 @@ public class VehiclesController {
                     .company(vehicles.get(i).getCompany())
                     .additionalTypeInformationMap(vehicles.get(i).getTypeSpecificInfos())
                     .vehicleType(vehicles.get(i).getVehicleType().getTypeName())
-                    .userHistory(VehicleUtils.convertHistoryEntries(vehicles.get(i).getVehicleHistoryEntryList()))
+                    .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(i).getVehicleHistoryEntryList()))
+                    .modelName(vehicles.get(i).getModelName())
+                    .seatingCapacity(vehicles.get(i).getSeatingCapacity())
+                    .standingCapacity(vehicles.get(i).getStandingCapacity())
+                    .deliveryDate(DateUtils.convertLocalDateToDate(vehicles.get(i).getDeliveryDate()))
+                    .inspectionDate(DateUtils.convertLocalDateToDate(vehicles.get(i).getInspectionDate()))
+                    .vehicleStatus(vehicles.get(i).getVehicleStatus() != null ? vehicles.get(i).getVehicleStatus().name() : null)
+                    .timesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(i).getTimesheet()))
                     .build();
             VehicleUtils.processInspectionDate(vehicleResponses[i], vehicles.get(i).getInspectionDate(), vehicles.get(i).getVehicleType().getInspectionPeriod());
         }

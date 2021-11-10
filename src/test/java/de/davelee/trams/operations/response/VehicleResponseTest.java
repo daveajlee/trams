@@ -1,8 +1,12 @@
 package de.davelee.trams.operations.response;
 
+import de.davelee.trams.operations.utils.VehicleUtils;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,7 +45,14 @@ public class VehicleResponseTest {
         vehicleResponse.setAdditionalTypeInformationMap(Collections.singletonMap("Bidirectional", "true"));
         vehicleResponse.setInspectionStatus("Inspection Due!");
         vehicleResponse.setNextInspectionDueInDays(0);
-        assertEquals("VehicleResponse(fleetNumber=1213, company=Lee Buses, vehicleType=Tram, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true}, userHistory=null)", vehicleResponse.toString());
+        vehicleResponse.setDeliveryDate("25-04-2021");
+        vehicleResponse.setInspectionDate("25-05-2021");
+        vehicleResponse.setVehicleStatus("DELIVERED");
+        vehicleResponse.setModelName("Bendy Bus 2000");
+        vehicleResponse.setUserHistory(List.of(VehicleHistoryResponse.builder().vehicleHistoryReason("PURCHASED").date("25-04-2021").comment("Love on first sight").build()));
+        vehicleResponse.setTimesheet(Map.of("01-11-2021", 8));
+        assertEquals(1, VehicleUtils.convertTimesheetToResponse(Map.of(LocalDate.of(2021,11,1), 8)).size());
+        assertEquals("VehicleResponse(fleetNumber=1213, company=Lee Buses, deliveryDate=25-04-2021, inspectionDate=25-05-2021, vehicleType=Tram, vehicleStatus=DELIVERED, seatingCapacity=0, standingCapacity=0, modelName=Bendy Bus 2000, livery=Blue with orange text, allocatedTour=1/2, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true}, userHistory=[VehicleHistoryResponse(date=25-04-2021, vehicleHistoryReason=PURCHASED, comment=Love on first sight)], timesheet={01-11-2021=8})", vehicleResponse.toString());
     }
 
 }
