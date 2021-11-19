@@ -18,6 +18,7 @@ services:
 
   mongo-express:
     image: mongo-express
+    container_name: mongoexpress
     restart: always
     ports:
       - 8081:8081
@@ -28,5 +29,15 @@ services:
   eureka:
     image: daveajlee/eureka-server
     container_name: eureka
+    restart: always
     ports:
       - 8761:8761
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
