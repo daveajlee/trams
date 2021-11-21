@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the StopService class and ensures that it works successfully. Mocks are used for the database layer.
@@ -23,6 +25,27 @@ public class StopServiceTest {
 
     @Mock
     private StopRepository stopRepository;
+
+    /**
+     * Verify that a stop can be added to the database.
+     */
+    @Test
+    public void testAddStop() {
+        Mockito.when(stopRepository.save(any())).thenReturn(Stop.builder()
+                .id("123")
+                .name("Greenfield")
+                .latitude(50.03)
+                .longitude(123.04)
+                .company("Mustermann Bus GmbH")
+                .build());
+        assertTrue(stopService.addStop(Stop.builder()
+                .id("123")
+                .name("Greenfield")
+                .latitude(50.03)
+                .longitude(123.04)
+                .company("Mustermann Bus GmbH")
+                .build()));
+    }
 
     /**
      * Verify that stops can be retrieved from the database correctly.
