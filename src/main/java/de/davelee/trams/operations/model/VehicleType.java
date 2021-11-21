@@ -181,4 +181,19 @@ public enum VehicleType {
      */
     public abstract BigDecimal getInspectionPrice();
 
+    /**
+     * Return the relevant vehicle type based on the name.
+     * @param name a <code>String</code> containing the name of the vehicle type.
+     * @return a <code>VehicleType</code> object corresponding to the supplied type name.
+     */
+    public static VehicleType getVehicleTypeFromName ( final String name ) {
+        VehicleType[] types = VehicleType.values();
+        for ( VehicleType type : types ) {
+            if ( type.getTypeName().contentEquals(name)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
 }

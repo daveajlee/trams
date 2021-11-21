@@ -1,9 +1,9 @@
 package de.davelee.trams.operations.controller;
 
-import de.davelee.trams.operations.model.Vehicle;
-import de.davelee.trams.operations.model.VehicleHistoryEntry;
-import de.davelee.trams.operations.model.VehicleHistoryReason;
-import de.davelee.trams.operations.model.VehicleType;
+import de.davelee.trams.operations.model.*;
+import de.davelee.trams.operations.request.LoadVehicleRequest;
+import de.davelee.trams.operations.request.LoadVehiclesRequest;
+import de.davelee.trams.operations.request.VehicleHistoryRequest;
 import de.davelee.trams.operations.response.VehiclesResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import org.assertj.core.util.Lists;
@@ -18,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the VehiclesController and ensures that the endpoints work successfully. It uses
@@ -52,6 +54,7 @@ public class VehiclesControllerTest {
                 .deliveryDate(LocalDate.of(2017,3,25))
                 .inspectionDate(LocalDate.of(2017,4,25))
                 .company("Lee Buses")
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .build(),
                 Vehicle.builder()
                 .livery("Red with green text")
@@ -61,6 +64,7 @@ public class VehiclesControllerTest {
                 .typeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"))
                 .deliveryDate(LocalDate.of(2009,3,25))
                 .inspectionDate(LocalDate.of(2009,4,25))
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .company("Lee Buses")
                 .build(),
                 Vehicle.builder()
@@ -71,6 +75,7 @@ public class VehiclesControllerTest {
                 .typeSpecificInfos(Collections.singletonMap("Bidirectional", "false"))
                 .deliveryDate(LocalDate.of(2010,3,25))
                 .inspectionDate(LocalDate.of(2010,4,25))
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .company("Lee Buses")
                 .build()));
         ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty());
@@ -94,6 +99,7 @@ public class VehiclesControllerTest {
                 .company("Lee Buses")
                 .deliveryDate(LocalDate.of(2021,3,25))
                 .inspectionDate(LocalDate.of(2021,4,25))
+                .vehicleStatus(VehicleStatus.DELIVERED)
                 .vehicleHistoryEntryList(List.of(VehicleHistoryEntry.builder()
                                 .vehicleHistoryReason(VehicleHistoryReason.PURCHASED)
                                 .date(LocalDate.of(2021,3,1))
@@ -121,6 +127,59 @@ public class VehiclesControllerTest {
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "22")).thenReturn(null);
         ResponseEntity<VehiclesResponse> responseEntity4 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("22"));
         assertEquals(HttpStatus.NO_CONTENT, responseEntity4.getStatusCode());
+    }
+
+    /**
+     * Test the load vehicles endpoint of this controller.
+     */
+    @Test
+    public void testLoadVehiclesEndpoint() {
+        //Mock important methods.
+        Mockito.when(vehicleService.addVehicle(any())).thenReturn(true);
+        //Create test data.
+        LoadVehiclesRequest loadVehiclesRequest = LoadVehiclesRequest.builder()
+                .count(1L)
+                .loadVehicleRequests(new LoadVehicleRequest[] { LoadVehicleRequest.builder()
+                        .fleetNumber("1213")
+                        .company("Lee Buses")
+                        .deliveryDate("25-04-2021")
+                        .inspectionDate("25-05-2021")
+                        .vehicleType("Tram")
+                        .vehicleStatus("DELIVERED")
+                        .seatingCapacity(50)
+                        .standingCapacity(80)
+                        .modelName("Bendy Bus 2000")
+                        .livery("Blue with orange text")
+                        .allocatedTour("1/2")
+                        .additionalTypeInformationMap(Map.of("Bidirectional", "true"))
+                        .userHistory(List.of(VehicleHistoryRequest.builder().vehicleHistoryReason("PURCHASED")
+                                .comment("Love on first sight").date("25-04-2021").build()))
+                        .timesheet(Map.of("01-11-2021", 8))
+                        .build(), LoadVehicleRequest.builder()
+                        .fleetNumber("1213")
+                        .company("Lee Buses")
+                        .deliveryDate("25-04-2021")
+                        .inspectionDate("25-05-2021")
+                        .vehicleType("")
+                        .vehicleStatus("DELIVERED")
+                        .seatingCapacity(50)
+                        .standingCapacity(80)
+                        .modelName("Bendy Bus 2000")
+                        .livery("Blue with orange text")
+                        .allocatedTour("1/2")
+                        .additionalTypeInformationMap(Map.of("Bidirectional", "true"))
+                        .userHistory(List.of(VehicleHistoryRequest.builder().vehicleHistoryReason("PURCHASED")
+                                .comment("Love on first sight").date("25-04-2021").build()))
+                        .timesheet(Map.of("01-11-2021", 8))
+                        .build() }).build();
+        //Perform actual test.
+        assertEquals(HttpStatus.OK, vehiclesController.loadVehicles(loadVehiclesRequest).getStatusCode());
+        //Perform test where database does not work.
+        Mockito.when(vehicleService.addVehicle(any())).thenReturn(false);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, vehiclesController.loadVehicles(loadVehiclesRequest).getStatusCode());
+        //Set count to 0 and rerun test.
+        loadVehiclesRequest.setCount(0L);
+        assertEquals(HttpStatus.BAD_REQUEST, vehiclesController.loadVehicles(loadVehiclesRequest).getStatusCode());
     }
 
 }

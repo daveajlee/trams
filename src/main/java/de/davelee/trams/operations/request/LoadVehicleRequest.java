@@ -1,18 +1,21 @@
-package de.davelee.trams.operations.response;
+package de.davelee.trams.operations.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is part of the TraMS Operations REST API. It represents a request to load a single vehicle for a particular
+ * company.
+ * @author Dave Lee
+ */
 @Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
-@ToString
-public class VehicleResponse {
+public class LoadVehicleRequest {
 
     /**
      * The fleet number of this vehicle.
@@ -70,16 +73,6 @@ public class VehicleResponse {
     private String allocatedTour;
 
     /**
-     * The current status of inspection for this vehicle.
-     */
-    private String inspectionStatus;
-
-    /**
-     * The number of days until the next inspection is due.
-     */
-    private long nextInspectionDueInDays;
-
-    /**
      * The additional parameters relevant to this vehicle type e.g. registration number for buses are stored as key/value pairs.
      */
     private Map<String, String> additionalTypeInformationMap;
@@ -87,7 +80,7 @@ public class VehicleResponse {
     /**
      * The list of entries in the log history of this vehicle.
      */
-    private List<VehicleHistoryResponse> userHistory;
+    private List<VehicleHistoryRequest> userHistory;
 
     /**
      * The number of hours that a vehicle was in service on a particular day.
