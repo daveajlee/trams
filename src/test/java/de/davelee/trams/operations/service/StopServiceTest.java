@@ -65,4 +65,21 @@ public class StopServiceTest {
         assertEquals(50.03, stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getLatitude());
         assertEquals(123.04, stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getLongitude());
     }
+
+    /**
+     * Verify that a stop can be deleted from the database correctly.
+     */
+    @Test
+    public void testDeleteStop ( ) {
+        //Mock important method in repository.
+        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
+                .id("123")
+                .name("Greenfield")
+                .latitude(50.03)
+                .longitude(123.04)
+                .company("Mustermann Bus GmbH")
+                .build()));
+        //Do test.
+        stopService.deleteStops("Mustermann Bus GmbH");
+    }
 }

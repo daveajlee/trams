@@ -37,4 +37,13 @@ public class StopService {
         return stopRepository.findByCompany(company);
     }
 
+    /**
+     * Delete all stops currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to return stops for.
+     */
+    public void deleteStops(final String company) {
+        List<Stop> stops = getStopsByCompany(company);
+        stops.forEach(stopRepository::delete);
+    }
+
 }

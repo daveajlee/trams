@@ -64,4 +64,24 @@ public class StopsController {
                 .stopResponses(stopResponses).build());
     }
 
+    /**
+     * Delete all stops currently stored in the database for a particular company.
+     * @param company a <code>String</code> containing the name of the company to search for.
+     * @return a <code>ResponseEntity</code> object containing the results of the action.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @ApiOperation(value = "Delete stops", notes="Delete all stops")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted stops")})
+    public ResponseEntity<Void> deleteStops (final String company ) {
+        //First of all, check if the company field is empty or null, then return bad request.
+        if (StringUtils.isBlank(company)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Delete all stops for this company.
+        stopService.deleteStops(company);
+        //Return ok.
+        return ResponseEntity.ok().build();
+    }
+
 }

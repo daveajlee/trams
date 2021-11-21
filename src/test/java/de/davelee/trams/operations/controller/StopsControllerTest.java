@@ -50,4 +50,17 @@ public class StopsControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 
+    /**
+     * Test the delete stops endpoint of this controller.
+     */
+    @Test
+    public void testDeleteStopsEndpoint() {
+        //Do successful request.
+        ResponseEntity<Void> responseEntity = stopsController.deleteStops("Mustermann Bus GmbH");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        //Assume bad request if company is empty.
+        ResponseEntity<Void> responseEntity2 = stopsController.deleteStops("");
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+    }
+
 }
