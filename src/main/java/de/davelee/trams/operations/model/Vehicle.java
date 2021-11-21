@@ -20,6 +20,11 @@ import java.util.Map;
 public class Vehicle {
 
     /**
+     * The id of the vehicle in the database.
+     */
+    private String id;
+
+    /**
      * The fleet number of this vehicle.
      */
     private String fleetNumber;

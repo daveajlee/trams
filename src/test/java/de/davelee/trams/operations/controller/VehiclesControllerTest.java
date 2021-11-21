@@ -182,4 +182,17 @@ public class VehiclesControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, vehiclesController.loadVehicles(loadVehiclesRequest).getStatusCode());
     }
 
+    /**
+     * Test the delete vehicles endpoint of this controller.
+     */
+    @Test
+    public void testDeleteVehiclesEndpoint() {
+        //Do successful request.
+        ResponseEntity<Void> responseEntity = vehiclesController.deleteVehicles("Mustermann Bus GmbH");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        //Assume bad request if company is empty.
+        ResponseEntity<Void> responseEntity2 = vehiclesController.deleteVehicles("");
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+    }
+
 }

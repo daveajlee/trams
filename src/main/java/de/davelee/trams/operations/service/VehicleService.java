@@ -155,4 +155,14 @@ public class VehicleService {
         return true;
     }
 
+    /**
+     * Delete all vehicles currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to return stops for.
+     */
+    public void deleteVehicles(final String company) {
+        List<Vehicle> vehicles = retrieveVehiclesByCompany(company);
+        System.out.println(vehicles.size());
+        vehicles.forEach(vehicleRepository::delete);
+    }
+
 }

@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -327,5 +326,27 @@ public class VehicleServiceTest {
         assertTrue(vehicleService.allocateTourToVehicle(vehicle, "1/1"));
     }
 
+    /**
+     * Verify that a vehicle can be deleted from the database correctly.
+     */
+    @Test
+    public void testDeleteVehicles( ) {
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.findByCompany("Lee Buses")).thenReturn(List.of(Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build()));
+        //Do test.
+        vehicleService.deleteVehicles("Lee Buses");
+    }
 
 }
