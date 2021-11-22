@@ -10,6 +10,8 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the RouteService class and ensures that it works successfully. Mocks are used for the database layer.
@@ -23,6 +25,23 @@ public class RouteServiceTest {
 
     @Mock
     private RouteRepository routeRepository;
+
+    /**
+     * Verify that a route can be added to the database.
+     */
+    @Test
+    public void testAddRoute() {
+        Mockito.when(routeRepository.save(any())).thenReturn(Route.builder()
+                .routeNumber("1A")
+                .id("1")
+                .company("Mustermann Bus GmbH")
+                .build());
+        assertTrue(routeService.addRoute(Route.builder()
+                .routeNumber("1A")
+                .id("1")
+                .company("Mustermann Bus GmbH")
+                .build()));
+    }
 
     /**
      * Verify that routes can be retrieved from the database correctly.
