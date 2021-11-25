@@ -57,5 +57,13 @@ public class RouteServiceTest {
         assertEquals("1A", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getRouteNumber());
         assertEquals("1", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getId());
         assertEquals("Mustermann Bus GmbH", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getCompany());
+        //Test retrieval of single route.
+        Mockito.when(routeRepository.findByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C")).thenReturn(Lists.newArrayList(Route.builder()
+                .routeNumber("1A")
+                .id("1")
+                .company("Mustermann Bus GmbH")
+                .build()));
+        assertEquals(1, routeService.getRoutesByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C").size());
     }
+
 }

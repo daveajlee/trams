@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.controller;
 
+import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.request.AddRouteRequest;
 import de.davelee.trams.operations.service.RouteService;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +51,24 @@ public class RouteControllerTest {
         //Test missing company and name.
         addRouteRequest2.setCompany(""); addRouteRequest2.setRouteNumber("");
         assertEquals(HttpStatus.BAD_REQUEST, routeController.addRoute(addRouteRequest2).getStatusCode());
+    }
+
+    /**
+     * Test the get route endpoint of this controller.
+     */
+    @Test
+    public void testGetRouteEndpoint() {
+        //Mock important method.
+        Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
+                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+        //Test successfully retrieve.
+        assertEquals(HttpStatus.OK, routeController.getRoute("Example Company", "1A").getStatusCode());
+        //Test unsuccessful retrieve.
+        Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1C")).thenReturn(
+                List.of());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, routeController.getRoute("Example Company", "1C").getStatusCode());
+        //Test missing company.
+        assertEquals(HttpStatus.BAD_REQUEST, routeController.getRoute("", "1C").getStatusCode());
     }
 
 }

@@ -36,5 +36,15 @@ public class RouteService {
         return routeRepository.findByCompany(company);
     }
 
+    /**
+     * Return all routes for the specified company that are currently stored in the database.
+     * @param company a <code>String</code> containing the name of the company to search for.
+     * @param routeNumber a <code>String</code> containing the route number to search for.
+     * @return a <code>List</code> of <code>Route</code> objects which may be null if there are no routes in the database matching the criteria.
+     */
+    public List<Route> getRoutesByCompanyAndRouteNumber ( final String company, final String routeNumber ) {
+        return routeRepository.findByCompanyAndRouteNumber(company, routeNumber);
+    }
+
 
 }
