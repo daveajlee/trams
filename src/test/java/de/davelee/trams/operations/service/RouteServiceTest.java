@@ -66,4 +66,12 @@ public class RouteServiceTest {
         assertEquals(1, routeService.getRoutesByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C").size());
     }
 
+    /**
+     * Verify that routes can be deleted successfully.
+     */
+    @Test
+    public void testDeleteRoutes ( ) {
+        routeService.deleteRoute(Route.builder().company("Mustermann Bus Gmbh").routeNumber("1C").build());
+    }
+
 }

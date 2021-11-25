@@ -71,4 +71,22 @@ public class RouteControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, routeController.getRoute("", "1C").getStatusCode());
     }
 
+    /**
+     * Test the delete route endpoint of this controller.
+     */
+    @Test
+    public void testDeleteRouteEndpoint() {
+        //Mock important method.
+        Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
+                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+        //Test successfully retrieve.
+        assertEquals(HttpStatus.OK, routeController.deleteRoute("Example Company", "1A").getStatusCode());
+        //Test unsuccessful retrieve.
+        Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1C")).thenReturn(
+                List.of());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, routeController.deleteRoute("Example Company", "1C").getStatusCode());
+        //Test missing company.
+        assertEquals(HttpStatus.BAD_REQUEST, routeController.deleteRoute("", "1C").getStatusCode());
+    }
+
 }

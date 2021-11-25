@@ -46,5 +46,13 @@ public class RouteService {
         return routeRepository.findByCompanyAndRouteNumber(company, routeNumber);
     }
 
+    /**
+     * Delete a single route from the database.
+     * @param route a <code>Route</code> object which should be deleted from the database.
+     */
+    public void deleteRoute ( final Route route ) {
+        routeRepository.delete(route);
+    }
+
 
 }

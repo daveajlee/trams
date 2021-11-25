@@ -78,5 +78,29 @@ public class RouteController {
                 .build());
     }
 
+    /**
+     * Delete a route from the database for a particular company.
+     * @param company a <code>String</code> containing the name of the company to delete the route for.
+     * @param routeNumber a <code>String</code> containing the route number to delete.
+     * @return a <code>ResponseEntity</code> object containing the results of the action.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @ApiOperation(value = "Delete route", notes="Delete a route for this company")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted route")})
+    public ResponseEntity<Void> deleteRoute (final String company, final String routeNumber) {
+        //Check that the request is valid, otherwise bad request.
+        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Route> routes = routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber);
+        //More than 1 route indicates data inconsistency.
+        if ( routes.size() != 1 ) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        //Delete route and return a positive answer.
+        routeService.deleteRoute(routes.get(0));
+        return ResponseEntity.ok().build();
+    }
 
 }
