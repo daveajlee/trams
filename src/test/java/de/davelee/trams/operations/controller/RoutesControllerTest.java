@@ -50,4 +50,24 @@ public class RoutesControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 
+    /**
+     * Test the delete routes endpoint of this controller.
+     */
+    @Test
+    public void testDeleteRoutesEndpoint() {
+        Mockito.when(routeService.getRoutesByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Route.builder()
+                .company("Mustermann Bus GmbH")
+                .id("123")
+                .routeNumber("405")
+                .build()));
+        ResponseEntity<Void> responseEntity = routesController.deleteRoutesByCompany("Mustermann Bus GmbH");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        //Second test - do not supply company.
+        ResponseEntity<Void> responseEntity2 = routesController.deleteRoutesByCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
+        //Third test - company has no buses.
+        ResponseEntity<Void> responseEntity3 = routesController.deleteRoutesByCompany("Mustermann Buses GmbH");
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
+    }
+
 }

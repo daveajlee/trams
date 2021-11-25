@@ -62,4 +62,31 @@ public class RoutesController {
                 .routeResponses(routeResponses).build());
     }
 
+    /**
+     * Delete all routes for the specified company that are currently stored in the database.
+     * @param company a <code>String</code> containing the name of the company to delete routes for.
+     * @return a <code>List</code> of <code>Route</code> objects which may be null if there are no routes in the database.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @ApiOperation(value = "Delete routes", notes="Delete all routes")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted routes"),@ApiResponse(code=204,message="Successful but no vehicles found")})
+    public ResponseEntity<Void> deleteRoutesByCompany ( final String company ) {
+        //First of all, check if the company field is empty or null, then return bad request.
+        if (StringUtils.isBlank(company)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Retrieve the routes for this company.
+        List<Route> routes = routeService.getRoutesByCompany(company);
+        //If routes is null or empty then return 204.
+        if ( routes == null || routes.size() == 0 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Otherwise delete all routes and return.
+        for ( Route route : routes ) {
+            routeService.deleteRoute(route);
+        }
+        return ResponseEntity.ok().build();
+    }
+
 }
