@@ -476,4 +476,28 @@ public class VehicleControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, responseEntity6.getStatusCode());
     }
 
+    /**
+     * Test case: retrieve vehicles by allocations.
+     * Expected result: the vehicles are retrieved as appropriate.
+     */
+    @Test
+    public void testRetrieveAllocations() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedTour("Lee Transport", "1/2")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .vehicleType(VehicleType.TRAIN)
+                .typeSpecificInfos(Collections.singletonMap("Operational Mode", "Electric"))
+                .company("Lee Transport")
+                .allocatedTour("1/2")
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        //Attempt to retrieve the vehicle.
+        assertEquals(HttpStatus.OK, vehicleController.getAllocatedVehicle("Lee Transport", "1/2").getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, vehicleController.getAllocatedVehicle("Lee Transport", "1/1").getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, vehicleController.getAllocatedVehicle("Lee Transport", "").getStatusCode());
+    }
+
 }

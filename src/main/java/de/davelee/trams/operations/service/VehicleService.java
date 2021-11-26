@@ -52,7 +52,7 @@ public class VehicleService {
     /**
      * Retrieve all vehicles for a particular company from the database for all types.
      * @param company a <code>String</code> with the company to search for.
-     * @return a <code>List</code> of <code>VehicleResponse</code> objects in a format suitable to be returned via API.
+     * @return a <code>List</code> of <code>Vehicle</code> objects.
      */
     public List<Vehicle> retrieveVehiclesByCompany ( final String company) {
         //Return the vehicles found.
@@ -127,6 +127,17 @@ public class VehicleService {
     public boolean allocateTourToVehicle ( final Vehicle vehicle, final String allocatedTour ) {
         vehicle.setAllocatedTour(allocatedTour);
         return vehicleRepository.save(vehicle) != null;
+    }
+
+    /**
+     * Retrieve all vehicles allocated to a particular tour for a particular company from the database for all types.
+     * @param company a <code>String</code> with the company to search for.
+     * @param allocatedTour a <code>String</code> with the tour to search for.
+     * @return a <code>List</code> of <code>Vehice</code> objects.
+     */
+    public List<Vehicle> retrieveVehiclesByCompanyAndAllocatedTour ( final String company, final String allocatedTour) {
+        //Return the vehicles found.
+        return vehicleRepository.findByCompanyAndAllocatedTour(company, allocatedTour);
     }
 
     /**

@@ -15,4 +15,6 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
 
     List<Vehicle> findByCompany (final String company);
 
+    List<Vehicle> findByCompanyAndAllocatedTour ( final String company, final String allocatedTour );
+
 }

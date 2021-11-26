@@ -349,4 +349,28 @@ public class VehicleServiceTest {
         vehicleService.deleteVehicles("Lee Buses");
     }
 
+    /**
+     * Verify that a vehicle can be retrieved according to their allocated tour.
+     */
+    @Test
+    public void testRetrieveAllocatedVehicle ( ) {
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.findByCompanyAndAllocatedTour("Lee Buses", "1/2")).thenReturn(List.of(Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .allocatedTour("1/2")
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build()));
+        //Do test.
+        assertEquals(1, vehicleService.retrieveVehiclesByCompanyAndAllocatedTour("Lee Buses", "1/2").size());
+    }
+
 }

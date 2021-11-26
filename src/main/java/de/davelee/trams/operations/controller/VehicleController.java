@@ -4,12 +4,10 @@ import de.davelee.trams.operations.model.Vehicle;
 import de.davelee.trams.operations.model.VehicleHistoryReason;
 import de.davelee.trams.operations.model.VehicleType;
 import de.davelee.trams.operations.request.*;
-import de.davelee.trams.operations.response.InspectVehicleResponse;
-import de.davelee.trams.operations.response.PurchaseVehicleResponse;
-import de.davelee.trams.operations.response.SellVehicleResponse;
-import de.davelee.trams.operations.response.VehicleHoursResponse;
+import de.davelee.trams.operations.response.*;
 import de.davelee.trams.operations.service.VehicleService;
 import de.davelee.trams.operations.utils.DateUtils;
+import de.davelee.trams.operations.utils.VehicleUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -236,6 +234,44 @@ public class VehicleController {
         //Now allocate the vehicle.
         return vehicleService.allocateTourToVehicle(vehicles.get(0), allocateVehicleRequest.getAllocatedTour()) ?
                 ResponseEntity.ok().build() : ResponseEntity.status(500).build();
+    }
+
+    /**
+     * Return the vehicle matching the supplied company and which is allocated to the supplied tour.
+     * @param company a <code>String</code> object containing the name of the company to return the vehicle for.
+     * @param allocatedTour a <code>String</code> object containing the tour name which the vehicle must match.
+     * @return a <code>ResponseEntity</code> containing the results of the matching vehicle which may be null if no vehicle exists.
+     */
+    @ApiOperation(value = "Return an allocated vehicle", notes="Return a particular vehicle which is allocated to a particular tour")
+    @GetMapping(value="/allocate")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully retrieved vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<VehicleResponse> getAllocatedVehicle (final String company, final String allocatedTour) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour)) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that a single vehicle is allocated to this tour, otherwise return no content.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndAllocatedTour(company, allocatedTour);
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Return the vehicle information.
+        return ResponseEntity.ok(VehicleResponse.builder()
+                .allocatedTour(vehicles.get(0).getAllocatedTour())
+                .fleetNumber(vehicles.get(0).getFleetNumber())
+                .livery(vehicles.get(0).getLivery())
+                .company(vehicles.get(0).getCompany())
+                .additionalTypeInformationMap(vehicles.get(0).getTypeSpecificInfos())
+                .vehicleType(vehicles.get(0).getVehicleType().getTypeName())
+                .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()))
+                .modelName(vehicles.get(0).getModelName())
+                .seatingCapacity(vehicles.get(0).getSeatingCapacity())
+                .standingCapacity(vehicles.get(0).getStandingCapacity())
+                .deliveryDate(DateUtils.convertLocalDateToDate(vehicles.get(0).getDeliveryDate()))
+                .inspectionDate(DateUtils.convertLocalDateToDate(vehicles.get(0).getInspectionDate()))
+                .vehicleStatus(vehicles.get(0).getVehicleStatus() != null ? vehicles.get(0).getVehicleStatus().name() : null)
+                .timesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(0).getTimesheet()))
+                .build());
     }
 
     /**
