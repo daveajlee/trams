@@ -297,4 +297,30 @@ public class VehicleController {
                 ResponseEntity.ok().build() : ResponseEntity.status(500).build();
     }
 
+    /**
+     * Adjust the delay of the vehicle matching the supplied company and fleet number. The current delay after adjustment will be returned.
+     * @param adjustVehicleDelayRequest a <code>AdjustVehicleDelayRequest</code> object containing the information about the vehicle which should have its delay adjusted.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Adjust delay of a particular vehicle", notes="Adjust the delay of a particular vehicle in minutes")
+    @PutMapping(value="/delay")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted delay of vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    public ResponseEntity<VehicleDelayResponse> adjustVehicleDelay (@RequestBody AdjustVehicleDelayRequest adjustVehicleDelayRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(adjustVehicleDelayRequest.getCompany()) || StringUtils.isBlank(adjustVehicleDelayRequest.getFleetNumber())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise the delay cannot be adjusted.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(adjustVehicleDelayRequest.getCompany(), adjustVehicleDelayRequest.getFleetNumber());
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now adjust the delay of the vehicle and return current delay.
+        return ResponseEntity.ok(VehicleDelayResponse.builder()
+                .company(vehicles.get(0).getCompany())
+                .fleetNumber(vehicles.get(0).getFleetNumber())
+                .delayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()))
+                .build());
+    }
+
 }

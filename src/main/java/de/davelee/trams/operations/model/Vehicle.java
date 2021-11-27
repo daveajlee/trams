@@ -75,6 +75,11 @@ public class Vehicle {
     private String allocatedTour;
 
     /**
+     * The current delay of this vehicle in minutes.
+     */
+    private int delayInMinutes;
+
+    /**
      * The type of this vehicle.
      */
     private VehicleType vehicleType;

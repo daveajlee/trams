@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the VehicleService class and ensures that it works successfully. Mocks are used for the database layer.
@@ -371,6 +372,38 @@ public class VehicleServiceTest {
                 .build()));
         //Do test.
         assertEquals(1, vehicleService.retrieveVehiclesByCompanyAndAllocatedTour("Lee Buses", "1/2").size());
+    }
+
+    /**
+     * Verify that the delay of a vehicle can be adjusted appropriately.
+     */
+    @Test
+    public void testAdjustDelayVehicle ( ) {
+        //Create test data.
+        Vehicle vehicle = Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .allocatedTour("1/2")
+                .delayInMinutes(4)
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build();
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.save(any())).thenReturn(vehicle);
+        //Do test.
+        assertEquals(6, vehicleService.adjustVehicleDelay(vehicle, 2));
+        assertEquals(3, vehicleService.adjustVehicleDelay(vehicle, -3));
+        assertEquals(0, vehicleService.adjustVehicleDelay(vehicle, -4));
+        //Do test if database does not work.
+        Mockito.when(vehicleRepository.save(any())).thenReturn(null);
+        assertEquals(Integer.MIN_VALUE, vehicleService.adjustVehicleDelay(vehicle, -1));
     }
 
 }

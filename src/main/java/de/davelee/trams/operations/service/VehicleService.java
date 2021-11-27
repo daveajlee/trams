@@ -130,6 +130,23 @@ public class VehicleService {
     }
 
     /**
+     * Adjust the delay of the supplied vehicle by the supplied amount. If the vehicle delay would then be negative then set it to 0.
+     * @param vehicle a <code>Vehicle</code> object which should have its delay adjusted.
+     * @param delayInMinutes a <code>int</code> containing the amount that the delay should be adjusted by (if negative then reduce the delay by that amount).
+     * @return a <code>int</code> containing the current delay of the vehicle.
+     */
+    public int adjustVehicleDelay ( final Vehicle vehicle, final int delayInMinutes ) {
+        vehicle.setDelayInMinutes(vehicle.getDelayInMinutes() + delayInMinutes);
+        if ( vehicle.getDelayInMinutes() < 0 ) {
+            vehicle.setDelayInMinutes(0);
+        }
+        if ( vehicleRepository.save(vehicle) != null ) {
+            return vehicle.getDelayInMinutes();
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    /**
      * Retrieve all vehicles allocated to a particular tour for a particular company from the database for all types.
      * @param company a <code>String</code> with the company to search for.
      * @param allocatedTour a <code>String</code> with the tour to search for.
