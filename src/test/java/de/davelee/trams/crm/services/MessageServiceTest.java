@@ -9,7 +9,9 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -37,6 +39,26 @@ public class MessageServiceTest {
         Mockito.when(messageRepository.save(message)).thenReturn(message);
         //do actual test.
         assertTrue(messageService.save(message));
+    }
+
+    /**
+     * Test case: get all messages for this company.
+     * Expected result: messages returned.
+     */
+    @Test
+    public void testGetAllMessages() {
+        //Mock important method in repository.
+        Mockito.when(messageRepository.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidMessage()));
+        //Do actual test.
+        assertEquals(1, messageService.getMessagesByCompany("Mustermann GmbH").size());
+    }
+
+    /**
+     * Test case: delete all messages for this company.
+     */
+    @Test
+    public void testDeleteAllMessages() {
+        messageService.deleteMessage(generateValidMessage());
     }
 
     /**
