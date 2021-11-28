@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,7 +52,7 @@ public class MessageServiceTest {
         //Mock important method in repository.
         Mockito.when(messageRepository.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidMessage()));
         //Do actual test.
-        assertEquals(1, messageService.getMessagesByCompany("Mustermann GmbH").size());
+        assertEquals(1, messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.empty(), Optional.empty()).size());
     }
 
     /**
@@ -60,6 +62,35 @@ public class MessageServiceTest {
     public void testDeleteAllMessages() {
         messageService.deleteMessage(generateValidMessage());
     }
+
+    /**
+     * Test case: retrieve messages for this company.
+     */
+    @Test
+    public void testRetrieveMessages() {
+        //Company, folder, sender and DateTime
+        Mockito.when(messageRepository.findByCompanyAndFolderAndSenderAndDateTime("Mustermann GmbH", "INBOX", "Local Authority", LocalDateTime.of(2020,12,18,12,22))).thenReturn(List.of(generateValidMessage()));
+        assertEquals(1, messageService.getMessagesByCompany("Mustermann GmbH", Optional.of("INBOX"), Optional.of("Local Authority"), Optional.of("18-12-2020 12:22")).size());
+        //Company, folder and sender
+        Mockito.when(messageRepository.findByCompanyAndFolderAndSender("Mustermann GmbH", "INBOX", "Local Authority")).thenReturn(List.of(generateValidMessage(), generateValidMessage()));
+        assertEquals(2, messageService.getMessagesByCompany("Mustermann GmbH", Optional.of("INBOX"), Optional.of("Local Authority"), Optional.empty()).size());
+        //Company, folder and DateTime
+        Mockito.when(messageRepository.findByCompanyAndFolderAndDateTime("Mustermann GmbH", "INBOX", LocalDateTime.of(2020,12,18,12,22))).thenReturn(List.of(generateValidMessage(), generateValidMessage(), generateValidMessage()));
+        assertEquals(3, messageService.getMessagesByCompany("Mustermann GmbH", Optional.of("INBOX"), Optional.empty(), Optional.of("18-12-2020 12:22")).size());
+        //Company and folder
+        Mockito.when(messageRepository.findByCompanyAndFolder("Mustermann GmbH", "INBOX")).thenReturn(List.of(generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage()));
+        assertEquals(4, messageService.getMessagesByCompany("Mustermann GmbH", Optional.of("INBOX"), Optional.empty(), Optional.empty()).size());
+        //Company and sender and dateTime
+        Mockito.when(messageRepository.findByCompanyAndSenderAndDateTime("Mustermann GmbH", "Local Authority", LocalDateTime.of(2020,12,18,12,22))).thenReturn(List.of(generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage()));
+        assertEquals(5, messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.of("Local Authority"), Optional.of("18-12-2020 12:22")).size());
+        //Company and sender
+        Mockito.when(messageRepository.findByCompanyAndSender("Mustermann GmbH", "Local Authority")).thenReturn(List.of(generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage()));
+        assertEquals(6, messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.of("Local Authority"), Optional.empty()).size());
+        //Company and DateTime
+        Mockito.when(messageRepository.findByCompanyAndDateTime("Mustermann GmbH", LocalDateTime.of(2020,12,18,12,22))).thenReturn(List.of(generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage(), generateValidMessage()));
+        assertEquals(7, messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.empty(), Optional.of("18-12-2020 12:22")).size());
+    }
+
 
     /**
      * Private helper method to generate a valid message.
