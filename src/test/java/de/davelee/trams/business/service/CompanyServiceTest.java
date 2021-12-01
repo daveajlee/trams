@@ -57,6 +57,18 @@ public class CompanyServiceTest {
     }
 
     /**
+     * Ensure that data can be retrieved from the mock database with a company and player name and supplied as a response.
+     */
+    @Test
+    public void testRetrieveByCompanyNameAndPlayerName() {
+        //Test data.
+        Mockito.when(companyRepository.findByNameAndPlayerName("Mustermann GmbH", "Max Mustermann")).thenReturn(List.of(generateValidCompany()));
+        //Now do actual test.
+        List<Company> companies = companyService.retrieveCompanyByNameAndPlayerName("Mustermann GmbH", "Max Mustermann");
+        assertEquals(BigDecimal.valueOf(10000.0), companies.get(0).getBalance());
+    }
+
+    /**
      * Verify that the balance of a company can be adjusted appropriately.
      */
     @Test

@@ -28,13 +28,24 @@ public class CompanyService {
     }
 
     /**
-     * Retrieve all companies with this name from the databas (this should usually just be 1).
+     * Retrieve all companies with this name from the database (this should usually just be 1).
      * @param name a <code>String</code> with the name of the company to search for.
      * @return a <code>List</code> of <code>Company</code> objects.
      */
     public List<Company> retrieveCompanyByName (final String name) {
         //Return the companies found.
         return companyRepository.findByName(name);
+    }
+
+    /**
+     * Retrieve a company with the name and player name from the database (this should usually just be 1 but Spring cannot guarantee it).
+     * @param name a <code>String</code> with the name of the company to search for.
+     * @param playerName a <code>String</code> with the player name to search for.
+     * @return a <code>List</code> of <code>Company</code> objects (this should usually just be 1 but Spring cannot guarantee it).
+     */
+    public List<Company> retrieveCompanyByNameAndPlayerName (final String name, final String playerName) {
+        //Return the companies found.
+        return companyRepository.findByNameAndPlayerName(name, playerName);
     }
 
     /**

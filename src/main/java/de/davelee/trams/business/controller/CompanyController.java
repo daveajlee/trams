@@ -4,6 +4,7 @@ import de.davelee.trams.business.model.Company;
 import de.davelee.trams.business.request.AdjustBalanceRequest;
 import de.davelee.trams.business.request.CompanyRequest;
 import de.davelee.trams.business.response.BalanceResponse;
+import de.davelee.trams.business.response.CompanyResponse;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
 import io.swagger.annotations.Api;
@@ -54,6 +55,35 @@ public class CompanyController {
                 .build();
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+    }
+
+    /**
+     * Retrieve a company based on the name of the company and the player name.
+     * @param name a <code>String</code> containing the name of the company.
+     * @param playerName a <code>String</code> containing the name of the player.
+     * @return a <code>ResponseEntity</code> containing the result.
+     */
+    @ApiOperation(value = "Get a company", notes="Get a company based on name and player name")
+    @GetMapping(value="/")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned company")})
+    public ResponseEntity<CompanyResponse> retrieveCompany (final String name, final String playerName ) {
+        //First of all, check if any of the fields are empty or null, then return bad request.
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(playerName)) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Retrieve the company. Return no content if 0 or more than 1 companies are found.
+        List<Company> companies = companyService.retrieveCompanyByNameAndPlayerName(name, playerName);
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now convert to company response object.
+        return ResponseEntity.ok(CompanyResponse.builder()
+                .name(companies.get(0).getName())
+                .playerName(companies.get(0).getPlayerName())
+                .balance(companies.get(0).getBalance().doubleValue())
+                .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
+                .time(DateUtils.convertLocalDateTimeToDate(companies.get(0).getTime()))
+                .build());
     }
 
     /**

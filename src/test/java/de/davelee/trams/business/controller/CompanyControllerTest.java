@@ -80,6 +80,27 @@ public class CompanyControllerTest {
     }
 
     /**
+     * Test case: retrieve a company based on company and player name.
+     * Expected result: company information is returned as appropriate.
+     */
+    @Test
+    public void testGetCompany() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByNameAndPlayerName("Mustermann GmbH", "Max Mustermann")).thenReturn(List.of(generateValidCompany()));
+        //Valid request returns company information.
+        assertEquals(HttpStatus.OK, companyController.retrieveCompany("Mustermann GmbH", "Max Mustermann").getStatusCode());
+        //If no name supplied then bad request.
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.retrieveCompany("", "Max").getStatusCode());
+        //If names supplied but no results then no content,
+        assertEquals(HttpStatus.NO_CONTENT, companyController.retrieveCompany("Mustermann GmbH", "Max").getStatusCode());
+        //Test a null date.
+        Company company = generateValidCompany();
+        company.setTime(null);
+        Mockito.when(companyService.retrieveCompanyByNameAndPlayerName("Mustermann GmbH", "Erica")).thenReturn(List.of(company));
+        assertEquals(HttpStatus.OK, companyController.retrieveCompany("Mustermann GmbH", "Erica").getStatusCode());
+    }
+
+    /**
      * Test case: adjust balance of a company.
      * Expected result: the balance of the company is adjusted as appropriate.
      */

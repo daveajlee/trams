@@ -13,4 +13,6 @@ public interface CompanyRepository extends MongoRepository<Company, Long> {
 
     List<Company> findByName (final String name);
 
+    List<Company> findByNameAndPlayerName (final String name, final String playerName);
+
 }
