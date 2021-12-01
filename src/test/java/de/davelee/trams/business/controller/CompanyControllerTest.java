@@ -1,7 +1,11 @@
 package de.davelee.trams.business.controller;
 
+import de.davelee.trams.business.model.Company;
+import de.davelee.trams.business.request.AdjustBalanceRequest;
 import de.davelee.trams.business.request.CompanyRequest;
 import de.davelee.trams.business.service.CompanyService;
+import org.assertj.core.util.Lists;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,9 +14,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 /**
  * Test cases for the Company endpoints in the TraMS Business REST API.
@@ -65,6 +77,42 @@ public class CompanyControllerTest {
         companyRequest.setStartingTime("50-11-2020 15:90");
         ResponseEntity<Void> responseEntity2 = companyController.addCompany(companyRequest);
         assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    /**
+     * Test case: adjust balance of a company.
+     * Expected result: the balance of the company is adjusted as appropriate.
+     */
+    @Test
+    public void testAdjustBalance() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
+        Mockito.when(companyService.adjustBalance(any(), eq(BigDecimal.valueOf(10000.0)))).thenReturn(BigDecimal.valueOf(50000.0));
+        //Attempt to adjust delay.
+        assertEquals(HttpStatus.OK, companyController.adjustBalance(AdjustBalanceRequest.builder()
+                .company("Mustermann GmbH").value(10000.0).build()).getStatusCode());
+        AdjustBalanceRequest adjustBalanceRequest = new AdjustBalanceRequest();
+        adjustBalanceRequest.setCompany("Mustermann GmbH und Co");
+        adjustBalanceRequest.setValue(1000.0);
+        assertEquals("AdjustBalanceRequest(company=Mustermann GmbH und Co, value=1000.0)", adjustBalanceRequest.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
+        adjustBalanceRequest.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
+    }
+
+    /**
+     * Private helper method to generate a valid company.
+     * @return a <code>Company</code> object containing valid test data.
+     */
+    private Company generateValidCompany( ) {
+        Company company = new Company();
+        company.setName("Mustermann GmbH");
+        company.setBalance(BigDecimal.valueOf(10000.0));
+        company.setPlayerName("Max Mustermann");
+        company.setSatisfactionRate(BigDecimal.valueOf(100.0));
+        company.setTime(LocalDateTime.of(2020,12,28,14,22));
+        company.setId(ObjectId.get());
+        return company;
     }
 
 }

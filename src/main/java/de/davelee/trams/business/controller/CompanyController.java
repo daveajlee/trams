@@ -1,7 +1,9 @@
 package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
+import de.davelee.trams.business.request.AdjustBalanceRequest;
 import de.davelee.trams.business.request.CompanyRequest;
+import de.davelee.trams.business.response.BalanceResponse;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
 import io.swagger.annotations.Api;
@@ -11,12 +13,10 @@ import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * This class defines the endpoints for the REST API which manipulate a company and delegates the actions to the CompanyService class.
@@ -54,6 +54,31 @@ public class CompanyController {
                 .build();
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+    }
+
+    /**
+     * Adjust the balance of the company matching the supplied company. The current balance after adjustment will be returned.
+     * @param adjustBalanceRequest a <code>AdjustBalanceRequest</code> object containing the information about the company and the value of the balance which should be adjusted.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Adjust balance of a company", notes="Adjust balance of the company")
+    @PutMapping(value="/balance")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted balance of company"), @ApiResponse(code=204,message="No company found")})
+    public ResponseEntity<BalanceResponse> adjustBalance (@RequestBody AdjustBalanceRequest adjustBalanceRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(adjustBalanceRequest.getCompany())) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the balance cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(adjustBalanceRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now adjust the delay of the vehicle and return current delay.
+        return ResponseEntity.ok(BalanceResponse.builder()
+                .company(companies.get(0).getName())
+                .balance(companyService.adjustBalance(companies.get(0), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
+                .build());
     }
 
 

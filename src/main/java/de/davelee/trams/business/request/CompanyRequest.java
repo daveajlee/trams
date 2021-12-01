@@ -3,7 +3,7 @@ package de.davelee.trams.business.request;
 import lombok.*;
 
 /**
- * This class is part of the TraMS CRM REST API. It represents a request to add the following company to the server
+ * This class is part of the TraMS Business REST API. It represents a request to add the following company to the server
  * containing name, playerName and starting balance and time.
  * @author Dave Lee
  */
