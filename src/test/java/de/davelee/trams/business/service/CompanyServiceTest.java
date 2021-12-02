@@ -87,6 +87,24 @@ public class CompanyServiceTest {
     }
 
     /**
+     * Verify that the satisfaction rate of a company can be adjusted appropriately.
+     */
+    @Test
+    public void testAdjustSatisfaction ( ) {
+        //Generate test data.
+        Company company = generateValidCompany();
+        //Mock important method in repository.
+        Mockito.when(companyRepository.save(any())).thenReturn(company);
+        //Do test.
+        assertEquals(BigDecimal.valueOf(100.0), companyService.adjustSatisfactionRate(company, BigDecimal.valueOf(10.0)));
+        assertEquals(BigDecimal.valueOf(40.0), companyService.adjustSatisfactionRate(company, BigDecimal.valueOf(-60.0)));
+        assertEquals(BigDecimal.valueOf(0), companyService.adjustSatisfactionRate(company, BigDecimal.valueOf(-60.0)));
+        //Do test if database does not work.
+        Mockito.when(companyRepository.save(any())).thenReturn(null);
+        assertEquals(BigDecimal.valueOf(Integer.MIN_VALUE), companyService.adjustSatisfactionRate(company, BigDecimal.valueOf(10.0)));
+    }
+
+    /**
      * Private helper method to generate a valid company.
      * @return a <code>Company</code> object containing valid test data.
      */

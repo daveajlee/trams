@@ -2,9 +2,11 @@ package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
 import de.davelee.trams.business.request.AdjustBalanceRequest;
+import de.davelee.trams.business.request.AdjustSatisfactionRequest;
 import de.davelee.trams.business.request.CompanyRequest;
 import de.davelee.trams.business.response.BalanceResponse;
 import de.davelee.trams.business.response.CompanyResponse;
+import de.davelee.trams.business.response.SatisfactionRateResponse;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
 import io.swagger.annotations.Api;
@@ -104,12 +106,36 @@ public class CompanyController {
         if ( companies == null || companies.size() != 1 ) {
             return ResponseEntity.noContent().build();
         }
-        //Now adjust the delay of the vehicle and return current delay.
+        //Now adjust the balance and return the current balance after adjustment.
         return ResponseEntity.ok(BalanceResponse.builder()
                 .company(companies.get(0).getName())
                 .balance(companyService.adjustBalance(companies.get(0), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
                 .build());
     }
 
+    /**
+     * Adjust the satisfaction rate of the company matching the supplied company. The current satisfaction rate after adjustment will be returned.
+     * @param adjustSatisfactionRequest a <code>AdjustSatisfactionRequest</code> object containing the information about the company and the value of the satisfaction rate which should be adjusted.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Adjust satisfaction rate", notes="Adjust satisfaction rate of the company")
+    @PutMapping(value="/satisfaction")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted satisfaction rate of company"), @ApiResponse(code=204,message="No company found")})
+    public ResponseEntity<SatisfactionRateResponse> adjustSatisfaction (@RequestBody AdjustSatisfactionRequest adjustSatisfactionRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(adjustSatisfactionRequest.getCompany()) || adjustSatisfactionRequest.getSatisfactionRate() < -100 && adjustSatisfactionRequest.getSatisfactionRate() > 100) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the balance cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(adjustSatisfactionRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now adjust the satisfaction rate and return the current satisfaction rate after adjustment.
+        return ResponseEntity.ok(SatisfactionRateResponse.builder()
+                .company(companies.get(0).getName())
+                .satisfactionRate(companyService.adjustSatisfactionRate(companies.get(0), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
+                .build());
+    }
 
 }

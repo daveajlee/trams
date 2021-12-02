@@ -2,6 +2,7 @@ package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
 import de.davelee.trams.business.request.AdjustBalanceRequest;
+import de.davelee.trams.business.request.AdjustSatisfactionRequest;
 import de.davelee.trams.business.request.CompanyRequest;
 import de.davelee.trams.business.service.CompanyService;
 import org.assertj.core.util.Lists;
@@ -109,7 +110,7 @@ public class CompanyControllerTest {
         //Mock the important methods in company service.
         Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
         Mockito.when(companyService.adjustBalance(any(), eq(BigDecimal.valueOf(10000.0)))).thenReturn(BigDecimal.valueOf(50000.0));
-        //Attempt to adjust delay.
+        //Attempt to adjust balance.
         assertEquals(HttpStatus.OK, companyController.adjustBalance(AdjustBalanceRequest.builder()
                 .company("Mustermann GmbH").value(10000.0).build()).getStatusCode());
         AdjustBalanceRequest adjustBalanceRequest = new AdjustBalanceRequest();
@@ -119,6 +120,27 @@ public class CompanyControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
         adjustBalanceRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
+    }
+
+    /**
+     * Test case: adjust satisfaction rate of a company.
+     * Expected result: the satisfaction rate of the company is adjusted as appropriate.
+     */
+    @Test
+    public void testAdjustSatisfactionRate() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
+        Mockito.when(companyService.adjustSatisfactionRate(any(), eq(BigDecimal.valueOf(-20.0)))).thenReturn(BigDecimal.valueOf(80.0));
+        //Attempt to adjust satisfaction rate.
+        assertEquals(HttpStatus.OK, companyController.adjustSatisfaction(AdjustSatisfactionRequest.builder()
+                .company("Mustermann GmbH").satisfactionRate(-20.0).build()).getStatusCode());
+        AdjustSatisfactionRequest adjustSatisfactionRequest = new AdjustSatisfactionRequest();
+        adjustSatisfactionRequest.setCompany("Mustermann GmbH und Co");
+        adjustSatisfactionRequest.setSatisfactionRate(10.0);
+        assertEquals("AdjustSatisfactionRequest(company=Mustermann GmbH und Co, satisfactionRate=10.0)", adjustSatisfactionRequest.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
+        adjustSatisfactionRequest.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
     }
 
     /**

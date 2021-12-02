@@ -62,4 +62,27 @@ public class CompanyService {
         return BigDecimal.valueOf(Integer.MIN_VALUE);
     }
 
+    /**
+     * Adjust the satisfaction rate of the company by the supplied amount.
+     * @param company a <code>Company</code> object which should have its satisfaction rate adjusted.
+     * @param satisfactionRate a <code>BigDecimal</code> containing the amount that should be added or subtracted.
+     * @return a <code>BigDecimal</code> containing the current satisfaction rate of the company.
+     */
+    public BigDecimal adjustSatisfactionRate ( final Company company, final BigDecimal satisfactionRate ) {
+        company.setSatisfactionRate(company.getSatisfactionRate().add(satisfactionRate));
+        //If satisfaction rate is below 0 then set it to 0.
+        if ( company.getSatisfactionRate().compareTo(BigDecimal.ZERO) == -1 ) {
+            company.setSatisfactionRate(BigDecimal.ZERO);
+        }
+        //If satisfaction rate is above 100 then set it 100.
+        if ( company.getSatisfactionRate().compareTo(BigDecimal.valueOf(100.0)) == 1 ) {
+            company.setSatisfactionRate(BigDecimal.valueOf(100.0));
+        }
+        //Return satisfaction rate if it could be saved successfully.
+        if ( companyRepository.save(company) != null ) {
+            return company.getSatisfactionRate();
+        }
+        return BigDecimal.valueOf(Integer.MIN_VALUE);
+    }
+
 }
