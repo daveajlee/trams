@@ -22,8 +22,8 @@ import java.util.regex.Pattern;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/customer")
-@RequestMapping(value="/trams-crm/customer")
+@Api(value="/api/customer")
+@RequestMapping(value="/api/customer")
 public class CustomerController {
 
     @Autowired

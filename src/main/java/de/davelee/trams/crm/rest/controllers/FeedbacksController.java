@@ -26,8 +26,8 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/feedbacks")
-@RequestMapping(value="/trams-crm/feedbacks")
+@Api(value="/api/feedbacks")
+@RequestMapping(value="/api/feedbacks")
 public class FeedbacksController {
 
     @Autowired

@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/user")
-@RequestMapping(value="/trams-crm/user")
+@Api(value="/api/user")
+@RequestMapping(value="/api/user")
 public class UserController {
 
     @Autowired
@@ -85,7 +85,7 @@ public class UserController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Deactivate a user", notes="Deactivate a user from the system.")
-    @PutMapping(value="/deactivate")
+    @PatchMapping(value="/deactivate")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deactivated user"), @ApiResponse(code=204,message="Successful but no user found")})
     public ResponseEntity<Void> deactivateUser (@RequestBody final DeactivateUserRequest deactivateUserRequest) {
         //Check valid request including authentication
@@ -112,7 +112,7 @@ public class UserController {
      * @return a <code>ResponseEntity</code> object with status 200 if password changed or 404 if user not found.
      */
     @ApiOperation(value="changePassword", notes="Change password for a user")
-    @PutMapping(value="/password")
+    @PatchMapping(value="/password")
     @ApiResponses(@ApiResponse(code=200,message="Successfully processed change password request"))
     public ResponseEntity<Void> changePassword (@RequestBody final ChangePasswordRequest changePasswordRequest) {
         //Check valid request including authentication
@@ -166,7 +166,7 @@ public class UserController {
      * @return a <code>ResponseEntity</code> object with status 200 if password changed or 404 if user not found.
      */
     @ApiOperation(value="resetUser", notes="Reset password for a user")
-    @PutMapping(value="/reset")
+    @PatchMapping(value="/reset")
     @ApiResponses(@ApiResponse(code=200,message="Successfully processed reset user request"))
     public ResponseEntity<Void> resetUser (@RequestBody final ResetUserRequest resetUserRequest) {
         //Verify that user is logged in.

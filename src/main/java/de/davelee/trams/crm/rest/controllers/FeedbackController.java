@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/feedback")
-@RequestMapping(value="/trams-crm/feedback")
+@Api(value="/api/feedback")
+@RequestMapping(value="/api/feedback")
 public class FeedbackController {
 
     @Autowired
@@ -71,7 +71,7 @@ public class FeedbackController {
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
     @ApiOperation(value = "Add an answer", notes="Add an answer to a feedback in the system.")
-    @PutMapping(value="/answer")
+    @PatchMapping(value="/answer")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added answer")})
     public ResponseEntity<Void> addAnswer (@RequestBody final AnswerRequest answerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.

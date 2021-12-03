@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/ticket")
-@RequestMapping(value="/trams-crm/ticket")
+@Api(value="/api/ticket")
+@RequestMapping(value="/api/ticket")
 public class TicketController {
 
     @Autowired

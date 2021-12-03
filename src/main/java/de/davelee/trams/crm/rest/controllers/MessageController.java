@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/message")
-@RequestMapping(value="/trams-crm/message")
+@Api(value="/api/message")
+@RequestMapping(value="/api/message")
 public class MessageController {
 
     @Autowired

@@ -23,8 +23,8 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/messages")
-@RequestMapping(value="/trams-crm/messages")
+@Api(value="/api/messages")
+@RequestMapping(value="/api/messages")
 public class MessagesController {
 
     @Autowired

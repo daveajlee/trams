@@ -16,10 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -36,8 +33,8 @@ import java.util.UUID;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-crm/order")
-@RequestMapping(value="/trams-crm/order")
+@Api(value="/api/order")
+@RequestMapping(value="/api/order")
 public class OrderController {
 
     @Autowired
@@ -47,7 +44,7 @@ public class OrderController {
     private OrderService orderService;
 
     @ApiOperation(value = "Order a ticket", notes="Method to process an order for a ticket")
-    @RequestMapping(method = RequestMethod.POST, value="/")
+    @PostMapping(value="/")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successful operation"), @ApiResponse(code=400,message="Bad request"),
             @ApiResponse(code=500,message="Payment could not be processed")})
     /**
