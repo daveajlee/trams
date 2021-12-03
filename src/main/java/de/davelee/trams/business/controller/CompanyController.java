@@ -28,8 +28,8 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-business/company")
-@RequestMapping(value="/trams-business/company")
+@Api(value="/api/company")
+@RequestMapping(value="/api/company")
 public class CompanyController {
 
     @Autowired
@@ -96,7 +96,7 @@ public class CompanyController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Adjust balance of a company", notes="Adjust balance of the company")
-    @PutMapping(value="/balance")
+    @PatchMapping(value="/balance")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted balance of company"), @ApiResponse(code=204,message="No company found")})
     public ResponseEntity<BalanceResponse> adjustBalance (@RequestBody AdjustBalanceRequest adjustBalanceRequest) {
         //Check that the request is valid.
@@ -121,7 +121,7 @@ public class CompanyController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Adjust satisfaction rate", notes="Adjust satisfaction rate of the company")
-    @PutMapping(value="/satisfaction")
+    @PatchMapping(value="/satisfaction")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted satisfaction rate of company"), @ApiResponse(code=204,message="No company found")})
     public ResponseEntity<SatisfactionRateResponse> adjustSatisfaction (@RequestBody AdjustSatisfactionRequest adjustSatisfactionRequest) {
         //Check that the request is valid.
@@ -146,7 +146,7 @@ public class CompanyController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Add time in minutes", notes="Add time in minutes to the company")
-    @PutMapping(value="/time")
+    @PatchMapping(value="/time")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added the time in minutes to the company"), @ApiResponse(code=204,message="No company found")})
     public ResponseEntity<TimeResponse> addTime (@RequestBody AddTimeRequest addTimeRequest) {
         //Check that the request is valid.
