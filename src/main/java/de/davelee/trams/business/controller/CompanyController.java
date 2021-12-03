@@ -1,12 +1,14 @@
 package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
+import de.davelee.trams.business.request.AddTimeRequest;
 import de.davelee.trams.business.request.AdjustBalanceRequest;
 import de.davelee.trams.business.request.AdjustSatisfactionRequest;
 import de.davelee.trams.business.request.CompanyRequest;
 import de.davelee.trams.business.response.BalanceResponse;
 import de.davelee.trams.business.response.CompanyResponse;
 import de.davelee.trams.business.response.SatisfactionRateResponse;
+import de.davelee.trams.business.response.TimeResponse;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
 import io.swagger.annotations.Api;
@@ -135,6 +137,31 @@ public class CompanyController {
         return ResponseEntity.ok(SatisfactionRateResponse.builder()
                 .company(companies.get(0).getName())
                 .satisfactionRate(companyService.adjustSatisfactionRate(companies.get(0), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
+                .build());
+    }
+
+    /**
+     * Add the time in minutes to the company matching the supplied company name. The current time after adjustment will be returned.
+     * @param addTimeRequest a <code>AddTimeRequest</code> object containing the information about the company and the time in minutes which should be added.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @ApiOperation(value = "Add time in minutes", notes="Add time in minutes to the company")
+    @PutMapping(value="/time")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added the time in minutes to the company"), @ApiResponse(code=204,message="No company found")})
+    public ResponseEntity<TimeResponse> addTime (@RequestBody AddTimeRequest addTimeRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(addTimeRequest.getCompany()) || (addTimeRequest.getMinutes() <= 0) ) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the time cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(addTimeRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now add the time and return the current time after adjustment.
+        return ResponseEntity.ok(TimeResponse.builder()
+                .company(companies.get(0).getName())
+                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.get(0), addTimeRequest.getMinutes())))
                 .build());
     }
 

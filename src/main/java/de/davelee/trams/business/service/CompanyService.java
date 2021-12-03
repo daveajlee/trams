@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -83,6 +84,22 @@ public class CompanyService {
             return company.getSatisfactionRate();
         }
         return BigDecimal.valueOf(Integer.MIN_VALUE);
+    }
+
+    /**
+     * Add the number of minutes to the supplied company's time and return the time after adjustment.
+     * @param company a <code>Company</code> object which should have its time adjusted.
+     * @param minutes a <code>int</code> containing the number of minutes to add.
+     * @return a <code>LocalDateTime</code> containing the current time of the company.
+     */
+    public LocalDateTime addTime (final Company company, final int minutes ) {
+        //Add time in minutes to the current time
+        company.setTime(company.getTime().plusMinutes(minutes));
+        //Return time if it could be saved successfully.
+        if ( companyRepository.save(company) != null ) {
+            return company.getTime();
+        }
+        return null;
     }
 
 }

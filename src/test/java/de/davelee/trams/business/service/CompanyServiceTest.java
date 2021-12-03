@@ -13,8 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
@@ -102,6 +101,22 @@ public class CompanyServiceTest {
         //Do test if database does not work.
         Mockito.when(companyRepository.save(any())).thenReturn(null);
         assertEquals(BigDecimal.valueOf(Integer.MIN_VALUE), companyService.adjustSatisfactionRate(company, BigDecimal.valueOf(10.0)));
+    }
+
+    /**
+     * Verify that the time of a company can be added to appropriately.
+     */
+    @Test
+    public void testAddTime ( ) {
+        //Generate test data.
+        Company company = generateValidCompany();
+        //Mock important method in repository.
+        Mockito.when(companyRepository.save(any())).thenReturn(company);
+        //Do test.
+        assertEquals(LocalDateTime.of(2020,12,28,14,37), companyService.addTime(company, 15));
+        //Do test if database does not work.
+        Mockito.when(companyRepository.save(any())).thenReturn(null);
+        assertNull(companyService.addTime(company, 10));
     }
 
     /**

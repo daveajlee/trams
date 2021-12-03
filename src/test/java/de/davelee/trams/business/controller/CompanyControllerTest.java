@@ -1,6 +1,7 @@
 package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
+import de.davelee.trams.business.request.AddTimeRequest;
 import de.davelee.trams.business.request.AdjustBalanceRequest;
 import de.davelee.trams.business.request.AdjustSatisfactionRequest;
 import de.davelee.trams.business.request.CompanyRequest;
@@ -141,6 +142,27 @@ public class CompanyControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
         adjustSatisfactionRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
+    }
+
+    /**
+     * Test case: add time in minutes to a company.
+     * Expected result: the time of the company is adjusted as appropriate.
+     */
+    @Test
+    public void testAddTime() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
+        Mockito.when(companyService.addTime(any(), eq(20))).thenReturn(LocalDateTime.of(2020,12,3,8,20));
+        //Attempt to adjust satisfaction rate.
+        assertEquals(HttpStatus.OK, companyController.addTime(AddTimeRequest.builder()
+                .company("Mustermann GmbH").minutes(20).build()).getStatusCode());
+        AddTimeRequest addTimeRequest = new AddTimeRequest();
+        addTimeRequest.setCompany("Mustermann GmbH und Co");
+        addTimeRequest.setMinutes(10);
+        assertEquals("AddTimeRequest(company=Mustermann GmbH und Co, minutes=10)", addTimeRequest.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.addTime(addTimeRequest).getStatusCode());
+        addTimeRequest.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.addTime(addTimeRequest).getStatusCode());
     }
 
     /**
