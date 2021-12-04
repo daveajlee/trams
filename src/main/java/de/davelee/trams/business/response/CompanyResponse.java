@@ -2,8 +2,6 @@ package de.davelee.trams.business.response;
 
 import lombok.*;
 
-import java.math.BigDecimal;
-
 /**
  * This class is part of the TraMS Business REST API. It represents a response containing all company information.
  * @author Dave Lee
