@@ -26,8 +26,8 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/vehicles")
-@RequestMapping(value="/trams-operations/vehicles")
+@Api(value="/api/vehicles")
+@RequestMapping(value="/api/vehicles")
 public class VehiclesController {
 
     @Autowired

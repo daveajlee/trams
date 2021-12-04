@@ -25,8 +25,8 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/stopTimes")
-@RequestMapping(value="/trams-operations/stopTimes")
+@Api(value="/api/stopTimes")
+@RequestMapping(value="/api/stopTimes")
 public class StopTimesController {
 
     @Autowired

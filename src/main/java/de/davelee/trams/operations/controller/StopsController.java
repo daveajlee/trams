@@ -21,8 +21,8 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/stops")
-@RequestMapping(value="/trams-operations/stops")
+@Api(value="/api/stops")
+@RequestMapping(value="/api/stops")
 public class StopsController {
 
     @Autowired

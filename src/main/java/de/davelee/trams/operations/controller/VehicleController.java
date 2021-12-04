@@ -27,8 +27,8 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/vehicle")
-@RequestMapping(value="/trams-operations/vehicle")
+@Api(value="/api/vehicle")
+@RequestMapping(value="/api/vehicle")
 public class VehicleController {
 
     @Autowired
@@ -83,7 +83,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Add a number of hours to a particular vehicle", notes="Add a number of hours to a specified date for a specified vehicle")
-    @PutMapping(value="/hours")
+    @PatchMapping(value="/hours")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added hours"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<Void> addHoursForDate (@RequestBody AddVehicleHoursRequest addVehicleHoursRequest) {
         //Check valid request
@@ -138,7 +138,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Add a new history entry", notes="Add a new history entry for a particular vehicle.")
-    @PutMapping(value="/history")
+    @PatchMapping(value="/history")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added history entry"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<Void> addHistoryEntry (@RequestBody AddHistoryEntryRequest addHistoryEntryRequest) {
         //Check valid request
@@ -164,7 +164,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Sell a particular vehicle", notes="Sell a particular vehicle and return the money gained from the sale")
-    @PutMapping(value="/sell")
+    @PatchMapping(value="/sell")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully sold vehicle"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<SellVehicleResponse> sellVehicle (@RequestBody SellVehicleRequest sellVehicleRequest) {
         //Check that the request is valid.
@@ -191,7 +191,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Inspect a particular vehicle", notes="Inspect a particular vehicle and return the cost of the inspection")
-    @PutMapping(value="/inspect")
+    @PatchMapping(value="/inspect")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully inspected vehicle"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<InspectVehicleResponse> inspectVehicle (@RequestBody InspectVehicleRequest inspectVehicleRequest) {
         //Check that the request is valid.
@@ -218,7 +218,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Allocate a particular vehicle", notes="Allocate a particular vehicle to a particular tour")
-    @PutMapping(value="/allocate")
+    @PatchMapping(value="/allocate")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully allocated vehicle"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<Void> allocateVehicle (@RequestBody AllocateVehicleRequest allocateVehicleRequest) {
         //Check that the request is valid.
@@ -303,7 +303,7 @@ public class VehicleController {
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @ApiOperation(value = "Adjust delay of a particular vehicle", notes="Adjust the delay of a particular vehicle in minutes")
-    @PutMapping(value="/delay")
+    @PatchMapping(value="/delay")
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted delay of vehicle"), @ApiResponse(code=204,message="No vehicle found")})
     public ResponseEntity<VehicleDelayResponse> adjustVehicleDelay (@RequestBody AdjustVehicleDelayRequest adjustVehicleDelayRequest) {
         //Check that the request is valid.

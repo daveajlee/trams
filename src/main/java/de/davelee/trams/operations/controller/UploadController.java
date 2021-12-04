@@ -17,8 +17,8 @@ import java.util.*;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/upload")
-@RequestMapping(value="/trams-operations/upload")
+@Api(value="/api/upload")
+@RequestMapping(value="/api/upload")
 public class UploadController {
 
     @Autowired

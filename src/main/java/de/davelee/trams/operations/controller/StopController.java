@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/stop")
-@RequestMapping(value="/trams-operations/stop")
+@Api(value="/api/stop")
+@RequestMapping(value="/api/stop")
 public class StopController {
 
     @Autowired

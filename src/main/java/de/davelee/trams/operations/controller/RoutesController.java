@@ -21,8 +21,8 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/trams-operations/routes")
-@RequestMapping(value="/trams-operations/routes")
+@Api(value="/api/routes")
+@RequestMapping(value="/api/routes")
 public class RoutesController {
 
     @Autowired
