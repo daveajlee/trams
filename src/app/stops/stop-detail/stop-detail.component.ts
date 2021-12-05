@@ -74,17 +74,17 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.minutes = this.leftPadZero(time.getMinutes());
     // Retrieve departures for first stop id.
     this.departuresSubscription = this.http.get<StopTimesResponse>(
-        'http://localhost:8084/trams-operations/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
+        'http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
         this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
       this.departures = realTimeInfos.stopTimeResponses;
     });
     // Retrieve arrivals for first stop id.
-    this.arrivalsSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/trams-operations/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
+    this.arrivalsSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
       this.arrivals = realTimeInfos.stopTimeResponses;
     });
     // Retrieve departures for complete day.
 
-    this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/trams-operations/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
+    this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
       this.todayDepartures = departureInfos.stopTimeResponses;
     });
   }

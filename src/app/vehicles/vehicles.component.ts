@@ -39,7 +39,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   searchByFleetNumber(searchValue: string): void {
-    this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/trams-operations/' +
+    this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/api/' +
         'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
       this.vehicles = vehicleInfos.vehicleResponses;
     });
