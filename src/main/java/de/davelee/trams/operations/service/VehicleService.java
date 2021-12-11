@@ -189,7 +189,6 @@ public class VehicleService {
      */
     public void deleteVehicles(final String company) {
         List<Vehicle> vehicles = retrieveVehiclesByCompany(company);
-        System.out.println(vehicles.size());
         vehicles.forEach(vehicleRepository::delete);
     }
 

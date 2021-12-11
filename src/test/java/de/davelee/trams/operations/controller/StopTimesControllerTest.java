@@ -1,6 +1,8 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.StopTime;
+import de.davelee.trams.operations.request.GenerateStopTimesRequest;
+import de.davelee.trams.operations.request.StopPatternRequest;
 import de.davelee.trams.operations.response.StopTimesResponse;
 import de.davelee.trams.operations.service.StopTimeService;
 import org.assertj.core.util.Lists;
@@ -108,6 +110,47 @@ public class StopTimesControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("101", responseEntity.getBody().getStopTimeResponses()[0].getJourneyNumber());
+    }
+
+    /**
+     * Test the generate endpoint of this controller.
+     */
+    @Test
+    public void testGenerateEndpoint() {
+        //1st test
+        GenerateStopTimesRequest generateStopTimesRequest = GenerateStopTimesRequest.builder()
+                .company("Lee Transport")
+                .stopPatternRequest(StopPatternRequest.builder()
+                        .stopNames(new String[]{ "Ferry Terminal", "Arena", "Cathedral", "Bus Station", "Airport"})
+                        .distances(new int[]{ 7, 3, 1, 5 })
+                        .stoppingTimes(new int[]{0, 0, 1, 0, 0})
+                        .build())
+                .routeNumber("TravelExpress")
+                .startTime("05:00")
+                .endTime("23:00")
+                .frequency(90)
+                .validFromDate("11-12-2021")
+                .validToDate("10-12-2022")
+                .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday")
+                .build();
+        stopTimesController.generateStopTimes(generateStopTimesRequest);
+        //2nd test
+        GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();
+        generateStopTimesRequest2.setCompany("Lee Transport");
+        StopPatternRequest stopPatternRequest = new StopPatternRequest();
+        stopPatternRequest.setStopNames(new String[] { "Bus Station", "Country Park"});
+        stopPatternRequest.setDistances(new int[] { 40 });
+        stopPatternRequest.setStoppingTimes(new int[] { 2, 2});
+        generateStopTimesRequest2.setStopPatternRequest(stopPatternRequest);
+        generateStopTimesRequest2.setRouteNumber("ParkExpress");
+        generateStopTimesRequest2.setStartTime("10:00");
+        generateStopTimesRequest2.setEndTime("15:00");
+        generateStopTimesRequest2.setFrequency(120);
+        generateStopTimesRequest2.setValidFromDate("11-12-2021");
+        generateStopTimesRequest2.setValidToDate("25-12-2021");
+        generateStopTimesRequest2.setOperatingDays("Saturday,Sunday");
+        stopTimesController.generateStopTimes(generateStopTimesRequest2);
+        assertEquals("StopPatternRequest(stopNames=[Bus Station, Country Park], distances=[40], stoppingTimes=[2, 2])", stopPatternRequest.toString());
     }
 
 }

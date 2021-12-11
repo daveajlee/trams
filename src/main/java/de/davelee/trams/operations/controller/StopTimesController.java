@@ -1,6 +1,7 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.StopTime;
+import de.davelee.trams.operations.request.GenerateStopTimesRequest;
 import de.davelee.trams.operations.response.StopTimeResponse;
 import de.davelee.trams.operations.response.StopTimesResponse;
 import de.davelee.trams.operations.service.StopTimeService;
@@ -10,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ import java.util.Optional;
 @Api(value="/api/stopTimes")
 @RequestMapping(value="/api/stopTimes")
 public class StopTimesController {
+
+    private Logger logger = LoggerFactory.getLogger(StopTimesController.class);
 
     @Autowired
     private StopTimeService stopTimeService;
@@ -91,6 +96,19 @@ public class StopTimesController {
         return ResponseEntity.ok(StopTimesResponse.builder()
                 .count((long) stopTimeResponses.length)
                 .stopTimeResponses(stopTimeResponses).build());
+    }
+
+    /**
+     * Generate stop time entries within a specified time and frequency and save them to the database.
+     *
+     */
+    @PostMapping("/generate")
+    @CrossOrigin
+    @ApiOperation(value = "Generate stop times", notes="Generate the stop times for a route and frequency.")
+    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stop times")})
+    public ResponseEntity<Void> generateStopTimes ( final GenerateStopTimesRequest generateStopTimesRequest ) {
+        logger.info("Attempting to generate stopTimes for " + generateStopTimesRequest.toString());
+        return ResponseEntity.ok().build();
     }
 
 }
