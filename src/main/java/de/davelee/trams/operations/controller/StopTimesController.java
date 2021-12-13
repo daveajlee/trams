@@ -5,6 +5,7 @@ import de.davelee.trams.operations.request.GenerateStopTimesRequest;
 import de.davelee.trams.operations.response.StopTimeResponse;
 import de.davelee.trams.operations.response.StopTimesResponse;
 import de.davelee.trams.operations.service.StopTimeService;
+import de.davelee.trams.operations.utils.DateUtils;
 import de.davelee.trams.operations.utils.StopTimeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,10 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * This class provides REST endpoints which provide operations associated with stop times in the TraMS Operations API.
@@ -108,7 +113,45 @@ public class StopTimesController {
     @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stop times")})
     public ResponseEntity<Void> generateStopTimes ( final GenerateStopTimesRequest generateStopTimesRequest ) {
         logger.info("Attempting to generate stopTimes for " + generateStopTimesRequest.toString());
+        //Store list of stop times generated.
+        List<StopTime> stopTimeList = new ArrayList<>();
+        //Random object to use during generation.
+        Random rand = new Random();
+        //Generate the first trip in outward direction.
+        LocalTime arrivalTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        arrivalTime = arrivalTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
+        stopTimeList.add(generateStopTime(arrivalTime, generateStopTimesRequest.getCompany(), arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[0]),
+                generateStopTimesRequest.getStopPatternRequest().getStopNames()[0], "1", generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length-1],
+                generateStopTimesRequest.getRouteNumber(), StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()), DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()),
+                DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate())));
+        //Generate the first trip in return direction.
+        arrivalTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        arrivalTime = arrivalTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
+        stopTimeList.add(generateStopTime(arrivalTime, generateStopTimesRequest.getCompany(), arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1]),
+                generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1], "1", generateStopTimesRequest.getStopPatternRequest().getStopNames()[0],
+                generateStopTimesRequest.getRouteNumber(), StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()), DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()),
+                DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate())));
+        //Log the list of stop times generated.
+        logger.info("StopTimes generated: " + stopTimeList.toString());
         return ResponseEntity.ok().build();
+    }
+
+    private StopTime generateStopTime (final LocalTime arrivalTime, final String company, final LocalTime departureTime,
+                                       final String stopName, final String journeyNumber, final String destination,
+                                       final String routeNumber, final List<DayOfWeek> operatingDays, final LocalDate validFromDate,
+                                       final LocalDate validToDate ) {
+        return StopTime.builder()
+                    .arrivalTime(arrivalTime)
+                    .company(company)
+                    .departureTime(departureTime)
+                    .stopName(stopName)
+                    .journeyNumber(journeyNumber)
+                    .destination(destination)
+                    .routeNumber(routeNumber)
+                    .operatingDays(operatingDays)
+                    .validFromDate(validFromDate)
+                    .validToDate(validToDate)
+                    .build();
     }
 
 }
