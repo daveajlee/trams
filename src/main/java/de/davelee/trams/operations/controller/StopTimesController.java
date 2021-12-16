@@ -6,6 +6,7 @@ import de.davelee.trams.operations.response.StopTimeResponse;
 import de.davelee.trams.operations.response.StopTimesResponse;
 import de.davelee.trams.operations.service.StopTimeService;
 import de.davelee.trams.operations.utils.DateUtils;
+import de.davelee.trams.operations.utils.Direction;
 import de.davelee.trams.operations.utils.StopTimeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,7 +106,8 @@ public class StopTimesController {
 
     /**
      * Generate stop time entries within a specified time and frequency and save them to the database.
-     *
+     * @param generateStopTimesRequest a <code>GenerateStopTimesRequest</code> object containing the information to
+     *                                 generate stop times including stops, distances and frequencies.
      */
     @PostMapping("/generate")
     @CrossOrigin
@@ -115,43 +117,96 @@ public class StopTimesController {
         logger.info("Attempting to generate stopTimes for " + generateStopTimesRequest.toString());
         //Store list of stop times generated.
         List<StopTime> stopTimeList = new ArrayList<>();
-        //Random object to use during generation.
-        Random rand = new Random();
         //Generate the first trip in outward direction.
-        LocalTime arrivalTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
-        arrivalTime = arrivalTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
-        stopTimeList.add(generateStopTime(arrivalTime, generateStopTimesRequest.getCompany(), arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[0]),
-                generateStopTimesRequest.getStopPatternRequest().getStopNames()[0], "1", generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length-1],
-                generateStopTimesRequest.getRouteNumber(), StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()), DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()),
-                DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate())));
+        stopTimeList.addAll(generateFirstTrip(Direction.OUTGOING, generateStopTimesRequest, 1));
         //Generate the first trip in return direction.
-        arrivalTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
-        arrivalTime = arrivalTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
-        stopTimeList.add(generateStopTime(arrivalTime, generateStopTimesRequest.getCompany(), arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1]),
-                generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1], "1", generateStopTimesRequest.getStopPatternRequest().getStopNames()[0],
-                generateStopTimesRequest.getRouteNumber(), StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()), DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()),
-                DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate())));
+        stopTimeList.addAll(generateFirstTrip(Direction.RETURN, generateStopTimesRequest, Integer.parseInt(stopTimeList.get(stopTimeList.size()-1).getJourneyNumber())+1));
         //Log the list of stop times generated.
         logger.info("StopTimes generated: " + stopTimeList.toString());
         return ResponseEntity.ok().build();
     }
 
-    private StopTime generateStopTime (final LocalTime arrivalTime, final String company, final LocalTime departureTime,
-                                       final String stopName, final String journeyNumber, final String destination,
-                                       final String routeNumber, final List<DayOfWeek> operatingDays, final LocalDate validFromDate,
-                                       final LocalDate validToDate ) {
-        return StopTime.builder()
+    /**
+     * Private helper method to generate all stop times for the first trip in a particular direction.
+     * @param direction a <code>Direction</code> enum which can be either OUTGOING or RETURN.
+     * @param generateStopTimesRequest a <code>GenerateStopTimesRequest</code> object containing the information to
+     *                                 generate stop times including stops, distances and frequencies.
+     * @param startJourneyNumber a <code>int</code> with the journey number to use for the first stop time generated.
+     * @return a <code>List</code> of <code>StopTime</code> objects which have been generated automatically.
+     */
+    private List<StopTime> generateFirstTrip ( final Direction direction, final GenerateStopTimesRequest generateStopTimesRequest,
+                                               final int startJourneyNumber ) {
+        //Initialise journey number.
+        int journeyNumber = startJourneyNumber;
+        //Create an empty list to add stop times to.
+        List<StopTime> stopTimeList = new ArrayList<>();
+        //Decide a random start time within the supplied frequency.
+        LocalTime arrivalTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        Random rand = new Random();
+        arrivalTime = arrivalTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
+        if ( direction == Direction.OUTGOING ) {
+            //Generate first trip in the outward direction.
+            stopTimeList.add(StopTime.builder()
                     .arrivalTime(arrivalTime)
-                    .company(company)
-                    .departureTime(departureTime)
-                    .stopName(stopName)
-                    .journeyNumber(journeyNumber)
-                    .destination(destination)
-                    .routeNumber(routeNumber)
-                    .operatingDays(operatingDays)
-                    .validFromDate(validFromDate)
-                    .validToDate(validToDate)
-                    .build();
+                    .company(generateStopTimesRequest.getCompany())
+                    .departureTime(arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[0]))
+                    .stopName(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
+                    .journeyNumber("" + journeyNumber++)
+                    .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length - 1])
+                    .routeNumber(generateStopTimesRequest.getRouteNumber())
+                    .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                    .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
+                    .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
+                    .build());
+            //Generate remaining stop times for the first trip.
+            for (int i = 1; i < generateStopTimesRequest.getStopPatternRequest().getStopNames().length; i++) {
+                arrivalTime = arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getDistances()[i - 1]);
+                stopTimeList.add(StopTime.builder()
+                        .arrivalTime(arrivalTime)
+                        .company(generateStopTimesRequest.getCompany())
+                        .departureTime(arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[i]))
+                        .stopName(generateStopTimesRequest.getStopPatternRequest().getStopNames()[i])
+                        .journeyNumber("" + journeyNumber++)
+                        .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length - 1])
+                        .routeNumber(generateStopTimesRequest.getRouteNumber())
+                        .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                        .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
+                        .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
+                        .build());
+            }
+        } else if ( direction == Direction.RETURN ) {
+            //Generate first trip in the return direction.
+            stopTimeList.add(StopTime.builder()
+                    .arrivalTime(arrivalTime)
+                    .company(generateStopTimesRequest.getCompany())
+                    .departureTime(arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1]))
+                    .stopName(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStoppingTimes().length-1])
+                    .journeyNumber("" + journeyNumber++)
+                    .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
+                    .routeNumber(generateStopTimesRequest.getRouteNumber())
+                    .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                    .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
+                    .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
+                    .build());
+            //Generate remaining stop times for the first trip.
+            for (int i = generateStopTimesRequest.getStopPatternRequest().getStopNames().length-2; i >= 0; i--) {
+                arrivalTime = arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getDistances()[i]);
+                stopTimeList.add(StopTime.builder()
+                        .arrivalTime(arrivalTime)
+                        .company(generateStopTimesRequest.getCompany())
+                        .departureTime(arrivalTime.plusMinutes(generateStopTimesRequest.getStopPatternRequest().getStoppingTimes()[i]))
+                        .stopName(generateStopTimesRequest.getStopPatternRequest().getStopNames()[i])
+                        .journeyNumber("" + journeyNumber++)
+                        .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
+                        .routeNumber(generateStopTimesRequest.getRouteNumber())
+                        .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                        .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
+                        .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
+                        .build());
+            }
+        }
+        //Return the list of stop times.
+        return stopTimeList;
     }
 
 }
