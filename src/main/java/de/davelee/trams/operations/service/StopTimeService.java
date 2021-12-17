@@ -23,6 +23,21 @@ public class StopTimeService {
     private StopTimeRepository stopTimeRepository;
 
     /**
+     * Add the supplied list of stop times to the database.
+     * @param stopTimeList a <code>List</code> of <code>StopTime</code> objects containing the list of stop times to be added.
+     * @return a <code>boolean</code> which is true iff all of the stop times were added successfully.
+     */
+    public boolean addStopTimes ( final List<StopTime> stopTimeList ) {
+        //Attempt to add all of the stop times to the database.
+        for ( StopTime stopTime : stopTimeList ) {
+            if ( stopTimeRepository.save(stopTime) == null ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Return the next 3 departures for this stop within the next 2 hours.
      * @param stopName a <code>String</code> containing the name of the stop to retrieve departures from.
      * @param company a <code>String</code> containing the name of the company to retrieve stop times for.

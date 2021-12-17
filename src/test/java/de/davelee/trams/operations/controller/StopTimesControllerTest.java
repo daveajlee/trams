@@ -133,6 +133,7 @@ public class StopTimesControllerTest {
                 .validToDate("10-12-2022")
                 .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday")
                 .build();
+        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopPatternRequest=StopPatternRequest(stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], distances=[7, 3, 1, 5], stoppingTimes=[0, 0, 1, 0, 0]), routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
         //2nd test
         GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();

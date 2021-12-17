@@ -15,7 +15,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * This class tests the StopTimeService class and ensures that it works successfully. Mocks are used for the database layer.
@@ -131,6 +132,21 @@ public class StopTimeServiceTest {
         assertEquals(2, stopTimeTestList1.size());
         assertEquals(2, stopTimeTestList1.get(0).getId());
         assertEquals(3, stopTimeTestList1.get(1).getId());
+    }
+
+    /**
+     * Verify that it is possible to add stop times.
+     */
+    @Test
+    public void testAddStopTimes ( ) {
+        //Test data.
+        List<StopTime> stopTimeList = List.of(createStopTime(LocalTime.of(8,15), LocalTime.of(8,17), "1", 1));
+        //Run actual test - in positive case.
+        Mockito.when(stopTimeRepository.save(any())).thenReturn(createStopTime(LocalTime.of(8,15), LocalTime.of(8,17), "1", 1));
+        assertTrue(stopTimeService.addStopTimes(stopTimeList));
+        //Run actual test - in negative case.
+        Mockito.when(stopTimeRepository.save(any())).thenReturn(null);
+        assertFalse(stopTimeService.addStopTimes(stopTimeList));
     }
 
     /**
