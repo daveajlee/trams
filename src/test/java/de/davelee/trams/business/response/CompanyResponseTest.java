@@ -21,12 +21,16 @@ public class CompanyResponseTest {
         companyResponse.setBalance(10000.0);
         companyResponse.setSatisfactionRate(100.0);
         companyResponse.setTime("01-12-2020 16:54");
+        companyResponse.setScenarioName("Beginner's Scenario");
+        companyResponse.setDifficultyLevel("EASY");
         assertEquals(10000.0, companyResponse.getBalance());
         assertEquals("Mustermann GmbH", companyResponse.getName());
         assertEquals("Max Mustermann", companyResponse.getPlayerName());
         assertEquals(100.0, companyResponse.getSatisfactionRate());
         assertEquals("01-12-2020 16:54", companyResponse.getTime());
-        assertEquals("CompanyResponse(name=Mustermann GmbH, balance=10000.0, playerName=Max Mustermann, time=01-12-2020 16:54, satisfactionRate=100.0)", companyResponse.toString());
+        assertEquals("Beginner's Scenario", companyResponse.getScenarioName());
+        assertEquals("EASY", companyResponse.getDifficultyLevel());
+        assertEquals("CompanyResponse(name=Mustermann GmbH, balance=10000.0, playerName=Max Mustermann, time=01-12-2020 16:54, satisfactionRate=100.0, scenarioName=Beginner's Scenario, difficultyLevel=EASY)", companyResponse.toString());
     }
 
 }

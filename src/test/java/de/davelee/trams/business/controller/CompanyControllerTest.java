@@ -55,8 +55,10 @@ public class CompanyControllerTest {
                 .playerName("Max Mustermann")
                 .startingBalance(10000.0)
                 .startingTime("28-11-2020 15:16")
+                .scenarioName("Intermediate's Scenario")
+                .difficultyLevel("MEDIUM")
                 .build();
-        assertEquals("CompanyRequest(name=Mustermann GmbH, startingBalance=10000.0, playerName=Max Mustermann, startingTime=28-11-2020 15:16)", companyRequest.toString());
+        assertEquals("CompanyRequest(name=Mustermann GmbH, startingBalance=10000.0, playerName=Max Mustermann, startingTime=28-11-2020 15:16, scenarioName=Intermediate's Scenario, difficultyLevel=MEDIUM)", companyRequest.toString());
         ResponseEntity<Void> responseEntity = companyController.addCompany(companyRequest);
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
     }

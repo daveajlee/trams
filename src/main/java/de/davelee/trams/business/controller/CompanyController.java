@@ -56,6 +56,8 @@ public class CompanyController {
                 .balance(BigDecimal.valueOf(companyRequest.getStartingBalance()))
                 .satisfactionRate(BigDecimal.valueOf(100.0))
                 .time(DateUtils.convertDateToLocalDateTime(companyRequest.getStartingTime()))
+                .scenarioName(companyRequest.getScenarioName())
+                .difficultyLevel(companyRequest.getDifficultyLevel())
                 .build();
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
@@ -87,6 +89,8 @@ public class CompanyController {
                 .balance(companies.get(0).getBalance().doubleValue())
                 .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
                 .time(DateUtils.convertLocalDateTimeToDate(companies.get(0).getTime()))
+                .scenarioName(companies.get(0).getScenarioName())
+                .difficultyLevel(companies.get(0).getDifficultyLevel())
                 .build());
     }
 
