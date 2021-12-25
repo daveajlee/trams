@@ -258,6 +258,7 @@ public class VehicleController {
         //Return the vehicle information.
         return ResponseEntity.ok(VehicleResponse.builder()
                 .allocatedTour(vehicles.get(0).getAllocatedTour())
+                .delayInMinutes(vehicles.get(0).getDelayInMinutes())
                 .fleetNumber(vehicles.get(0).getFleetNumber())
                 .livery(vehicles.get(0).getLivery())
                 .company(vehicles.get(0).getCompany())

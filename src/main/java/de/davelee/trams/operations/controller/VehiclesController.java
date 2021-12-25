@@ -89,6 +89,7 @@ public class VehiclesController {
         for ( int i = 0; i < vehicleResponses.length; i++ ) {
             vehicleResponses[i] = VehicleResponse.builder()
                     .allocatedTour(vehicles.get(i).getAllocatedTour())
+                    .delayInMinutes(vehicles.get(i).getDelayInMinutes())
                     .fleetNumber(vehicles.get(i).getFleetNumber())
                     .livery(vehicles.get(i).getLivery())
                     .company(vehicles.get(i).getCompany())
