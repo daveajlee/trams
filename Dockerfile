@@ -1,5 +1,6 @@
-#Build the project for Java 11
-FROM openjdk:12-alpine AS builder
+#Based on tutorial: https://docs.docker.com/develop/develop-images/multistage-build/
+#Build the project for Java 17
+FROM openjdk:17-alpine AS builder
 
 #Get APK up to date
 RUN apk update && apk upgrade
@@ -16,7 +17,7 @@ RUN git clone https://github.com/daveajlee/trams-operations.git /trams-operation
 RUN mvn -f /trams-operations clean install
 
 # Build release image
-FROM openjdk:12-alpine
+FROM openjdk:17-alpine
 
 #Debug
 
@@ -30,7 +31,3 @@ USER appuser
 
 #Define how to start
 ENTRYPOINT ["java", "-jar", "trams-operations.jar"]
-
-#FROM openjdk:11
-#COPY target/trams-operations.jar /trams-operations.jar
-#ENTRYPOINT [ "sh", "-c", "java -jar /trams-operations.jar" ]

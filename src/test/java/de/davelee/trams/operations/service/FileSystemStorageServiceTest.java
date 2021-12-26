@@ -53,7 +53,6 @@ public class FileSystemStorageServiceTest {
         storageConfiguration.setLocation("/#$");
         FileSystemStorageService fileSystemStorageService = new FileSystemStorageService(storageConfiguration);
         fileSystemStorageService.deleteAll();
-        //Assertions.assertThrows(StorageException.class, () -> fileSystemStorageService.init());
     }
 
     /**
