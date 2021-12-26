@@ -2,10 +2,10 @@ package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.request.ImportZipRequest;
 import de.davelee.trams.operations.service.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ import java.util.*;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/upload")
+@Tag(name="/api/upload")
 @RequestMapping(value="/api/upload")
 public class UploadController {
 
@@ -41,8 +41,8 @@ public class UploadController {
      */
     @PostMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Upload Data file", notes="Upload a GTFS or CSV Zip file to TraMS")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully imported GTFS/CSV Data"), @ApiResponse(code=422,message="Entity could not be processed because zip file was not valid")})
+    @Operation(summary = "Upload Data file", description="Upload a GTFS or CSV Zip file to TraMS")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully imported GTFS/CSV Data"), @ApiResponse(responseCode="422",description="Entity could not be processed because zip file was not valid")})
     public ResponseEntity<Void> handleFileUpload(@ModelAttribute final ImportZipRequest importZipRequest) {
         String folderName = fileSystemStorageService.store(importZipRequest.getZipFile());
         List<String> routesToImport =  importZipRequest.getRoutesToImport() != null ?

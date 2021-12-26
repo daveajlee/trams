@@ -4,10 +4,10 @@ import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.response.StopResponse;
 import de.davelee.trams.operations.response.StopsResponse;
 import de.davelee.trams.operations.service.StopService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/stops")
+@Tag(name="/api/stops")
 @RequestMapping(value="/api/stops")
 public class StopsController {
 
@@ -36,8 +36,8 @@ public class StopsController {
     @GetMapping("/")
     @CrossOrigin
     @ResponseBody
-    @ApiOperation(value = "Get stops", notes="Return all stops")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stops")})
+    @Operation(summary = "Get stops", description="Return all stops")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stops")})
     public ResponseEntity<StopsResponse> getStops (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
@@ -71,8 +71,8 @@ public class StopsController {
      */
     @DeleteMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Delete stops", notes="Delete all stops")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted stops")})
+    @Operation(summary = "Delete stops", description="Delete all stops")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted stops")})
     public ResponseEntity<Void> deleteStops (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

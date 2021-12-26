@@ -4,10 +4,10 @@ import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.response.RouteResponse;
 import de.davelee.trams.operations.response.RoutesResponse;
 import de.davelee.trams.operations.service.RouteService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/routes")
+@Tag(name="/api/routes")
 @RequestMapping(value="/api/routes")
 public class RoutesController {
 
@@ -36,8 +36,8 @@ public class RoutesController {
     @GetMapping("/")
     @CrossOrigin
     @ResponseBody
-    @ApiOperation(value = "Get routes", notes="Return all routes")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned routes"),@ApiResponse(code=204,message="Successful but no vehicles found")})
+    @Operation(summary = "Get routes", description="Return all routes")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned routes"),@ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<RoutesResponse> getRoutesByCompany ( final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
@@ -69,8 +69,8 @@ public class RoutesController {
      */
     @DeleteMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Delete routes", notes="Delete all routes")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted routes"),@ApiResponse(code=204,message="Successful but no vehicles found")})
+    @Operation(summary = "Delete routes", description="Delete all routes")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted routes"),@ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<Void> deleteRoutesByCompany ( final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

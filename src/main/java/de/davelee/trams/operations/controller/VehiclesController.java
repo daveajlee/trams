@@ -8,10 +8,10 @@ import de.davelee.trams.operations.response.VehiclesResponse;
 import de.davelee.trams.operations.service.VehicleService;
 import de.davelee.trams.operations.utils.DateUtils;
 import de.davelee.trams.operations.utils.VehicleUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/vehicles")
+@Tag(name="/api/vehicles")
 @RequestMapping(value="/api/vehicles")
 public class VehiclesController {
 
@@ -40,8 +40,8 @@ public class VehiclesController {
      */
     @PostMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Load vehicles", notes="Load all vehicles for a particular company")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully loaded vehicles")})
+    @Operation(summary = "Load vehicles", description="Load all vehicles for a particular company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully loaded vehicles")})
     public ResponseEntity<Void> loadVehicles (@RequestBody final LoadVehiclesRequest loadVehiclesRequest) {
         //First of all check that the request is valid i.e. the list is not empty.
         if (loadVehiclesRequest.getCount() <= 0 || loadVehiclesRequest.getLoadVehicleRequests().length <= 0 ) {
@@ -66,8 +66,8 @@ public class VehiclesController {
     @GetMapping("/")
     @CrossOrigin
     @ResponseBody
-    @ApiOperation(value = "Get vehicles", notes="Return all vehicles matching company and if supplied fleet number")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned vehicles"), @ApiResponse(code=204,message="Successful but no vehicles found")})
+    @Operation(summary = "Get vehicles", description="Return all vehicles matching company and if supplied fleet number")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned vehicles"), @ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<VehiclesResponse> getVehiclesByCompanyAndFleetNumber (final String company, final Optional<String> fleetNumber ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
@@ -118,8 +118,8 @@ public class VehiclesController {
      */
     @DeleteMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Delete vehicles", notes="Delete all vehicles")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted vehicles")})
+    @Operation(summary = "Delete vehicles", description="Delete all vehicles")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted vehicles")})
     public ResponseEntity<Void> deleteVehicles (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

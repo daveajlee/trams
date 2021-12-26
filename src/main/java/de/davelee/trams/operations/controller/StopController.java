@@ -3,10 +3,10 @@ package de.davelee.trams.operations.controller;
 import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.request.AddStopRequest;
 import de.davelee.trams.operations.service.StopService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/stop")
+@Tag(name="/api/stop")
 @RequestMapping(value="/api/stop")
 public class StopController {
 
@@ -32,8 +32,8 @@ public class StopController {
      */
     @PostMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Add stop", notes="Add a stop for this company")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully add stop")})
+    @Operation(summary = "Add stop", description="Add a stop for this company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully add stop")})
     public ResponseEntity<Void> addStop ( @RequestBody final AddStopRequest stopRequest ) {
         //Check that the request is valid, otherwise bad request.
         if (StringUtils.isBlank(stopRequest.getCompany()) || StringUtils.isBlank(stopRequest.getName())) {

@@ -8,10 +8,10 @@ import de.davelee.trams.operations.service.StopTimeService;
 import de.davelee.trams.operations.utils.DateUtils;
 import de.davelee.trams.operations.utils.Direction;
 import de.davelee.trams.operations.utils.StopTimeUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import java.util.Random;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/stopTimes")
+@Tag(name="/api/stopTimes")
 @RequestMapping(value="/api/stopTimes")
 public class StopTimesController {
 
@@ -50,8 +50,8 @@ public class StopTimesController {
     @GetMapping("/")
     @CrossOrigin
     @ResponseBody
-    @ApiOperation(value = "Get stop times", notes="Return the stop times.")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stop times")})
+    @Operation(summary = "Get stop times", description="Return the stop times.")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stop times")})
     public ResponseEntity<StopTimesResponse> getStopTimes (final String stopName, final String company, final Optional<String> startingTime,
                                                            final String date, final boolean departures, final boolean arrivals) {
         //First of all, check that all necessary parameters were filled and that at least one of departures or arrivals is true.
@@ -105,8 +105,8 @@ public class StopTimesController {
      */
     @PostMapping("/generate")
     @CrossOrigin
-    @ApiOperation(value = "Generate stop times", notes="Generate the stop times for a route and frequency.")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned stop times")})
+    @Operation(summary = "Generate stop times", description="Generate the stop times for a route and frequency.")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stop times")})
     public ResponseEntity<Void> generateStopTimes ( final GenerateStopTimesRequest generateStopTimesRequest ) {
         //Store list of stop times generated.
         List<StopTime> stopTimeList = new ArrayList<>();

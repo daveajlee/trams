@@ -8,10 +8,10 @@ import de.davelee.trams.operations.response.*;
 import de.davelee.trams.operations.service.VehicleService;
 import de.davelee.trams.operations.utils.DateUtils;
 import de.davelee.trams.operations.utils.VehicleUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/vehicle")
+@Tag(name="/api/vehicle")
 @RequestMapping(value="/api/vehicle")
 public class VehicleController {
 
@@ -39,9 +39,9 @@ public class VehicleController {
      * @param purchaseVehicleRequest a <code>PurchaseVehicleRequest</code> object containing the information about the vehicle which should be purchased.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Purchase a particular vehicle", notes="Purchase a particular vehicle and return the purchase price")
+    @Operation(summary = "Purchase a particular vehicle", description="Purchase a particular vehicle and return the purchase price")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully purchased vehicles"), @ApiResponse(code=409,message="Vehicle conflicted with a vehicle that already exists")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully purchased vehicles"), @ApiResponse(responseCode="409",description="Vehicle conflicted with a vehicle that already exists")})
     public ResponseEntity<PurchaseVehicleResponse> purchaseVehicle (@RequestBody PurchaseVehicleRequest purchaseVehicleRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(purchaseVehicleRequest.getCompany()) || StringUtils.isBlank(purchaseVehicleRequest.getFleetNumber())
@@ -82,9 +82,9 @@ public class VehicleController {
      * @param addVehicleHoursRequest a <code>AddVehicleHoursRequest</code> object containing the information to update.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Add a number of hours to a particular vehicle", notes="Add a number of hours to a specified date for a specified vehicle")
+    @Operation(summary = "Add a number of hours to a particular vehicle", description="Add a number of hours to a specified date for a specified vehicle")
     @PatchMapping(value="/hours")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added hours"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added hours"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> addHoursForDate (@RequestBody AddVehicleHoursRequest addVehicleHoursRequest) {
         //Check valid request
         if (StringUtils.isBlank(addVehicleHoursRequest.getCompany()) || StringUtils.isBlank(addVehicleHoursRequest.getFleetNumber()) ||
@@ -109,9 +109,9 @@ public class VehicleController {
      * @param date a <code>String</code> containing the date to retrieve the hours for in format dd-MM-yyyy.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Retrieve the number of hours for a particular vehicle", notes="Add a number of hours to a specified date for a specified vehicle")
+    @Operation(summary = "Retrieve the number of hours for a particular vehicle", description="Add a number of hours to a specified date for a specified vehicle")
     @GetMapping(value="/hours")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully retrieved hours"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully retrieved hours"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleHoursResponse> getHoursForDate(final String company, final String fleetNumber, final String date) {
         //Check valid request
         if (StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber) ||
@@ -137,9 +137,9 @@ public class VehicleController {
      * @param addHistoryEntryRequest a <code>AddHistoryEntryRequest</code> object containing the information to update.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Add a new history entry", notes="Add a new history entry for a particular vehicle.")
+    @Operation(summary = "Add a new history entry", description="Add a new history entry for a particular vehicle.")
     @PatchMapping(value="/history")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added history entry"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added history entry"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> addHistoryEntry (@RequestBody AddHistoryEntryRequest addHistoryEntryRequest) {
         //Check valid request
         if (StringUtils.isBlank(addHistoryEntryRequest.getCompany()) || StringUtils.isBlank(addHistoryEntryRequest.getFleetNumber()) ||
@@ -163,9 +163,9 @@ public class VehicleController {
      * @param sellVehicleRequest a <code>SellVehicleRequest</code> object containing the information about the vehicle which should be sold.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Sell a particular vehicle", notes="Sell a particular vehicle and return the money gained from the sale")
+    @Operation(summary = "Sell a particular vehicle", description="Sell a particular vehicle and return the money gained from the sale")
     @PatchMapping(value="/sell")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully sold vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully sold vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<SellVehicleResponse> sellVehicle (@RequestBody SellVehicleRequest sellVehicleRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(sellVehicleRequest.getCompany()) || StringUtils.isBlank(sellVehicleRequest.getFleetNumber())) {
@@ -190,9 +190,9 @@ public class VehicleController {
      * @param inspectVehicleRequest a <code>InspectVehicleRequest</code> object containing the information about the vehicle which should be inspected.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Inspect a particular vehicle", notes="Inspect a particular vehicle and return the cost of the inspection")
+    @Operation(summary = "Inspect a particular vehicle", description="Inspect a particular vehicle and return the cost of the inspection")
     @PatchMapping(value="/inspect")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully inspected vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully inspected vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<InspectVehicleResponse> inspectVehicle (@RequestBody InspectVehicleRequest inspectVehicleRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(inspectVehicleRequest.getCompany()) || StringUtils.isBlank(inspectVehicleRequest.getFleetNumber())) {
@@ -217,9 +217,9 @@ public class VehicleController {
      * @param allocateVehicleRequest a <code>AllocateVehicleRequest</code> object containing the information about the vehicle and the allocation.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Allocate a particular vehicle", notes="Allocate a particular vehicle to a particular tour")
+    @Operation(summary = "Allocate a particular vehicle", description="Allocate a particular vehicle to a particular tour")
     @PatchMapping(value="/allocate")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully allocated vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully allocated vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> allocateVehicle (@RequestBody AllocateVehicleRequest allocateVehicleRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(allocateVehicleRequest.getCompany()) || StringUtils.isBlank(allocateVehicleRequest.getFleetNumber())
@@ -242,9 +242,9 @@ public class VehicleController {
      * @param allocatedTour a <code>String</code> object containing the tour name which the vehicle must match.
      * @return a <code>ResponseEntity</code> containing the results of the matching vehicle which may be null if no vehicle exists.
      */
-    @ApiOperation(value = "Return an allocated vehicle", notes="Return a particular vehicle which is allocated to a particular tour")
+    @Operation(summary = "Return an allocated vehicle", description="Return a particular vehicle which is allocated to a particular tour")
     @GetMapping(value="/allocate")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully retrieved vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully retrieved vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleResponse> getAllocatedVehicle (final String company, final String allocatedTour) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour)) {
@@ -280,9 +280,9 @@ public class VehicleController {
      * @param removeVehicleRequest a <code>RemoveVehicleRequest</code> object containing the information about the vehicle.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Remove a particular allocation", notes="Remove the allocation of a particular vehicle to a particular tour")
+    @Operation(summary = "Remove a particular allocation", description="Remove the allocation of a particular vehicle to a particular tour")
     @DeleteMapping(value="/allocate")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully removed allocation"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully removed allocation"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> removeVehicleAllocation (@RequestBody RemoveVehicleRequest removeVehicleRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(removeVehicleRequest.getCompany()) || StringUtils.isBlank(removeVehicleRequest.getFleetNumber())) {
@@ -303,9 +303,9 @@ public class VehicleController {
      * @param adjustVehicleDelayRequest a <code>AdjustVehicleDelayRequest</code> object containing the information about the vehicle which should have its delay adjusted.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Adjust delay of a particular vehicle", notes="Adjust the delay of a particular vehicle in minutes")
+    @Operation(summary = "Adjust delay of a particular vehicle", description="Adjust the delay of a particular vehicle in minutes")
     @PatchMapping(value="/delay")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted delay of vehicle"), @ApiResponse(code=204,message="No vehicle found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted delay of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleDelayResponse> adjustVehicleDelay (@RequestBody AdjustVehicleDelayRequest adjustVehicleDelayRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(adjustVehicleDelayRequest.getCompany()) || StringUtils.isBlank(adjustVehicleDelayRequest.getFleetNumber())) {

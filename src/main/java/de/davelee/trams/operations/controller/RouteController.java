@@ -4,10 +4,10 @@ import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.request.AddRouteRequest;
 import de.davelee.trams.operations.response.RouteResponse;
 import de.davelee.trams.operations.service.RouteService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/route")
+@Tag(name="/api/route")
 @RequestMapping(value="/api/route")
 public class RouteController {
 
@@ -35,8 +35,8 @@ public class RouteController {
      */
     @PostMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Add route", notes="Add a route for this company")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully add route")})
+    @Operation(summary = "Add route", description="Add a route for this company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully add route")})
     public ResponseEntity<Void> addRoute (@RequestBody final AddRouteRequest routeRequest ) {
         //Check that the request is valid, otherwise bad request.
         if (StringUtils.isBlank(routeRequest.getCompany()) || StringUtils.isBlank(routeRequest.getRouteNumber())) {
@@ -59,8 +59,8 @@ public class RouteController {
      */
     @GetMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Get route", notes="Get a route for this company")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned route")})
+    @Operation(summary = "Get route", description="Get a route for this company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned route")})
     public ResponseEntity<RouteResponse> getRoute (final String company, final String routeNumber) {
         //Check that the request is valid, otherwise bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
@@ -86,8 +86,8 @@ public class RouteController {
      */
     @DeleteMapping("/")
     @CrossOrigin
-    @ApiOperation(value = "Delete route", notes="Delete a route for this company")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted route")})
+    @Operation(summary = "Delete route", description="Delete a route for this company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted route")})
     public ResponseEntity<Void> deleteRoute (final String company, final String routeNumber) {
         //Check that the request is valid, otherwise bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
