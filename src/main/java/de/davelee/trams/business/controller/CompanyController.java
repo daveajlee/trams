@@ -11,10 +11,10 @@ import de.davelee.trams.business.response.SatisfactionRateResponse;
 import de.davelee.trams.business.response.TimeResponse;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/company")
+@Tag(name="/api/company")
 @RequestMapping(value="/api/company")
 public class CompanyController {
 
@@ -40,9 +40,9 @@ public class CompanyController {
      * @param companyRequest a <code>CompanyRequest</code> object representing the company to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add a company", notes="Add a company to the system.")
+    @Operation(summary = "Add a company", description="Add a company to the system.")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=201,message="Successfully created company")})
+    @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created company")})
     public ResponseEntity<Void> addCompany (@RequestBody final CompanyRequest companyRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(companyRequest.getName()) || StringUtils.isBlank(companyRequest.getPlayerName())
@@ -69,9 +69,9 @@ public class CompanyController {
      * @param playerName a <code>String</code> containing the name of the player.
      * @return a <code>ResponseEntity</code> containing the result.
      */
-    @ApiOperation(value = "Get a company", notes="Get a company based on name and player name")
+    @Operation(summary = "Get a company", description="Get a company based on name and player name")
     @GetMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned company")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned company")})
     public ResponseEntity<CompanyResponse> retrieveCompany (final String name, final String playerName ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(name) || StringUtils.isBlank(playerName)) {
@@ -99,9 +99,9 @@ public class CompanyController {
      * @param adjustBalanceRequest a <code>AdjustBalanceRequest</code> object containing the information about the company and the value of the balance which should be adjusted.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Adjust balance of a company", notes="Adjust balance of the company")
+    @Operation(summary = "Adjust balance of a company", description="Adjust balance of the company")
     @PatchMapping(value="/balance")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted balance of company"), @ApiResponse(code=204,message="No company found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted balance of company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<BalanceResponse> adjustBalance (@RequestBody AdjustBalanceRequest adjustBalanceRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(adjustBalanceRequest.getCompany())) {
@@ -124,9 +124,9 @@ public class CompanyController {
      * @param adjustSatisfactionRequest a <code>AdjustSatisfactionRequest</code> object containing the information about the company and the value of the satisfaction rate which should be adjusted.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Adjust satisfaction rate", notes="Adjust satisfaction rate of the company")
+    @Operation(summary = "Adjust satisfaction rate", description="Adjust satisfaction rate of the company")
     @PatchMapping(value="/satisfaction")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully adjusted satisfaction rate of company"), @ApiResponse(code=204,message="No company found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted satisfaction rate of company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<SatisfactionRateResponse> adjustSatisfaction (@RequestBody AdjustSatisfactionRequest adjustSatisfactionRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(adjustSatisfactionRequest.getCompany()) || adjustSatisfactionRequest.getSatisfactionRate() < -100 && adjustSatisfactionRequest.getSatisfactionRate() > 100) {
@@ -149,9 +149,9 @@ public class CompanyController {
      * @param addTimeRequest a <code>AddTimeRequest</code> object containing the information about the company and the time in minutes which should be added.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Add time in minutes", notes="Add time in minutes to the company")
+    @Operation(summary = "Add time in minutes", description="Add time in minutes to the company")
     @PatchMapping(value="/time")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added the time in minutes to the company"), @ApiResponse(code=204,message="No company found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added the time in minutes to the company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<TimeResponse> addTime (@RequestBody AddTimeRequest addTimeRequest) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(addTimeRequest.getCompany()) || (addTimeRequest.getMinutes() <= 0) ) {
