@@ -5,10 +5,10 @@ import de.davelee.trams.crm.response.CustomerResponse;
 import de.davelee.trams.crm.response.CustomersResponse;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.utils.CustomerUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/customers")
+@Tag(name="/api/customers")
 @RequestMapping(value="/api/customers")
 public class CustomersController {
 
@@ -37,9 +37,9 @@ public class CustomersController {
      * @param company a <code>String</code> containing the name of the company.
      * @return a <code>ResponseEntity</code> containing the customers for this company.
      */
-    @ApiOperation(value = "Find all customers for a company", notes = "Find all customers for a company to the system.")
+    @Operation(summary = "Find all customers for a company", description = "Find all customers for a company to the system.")
     @GetMapping(value = "/")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found customer(s)"), @ApiResponse(code = 204, message = "Successful but no customers found")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found customer(s)"), @ApiResponse(responseCode = "204", description = "Successful but no customers found")})
     public ResponseEntity<CustomersResponse> getCustomers(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

@@ -5,10 +5,10 @@ import de.davelee.trams.crm.request.CustomerRequest;
 import de.davelee.trams.crm.response.CustomerResponse;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.utils.CustomerUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/customer")
+@Tag(name="/api/customer")
 @RequestMapping(value="/api/customer")
 public class CustomerController {
 
@@ -34,9 +34,9 @@ public class CustomerController {
      * @param customerRequest a <code>CustomerRequest</code> object representing the customer to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add a customer", notes="Add a customer to the system.")
+    @Operation(summary = "Add a customer", description="Add a customer to the system.")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=201,message="Successfully created customer")})
+    @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created customer")})
     public ResponseEntity<Void> addCustomer (@RequestBody final CustomerRequest customerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(customerRequest.getFirstName()) || StringUtils.isBlank(customerRequest.getLastName())
@@ -57,9 +57,9 @@ public class CustomerController {
      * @param emailAddress a <code>String</code> containing the email address.
      * @return a <code>ResponseEntity</code> containing the customer found.
      */
-    @ApiOperation(value = "Find a customer", notes="Find a customer in the system.")
+    @Operation(summary = "Find a customer", description="Find a customer in the system.")
     @GetMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully found customer"), @ApiResponse(code=204,message="Successful but no customer found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully found customer"), @ApiResponse(responseCode="204",description="Successful but no customer found")})
     public ResponseEntity<CustomerResponse> getCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
@@ -81,9 +81,9 @@ public class CustomerController {
      * @param emailAddress a <code>String</code> containing the email address.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
-    @ApiOperation(value = "Delete a customer", notes="Delete a customer from the system.")
+    @Operation(summary = "Delete a customer", description="Delete a customer from the system.")
     @DeleteMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted customer"), @ApiResponse(code=204,message="Successful but no customer found")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted customer"), @ApiResponse(responseCode="204",description="Successful but no customer found")})
     public ResponseEntity<Void> deleteCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {

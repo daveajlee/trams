@@ -6,10 +6,10 @@ import de.davelee.trams.crm.response.FeedbacksResponse;
 import de.davelee.trams.crm.services.FeedbackService;
 import de.davelee.trams.crm.services.UserService;
 import de.davelee.trams.crm.utils.CustomerUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/feedbacks")
+@Tag(name="/api/feedbacks")
 @RequestMapping(value="/api/feedbacks")
 public class FeedbacksController {
 
@@ -43,9 +43,9 @@ public class FeedbacksController {
      * @param token a <code>String</code> with the token to verify user is logged in.
      * @return a <code>ResponseEntity</code> containing the feedbacks for this company and customer.
      */
-    @ApiOperation(value = "Find all feedbacks for a company and customer", notes = "Find all feedbacks for a company and customer to the system.")
+    @Operation(summary = "Find all feedbacks for a company and customer", description = "Find all feedbacks for a company and customer to the system.")
     @GetMapping(value = "/customer")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found feedback(s)"), @ApiResponse(responseCode = "204", description = "Successful but no feedbacks found")})
     public ResponseEntity<FeedbacksResponse> getFeedbacksByCompanyAndEmail(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress, @RequestParam("token") final String token) {
         //First of all, check if the company field and/or email address field are empty or null, then return bad request.
         if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
@@ -79,9 +79,9 @@ public class FeedbacksController {
      * @param token a <code>String</code> with the token to verify user is logged in.
      * @return a <code>ResponseEntity</code> containing the feedbacks for this company.
      */
-    @ApiOperation(value = "Find all feedbacks for a company", notes = "Find all feedbacks for a company  to the system.")
+    @Operation(summary = "Find all feedbacks for a company", description = "Find all feedbacks for a company  to the system.")
     @GetMapping(value = "/")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found feedback(s)"), @ApiResponse(code = 204, message = "Successful but no feedbacks found")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found feedback(s)"), @ApiResponse(responseCode = "204", description = "Successful but no feedbacks found")})
     public ResponseEntity<FeedbacksResponse> getFeedbacksByCompany(@RequestParam("company") final String company, @RequestParam("token") final String token) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

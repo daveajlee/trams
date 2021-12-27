@@ -6,10 +6,10 @@ import de.davelee.trams.crm.request.PurchaseTicketRequest;
 import de.davelee.trams.crm.response.PurchaseTicketResponse;
 import de.davelee.trams.crm.services.OrderService;
 import de.davelee.trams.crm.services.TicketService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.glxn.qrgen.javase.QRCode;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -33,7 +33,7 @@ import java.util.UUID;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/order")
+@Tag(name="/api/order")
 @RequestMapping(value="/api/order")
 public class OrderController {
 
@@ -43,10 +43,10 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @ApiOperation(value = "Order a ticket", notes="Method to process an order for a ticket")
+    @Operation(summary = "Order a ticket", description="Method to process an order for a ticket")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successful operation"), @ApiResponse(code=400,message="Bad request"),
-            @ApiResponse(code=500,message="Payment could not be processed")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successful operation"), @ApiResponse(responseCode="400",description="Bad request"),
+            @ApiResponse(responseCode="500",description="Payment could not be processed")})
     /**
      * Order a ticket based on the supplied request. Credit card number must be fake for data protection.
      * @param purchaseTicketRequest a <code>PurchaseTicketRequest</code> object containing the ticket to be purchased.

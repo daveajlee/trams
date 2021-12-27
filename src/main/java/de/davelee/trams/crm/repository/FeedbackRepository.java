@@ -15,7 +15,7 @@ public interface FeedbackRepository extends MongoRepository<Feedback, Long> {
 
     /**
      * Find all feedbacks for a particular company and customer.
-     * @Param company a <code>String</code> with the name of the company that the feedback belongs to.
+     * @param company a <code>String</code> with the name of the company that the feedback belongs to.
      * @param emailAddress a <code>String</code> with the email address of the customer that the feedback belongs to.
      * @return a <code>Feedback</code> representing the feedbacks matching this company and customer. Returns null if no matching feedbacks.
      */
@@ -30,7 +30,8 @@ public interface FeedbackRepository extends MongoRepository<Feedback, Long> {
 
     /**
      * Find a feedback based on its object id.
-     * @param objectId a <code>ObjectId</code> con
+     * @param objectId a <code>ObjectId</code> object with the id to search for.
+     * @return a <code>Feedback</code> object containing the object matching the supplied id which can be null if no matching feedback was found.
      */
     Feedback findById ( @Param("id") final ObjectId objectId);
 

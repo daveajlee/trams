@@ -5,10 +5,10 @@ import de.davelee.trams.crm.request.TicketRequest;
 import de.davelee.trams.crm.services.TicketService;
 import de.davelee.trams.crm.services.UserService;
 import de.davelee.trams.crm.utils.TicketUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/ticket")
+@Tag(name="/api/ticket")
 @RequestMapping(value="/api/ticket")
 public class TicketController {
 
@@ -37,9 +37,9 @@ public class TicketController {
      * @param ticketRequest a <code>TicketRequest</code> object representing the ticket to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add a ticket", notes="Add a ticket to the system.")
+    @Operation(summary = "Add a ticket", description="Add a ticket to the system.")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=201,message="Successfully created ticket")})
+    @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created ticket")})
     public ResponseEntity<Void> addTicket (@RequestBody final TicketRequest ticketRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(ticketRequest.getShortId()) || StringUtils.isBlank(ticketRequest.getType())

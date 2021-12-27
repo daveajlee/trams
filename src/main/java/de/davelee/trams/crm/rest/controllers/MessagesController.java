@@ -5,10 +5,10 @@ import de.davelee.trams.crm.response.MessageResponse;
 import de.davelee.trams.crm.response.MessagesResponse;
 import de.davelee.trams.crm.services.MessageService;
 import de.davelee.trams.crm.utils.DateUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/messages")
+@Tag(name="/api/messages")
 @RequestMapping(value="/api/messages")
 public class MessagesController {
 
@@ -41,8 +41,8 @@ public class MessagesController {
      */
     @GetMapping("/")
     @ResponseBody
-    @ApiOperation(value = "Get messages", notes="Return all messages matching company and if supplied folder, sender and date")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully returned messages"), @ApiResponse(code=204,message="Successful but no messages found")})
+    @Operation(summary = "Get messages", description="Return all messages matching company and if supplied folder, sender and date")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned messages"), @ApiResponse(responseCode="204",description="Successful but no messages found")})
     public ResponseEntity<MessagesResponse> getMessages (final String company, final Optional<String> folder, final Optional<String> sender, final Optional<String> date ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
@@ -76,8 +76,8 @@ public class MessagesController {
      * @param company a <code>String</code> containing the name of the company to delete messages for.
      */
     @DeleteMapping("/")
-    @ApiOperation(value = "Delete messages", notes="Delete all messages")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully deleted messages"),@ApiResponse(code=204,message="Successful but no messages found")})
+    @Operation(summary = "Delete messages", description="Delete all messages")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted messages"),@ApiResponse(responseCode="204",description="Successful but no messages found")})
     public ResponseEntity<Void> deleteMessagesByCompany (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

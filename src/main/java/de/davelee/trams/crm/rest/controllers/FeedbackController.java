@@ -7,10 +7,10 @@ import de.davelee.trams.crm.request.FeedbackRequest;
 import de.davelee.trams.crm.services.CustomerService;
 import de.davelee.trams.crm.services.FeedbackService;
 import de.davelee.trams.crm.services.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/feedback")
+@Tag(name="/api/feedback")
 @RequestMapping(value="/api/feedback")
 public class FeedbackController {
 
@@ -41,9 +41,9 @@ public class FeedbackController {
      * @param feedbackRequest a <code>FeedbackRequest</code> object representing the feedback to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add a feedback", notes="Add a feedback to the system.")
+    @Operation(summary = "Add a feedback", description="Add a feedback to the system.")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=201,message="Successfully created feedback")})
+    @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created feedback")})
     public ResponseEntity<Void> addFeedback (@RequestBody final FeedbackRequest feedbackRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(feedbackRequest.getEmailAddress()) || StringUtils.isBlank(feedbackRequest.getCompany())
@@ -70,9 +70,9 @@ public class FeedbackController {
      * @param answerRequest a <code>AnswerRequest</code> object representing the answer to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add an answer", notes="Add an answer to a feedback in the system.")
+    @Operation(summary = "Add an answer", description="Add an answer to a feedback in the system.")
     @PatchMapping(value="/answer")
-    @ApiResponses(value = {@ApiResponse(code=200,message="Successfully added answer")})
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added answer")})
     public ResponseEntity<Void> addAnswer (@RequestBody final AnswerRequest answerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(answerRequest.getObjectId()) || StringUtils.isBlank(answerRequest.getAnswer()) ||

@@ -1,16 +1,13 @@
 package de.davelee.trams.crm.rest.controllers;
 
-import de.davelee.trams.crm.model.Customer;
-import de.davelee.trams.crm.model.Feedback;
 import de.davelee.trams.crm.model.Message;
-import de.davelee.trams.crm.request.FeedbackRequest;
 import de.davelee.trams.crm.request.MessageRequest;
 import de.davelee.trams.crm.services.MessageService;
 import de.davelee.trams.crm.utils.DateUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/message")
+@Tag(name="/api/message")
 @RequestMapping(value="/api/message")
 public class MessageController {
 
@@ -36,9 +33,9 @@ public class MessageController {
      * @param messageRequest a <code>MessageRequest</code> object representing the message to add.
      * @return a <code>ResponseEntity</code> containing the result of the action.
      */
-    @ApiOperation(value = "Add a message", notes="Add a message to the system.")
+    @Operation(summary = "Add a message", description="Add a message to the system.")
     @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(code=201,message="Successfully created message")})
+    @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created message")})
     public ResponseEntity<Void> addMessage (@RequestBody final MessageRequest messageRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
         if (StringUtils.isBlank(messageRequest.getCompany()) || StringUtils.isBlank(messageRequest.getDateTime())

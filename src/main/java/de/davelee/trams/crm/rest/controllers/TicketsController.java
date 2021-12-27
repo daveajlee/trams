@@ -5,10 +5,10 @@ import de.davelee.trams.crm.response.TicketResponse;
 import de.davelee.trams.crm.response.TicketsResponse;
 import de.davelee.trams.crm.services.TicketService;
 import de.davelee.trams.crm.utils.TicketUtils;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author Dave Lee
  */
 @RestController
-@Api(value="/api/tickets")
+@Tag(name="/api/tickets")
 @RequestMapping(value="/api/tickets")
 public class TicketsController {
 
@@ -37,9 +37,9 @@ public class TicketsController {
      * @param company a <code>String</code> containing the name of the company.
      * @return a <code>ResponseEntity</code> containing the tickets for this company.
      */
-    @ApiOperation(value = "Find all tickets for a company", notes = "Find all tickets for a company in the system.")
+    @Operation(summary = "Find all tickets for a company", description = "Find all tickets for a company in the system.")
     @GetMapping(value = "/")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully found ticket(s)"), @ApiResponse(code = 204, message = "Successful but no tickets found")})
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found ticket(s)"), @ApiResponse(responseCode = "204", description = "Successful but no tickets found")})
     public ResponseEntity<TicketsResponse> getFeedbacksByCompany(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {

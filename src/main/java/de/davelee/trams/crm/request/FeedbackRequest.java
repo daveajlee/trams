@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * This class is part of the TraMS CRM REST API. It represents a request to add the following feedback to the server
- * containing customer (via email address & company), message and extraInfos (key/value pair).
+ * containing customer (via email address &amp; company), message and extraInfos (key/value pair).
  * @author Dave Lee
  */
 @Builder
