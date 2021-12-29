@@ -1,6 +1,6 @@
 mongo:
   databaseName: tramsBusiness
-  url: mongodb://tramsBusiness:myTraMSpassword@localhost:27017/tramsBusiness
+  url: ${MONGODB_URI:mongodb://tramsBusiness:myTraMSpassword@localhost:27017/tramsBusiness}
 spring:
   application:
     name: trams-business
