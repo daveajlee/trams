@@ -26,6 +26,55 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
       ME_CONFIG_MONGODB_ADMINPASSWORD: mymongodb
 
+  trams-operations:
+    image: daveajlee/trams-operations
+    container_name: trams-operations
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8084:8084
+    environment:
+      EUREKA_URI: http://host.docker.internal:8761/eureka
+      MONGODB_URI: mongodb://tramsOperations:myTraMSpassword@host.docker.internal:27017/tramsOperations
+
+  trams-business:
+    image: daveajlee/trams-business
+    container_name: trams-business
+    restart: always
+    depends_on:
+      - mongo
+      - eureka
+    ports:
+      - 8083:8083
+    environment:
+      EUREKA_URI: http://host.docker.internal:8761/eureka
+      MONGODB_URI: mongodb://tramsBusiness:myTraMSpassword@host.docker.internal:27017/tramsBusiness
+
+  trams-crm:
+    image: daveajlee/trams-crm
+    container_name: trams-crm
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8082:8082
+    environment:
+      EUREKA_URI: http://host.docker.internal:8761/eureka
+      MONGODB_URI: mongodb://tramsCrm:myTraMSpassword@host.docker.internal:27017/tramsCrm
+
+  personalman:
+    image: daveajlee/personalman
+    container_name: personalman
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8150:8150
+    environment:
+      EUREKA_URI: http://host.docker.internal:8761/eureka
+      MONGODB_URI: mongodb://personalman:myTraMSpassword@host.docker.internal:27017/personalman
+
   eureka:
     image: daveajlee/eureka-server
     container_name: eureka
