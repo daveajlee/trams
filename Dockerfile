@@ -26,10 +26,10 @@ WORKDIR /Executables
 COPY --from=builder /trams-operations/target .
 
 #Add user and group for running as unprivileged user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-RUN chown -R appuser:appuser /Executables
-RUN chmod 755 /Executables
-USER appuser
+#RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+#RUN chown -R appuser:appuser /Executables
+#RUN chmod 755 /Executables
+#USER appuser
 
 #Define how to start
 ENTRYPOINT ["java", "-jar", "trams-operations.jar"]
