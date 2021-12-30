@@ -25,6 +25,9 @@ FROM openjdk:17-alpine
 WORKDIR /Executables
 COPY --from=builder /trams-operations/target .
 
+RUN chown -R appuser:appuser /Executables
+RUN chmod 755 /Executables
+
 #Add user and group for running as unprivileged user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
