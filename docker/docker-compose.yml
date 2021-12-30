@@ -27,7 +27,7 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: mymongodb
 
   trams-operations:
-    image: daveajlee/trams-operations
+    image: daveajlee/trams-operations:master
     container_name: trams-operations
     restart: always
     depends_on:
