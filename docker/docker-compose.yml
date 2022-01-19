@@ -52,7 +52,7 @@ services:
       MONGODB_URI: mongodb://tramsBusiness:myTraMSpassword@host.docker.internal:27017/tramsBusiness
 
   trams-crm:
-    image: daveajlee/trams-crm
+    image: daveajlee/trams-crm:master
     container_name: trams-crm
     restart: always
     depends_on:
@@ -73,7 +73,7 @@ services:
       - 8150:8150
     environment:
       EUREKA_URI: http://host.docker.internal:8761/eureka
-      MONGODB_URI: mongodb://personalman:myTraMSpassword@host.docker.internal:27017/personalman
+      MONGODB_URI: mongodb://personalman:myPMpassword@host.docker.internal:27017/personalman
 
   eureka:
     image: daveajlee/eureka-server
