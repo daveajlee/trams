@@ -1,12 +1,8 @@
 package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
-import de.davelee.trams.business.request.AddTimeRequest;
-import de.davelee.trams.business.request.AdjustBalanceRequest;
-import de.davelee.trams.business.request.AdjustSatisfactionRequest;
-import de.davelee.trams.business.request.CompanyRequest;
+import de.davelee.trams.business.request.*;
 import de.davelee.trams.business.service.CompanyService;
-import org.assertj.core.util.Lists;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,11 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -165,6 +158,27 @@ public class CompanyControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, companyController.addTime(addTimeRequest).getStatusCode());
         addTimeRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.addTime(addTimeRequest).getStatusCode());
+    }
+
+    /**
+     * Test case: adjust difficulty level of a company.
+     * Expected result: the difficulty level of the company is adjusted as appropriate.
+     */
+    @Test
+    public void testAdjustDifficultyLevel() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
+        Mockito.when(companyService.adjustDifficultyLevel(any(), eq("EASY"))).thenReturn("EASY");
+        //Attempt to adjust balance.
+        assertEquals(HttpStatus.OK, companyController.adjustDifficultyLevel(AdjustDifficultyLevelRequest.builder()
+                .company("Mustermann GmbH").difficultyLevel("EASY").build()).getStatusCode());
+        AdjustDifficultyLevelRequest adjustDifficultyLevelRequest = new AdjustDifficultyLevelRequest();
+        adjustDifficultyLevelRequest.setCompany("Mustermann GmbH und Co");
+        adjustDifficultyLevelRequest.setDifficultyLevel("HARD");
+        assertEquals("AdjustDifficultyLevelRequest(company=Mustermann GmbH und Co, difficultyLevel=HARD)", adjustDifficultyLevelRequest.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
+        adjustDifficultyLevelRequest.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
     }
 
     /**

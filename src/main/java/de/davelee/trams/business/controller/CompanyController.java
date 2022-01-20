@@ -1,14 +1,8 @@
 package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
-import de.davelee.trams.business.request.AddTimeRequest;
-import de.davelee.trams.business.request.AdjustBalanceRequest;
-import de.davelee.trams.business.request.AdjustSatisfactionRequest;
-import de.davelee.trams.business.request.CompanyRequest;
-import de.davelee.trams.business.response.BalanceResponse;
-import de.davelee.trams.business.response.CompanyResponse;
-import de.davelee.trams.business.response.SatisfactionRateResponse;
-import de.davelee.trams.business.response.TimeResponse;
+import de.davelee.trams.business.request.*;
+import de.davelee.trams.business.response.*;
 import de.davelee.trams.business.service.CompanyService;
 import de.davelee.trams.business.utils.DateUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -166,6 +160,31 @@ public class CompanyController {
         return ResponseEntity.ok(TimeResponse.builder()
                 .company(companies.get(0).getName())
                 .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.get(0), addTimeRequest.getMinutes())))
+                .build());
+    }
+
+    /**
+     * Set the difficulty level for the company matching the supplied company name. The difficulty level after adjustment will be returned.
+     * @param difficultyLevelRequest a <code>DifficultyLevelRequest</code> object containing the information about the company and the difficulty level which should be used.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @Operation(summary = "Set the difficulty level", description="Set the difficulty level for the company")
+    @PatchMapping(value="/difficultyLevel")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjust the difficulty level for the company"), @ApiResponse(responseCode="204",description="No company found")})
+    public ResponseEntity<DifficultyLevelResponse> adjustDifficultyLevel (@RequestBody AdjustDifficultyLevelRequest difficultyLevelRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(difficultyLevelRequest.getCompany()) || StringUtils.isBlank(difficultyLevelRequest.getDifficultyLevel()) ) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the time cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(difficultyLevelRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now add the time and return the current time after adjustment.
+        return ResponseEntity.ok(DifficultyLevelResponse.builder()
+                .company(companies.get(0).getName())
+                .difficultyLevel(companyService.adjustDifficultyLevel(companies.get(0), difficultyLevelRequest.getDifficultyLevel()))
                 .build());
     }
 

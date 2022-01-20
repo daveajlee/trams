@@ -120,6 +120,22 @@ public class CompanyServiceTest {
     }
 
     /**
+     * Verify that the difficulty level of a company can be adjusted appropriately.
+     */
+    @Test
+    public void testAdjustDifficultyLevel ( ) {
+        //Generate test data.
+        Company company = generateValidCompany();
+        //Mock important method in repository.
+        Mockito.when(companyRepository.save(any())).thenReturn(company);
+        //Do test.
+        assertEquals("HARD", companyService.adjustDifficultyLevel(company, "HARD"));
+        //Do test if database does not work.
+        Mockito.when(companyRepository.save(any())).thenReturn(null);
+        assertEquals("", companyService.adjustDifficultyLevel(company, "HARD"));
+    }
+
+    /**
      * Private helper method to generate a valid company.
      * @return a <code>Company</code> object containing valid test data.
      */

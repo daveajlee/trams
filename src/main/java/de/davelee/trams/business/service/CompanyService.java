@@ -102,4 +102,18 @@ public class CompanyService {
         return null;
     }
 
+    /**
+     * Adjust the difficulty level of the company to the supplied difficulty level.
+     * @param company a <code>Company</code> object which should have its difficulty level adjusted.
+     * @param difficultyLevel a <code>String</code> containing the difficulty level that should now be used for the company.
+     * @return a <code>String</code> containing the current difficulty level of the company.
+     */
+    public String adjustDifficultyLevel ( final Company company, final String difficultyLevel ) {
+        company.setDifficultyLevel(difficultyLevel);
+        if ( companyRepository.save(company) != null ) {
+            return company.getDifficultyLevel();
+        }
+        return "";
+    }
+
 }
