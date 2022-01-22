@@ -266,6 +266,7 @@ public class VehicleController {
                 .vehicleType(vehicles.get(0).getVehicleType().getTypeName())
                 .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()))
                 .modelName(vehicles.get(0).getModelName())
+                .purchasePrice(vehicles.get(0).getVehicleType().getPurchasePrice().doubleValue())
                 .seatingCapacity(vehicles.get(0).getSeatingCapacity())
                 .standingCapacity(vehicles.get(0).getStandingCapacity())
                 .deliveryDate(DateUtils.convertLocalDateToDate(vehicles.get(0).getDeliveryDate()))
