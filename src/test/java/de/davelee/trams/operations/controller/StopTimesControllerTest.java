@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.controller;
 
+import de.davelee.trams.operations.model.OperatingDays;
 import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.request.GenerateStopTimesRequest;
 import de.davelee.trams.operations.request.StopPatternRequest;
@@ -49,7 +50,10 @@ public class StopTimesControllerTest {
                 .destination("Greenfield")
                 .id(1)
                 .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                        .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25), LocalDate.of(2021,1,1)))
+                        .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
                 .validFromDate(LocalDate.of(2020,12,12))
@@ -77,7 +81,10 @@ public class StopTimesControllerTest {
                 .destination("Greenfield")
                 .id(1)
                 .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                        .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25), LocalDate.of(2021,1,1)))
+                        .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
                 .validFromDate(LocalDate.of(2020,12,12))
@@ -100,7 +107,10 @@ public class StopTimesControllerTest {
                 .destination("Greenfield")
                 .id(1)
                 .journeyNumber("101")
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                        .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25), LocalDate.of(2021,1,1)))
+                        .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
                 .validFromDate(LocalDate.of(2020,12,12))
@@ -131,9 +141,9 @@ public class StopTimesControllerTest {
                 .frequency(90)
                 .validFromDate("11-12-2021")
                 .validToDate("10-12-2022")
-                .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday")
+                .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022")
                 .build();
-        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopPatternRequest=StopPatternRequest(stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], distances=[7, 3, 1, 5], stoppingTimes=[0, 0, 1, 0, 0]), routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday)", generateStopTimesRequest.toString());
+        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopPatternRequest=StopPatternRequest(stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], distances=[7, 3, 1, 5], stoppingTimes=[0, 0, 1, 0, 0]), routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
         //2nd test
         GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();

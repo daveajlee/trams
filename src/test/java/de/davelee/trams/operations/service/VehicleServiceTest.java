@@ -1,5 +1,8 @@
 package de.davelee.trams.operations.service;
 
+import de.davelee.trams.operations.constant.VehicleHistoryReason;
+import de.davelee.trams.operations.constant.VehicleStatus;
+import de.davelee.trams.operations.constant.VehicleType;
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.repository.VehicleRepository;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package de.davelee.trams.operations.model;
+package de.davelee.trams.operations.constant;
 
 import java.math.BigDecimal;
 
@@ -8,6 +8,9 @@ import java.math.BigDecimal;
  */
 public enum VehicleType {
 
+    /**
+     * Bus
+     */
     BUS {
         /**
          * Return the name of the type as a string e.g. Bus
@@ -57,6 +60,9 @@ public enum VehicleType {
 
     },
 
+    /**
+     * Train
+     */
     TRAIN {
         /**
          * Return the name of the type as a string e.g. Train
@@ -104,6 +110,9 @@ public enum VehicleType {
         }
     },
 
+    /**
+     * Tram
+     */
     TRAM {
         /**
          * Return the name of the type as a string e.g. Tram

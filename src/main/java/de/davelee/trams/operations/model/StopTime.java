@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.model;
 
+import de.davelee.trams.operations.constant.OperatingDaysAbbreviations;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,9 +69,9 @@ public class StopTime {
     private LocalDate validToDate;
 
     /**
-     * The days on which this stop takes place.
+     * The operating days on which this stop takes place.
      */
-    private List<DayOfWeek> operatingDays;
+    private OperatingDays operatingDays;
 
     /**
      * The number of the journey which can contain both alphanumeric and alphabetical characters.

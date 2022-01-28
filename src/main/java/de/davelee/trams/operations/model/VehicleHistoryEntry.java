@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.model;
 
+import de.davelee.trams.operations.constant.VehicleHistoryReason;
 import lombok.*;
 import org.bson.types.ObjectId;
 

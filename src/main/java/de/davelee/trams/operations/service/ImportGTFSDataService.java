@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.service;
 
+import de.davelee.trams.operations.model.OperatingDays;
 import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTime;
@@ -185,9 +186,9 @@ public class ImportGTFSDataService {
     /**
      * This helper method converts the operating days of a service into a list of operating days.
      * @param serviceCalendar a <code>ServiceCalendar</code> object containing the operating days.
-     * @return a <code>List</code> of <code>OperatingDays</code> containing the operating days of this service.
+     * @return a <code>OperatingDays</code> object containing the operating days of this service.
      */
-    private List<DayOfWeek> getOperatingDays (final ServiceCalendar serviceCalendar ) {
+    private OperatingDays getOperatingDays (final ServiceCalendar serviceCalendar ) {
         //Create empty list
         List<DayOfWeek> operatingDays = new ArrayList<>();
         //Monday
@@ -219,7 +220,7 @@ public class ImportGTFSDataService {
             operatingDays.add(DayOfWeek.SUNDAY);
         }
         //Return complete list of operating days.
-        return operatingDays;
+        return OperatingDays.builder().operatingDays(operatingDays).build();
     }
 
 }

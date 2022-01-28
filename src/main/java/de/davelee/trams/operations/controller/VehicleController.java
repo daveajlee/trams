@@ -1,8 +1,8 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.Vehicle;
-import de.davelee.trams.operations.model.VehicleHistoryReason;
-import de.davelee.trams.operations.model.VehicleType;
+import de.davelee.trams.operations.constant.VehicleHistoryReason;
+import de.davelee.trams.operations.constant.VehicleType;
 import de.davelee.trams.operations.request.*;
 import de.davelee.trams.operations.response.*;
 import de.davelee.trams.operations.service.VehicleService;

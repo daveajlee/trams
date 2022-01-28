@@ -1,5 +1,9 @@
 package de.davelee.trams.operations.utils;
 
+import de.davelee.trams.operations.constant.InspectionStatus;
+import de.davelee.trams.operations.constant.VehicleHistoryReason;
+import de.davelee.trams.operations.constant.VehicleStatus;
+import de.davelee.trams.operations.constant.VehicleType;
 import de.davelee.trams.operations.model.*;
 import de.davelee.trams.operations.request.LoadVehicleRequest;
 import de.davelee.trams.operations.request.VehicleHistoryRequest;

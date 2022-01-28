@@ -1,5 +1,6 @@
 package de.davelee.trams.operations.service;
 
+import de.davelee.trams.operations.model.OperatingDays;
 import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
@@ -164,7 +165,10 @@ public class StopTimeServiceTest {
                 .destination("Greenfield")
                 .id(count)
                 .journeyNumber(journeyNumber)
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
+                        .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25)))
+                        .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
                 .validFromDate(LocalDate.of(2020,12,12))

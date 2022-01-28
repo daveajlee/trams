@@ -1,4 +1,4 @@
-package de.davelee.trams.operations.model;
+package de.davelee.trams.operations.constant;
 
 /**
  * This class represents the current statuses of an inspection which can be either INSPECTED meaning that a vehicle has

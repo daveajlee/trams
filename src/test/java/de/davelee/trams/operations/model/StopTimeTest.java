@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +29,10 @@ public class StopTimeTest {
                 .destination("Greenfield")
                 .id(1234)
                 .journeyNumber("123")
-                .operatingDays(Collections.singletonList(DayOfWeek.MONDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
+                        .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25)))
+                        .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
                 .validFromDate(LocalDate.of(2020,12,12))
@@ -40,12 +44,13 @@ public class StopTimeTest {
         assertEquals("Greenfield", stopTime.getDestination());
         assertEquals(1234, stopTime.getId());
         assertEquals("123", stopTime.getJourneyNumber());
-        assertEquals(Collections.singletonList(DayOfWeek.MONDAY), stopTime.getOperatingDays());
+        assertEquals(Collections.singletonList(DayOfWeek.MONDAY), stopTime.getOperatingDays().getOperatingDays());
+        assertEquals(Arrays.asList(LocalDate.of(2020,12,25)), stopTime.getOperatingDays().getSpecialOperatingDays());
         assertEquals("405A", stopTime.getRouteNumber());
         assertEquals(LocalDate.of(2020,12,12), stopTime.getValidFromDate());
         assertEquals(LocalDate.of(2021,12,11), stopTime.getValidToDate());
         //Verify the toString method
-        assertEquals("StopTime(id=1234, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, validFromDate=2020-12-12, validToDate=2021-12-11, operatingDays=[MONDAY], journeyNumber=123)", stopTime.toString());
+        assertEquals("StopTime(id=1234, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, validFromDate=2020-12-12, validToDate=2021-12-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25]), journeyNumber=123)", stopTime.toString());
         //Now use the setter methods
         stopTime.setArrivalTime(LocalTime.of(20, 46));
         stopTime.setCompany("Mustermann Bus GmbH");
@@ -53,13 +58,17 @@ public class StopTimeTest {
         stopTime.setDestination("Lake Way");
         stopTime.setId(12345);
         stopTime.setJourneyNumber("1234");
-        stopTime.setOperatingDays(Collections.singletonList(DayOfWeek.SUNDAY));
+        stopTime.setOperatingDays(OperatingDays.builder()
+                .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
+                .specialOperatingDays(Arrays.asList(LocalDate.of(2020,12,25)))
+                .build());
         stopTime.setRouteNumber("405B");
         stopTime.setStopName("Old Town");
         stopTime.setValidFromDate(LocalDate.of(2020,11,12));
         stopTime.setValidToDate(LocalDate.of(2021,11,11));
         //And verify again through the toString methods
-        assertEquals("StopTime(id=12345, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, validFromDate=2020-11-12, validToDate=2021-11-11, operatingDays=[SUNDAY], journeyNumber=1234)", stopTime.toString());
+        //assertEquals("", stopTime.getOperatingDays().toString());
+        assertEquals("StopTime(id=12345, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, validFromDate=2020-11-12, validToDate=2021-11-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25]), journeyNumber=1234)", stopTime.toString());
     }
 
     /**
@@ -74,7 +83,9 @@ public class StopTimeTest {
                 .destination("Greenfield")
                 .id(1234)
                 .journeyNumber("123")
-                .operatingDays(Collections.singletonList(DayOfWeek.MONDAY))
+                .operatingDays(OperatingDays.builder()
+                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
+                        .build())
                 .routeNumber("405A")
                 .validFromDate(LocalDate.of(2020,12,12))
                 .validToDate(LocalDate.of(2021,12,11))

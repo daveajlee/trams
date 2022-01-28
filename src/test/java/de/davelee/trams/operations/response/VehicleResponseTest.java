@@ -1,6 +1,6 @@
 package de.davelee.trams.operations.response;
 
-import de.davelee.trams.operations.model.VehicleType;
+import de.davelee.trams.operations.constant.VehicleType;
 import de.davelee.trams.operations.utils.VehicleUtils;
 import org.junit.jupiter.api.Test;
 

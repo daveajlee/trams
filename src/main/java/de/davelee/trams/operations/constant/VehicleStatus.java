@@ -1,4 +1,4 @@
-package de.davelee.trams.operations.model;
+package de.davelee.trams.operations.constant;
 
 /**
  * This class represents the various statuses that a vehicle may have during its lifetime.

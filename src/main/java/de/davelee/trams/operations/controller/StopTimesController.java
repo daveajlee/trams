@@ -86,7 +86,7 @@ public class StopTimesController {
                     .destination(stopTimeList.get(i).getDestination())
                     .company(stopTimeList.get(i).getCompany())
                     .journeyNumber(stopTimeList.get(i).getJourneyNumber())
-                    .operatingDays(StopTimeUtils.convertOperatingDays(stopTimeList.get(i).getOperatingDays()))
+                    .operatingDays(StopTimeUtils.convertOperatingDaysToString(stopTimeList.get(i).getOperatingDays()))
                     .routeNumber(stopTimeList.get(i).getRouteNumber())
                     .validFromDate(stopTimeList.get(i).getValidFromDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .validToDate(stopTimeList.get(i).getValidToDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
@@ -160,7 +160,7 @@ public class StopTimesController {
                     .journeyNumber("" + journeyNumber++)
                     .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length - 1])
                     .routeNumber(generateStopTimesRequest.getRouteNumber())
-                    .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                    .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                     .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                     .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                     .build());
@@ -176,7 +176,7 @@ public class StopTimesController {
                         .journeyNumber("" + journeyNumber++)
                         .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length - 1])
                         .routeNumber(generateStopTimesRequest.getRouteNumber())
-                        .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                        .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                         .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                         .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                         .build());
@@ -192,7 +192,7 @@ public class StopTimesController {
                     .journeyNumber("" + journeyNumber++)
                     .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
                     .routeNumber(generateStopTimesRequest.getRouteNumber())
-                    .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                    .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                     .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                     .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                     .build());
@@ -208,7 +208,7 @@ public class StopTimesController {
                         .journeyNumber("" + journeyNumber++)
                         .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
                         .routeNumber(generateStopTimesRequest.getRouteNumber())
-                        .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                        .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                         .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                         .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                         .build());
@@ -254,7 +254,7 @@ public class StopTimesController {
                             .journeyNumber("" + journeyNumber++)
                             .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[generateStopTimesRequest.getStopPatternRequest().getStopNames().length - 1])
                             .routeNumber(generateStopTimesRequest.getRouteNumber())
-                            .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                            .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                             .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                             .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                             .build());
@@ -281,7 +281,7 @@ public class StopTimesController {
                             .journeyNumber("" + journeyNumber++)
                             .destination(generateStopTimesRequest.getStopPatternRequest().getStopNames()[0])
                             .routeNumber(generateStopTimesRequest.getRouteNumber())
-                            .operatingDays(StopTimeUtils.convertOperatingDaysToDayOfWeek(generateStopTimesRequest.getOperatingDays()))
+                            .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
                             .validFromDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidFromDate()))
                             .validToDate(DateUtils.convertDateToLocalDate(generateStopTimesRequest.getValidToDate()))
                             .build());

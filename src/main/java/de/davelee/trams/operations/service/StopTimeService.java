@@ -80,7 +80,7 @@ public class StopTimeService {
             //First of all get stop times between now and midnight.
             List<StopTime> stopTimes = stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                     //Filter stop times which do not run on this day.
-                    .filter(stopTime -> stopTime.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
+                    .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(LocalDate.now()))
                     //Filter so that stop times in the past are not shown.
                     .filter(stopTime -> !stopTime.getTime(type).isBefore(time))
                     //Filter remove stop times which lie much further in the future
@@ -108,7 +108,7 @@ public class StopTimeService {
         //Normal processing
         List<StopTime> filteredStopTimes = stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
-                .filter(stopTime -> stopTime.getOperatingDays().contains(LocalDate.now().getDayOfWeek()))
+                .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(LocalDate.now()))
                 //Filter so that stop times in the past are not shown.
                 .filter(stopTime -> !stopTime.getTime(type).isBefore(time))
                 //Filter remove stop times which lie much further in the future
@@ -145,7 +145,7 @@ public class StopTimeService {
         //Return the stop times between now and midnight with the filter criteria.
         return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
-                .filter(stopTime -> stopTime.getOperatingDays().contains(departureDate.getDayOfWeek()))
+                .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(departureDate))
                 //Filter stop times that are before the valid from date.
                 .filter(stopTime -> stopTime.getValidFromDate().isBefore(departureDate))
                 //Filter remove stop times are after the valid to date.

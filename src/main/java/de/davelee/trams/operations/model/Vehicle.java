@@ -1,5 +1,8 @@
 package de.davelee.trams.operations.model;
 
+import de.davelee.trams.operations.constant.VehicleHistoryReason;
+import de.davelee.trams.operations.constant.VehicleStatus;
+import de.davelee.trams.operations.constant.VehicleType;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -134,7 +137,7 @@ public class Vehicle {
      * @param vehicleHistoryReason a <code>VehicleHistoryReason</code> containing the reason that the entry/event took place.
      * @param comment a <code>String</code> containing the comment about the entry/event.
      */
-    public void addVehicleHistoryEntry ( final LocalDate date, final VehicleHistoryReason vehicleHistoryReason, final String comment ) {
+    public void addVehicleHistoryEntry (final LocalDate date, final VehicleHistoryReason vehicleHistoryReason, final String comment ) {
         if ( vehicleHistoryEntryList == null ) {
             vehicleHistoryEntryList = new ArrayList<>();
         }

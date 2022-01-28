@@ -1,5 +1,7 @@
 package de.davelee.trams.operations.service;
 
+import de.davelee.trams.operations.constant.OperatingDaysAbbreviations;
+import de.davelee.trams.operations.model.OperatingDays;
 import de.davelee.trams.operations.model.Route;
 import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTime;
@@ -11,6 +13,7 @@ import de.davelee.trams.operations.utils.StopUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -100,7 +103,9 @@ public class ImportCSVDataService {
         try {
             Reader reader = new FileReader(csvFilePath);
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withDelimiter(';').withTrim());
-            String destination = ""; ArrayList<List<DayOfWeek>> operatingDays = new ArrayList<>();
+            String destination = ""; ArrayList<OperatingDays> operatingDays = new ArrayList<>();
+            LocalDate validFromLocalDate = LocalDate.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate validToLocalDate = LocalDate.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             ArrayList<String> routeNumberList = new ArrayList<>();
             for(CSVRecord record : csvParser.getRecords()) {
                 if ( record.get(0).startsWith("Route:") ) {
@@ -115,7 +120,7 @@ public class ImportCSVDataService {
                 }
                 else if ( record.get(0).contains("Days of Operation")) {
                     for ( int i = 1; i < record.size(); i++ ) {
-                        operatingDays.add(getOperatingDays(record.get(i)));
+                        operatingDays.add(getOperatingDays(record.get(i), validFromLocalDate, validToLocalDate));
                     }
                 }
                 else if ( record.get(0).isEmpty() || record.get(0).startsWith("Circulation:")) {
@@ -134,8 +139,8 @@ public class ImportCSVDataService {
                             .stopName(record.get(0))
                             .destination(destination)
                             .routeNumber(routeNumberList.get(i-1))
-                            .validFromDate(LocalDate.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                            .validToDate(LocalDate.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                            .validFromDate(validFromLocalDate)
+                            .validToDate(validToLocalDate)
                             .operatingDays(operatingDays.get(i-1))
                             .journeyNumber("" + i)
                             .build();
@@ -184,31 +189,22 @@ public class ImportCSVDataService {
     /**
      * This helper method converts the operating days of a service into a list of operating days.
      * @param operatingDaysStr a <code>String</code> object containing the comma-separated list of operating days.
-     * @return a <code>List</code> of <code>OperatingDays</code> containing the operating days of this service.
+     * @param validFromDate a <code>LocalDate</code> object containing the valid from date for this service.
+     * @param validToDate a <code>LocalDate</code> object containing the valid to date for this service.
+     * @return a <code>OperatingDays</code> object containing the operating days of this service.
      */
-    private List<DayOfWeek> getOperatingDays (final String operatingDaysStr ) {
+    private OperatingDays getOperatingDays (final String operatingDaysStr, final LocalDate validFromDate,
+                                            final LocalDate validToDate) {
         //Create empty list
-        List<DayOfWeek> operatingDays = new ArrayList<>();
+        OperatingDays operatingDays = new OperatingDays();
         //Split comma separated list
         String[] operatingDaysCommaList = operatingDaysStr.split(",");
         //Go through comma separated list
         for ( String operatingDay : operatingDaysCommaList ) {
-            //Weekdays
-            if (operatingDay.contentEquals("WD")) {
-                operatingDays.add(DayOfWeek.MONDAY);
-                operatingDays.add(DayOfWeek.TUESDAY);
-                operatingDays.add(DayOfWeek.WEDNESDAY);
-                operatingDays.add(DayOfWeek.THURSDAY);
-                operatingDays.add(DayOfWeek.FRIDAY);
-            }
-            //Saturdays
-            if (operatingDay.contentEquals("SA")) {
-                operatingDays.add(DayOfWeek.SATURDAY);
-            }
-            //Sundays
-            if (operatingDay.contentEquals("SU")) {
-                operatingDays.add(DayOfWeek.SUNDAY);
-            }
+            if (StringUtils.isBlank(operatingDay) ) continue;
+            OperatingDaysAbbreviations operatingDaysAbbreviations = OperatingDaysAbbreviations.valueOf(operatingDay);
+            operatingDays.setOperatingDays(operatingDaysAbbreviations.getOperatingDaysOfWeek());
+            operatingDays.setSpecialOperatingDays(operatingDaysAbbreviations.getSpecialOperatingDays(validFromDate, validToDate));
         }
         //Return complete list of operating days.
         return operatingDays;

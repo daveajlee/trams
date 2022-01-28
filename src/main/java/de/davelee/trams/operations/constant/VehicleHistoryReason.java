@@ -1,4 +1,4 @@
-package de.davelee.trams.operations.model;
+package de.davelee.trams.operations.constant;
 
 /**
  * This enum contains the various allowed reasons for something to be written into the vehicle's history.
