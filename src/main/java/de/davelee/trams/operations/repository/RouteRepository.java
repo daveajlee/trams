@@ -11,8 +11,19 @@ import java.util.List;
  */
 public interface RouteRepository extends MongoRepository<Route, String> {
 
+    /**
+     * Return a list of routes run by this company.
+     * @param company a <code>String</code> containing the name of the company to retrieve routes for.
+     * @return a <code>List</code> of <code>Route</code> objects containing the matching routes.
+     */
     List<Route> findByCompany (final String company);
 
+    /**
+     * Return a list of routes run by this company and this route number (should usually be 1).
+     * @param company a <code>String</code> containing the name of the company to retrieve routes for.
+     * @param routeNumber a <code>String</code> containing the route number to retrieve.
+     * @return a <code>List</code> of <code>Route</code> objects containing the matching routes (usually 1).
+     */
     List<Route> findByCompanyAndRouteNumber (final String company, final String routeNumber);
 
 }

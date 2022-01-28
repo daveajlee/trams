@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This class is part of the TraMS Operations REST API. It represents a response from the server containing details
+ * of a single stop containing name, company and location information.
+ * @author Dave Lee
+ */
 @Builder
 @Getter
 @Setter

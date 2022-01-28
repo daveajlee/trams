@@ -50,7 +50,7 @@ public class StopTimeTest {
         assertEquals(LocalDate.of(2020,12,12), stopTime.getValidFromDate());
         assertEquals(LocalDate.of(2021,12,11), stopTime.getValidToDate());
         //Verify the toString method
-        assertEquals("StopTime(id=1234, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, validFromDate=2020-12-12, validToDate=2021-12-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25]), journeyNumber=123)", stopTime.toString());
+        assertEquals("StopTime(id=1234, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, validFromDate=2020-12-12, validToDate=2021-12-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25], disruptedOperatingDays=null), journeyNumber=123)", stopTime.toString());
         //Now use the setter methods
         stopTime.setArrivalTime(LocalTime.of(20, 46));
         stopTime.setCompany("Mustermann Bus GmbH");
@@ -68,7 +68,7 @@ public class StopTimeTest {
         stopTime.setValidToDate(LocalDate.of(2021,11,11));
         //And verify again through the toString methods
         //assertEquals("", stopTime.getOperatingDays().toString());
-        assertEquals("StopTime(id=12345, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, validFromDate=2020-11-12, validToDate=2021-11-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25]), journeyNumber=1234)", stopTime.toString());
+        assertEquals("StopTime(id=12345, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, validFromDate=2020-11-12, validToDate=2021-11-11, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25], disruptedOperatingDays=null), journeyNumber=1234)", stopTime.toString());
     }
 
     /**

@@ -8,6 +8,11 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is part of the TraMS Operations REST API. It represents a response from the server containing details
+ * of a single vehicle.
+ * @author Dave Lee
+ */
 @Builder
 @Getter
 @Setter

@@ -7,6 +7,11 @@ import lombok.ToString;
 
 import java.util.List;
 
+/**
+ * This class is part of the TraMS Operations REST API. It represents a response from the server containing details
+ * of a single stop time with departure and arrival information for a stop in a particular direction.
+ * @author Dave Lee
+ */
 @Builder
 @Getter
 @Setter

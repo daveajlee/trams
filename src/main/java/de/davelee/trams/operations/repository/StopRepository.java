@@ -11,8 +11,19 @@ import java.util.List;
  */
 public interface StopRepository extends MongoRepository<Stop, String> {
 
+    /**
+     * Return a list of stops served by this company.
+     * @param company a <code>String</code> containing the name of the company to retrieve stops for.
+     * @return a <code>List</code> of <code>Stop</code> objects containing the matching stops.
+     */
     List<Stop> findByCompany (final String company);
 
+    /**
+     * Return a list of stops served by this company and matching the supplied stop name (usually 1).
+     * @param company a <code>String</code> containing the name of the company to retrieve stops for.
+     * @param name a <code>String</code> containing the name of the stop to retrieve
+     * @return a <code>List</code> of <code>Stop</code> objects containing the matching stops (usually 1).
+     */
     List<Stop> findByCompanyAndName (final String company, final String name);
 
 }

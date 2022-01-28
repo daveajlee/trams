@@ -102,6 +102,7 @@ public class StopTimesController {
      * Generate stop time entries within a specified time and frequency and save them to the database.
      * @param generateStopTimesRequest a <code>GenerateStopTimesRequest</code> object containing the information to
      *                                 generate stop times including stops, distances and frequencies.
+     * @return a <code>ResponseEntity</code> object containing the results of the endpoint.
      */
     @PostMapping("/generate")
     @CrossOrigin

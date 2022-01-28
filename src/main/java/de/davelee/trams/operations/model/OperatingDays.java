@@ -30,11 +30,20 @@ public class OperatingDays {
     private List<LocalDate> specialOperatingDays;
 
     /**
-     * Check if the supplied date is an operating day for this stop time.
+     * Operating days where this service does not run because of disruptions.
+     */
+    private List<LocalDate> disruptedOperatingDays;
+
+    /**
+     * Check if the supplied date is an operating day for this stop time. This means either that the stop times
+     * run on this day of the week or on the supplied date and that this is not disrupted because of construction etc.
      * @param currentDate a <code>LocalDate</code> containing the date to check.
      * @return a <code>boolean</code> which is true iff this stop time operates on the supplied date.
      */
     public boolean checkIfOperatingDay ( final LocalDate currentDate ) {
+        if ( disruptedOperatingDays != null && disruptedOperatingDays.contains(currentDate) ) {
+            return false;
+        }
         return operatingDays.contains(currentDate.getDayOfWeek()) || specialOperatingDays.contains(currentDate);
     }
 

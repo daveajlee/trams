@@ -17,8 +17,12 @@ import org.springframework.context.annotation.Profile;
 @Profile("dev-test")
 public class SwaggerConfiguration {
 
+    /**
+     * This method returns a OpenApi object containing the api information and endpoints.
+     * @return a <code>OpenApi</code> object containing the api information and endpoints.
+     */
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI tramsOperationsOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("TraMS Operations API")
                         .description("Spring shop sample application")

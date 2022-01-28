@@ -2,6 +2,11 @@ package de.davelee.trams.operations.response;
 
 import lombok.*;
 
+/**
+ * This class is part of the TraMS Operations REST API. It represents a response from the server for the number of hours
+ * of a particular vehicle.
+ * @author Dave Lee
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -136,6 +136,17 @@ public class StopTimeServiceTest {
     }
 
     /**
+     * Verify that disrupted services are not returned.
+     */
+    @Test
+    public void testDisruptedStopTimes ( ) {
+        StopTime stopTime1 = createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "111", 1);
+        stopTime1.getOperatingDays().setDisruptedOperatingDays(Lists.newArrayList(LocalDate.of(2021,03,12)));
+        assertTrue(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDate.of(2021,03,01)));
+        assertFalse(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDate.of(2021,03,12)));
+    }
+
+    /**
      * Verify that it is possible to add stop times.
      */
     @Test
