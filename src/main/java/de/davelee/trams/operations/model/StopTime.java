@@ -79,6 +79,11 @@ public class StopTime {
     private String journeyNumber;
 
     /**
+     * A footnote which should be displayed as part of the stop time e.g. that the services continues further.
+     */
+    private String footnote;
+
+    /**
      * Return the stop time based on the desired type which can either be Departure to return departure time or Arrival to return arrival time.
      * @param type a <code>String</code> with the type of stop times which can be either Departure or Arrival.
      * @return a <code>LocalTime</code> object containing the stop time.

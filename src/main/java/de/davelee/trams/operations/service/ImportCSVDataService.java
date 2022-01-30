@@ -20,13 +20,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.FileSystems;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This class provides a service for importing CSV files which match the following specification:
@@ -107,6 +104,7 @@ public class ImportCSVDataService {
             LocalDate validFromLocalDate = LocalDate.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate validToLocalDate = LocalDate.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             ArrayList<String> routeNumberList = new ArrayList<>();
+            Map<String, String> footnotes = new HashMap<>();
             for(CSVRecord record : csvParser.getRecords()) {
                 if ( record.get(0).startsWith("Route:") ) {
                     for ( int i = 1; i < record.size(); i++ ) {
@@ -125,27 +123,52 @@ public class ImportCSVDataService {
                 }
                 else if ( record.get(0).isEmpty() || record.get(0).startsWith("Circulation:")) {
                     continue;
-                } else {
+                }
+                else if ( record.get(0).contains(" = ") ) {
+                    String[] footnoteSplit = record.get(0).split("=");
+                    footnotes.put(footnoteSplit[0].trim(), footnoteSplit[1].trim());
+                }
+                else {
                     if (!StopUtils.hasStopAlreadyBeenImported(record.get(0), operatorName, stopRepository)) {
                         importStop(record.get(0), operatorName);
                     }
                     for ( int i = 1; i < record.size(); i++ ) {
                         if ( record.get(i).isEmpty() ) continue;
-                        StopTime stopTime = StopTime.builder()
-                            .id(stopTimeCounter)
-                            .company(operatorName)
-                            .departureTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
-                            .arrivalTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
-                            .stopName(record.get(0))
-                            .destination(destination)
-                            .routeNumber(routeNumberList.get(i-1))
-                            .validFromDate(validFromLocalDate)
-                            .validToDate(validToLocalDate)
-                            .operatingDays(operatingDays.get(i-1))
-                            .journeyNumber("" + i)
-                            .build();
-                        stopTimeRepository.insert(stopTime);
-                        stopTimeCounter++;
+                        StopTime stopTime = null;
+                        if ( record.get(i).length() > 5 ) {
+                            stopTime = StopTime.builder()
+                                    .id(stopTimeCounter)
+                                    .company(operatorName)
+                                    .departureTime(LocalTime.parse(record.get(i).substring(0,5), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .arrivalTime(LocalTime.parse(record.get(i).substring(0,5), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .stopName(record.get(0))
+                                    .destination(destination)
+                                    .routeNumber(routeNumberList.get(i - 1))
+                                    .validFromDate(validFromLocalDate)
+                                    .validToDate(validToLocalDate)
+                                    .operatingDays(operatingDays.get(i - 1))
+                                    .journeyNumber("" + i)
+                                    .footnote(footnotes.get(record.get(i).substring(6)))
+                                    .build();
+                        } else {
+                            stopTime = StopTime.builder()
+                                    .id(stopTimeCounter)
+                                    .company(operatorName)
+                                    .departureTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .arrivalTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .stopName(record.get(0))
+                                    .destination(destination)
+                                    .routeNumber(routeNumberList.get(i - 1))
+                                    .validFromDate(validFromLocalDate)
+                                    .validToDate(validToLocalDate)
+                                    .operatingDays(operatingDays.get(i - 1))
+                                    .journeyNumber("" + i)
+                                    .build();
+                        }
+                        if ( stopTime != null ) {
+                            stopTimeRepository.insert(stopTime);
+                            stopTimeCounter++;
+                        }
                     }
                 }
             }
