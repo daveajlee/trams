@@ -59,13 +59,13 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDate.of(2020,12,12))
                 .validToDate(LocalDate.of(2021,12,11))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "2020-03-15", true, false);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "2020-03-15", null,true, false);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("101", responseEntity.getBody().getStopTimeResponses()[0].getJourneyNumber());
-        ResponseEntity<StopTimesResponse> responseEntity2 = stopTimesController.getStopTimes("Lakeside", "", Optional.of("22:00"), "2020-03-15", true, false);
+        ResponseEntity<StopTimesResponse> responseEntity2 = stopTimesController.getStopTimes("Lakeside", "", Optional.of("22:00"), "2020-03-15", null, true, false);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
-        ResponseEntity<StopTimesResponse> responseEntity3 = stopTimesController.getStopTimes("Lakeside", "Mustermann Buses GmbH", Optional.of("22:00"), "2020-03-15", true, false);
+        ResponseEntity<StopTimesResponse> responseEntity3 = stopTimesController.getStopTimes("Lakeside", "Mustermann Buses GmbH", Optional.of("22:00"), "2020-03-15", null,true, false);
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 
@@ -90,7 +90,7 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDate.of(2020,12,12))
                 .validToDate(LocalDate.of(2021,12,11))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "2020-03-15", false, true);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "2020-03-15", null, false, true);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("22:11", responseEntity.getBody().getStopTimeResponses()[0].getArrivalTime());
@@ -116,7 +116,7 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDate.of(2020,12,12))
                 .validToDate(LocalDate.of(2021,12,11))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.empty(), "2021-04-10", true, false);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.empty(), "2021-04-10", null, true, false);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("101", responseEntity.getBody().getStopTimeResponses()[0].getJourneyNumber());

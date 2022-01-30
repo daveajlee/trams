@@ -18,12 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * This class provides REST endpoints which provide operations associated with stop times in the TraMS Operations API.
@@ -42,7 +40,8 @@ public class StopTimesController {
      * @param stopName a <code>String</code> containing the name of the stop to retrieve departures/arrivals from.
      * @param company a <code>String</code> containing the name of the company to retrieve times for.
      * @param startingTime a <code>String</code> containing the time to start retrieving departures/arrivals from which may be null if rest of day should be returned.
-     * @param date a <code>String</code> containing the date to retrieve stop times for in format yyyy-MM-dd.
+     * @param date a <code>String</code> containing the date to retrieve stop times for in format yyyy-MM-dd. If the endDate parameter is supplied then this is the start date for the range.
+     * @param endDate a <code>String</code> containing the end date of a range of dates to retrieve stop times for in format yyyy-MM-dd. This parameter may be empty or missing if no range is desired.
      * @param departures a <code>boolean</code> which is true iff departure times should be returned.
      * @param arrivals a <code>boolean</code> which is true iff arrivals times should be returned.
      * @return a <code>List</code> of <code>StopTime</code> objects which may be null if none were found.
@@ -53,26 +52,35 @@ public class StopTimesController {
     @Operation(summary = "Get stop times", description="Return the stop times.")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stop times")})
     public ResponseEntity<StopTimesResponse> getStopTimes (final String stopName, final String company, final Optional<String> startingTime,
-                                                           final String date, final boolean departures, final boolean arrivals) {
+                                                           final String date, final String endDate, final boolean departures, final boolean arrivals) {
         //First of all, check that all necessary parameters were filled and that at least one of departures or arrivals is true.
         if (StringUtils.isBlank(stopName) || StringUtils.isBlank(company) || StringUtils.isBlank(date)
                 || (!departures && !arrivals)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        //If end date is not empty or null, then set last date to the normal date to indicate no range otherwise end date.
+        LocalDate lastDate = StringUtils.isBlank(endDate) ? LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         //Store the results of any service operations in a variable.
         List<StopTime> stopTimeList = new ArrayList<>();
-        //If departures and a starting time specified then get departures.
-        if ( departures && startingTime.isPresent() ) {
-            stopTimeList = stopTimeService.getDepartures(stopName, company, startingTime.get());
-        }
-        //Otherwise arrivals and starting time then get arrivals.
-        else if ( arrivals && startingTime.isPresent() ) {
-            stopTimeList = stopTimeService.getArrivals(stopName, company, startingTime.get());
-        }
-        //In the final case return all departures for the specified date.
-        else if ( departures ) {
-            stopTimeList = stopTimeService.getDeparturesByDate(stopName, company, date);
-        }
+        //Set the process date and start loop.
+        LocalDate processDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        //Do this loop until the process date matches end date.
+        do {
+            //If departures and a starting time specified then get departures.
+            if (departures && startingTime.isPresent()) {
+                stopTimeList = stopTimeService.getDepartures(stopName, company, startingTime.get());
+            }
+            //Otherwise arrivals and starting time then get arrivals.
+            else if (arrivals && startingTime.isPresent()) {
+                stopTimeList = stopTimeService.getArrivals(stopName, company, startingTime.get());
+            }
+            //In the final case return all departures for the specified date.
+            else if (departures) {
+                stopTimeList = stopTimeService.getDeparturesByDate(stopName, company, processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+            //Now increment the process date for next iteration if required.
+            processDate = processDate.plusDays(1);
+        } while ( ! processDate.isAfter(lastDate) );
         //If the list is empty or null then return no content.
         if ( stopTimeList.size() == 0 ) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
