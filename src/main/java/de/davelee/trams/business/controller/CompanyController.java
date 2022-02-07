@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -186,6 +187,42 @@ public class CompanyController {
                 .company(companies.get(0).getName())
                 .difficultyLevel(companyService.adjustDifficultyLevel(companies.get(0), difficultyLevelRequest.getDifficultyLevel()))
                 .build());
+    }
+
+    /**
+     * Export the company information in JSON format containing the information supplied.
+     * @param exportCompanyRequest a <code>ExportCompanyRequest</code> object containing the information about
+     *                            routes, messages, drivers and vehicles which should be used.
+     * @return a <code>ResponseEntity</code> containing all company information as a <code>ExportCompanyResponse</code> in JSON format.
+     */
+    @Operation(summary = "Export company information", description="Export all company information")
+    @PostMapping(value="/export")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully exported the company information"), @ApiResponse(responseCode="500",description="Export could not be generated")})
+    public ResponseEntity<ExportCompanyResponse> exportCompany (@RequestBody ExportCompanyRequest exportCompanyRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(exportCompanyRequest.getCompany()) || StringUtils.isBlank(exportCompanyRequest.getPlayerName()) ) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Retrieve the company. Return no content if 0 or more than 1 companies are found.
+        List<Company> companies = companyService.retrieveCompanyByNameAndPlayerName(exportCompanyRequest.getCompany(), exportCompanyRequest.getPlayerName());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        // Return the export.
+        return ResponseEntity.ok(
+                ExportCompanyResponse.builder()
+                        .name(companies.get(0).getName())
+                        .balance(companies.get(0).getBalance().doubleValue())
+                        .playerName(companies.get(0).getPlayerName())
+                        .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
+                        .time(companies.get(0).getTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")))
+                        .scenarioName(companies.get(0).getScenarioName())
+                        .difficultyLevel(companies.get(0).getDifficultyLevel())
+                        .routes(exportCompanyRequest.getRoutes())
+                        .drivers(exportCompanyRequest.getDrivers())
+                        .vehicles(exportCompanyRequest.getVehicles())
+                        .messages(exportCompanyRequest.getMessages())
+                        .build());
     }
 
 }

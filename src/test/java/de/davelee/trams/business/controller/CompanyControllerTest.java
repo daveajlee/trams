@@ -2,6 +2,7 @@ package de.davelee.trams.business.controller;
 
 import de.davelee.trams.business.model.Company;
 import de.davelee.trams.business.request.*;
+import de.davelee.trams.business.response.ExportCompanyResponse;
 import de.davelee.trams.business.service.CompanyService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -179,6 +180,39 @@ public class CompanyControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
         adjustDifficultyLevelRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
+    }
+
+    /**
+     * Test case: export company information.
+     * Expected result: the company is exported in the appropriate format.
+     */
+    @Test
+    public void testExportCompanyInformation() {
+        //Mock the important methods in company service.
+        Mockito.when(companyService.retrieveCompanyByNameAndPlayerName("Mustermann GmbH", "Max Mustermann")).thenReturn(List.of(generateValidCompany()));
+        //Attempt to export information.
+        ResponseEntity<ExportCompanyResponse> exportCompanyResponseResponseEntity = companyController.exportCompany(
+                ExportCompanyRequest.builder()
+                        .company("Mustermann GmbH")
+                        .playerName("Max Mustermann")
+                        .drivers("{name=\"Max Mustermann\"}")
+                        .messages("{subject=\"Test\"}")
+                        .routes("{number=\"1A\"}")
+                        .vehicles("{Type=\"Bus\"}")
+                        .build());
+        assertEquals(HttpStatus.OK, exportCompanyResponseResponseEntity.getStatusCode());
+        assertEquals("28-12-2020 14:22", exportCompanyResponseResponseEntity.getBody().getTime());
+        ExportCompanyRequest exportCompanyRequest = new ExportCompanyRequest();
+        exportCompanyRequest.setCompany("Mustermann GmbH und Co");
+        exportCompanyRequest.setPlayerName("Max Mustermann");
+        exportCompanyRequest.setDrivers("{name=\"Max Mustermann\"}");
+        exportCompanyRequest.setMessages("{subject=\"Test\"}");
+        exportCompanyRequest.setRoutes("{number=\"1A\"}");
+        exportCompanyRequest.setVehicles("{Type=\"Bus\"}");
+        assertEquals("ExportCompanyRequest(company=Mustermann GmbH und Co, playerName=Max Mustermann, routes={number=\"1A\"}, drivers={name=\"Max Mustermann\"}, vehicles={Type=\"Bus\"}, messages={subject=\"Test\"})", exportCompanyRequest.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.exportCompany(exportCompanyRequest).getStatusCode());
+        exportCompanyRequest.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.exportCompany(exportCompanyRequest).getStatusCode());
     }
 
     /**
