@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class InspectVehicleResponseTest {
 
     /**
-     * Ensure that a SellVehicleResponse class can be correctly instantiated.
+     * Ensure that a InspectVehicleResponse class can be correctly instantiated.
      */
     @Test
     public void testCreateResponse() {
