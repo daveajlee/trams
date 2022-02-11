@@ -530,4 +530,63 @@ public class VehicleControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, vehicleController.adjustVehicleDelay(adjustVehicleDelayRequest).getStatusCode());
     }
 
+    /**
+     * Test case: calculate current value of a vehicle.
+     * Expected result: the value of the vehicle is calculated as appropriate.
+     */
+    @Test
+    public void testVehicleValue() {
+        //Mock the important methods in vehicle service.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .vehicleType(VehicleType.TRAIN)
+                .typeSpecificInfos(Collections.singletonMap("Operational Mode", "Electric"))
+                .company("Lee Transport")
+                .allocatedTour("1/2")
+                .delayInMinutes(5)
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        //Attempt to adjust delay.
+        assertEquals(1000000.0, vehicleController.getValue("Lee Transport", "223", "27-03-2021").getBody().getValue());
+        assertEquals(950000.0, vehicleController.getValue("Lee Transport", "223", "27-03-2022").getBody().getValue());
+        assertEquals(500000.0, vehicleController.getValue("Lee Transport", "223", "27-03-2031").getBody().getValue());
+        assertEquals(0.0, vehicleController.getValue("Lee Transport", "223", "27-03-2041").getBody().getValue());
+        assertEquals(0.0, vehicleController.getValue("Lee Transport", "223", "27-03-2051").getBody().getValue());
+        assertEquals(HttpStatus.NO_CONTENT, vehicleController.getValue("Lee Transport", "224", "27-03-2021").getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, vehicleController.getValue("Lee Transport", "", "27-03-2021").getStatusCode());
+        //Mock a bus.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "22-TEST"))
+                .company("Lee Transport")
+                .allocatedTour("1/2")
+                .delayInMinutes(5)
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        assertEquals(180000.0, vehicleController.getValue("Lee Transport", "223", "27-03-2022").getBody().getValue());
+        //Mock a tram.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("223")
+                .vehicleType(VehicleType.TRAM)
+                .company("Lee Transport")
+                .allocatedTour("1/2")
+                .delayInMinutes(5)
+                .deliveryDate(LocalDate.of(2021, 3, 25))
+                .inspectionDate(LocalDate.of(2021, 4, 25))
+                .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
+                .build()));
+        assertEquals(665000.0, vehicleController.getValue("Lee Transport", "223", "27-03-2022").getBody().getValue());
+    }
+
+
+
+
 }

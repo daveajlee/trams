@@ -58,6 +58,15 @@ public enum VehicleType {
             return BigDecimal.valueOf(1000);
         }
 
+        /**
+         * The current depreciation factor of a bus.
+         * @return a <code>double</code> containing the current depreciation factor of the vehicle.
+         */
+        @Override
+        public double getDepreciationFactor() {
+            return 0.1;
+        }
+
     },
 
     /**
@@ -107,6 +116,15 @@ public enum VehicleType {
         @Override
         public BigDecimal getInspectionPrice() {
             return BigDecimal.valueOf(2000);
+        }
+
+        /**
+         * The current depreciation factor of a train.
+         * @return a <code>double</code> containing the current depreciation factor of the vehicle.
+         */
+        @Override
+        public double getDepreciationFactor() {
+            return 0.05;
         }
     },
 
@@ -158,6 +176,15 @@ public enum VehicleType {
         public BigDecimal getInspectionPrice() {
             return BigDecimal.valueOf(1500);
         }
+
+        /**
+         * The current depreciation factor of a tram.
+         * @return a <code>double</code> containing the current depreciation factor of the vehicle.
+         */
+        @Override
+        public double getDepreciationFactor() {
+            return 0.05;
+        }
     };
 
     /**
@@ -189,6 +216,12 @@ public enum VehicleType {
      * @return a <code>BigDecimal</code> containing the inspection price of the vehicle.
      */
     public abstract BigDecimal getInspectionPrice();
+
+    /**
+     * The current depreciation factor of a vehicle.
+     * @return a <code>double</code> containing the current depreciation factor of the vehicle.
+     */
+    public abstract double getDepreciationFactor();
 
     /**
      * Return the relevant vehicle type based on the name.

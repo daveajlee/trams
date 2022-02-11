@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -322,6 +324,40 @@ public class VehicleController {
                 .company(vehicles.get(0).getCompany())
                 .fleetNumber(vehicles.get(0).getFleetNumber())
                 .delayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()))
+                .build());
+    }
+
+    /**
+     * Get the current value of the vehicle matching the supplied company and fleet number. The current value is based on purchase price + depreciation factor.
+     * @param company a <code>String</code> object containing the name of the company to return the vehicle for.
+     * @param fleetNumber a <code>String</code> containing the fleet number of the vehicle.
+     * @param date a <code>String</code> containing the date to retrieve the hours for in format dd-MM-yyyy.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @Operation(summary = "Get current value of a particular vehicle", description="Get current value of a particular vehicle at this date")
+    @GetMapping(value="/value")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully calculated value of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
+    public ResponseEntity<VehicleValueResponse> getValue (final String company, final String fleetNumber, final String date) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber) || StringUtils.isBlank(date)) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this vehicle exists otherwise the value cannot be calculated.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber);
+        if ( vehicles == null || vehicles.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now calculate the current value of this vehicle.
+        Vehicle vehicle = vehicles.get(0);
+        int age = Period.between(vehicle.getDeliveryDate(), LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"))).getYears();
+        double value = age == 0 ? vehicle.getVehicleType().getPurchasePrice().doubleValue() : vehicle.getVehicleType().getPurchasePrice().doubleValue() - (vehicle.getVehicleType().getDepreciationFactor() * age) * vehicle.getVehicleType().getPurchasePrice().doubleValue();
+        //A value below 0 is not allowed.
+        value = value < 0 ? 0.0 : value;
+        //Now adjust the delay of the vehicle and return current delay.
+        return ResponseEntity.ok(VehicleValueResponse.builder()
+                .company(vehicles.get(0).getCompany())
+                .fleetNumber(vehicles.get(0).getFleetNumber())
+                .value(value)
                 .build());
     }
 
