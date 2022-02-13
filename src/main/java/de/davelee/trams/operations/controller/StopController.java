@@ -43,6 +43,8 @@ public class StopController {
         Stop stop = Stop.builder()
                 .company(stopRequest.getCompany())
                 .name(stopRequest.getName())
+                .waitingTime(stopRequest.getWaitingTime())
+                .distances(stopRequest.getDistances())
                 .latitude(stopRequest.getLatitude())
                 .longitude(stopRequest.getLongitude())
                 .build();

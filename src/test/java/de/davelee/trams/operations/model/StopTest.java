@@ -2,6 +2,8 @@ package de.davelee.trams.operations.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -21,6 +23,8 @@ public class StopTest {
                 .name("Greenfield")
                 .latitude(50.03)
                 .longitude(123.04)
+                .waitingTime(1)
+                .distances(Map.of("City Centre",20))
                 .company("Mustermann Bus GmbH")
                 .build();
         //Verify the builder functionality through getter methods
@@ -30,7 +34,7 @@ public class StopTest {
         assertEquals(123.04, stop.getLongitude());
         assertEquals("Mustermann Bus GmbH", stop.getCompany());
         //Verify the toString method
-        assertEquals("Stop(id=123, name=Greenfield, company=Mustermann Bus GmbH, latitude=50.03, longitude=123.04)", stop.toString());
+        assertEquals("Stop(id=123, name=Greenfield, company=Mustermann Bus GmbH, waitingTime=1, distances={City Centre=20}, latitude=50.03, longitude=123.04)", stop.toString());
         //Now use the setter methods
         stop.setId("1234");
         stop.setName("Greenerfield");
@@ -38,7 +42,7 @@ public class StopTest {
         stop.setLatitude(52.03);
         stop.setLongitude(133.04);
         //And verify again through the toString methods
-        assertEquals("Stop(id=1234, name=Greenerfield, company=Mustermann Bus GmbH, latitude=52.03, longitude=133.04)", stop.toString());
+        assertEquals("Stop(id=1234, name=Greenerfield, company=Mustermann Bus GmbH, waitingTime=1, distances={City Centre=20}, latitude=52.03, longitude=133.04)", stop.toString());
     }
 
 }

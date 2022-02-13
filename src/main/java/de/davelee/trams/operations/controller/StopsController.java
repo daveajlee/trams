@@ -56,6 +56,8 @@ public class StopsController {
                     .company(stops.get(i).getCompany())
                     .latitude(stops.get(i).getLatitude())
                     .longitude(stops.get(i).getLongitude())
+                    .waitingTime(stops.get(i).getWaitingTime())
+                    .distances(stops.get(i).getDistances())
                     .name(stops.get(i).getName())
                     .build();
         }

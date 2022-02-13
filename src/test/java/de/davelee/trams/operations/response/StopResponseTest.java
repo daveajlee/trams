@@ -2,6 +2,8 @@ package de.davelee.trams.operations.response;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -18,6 +20,8 @@ public class StopResponseTest {
         StopResponse stopResponse = StopResponse.builder()
                 .company("Mustermann Bus GmbH")
                 .name("Greenfield")
+                .waitingTime(1)
+                .distances(Map.of("City Centre",20))
                 .latitude(50.03)
                 .longitude(123.04)
                 .build();
@@ -33,7 +37,7 @@ public class StopResponseTest {
         assertEquals("Mustermann Buses GmbH", stopResponse.getCompany());
         assertEquals(50.04, stopResponse.getLatitude());
         assertEquals(122.04, stopResponse.getLongitude());
-        assertEquals("StopResponse(name=Greenerfield, company=Mustermann Buses GmbH, latitude=50.04, longitude=122.04)", stopResponse.toString());
+        assertEquals("StopResponse(name=Greenerfield, company=Mustermann Buses GmbH, waitingTime=1, distances={City Centre=20}, latitude=50.04, longitude=122.04)", stopResponse.toString());
     }
 
 }
