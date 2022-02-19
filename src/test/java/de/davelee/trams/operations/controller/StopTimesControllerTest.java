@@ -1,10 +1,11 @@
 package de.davelee.trams.operations.controller;
 
 import de.davelee.trams.operations.model.OperatingDays;
+import de.davelee.trams.operations.model.Stop;
 import de.davelee.trams.operations.model.StopTime;
 import de.davelee.trams.operations.request.GenerateStopTimesRequest;
-import de.davelee.trams.operations.request.StopPatternRequest;
 import de.davelee.trams.operations.response.StopTimesResponse;
+import de.davelee.trams.operations.service.StopService;
 import de.davelee.trams.operations.service.StopTimeService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,9 @@ public class StopTimesControllerTest {
 
     @Mock
     private StopTimeService stopTimeService;
+
+    @Mock
+    private StopService stopService;
 
     /**
      * Test the departure endpoint of this controller.
@@ -127,14 +132,51 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testGenerateEndpoint() {
+        //Mock data.
+        Mockito.when(stopService.getStop("Lee Transport", "Ferry Terminal")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Arena", 7))
+                        .waitingTime(0)
+                        .company("Lee Transport")
+                        .name("Ferry Terminal")
+                        .build()
+        );
+        Mockito.when(stopService.getStop("Lee Transport", "Arena")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Cathedral", 3, "Ferry Terminal", 7))
+                        .waitingTime(0)
+                        .company("Lee Transport")
+                        .name("Arena")
+                        .build()
+        );
+        Mockito.when(stopService.getStop("Lee Transport", "Cathedral")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Bus Station", 1, "Arena", 3))
+                        .waitingTime(1)
+                        .company("Lee Transport")
+                        .name("Cathedral")
+                        .build()
+        );
+        Mockito.when(stopService.getStop("Lee Transport", "Bus Station")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Airport", 5, "Cathedral", 1))
+                        .waitingTime(0)
+                        .company("Lee Transport")
+                        .name("Bus Station")
+                        .build()
+        );
+        Mockito.when(stopService.getStop("Lee Transport", "Airport")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Bus Station", 5))
+                        .waitingTime(0)
+                        .company("Lee Transport")
+                        .name("Airport")
+                        .build()
+        );
         //1st test
         GenerateStopTimesRequest generateStopTimesRequest = GenerateStopTimesRequest.builder()
                 .company("Lee Transport")
-                .stopPatternRequest(StopPatternRequest.builder()
-                        .stopNames(new String[]{ "Ferry Terminal", "Arena", "Cathedral", "Bus Station", "Airport"})
-                        .distances(new int[]{ 7, 3, 1, 5 })
-                        .stoppingTimes(new int[]{0, 0, 1, 0, 0})
-                        .build())
+                .stopNames(new String[]{ "Ferry Terminal", "Arena", "Cathedral", "Bus Station", "Airport"})
                 .routeNumber("TravelExpress")
                 .startTime("05:00")
                 .endTime("23:00")
@@ -143,16 +185,29 @@ public class StopTimesControllerTest {
                 .validToDate("10-12-2022")
                 .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022")
                 .build();
-        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopPatternRequest=StopPatternRequest(stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], distances=[7, 3, 1, 5], stoppingTimes=[0, 0, 1, 0, 0]), routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022)", generateStopTimesRequest.toString());
+        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
+        //Mocks for 2nd test
+        Mockito.when(stopService.getStop("Lee Transport", "Bus Station")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Country Park", 40))
+                        .waitingTime(2)
+                        .company("Lee Transport")
+                        .name("Bus Station")
+                        .build()
+        );
+        Mockito.when(stopService.getStop("Lee Transport", "Country Park")).thenReturn(
+                Stop.builder()
+                        .distances(Map.of("Bus Station", 40))
+                        .waitingTime(2)
+                        .company("Lee Transport")
+                        .name("Bus Station")
+                        .build()
+        );
         //2nd test
         GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();
         generateStopTimesRequest2.setCompany("Lee Transport");
-        StopPatternRequest stopPatternRequest = new StopPatternRequest();
-        stopPatternRequest.setStopNames(new String[] { "Bus Station", "Country Park"});
-        stopPatternRequest.setDistances(new int[] { 40 });
-        stopPatternRequest.setStoppingTimes(new int[] { 2, 2});
-        generateStopTimesRequest2.setStopPatternRequest(stopPatternRequest);
+        generateStopTimesRequest2.setStopNames(new String[] { "Bus Station", "Country Park"});
         generateStopTimesRequest2.setRouteNumber("ParkExpress");
         generateStopTimesRequest2.setStartTime("10:00");
         generateStopTimesRequest2.setEndTime("15:00");
@@ -161,7 +216,6 @@ public class StopTimesControllerTest {
         generateStopTimesRequest2.setValidToDate("25-12-2021");
         generateStopTimesRequest2.setOperatingDays("Saturday,Sunday");
         stopTimesController.generateStopTimes(generateStopTimesRequest2);
-        assertEquals("StopPatternRequest(stopNames=[Bus Station, Country Park], distances=[40], stoppingTimes=[2, 2])", stopPatternRequest.toString());
     }
 
 }

@@ -38,6 +38,17 @@ public class StopService {
     }
 
     /**
+     * Return a particular stop stored in the database which matches the specified company and stop name.
+     * @param company a <code>String</code> object containing the name of the company which should match.
+     * @param stopName a <code>String</code> object containing the name of the stop which should match.
+     * @return a <code>Stop</code> object which may be null if no stop is found matching the company and the stop name.
+     */
+    public Stop getStop ( final String company, final String stopName ) {
+        List<Stop> stops = stopRepository.findByCompanyAndName(company, stopName);
+        return stops != null && stops.size() == 1 ? stops.get(0) : null;
+    }
+
+    /**
      * Delete all stops currently stored in the database for the specified company.
      * @param company a <code>String</code> object containing the name of the company to return stops for.
      */

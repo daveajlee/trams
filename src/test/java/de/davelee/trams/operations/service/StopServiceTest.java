@@ -67,6 +67,21 @@ public class StopServiceTest {
     }
 
     /**
+     * Verify that a stop can be retrieved from the database successfully.
+     */
+    @Test
+    public void testGetStop ( ) {
+        Mockito.when(stopRepository.findByCompanyAndName("Mustermann Bus GmbH", "Greenfield")).thenReturn(Lists.newArrayList(Stop.builder()
+                .id("123")
+                .name("Greenfield")
+                .latitude(50.03)
+                .longitude(123.04)
+                .company("Mustermann Bus GmbH")
+                .build()));
+        assertEquals("Greenfield", stopService.getStop("Mustermann Bus GmbH", "Greenfield").getName());
+    }
+
+    /**
      * Verify that a stop can be deleted from the database correctly.
      */
     @Test
