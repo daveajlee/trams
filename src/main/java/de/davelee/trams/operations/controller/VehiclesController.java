@@ -58,17 +58,18 @@ public class VehiclesController {
 
     /**
      * Endpoint to retrieve vehicle information for a particular company and optionally for a supplied fleet number that
-     * the vehicle starts with.
+     * the vehicle starts with or a route number which the vehicle is serving.
      * @param company a <code>String</code> containing the name of the company to search for.
      * @param fleetNumber a <code>String</code> containing the fleet number to search for (optional).
+     * @param routeNumber a <code>String</code> containing the route number to search for (optional).
      * @return a <code>List</code> of <code>VehicleResponse</code> objects which may be null if there are no vehicles found.
      */
     @GetMapping("/")
     @CrossOrigin
     @ResponseBody
-    @Operation(summary = "Get vehicles", description="Return all vehicles matching company and if supplied fleet number")
+    @Operation(summary = "Get vehicles", description="Return all vehicles matching company and if supplied fleet number or route number")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned vehicles"), @ApiResponse(responseCode="204",description="Successful but no vehicles found")})
-    public ResponseEntity<VehiclesResponse> getVehiclesByCompanyAndFleetNumber (final String company, final Optional<String> fleetNumber ) {
+    public ResponseEntity<VehiclesResponse> getVehiclesByCompanyAndFleetNumber (final String company, final Optional<String> fleetNumber, final Optional<String> routeNumber ) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -77,6 +78,8 @@ public class VehiclesController {
         List<Vehicle> vehicles;
         if ( fleetNumber.isPresent() ) {
             vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber.get());
+        } else if (routeNumber.isPresent() ) {
+            vehicles = vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute(company, routeNumber.get());
         } else {
             vehicles = vehicleService.retrieveVehiclesByCompany(company);
         }
@@ -88,6 +91,7 @@ public class VehiclesController {
         VehicleResponse[] vehicleResponses = new VehicleResponse[vehicles.size()];
         for ( int i = 0; i < vehicleResponses.length; i++ ) {
             vehicleResponses[i] = VehicleResponse.builder()
+                    .allocatedRoute(vehicles.get(i).getAllocatedRoute())
                     .allocatedTour(vehicles.get(i).getAllocatedTour())
                     .delayInMinutes(vehicles.get(i).getDelayInMinutes())
                     .fleetNumber(vehicles.get(i).getFleetNumber())

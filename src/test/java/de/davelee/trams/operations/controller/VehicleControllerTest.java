@@ -436,7 +436,7 @@ public class VehicleControllerTest {
                 .inspectionDate(LocalDate.of(2021, 4, 25))
                 .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
                 .build()));
-        Mockito.when(vehicleService.allocateTourToVehicle(any(), any())).thenReturn(true);
+        Mockito.when(vehicleService.allocateTourToVehicle(any(), any(), any())).thenReturn(true);
         //Perform the actual test.
         ResponseEntity responseEntity = vehicleController.allocateVehicle(AllocateVehicleRequest.builder()
                 .company("Lee Transport")
@@ -483,7 +483,7 @@ public class VehicleControllerTest {
     @Test
     public void testRetrieveAllocations() {
         //Mock the important methods in vehicle service.
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedTour("Lee Transport", "1/2")).thenReturn(Lists.newArrayList(Vehicle.builder()
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour("Lee Transport", "1", "2")).thenReturn(Lists.newArrayList(Vehicle.builder()
                 .livery("Green with red text")
                 .fleetNumber("223")
                 .vehicleType(VehicleType.TRAIN)
@@ -495,9 +495,9 @@ public class VehicleControllerTest {
                 .timesheet(Map.of(LocalDate.of(2021, 10, 21), 14))
                 .build()));
         //Attempt to retrieve the vehicle.
-        assertEquals(HttpStatus.OK, vehicleController.getAllocatedVehicle("Lee Transport", "1/2").getStatusCode());
-        assertEquals(HttpStatus.NO_CONTENT, vehicleController.getAllocatedVehicle("Lee Transport", "1/1").getStatusCode());
-        assertEquals(HttpStatus.BAD_REQUEST, vehicleController.getAllocatedVehicle("Lee Transport", "").getStatusCode());
+        assertEquals(HttpStatus.OK, vehicleController.getAllocatedVehicle("Lee Transport", "1", "2").getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, vehicleController.getAllocatedVehicle("Lee Transport", "1", "1").getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, vehicleController.getAllocatedVehicle("Lee Transport", "", "").getStatusCode());
     }
 
     /**

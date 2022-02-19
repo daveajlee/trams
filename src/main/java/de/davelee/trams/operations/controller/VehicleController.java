@@ -234,31 +234,33 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Now allocate the vehicle.
-        return vehicleService.allocateTourToVehicle(vehicles.get(0), allocateVehicleRequest.getAllocatedTour()) ?
+        return vehicleService.allocateTourToVehicle(vehicles.get(0), allocateVehicleRequest.getAllocatedRoute(), allocateVehicleRequest.getAllocatedTour()) ?
                 ResponseEntity.ok().build() : ResponseEntity.status(500).build();
     }
 
     /**
-     * Return the vehicle matching the supplied company and which is allocated to the supplied tour.
+     * Return the vehicle matching the supplied company and which is allocated to the supplied route and tour.
      * @param company a <code>String</code> object containing the name of the company to return the vehicle for.
+     * @param allocatedRoute a <code>String</code> object containing the route number which the vehicle must match.
      * @param allocatedTour a <code>String</code> object containing the tour name which the vehicle must match.
      * @return a <code>ResponseEntity</code> containing the results of the matching vehicle which may be null if no vehicle exists.
      */
-    @Operation(summary = "Return an allocated vehicle", description="Return a particular vehicle which is allocated to a particular tour")
+    @Operation(summary = "Return an allocated vehicle", description="Return a particular vehicle which is allocated to a particular route and tour")
     @GetMapping(value="/allocate")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully retrieved vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
-    public ResponseEntity<VehicleResponse> getAllocatedVehicle (final String company, final String allocatedTour) {
+    public ResponseEntity<VehicleResponse> getAllocatedVehicle (final String company, final String allocatedRoute, final String allocatedTour) {
         //Check that the request is valid.
         if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour)) {
             return ResponseEntity.badRequest().build();
         }
         //Check that a single vehicle is allocated to this tour, otherwise return no content.
-        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndAllocatedTour(company, allocatedTour);
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour(company, allocatedRoute, allocatedTour);
         if ( vehicles == null || vehicles.size() != 1 ) {
             return ResponseEntity.noContent().build();
         }
         //Return the vehicle information.
         return ResponseEntity.ok(VehicleResponse.builder()
+                .allocatedRoute(vehicles.get(0).getAllocatedRoute())
                 .allocatedTour(vehicles.get(0).getAllocatedTour())
                 .delayInMinutes(vehicles.get(0).getDelayInMinutes())
                 .fleetNumber(vehicles.get(0).getFleetNumber())
@@ -297,7 +299,7 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Now remove the allocation of this vehicle.
-        return vehicleService.allocateTourToVehicle(vehicles.get(0), "") ?
+        return vehicleService.allocateTourToVehicle(vehicles.get(0), "", "") ?
                 ResponseEntity.ok().build() : ResponseEntity.status(500).build();
     }
 

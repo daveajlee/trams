@@ -27,11 +27,20 @@ public interface VehicleRepository extends MongoRepository<Vehicle, String> {
     List<Vehicle> findByCompany (final String company);
 
     /**
-     * Return a list of vehicles owned by this company and allocated to the supplied tour (usually one).
+     * Return a list of vehicles owned by this company and allocated to the supplied route and tour (usually one).
      * @param company a <code>String</code> containing the name of the company to retrieve vehicles for.
-     * @param allocatedTour a <code>String</code> containing the tour that the vehicle should be allocated to.
+     * @param allocatedRoute a <code>String</code> containing the route that the vehicle should have.
+     * @param allocatedTour a <code>String</code> containing the tour that the vehicle should have.
      * @return a <code>List</code> of <code>Vehicle</code> objects containing the matching vehicles (usually one).
      */
-    List<Vehicle> findByCompanyAndAllocatedTour ( final String company, final String allocatedTour );
+    List<Vehicle> findByCompanyAndAllocatedRouteAndAllocatedTour ( final String company, final String allocatedRoute, final String allocatedTour );
+
+    /**
+     * Return a list of vehicles owned by this company and allocated to the supplied tour (usually one).
+     * @param company a <code>String</code> containing the name of the company to retrieve vehicles for.
+     * @param allocatedRoute a <code>String</code> containing the tour that the vehicle should be allocated to.
+     * @return a <code>List</code> of <code>Vehicle</code> objects containing the matching vehicles (usually one).
+     */
+    List<Vehicle> findByCompanyAndAllocatedRoute ( final String company, final String allocatedRoute );
 
 }

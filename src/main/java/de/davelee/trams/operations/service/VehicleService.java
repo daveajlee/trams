@@ -121,12 +121,14 @@ public class VehicleService {
     }
 
     /**
-     * Allocate the supplied vehicle to the supplied tour and update the database accordingly.
+     * Allocate the supplied vehicle to the supplied route and tour and update the database accordingly.
      * @param vehicle a <code>Vehicle</code> object which should be allocated.
+     * @param allocatedRoute a <code>String</code> with the route number that the vehicle should be allocated.
      * @param allocatedTour a <code>String</code> with the tour id that the vehicle should be allocated.
      * @return a <code>boolean</code> which is true iff the vehicle could be allocated successfully.
      */
-    public boolean allocateTourToVehicle ( final Vehicle vehicle, final String allocatedTour ) {
+    public boolean allocateTourToVehicle ( final Vehicle vehicle, final String allocatedRoute, final String allocatedTour ) {
+        vehicle.setAllocatedRoute(allocatedRoute);
         vehicle.setAllocatedTour(allocatedTour);
         return vehicleRepository.save(vehicle) != null;
     }
@@ -154,9 +156,20 @@ public class VehicleService {
      * @param allocatedTour a <code>String</code> with the tour to search for.
      * @return a <code>List</code> of <code>Vehice</code> objects.
      */
-    public List<Vehicle> retrieveVehiclesByCompanyAndAllocatedTour ( final String company, final String allocatedTour) {
+    public List<Vehicle> retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour ( final String company, final String allocatedRoute, final String allocatedTour) {
         //Return the vehicles found.
-        return vehicleRepository.findByCompanyAndAllocatedTour(company, allocatedTour);
+        return vehicleRepository.findByCompanyAndAllocatedRouteAndAllocatedTour(company, allocatedRoute, allocatedTour);
+    }
+
+    /**
+     * Retrieve all vehicles allocated to a particular route for a particular company from the database for all types.
+     * @param company a <code>String</code> with the company to search for.
+     * @param allocatedRoute a <code>String</code> with the route to search for.
+     * @return a <code>List</code> of <code>Vehice</code> objects.
+     */
+    public List<Vehicle> retrieveVehiclesByCompanyAndAllocatedRoute ( final String company, final String allocatedRoute) {
+        //Return the vehicles found.
+        return vehicleRepository.findByCompanyAndAllocatedRoute(company, allocatedRoute);
     }
 
     /**

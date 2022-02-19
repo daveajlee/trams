@@ -327,7 +327,7 @@ public class VehicleServiceTest {
         //Mock important methods in Mockito.
         Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
         //Do actual test.
-        assertTrue(vehicleService.allocateTourToVehicle(vehicle, "1/1"));
+        assertTrue(vehicleService.allocateTourToVehicle(vehicle, "1", "1"));
     }
 
     /**
@@ -354,18 +354,59 @@ public class VehicleServiceTest {
     }
 
     /**
-     * Verify that a vehicle can be retrieved according to their allocated tour.
+     * Verify that vehicles can be retrieved according to their allocated route.
      */
     @Test
-    public void testRetrieveAllocatedVehicle ( ) {
+    public void testRetrieveAllocatedVehiclesForRoute ( ) {
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.findByCompanyAndAllocatedTour("Lee Buses", "1/2")).thenReturn(List.of(Vehicle.builder()
+        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(List.of(Vehicle.builder()
                 .modelName("Tram 2000 Bi")
                 .deliveryDate(LocalDate.of(2021,3,25))
                 .inspectionDate(LocalDate.now().minusYears(10))
                 .livery("Green with black slide")
                 .seatingCapacity(50)
-                .allocatedTour("1/2")
+                .allocatedRoute("1")
+                .allocatedTour("2")
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("213")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build(),
+                Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .allocatedRoute("1")
+                .allocatedTour("1")
+                .standingCapacity(80)
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .fleetNumber("214")
+                .company("Lee Buses")
+                .typeSpecificInfos(Map.of("Bidirectional", "true"))
+                .vehicleType(VehicleType.TRAM)
+                .build()));
+        //Do test.
+        assertEquals(2, vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1").size());
+    }
+
+    /**
+     * Verify that a vehicle can be retrieved according to their allocated route and tour.
+     */
+    @Test
+    public void testRetrieveAllocatedVehicle ( ) {
+        //Mock important method in repository.
+        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRouteAndAllocatedTour("Lee Buses", "1", "2")).thenReturn(List.of(Vehicle.builder()
+                .modelName("Tram 2000 Bi")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.now().minusYears(10))
+                .livery("Green with black slide")
+                .seatingCapacity(50)
+                .allocatedRoute("1")
+                .allocatedTour("2")
                 .standingCapacity(80)
                 .vehicleStatus(VehicleStatus.DELIVERED)
                 .fleetNumber("213")
@@ -374,7 +415,7 @@ public class VehicleServiceTest {
                 .vehicleType(VehicleType.TRAM)
                 .build()));
         //Do test.
-        assertEquals(1, vehicleService.retrieveVehiclesByCompanyAndAllocatedTour("Lee Buses", "1/2").size());
+        assertEquals(1, vehicleService.retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour("Lee Buses", "1", "2").size());
     }
 
     /**

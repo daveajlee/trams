@@ -51,7 +51,8 @@ public class VehiclesControllerTest {
         Mockito.when(vehicleService.retrieveVehiclesByCompany("Lee Buses")).thenReturn(Lists.newArrayList(Vehicle.builder()
                 .livery("Green with red text")
                 .fleetNumber("213")
-                .allocatedTour("1/1")
+                .allocatedRoute("1")
+                .allocatedTour("1")
                 .vehicleType(VehicleType.BUS)
                 .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
                 .deliveryDate(LocalDate.of(2017,3,25))
@@ -62,7 +63,8 @@ public class VehiclesControllerTest {
                 Vehicle.builder()
                 .livery("Red with green text")
                 .fleetNumber("2134")
-                .allocatedTour("RE1/1")
+                .allocatedRoute("RE1")
+                .allocatedTour("1")
                 .vehicleType(VehicleType.TRAIN)
                 .typeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"))
                 .deliveryDate(LocalDate.of(2009,3,25))
@@ -73,7 +75,8 @@ public class VehiclesControllerTest {
                 Vehicle.builder()
                 .livery("Red with blue text")
                 .fleetNumber("4213")
-                .allocatedTour("121/1")
+                .allocatedRoute("121")
+                .allocatedTour("1")
                 .vehicleType(VehicleType.TRAM)
                 .typeSpecificInfos(Collections.singletonMap("Bidirectional", "false"))
                 .deliveryDate(LocalDate.of(2010,3,25))
@@ -81,7 +84,7 @@ public class VehiclesControllerTest {
                 .vehicleStatus(VehicleStatus.DELIVERED)
                 .company("Lee Buses")
                 .build()));
-        ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty());
+        ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(3, responseEntity.getBody().getCount());
         assertEquals("Bus", responseEntity.getBody().getVehicleResponses()[0].getVehicleType());
@@ -96,7 +99,8 @@ public class VehiclesControllerTest {
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "21")).thenReturn(Lists.newArrayList(Vehicle.builder()
                 .livery("Green with red text")
                 .fleetNumber("213")
-                .allocatedTour("1/1")
+                .allocatedRoute("1")
+                .allocatedTour("1")
                 .vehicleType(VehicleType.BUS)
                 .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
                 .company("Lee Buses")
@@ -113,7 +117,7 @@ public class VehiclesControllerTest {
                         .comment("Delivered!")
                         .build()))
                 .build()));
-        ResponseEntity<VehiclesResponse> responseEntity2 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("21"));
+        ResponseEntity<VehiclesResponse> responseEntity2 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("21"), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
         assertEquals(1, responseEntity2.getBody().getCount());
         assertEquals("Bus", responseEntity2.getBody().getVehicleResponses()[0].getVehicleType());
@@ -123,13 +127,42 @@ public class VehiclesControllerTest {
         //Check that days until next inspection is calculated correctly.
         assertEquals("Inspected",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
         assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
-        //Third test is for retrieving without supplying a company.
-        ResponseEntity<VehiclesResponse> responseEntity3 = vehiclesController.getVehiclesByCompanyAndFleetNumber("", Optional.empty());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity3.getStatusCode());
-        //Fourth test is when there are no vehicles to retrieve.
+        //Third test is for retrieving by route number and company.
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(Lists.newArrayList(Vehicle.builder()
+                .livery("Green with red text")
+                .fleetNumber("213")
+                .allocatedRoute("1")
+                .allocatedTour("1")
+                .vehicleType(VehicleType.BUS)
+                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .company("Lee Buses")
+                .deliveryDate(LocalDate.of(2021,3,25))
+                .inspectionDate(LocalDate.of(2021,4,25))
+                .vehicleStatus(VehicleStatus.DELIVERED)
+                .vehicleHistoryEntryList(List.of(VehicleHistoryEntry.builder()
+                        .vehicleHistoryReason(VehicleHistoryReason.PURCHASED)
+                        .date(LocalDate.of(2021,3,1))
+                        .comment("Purchased!")
+                        .build(), VehicleHistoryEntry.builder()
+                        .vehicleHistoryReason(VehicleHistoryReason.DELIVERED)
+                        .date(LocalDate.of(2021,3,25))
+                        .comment("Delivered!")
+                        .build()))
+                .build()));
+        ResponseEntity<VehiclesResponse> responseEntity3 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.of("1"));
+        assertEquals(HttpStatus.OK, responseEntity3.getStatusCode());
+        assertEquals(1, responseEntity3.getBody().getCount());
+        assertEquals("Bus", responseEntity3.getBody().getVehicleResponses()[0].getVehicleType());
+        assertEquals("Purchased!", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
+        assertEquals("Purchased", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getVehicleHistoryReason());
+        assertEquals("01-03-2021", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
+        //Fourth test is for retrieving without supplying a company.
+        ResponseEntity<VehiclesResponse> responseEntity4 = vehiclesController.getVehiclesByCompanyAndFleetNumber("", Optional.empty(), Optional.empty());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity4.getStatusCode());
+        //Fifth test is when there are no vehicles to retrieve.
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "22")).thenReturn(null);
-        ResponseEntity<VehiclesResponse> responseEntity4 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("22"));
-        assertEquals(HttpStatus.NO_CONTENT, responseEntity4.getStatusCode());
+        ResponseEntity<VehiclesResponse> responseEntity5 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("22"), Optional.empty());
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity5.getStatusCode());
     }
 
     /**

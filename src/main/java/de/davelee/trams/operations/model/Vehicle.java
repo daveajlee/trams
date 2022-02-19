@@ -73,6 +73,11 @@ public class Vehicle {
     private VehicleStatus vehicleStatus;
 
     /**
+     * The allocated route for this vehicle.
+     */
+    private String allocatedRoute;
+
+    /**
      * The allocated tour for this vehicle.
      */
     private String allocatedTour;
