@@ -120,7 +120,7 @@ public class StopTimesController {
     @CrossOrigin
     @Operation(summary = "Generate stop times", description="Generate the stop times for a route and frequency.")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stop times")})
-    public ResponseEntity<Void> generateStopTimes ( final GenerateStopTimesRequest generateStopTimesRequest ) {
+    public ResponseEntity<Void> generateStopTimes ( @RequestBody final GenerateStopTimesRequest generateStopTimesRequest ) {
         //Store list of stop times generated.
         List<StopTime> stopTimeList = new ArrayList<>();
         //The start time for outward trips.
