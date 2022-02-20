@@ -147,13 +147,24 @@ public class StopTimeService {
                 //Filter stop times which do not run on this day.
                 .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(departureDate))
                 //Filter stop times that are before the valid from date.
-                .filter(stopTime -> stopTime.getValidFromDate().isBefore(departureDate))
+                .filter(stopTime -> stopTime.getValidFromDate().minusDays(1).isBefore(departureDate))
                 //Filter remove stop times are after the valid to date.
-                .filter(stopTime -> stopTime.getValidToDate().isAfter(departureDate))
+                .filter(stopTime -> stopTime.getValidToDate().plusDays(1).isAfter(departureDate))
                 //Sort the stop times by time.
                 .sorted(Comparator.comparing(StopTime::getDepartureTime))
                 //Collect list as output.
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Count all stop times for the supplied company, stop name and route number.
+     * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
+     * @param stopName a <code>String</code> containing the name of the stop to retrieve stop times for.
+     * @param routeNumber a <code>String</code> containing the route number to retrieve stop times for.
+     * @return a <code>long</code> with the number of stop times for this route number.
+     */
+    public long countStopTimes ( final String company, final String stopName, final String routeNumber ) {
+        return stopTimeRepository.countByCompanyAndStopNameAndRouteNumber(company, stopName, routeNumber);
     }
 
     /**

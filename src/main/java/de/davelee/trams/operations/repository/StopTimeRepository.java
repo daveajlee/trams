@@ -20,4 +20,13 @@ public interface StopTimeRepository extends MongoRepository<StopTime, String> {
      */
     List<StopTime> findByCompanyAndStopName(@Param("company") final String company, @Param("stopName") final String stopName );
 
+    /**
+     * Count all stop times matching a particular stop, company and route number.
+     * @param company a <code>String</code> containing the name of the company to retrieve stop times for.
+     * @param stopName a <code>String</code> containing the name of the stop to find departures and/or arrivals for.
+     * @param routeNumber a <code>String</code> containing the route number to retrieve stop times for.
+     * @return a <code>long</code> with the number of stop times for this route number.
+     */
+    long countByCompanyAndStopNameAndRouteNumber(@Param("company") final String company, @Param("stopName") final String stopName, @Param("routeNumber") final String routeNumber );
+
 }

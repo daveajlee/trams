@@ -72,15 +72,15 @@ public class StopTimesController {
         do {
             //If departures and a starting time specified then get departures.
             if (departures && startingTime.isPresent()) {
-                stopTimeList = stopTimeService.getDepartures(stopName, company, startingTime.get());
+                stopTimeList.addAll(stopTimeService.getDepartures(stopName, company, startingTime.get()));
             }
             //Otherwise arrivals and starting time then get arrivals.
             else if (arrivals && startingTime.isPresent()) {
-                stopTimeList = stopTimeService.getArrivals(stopName, company, startingTime.get());
+                stopTimeList.addAll(stopTimeService.getArrivals(stopName, company, startingTime.get()));
             }
             //In the final case return all departures for the specified date.
             else if (departures) {
-                stopTimeList = stopTimeService.getDeparturesByDate(stopName, company, processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                stopTimeList.addAll(stopTimeService.getDeparturesByDate(stopName, company, processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
             }
             //Now increment the process date for next iteration if required.
             processDate = processDate.plusDays(1);

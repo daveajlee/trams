@@ -162,6 +162,15 @@ public class StopTimeServiceTest {
     }
 
     /**
+     * Verify that counting stop times works successfully.
+     */
+    @Test
+    public void testCountStopTimes ( ) {
+        Mockito.when(stopTimeRepository.countByCompanyAndStopNameAndRouteNumber("Mustermann GmbH", "City Centre", "1A")).thenReturn(1L);
+        assertEquals(1, stopTimeService.countStopTimes("Mustermann GmbH", "City Centre", "1A"));
+    }
+
+    /**
      * Private helper method to create test stop time data.
      * @param arrivalTime a <code>LocalTime</code> object containing the desired arrival time.
      * @param departureTime a <code>LocalTime</code> object containing the desired departure time.
