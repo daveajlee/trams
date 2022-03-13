@@ -1,30 +1,14 @@
-<!-- Show the header on the start page -->
-<app-header></app-header>
-
 <!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
 <div class="jumbotron" *ngIf="!showOutlet">
   <h1 class="display-4">Welcome to <img src="assets/trams-logo.png" alt="TraMS" class="img-responsive" style="max-height:80px;"></h1>
   <br/>
   <p class="lead">Bored of waiting in queues for public transport that always runs late? Do you think you could make public transport run on time? TraMS is your chance to prove it! It is a fun computer game where you run your own fictional transport company and have to ensure passengers arrive at their destination on-time! If your vehicles are delayed in traffic then you need to take action to get them back on schedule before your passengers get frustrated and leave for another transport operator. Can your transport operator stand the test of time or will your passengers take your company off the road/rails? Play TraMS and try to run a successful transport company now!</p>
   <hr class="my-4">
-  <p>In this preview edition you can upload files according to the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or the CSV file format and view routes, stops and vehicles.</p>
   <p class="lead">
-    <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/upload" role="button">Upload Data File</a>
-    <span style="padding:10px"></span>
-    <a class="btn btn-primary btn-lg"  routerLinkActive="active" routerLink="/routes" role="button">View Routes</a>
-    <span style="padding:10px"></span>
-    <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/stops" role="button">View Stops</a>
-    <span style="padding:10px"></span>
-    <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/vehicles" role="button">View Vehicles</a>
+    <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/management" role="button">Continue</a>
   </p>
 </div>
 
 <!-- Display the output of the link that the user clicked on -->
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <router-outlet (activate)='onActivate($event)'
+ <router-outlet (activate)='onActivate($event)'
                      (deactivate)='onDeactivate($event)'></router-outlet>
-    </div>
-  </div>
-</div>

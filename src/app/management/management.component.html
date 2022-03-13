@@ -1,0 +1,19 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
+<div class="jumbotron">
+    <h1 class="display-4">Management Screen</h1>
+    <br/>
+    <hr class="my-4">
+    <p>In this preview edition you can upload files according to the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or the CSV file format and view routes, stops and vehicles.</p>
+    <p class="lead">
+        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/upload" role="button">Upload Data File</a>
+        <span style="padding:10px"></span>
+        <a class="btn btn-primary btn-lg"  routerLinkActive="active" routerLink="/routes" role="button">View Routes</a>
+        <span style="padding:10px"></span>
+        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/stops" role="button">View Stops</a>
+        <span style="padding:10px"></span>
+        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/vehicles" role="button">View Vehicles</a>
+    </p>
+</div>

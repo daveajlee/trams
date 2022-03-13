@@ -6,11 +6,13 @@ import {StopDetailComponent} from './stops/stop-detail/stop-detail.component';
 import {UploadComponent} from './upload/upload.component';
 import {VehiclesComponent} from './vehicles/vehicles.component';
 import {VehicleDetailComponent} from './vehicles/vehicle-detail/vehicle-detail.component';
+import {ManagementComponent} from './management/management.component';
 
 /**
  * Define the links which work in this application.
  */
 const appRoutes: Routes = [
+    { path: 'management', component: ManagementComponent },
   { path: 'routes', component: RoutesComponent },
   { path: 'stops', component: StopsComponent, children: [
       { path: ':id', component: StopDetailComponent }

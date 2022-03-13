@@ -19,6 +19,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { VehiclesComponent } from './vehicles/vehicles.component';
 import {VehiclesService} from './vehicles/vehicles.service';
 import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail.component';
+import { ManagementComponent } from './management/management.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail
     ClockComponent,
     UploadComponent,
     VehiclesComponent,
-    VehicleDetailComponent
+    VehicleDetailComponent,
+    ManagementComponent
   ],
   imports: [
     BrowserModule,
