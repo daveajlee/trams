@@ -1,8 +1,12 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
+//Module to control dialog.
+const dialog = electron.dialog
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
+//Module to load native images
+const nativeImage = electron.nativeImage
 
 const path = require('path')
 const url = require('url')
@@ -30,6 +34,25 @@ function createWindow () {
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
+
+    mainWindow.on('close', e => { // Line 49
+        e.preventDefault()
+        const dialogIcon = nativeImage.createFromPath(path.join(__dirname, 'trams-frontend/assets/trams-menu-logo.png'));
+        dialog.showMessageBox({
+            type: 'info',
+            buttons: ['No', 'Yes'],
+            cancelId: 1,
+            defaultId: 0,
+            icon: dialogIcon,
+            title: 'Please Confirm Exit',
+            detail: 'Are you sure you wish to exit TraMS?'
+        }).then(({ response, checkboxChecked }) => {
+            if (response) {
+                mainWindow.destroy()
+                app.quit()
+            }
+        })
+    })
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
