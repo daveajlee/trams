@@ -33,7 +33,7 @@ function createWindow () {
     }))
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
+     mainWindow.webContents.openDevTools()
 
     mainWindow.on('close', e => { // Line 49
         e.preventDefault()
