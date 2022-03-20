@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,8 @@ export class AppComponent {
   playerName: string;
 
   showOutlet: boolean;
+
+  constructor(public router: Router) {}
 
   onFileInput(files: FileList | null): void {
     if (files) {
@@ -31,7 +34,7 @@ export class AppComponent {
    * On submission of the start game form, we create a game.
    */
   onStartSubmit(): void {
-    console.log('Starting game for company ' + this.companyName +  ' and player ' + this.playerName);
+    this.router.navigate(['scenariolist'], { queryParams: { company: this.companyName, playerName: this.playerName } });
   }
 
   /**

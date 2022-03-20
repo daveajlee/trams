@@ -20,6 +20,7 @@ import { VehiclesComponent } from './vehicles/vehicles.component';
 import {VehiclesService} from './vehicles/vehicles.service';
 import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail.component';
 import { ManagementComponent } from './management/management.component';
+import { ScenariolistComponent } from './scenariolist/scenariolist.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { ManagementComponent } from './management/management.component';
     UploadComponent,
     VehiclesComponent,
     VehicleDetailComponent,
-    ManagementComponent
+    ManagementComponent,
+    ScenariolistComponent
   ],
   imports: [
     BrowserModule,
