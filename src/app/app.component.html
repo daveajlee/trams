@@ -22,6 +22,20 @@
             <label for="playerName">Player Name:</label>
             <input class="form-control" [(ngModel)]="playerName" type="text" id="playerName"/>
           </div>
+          <!-- Show an input box where the user can choose their difficulty level -->
+          <div class="form-group">
+            <label for="difficultyLevel">Level</label>
+            <select class="form-control" [(ngModel)]="difficultyLevel" id="difficultyLevel">
+              <option>Easy</option>
+              <option>Intermediate</option>
+              <option>Hard</option>
+            </select>
+          </div>
+          <!-- Show an input box where the user can choose their starting time -->
+          <div class="form-group">
+            <label for="startingDate">Your Start Date:</label>
+            <input class="form-control" [(ngModel)]="startingDate" [value]="startingDate" type="date" id="startingDate"/>
+          </div>
           <!-- Show start button -->
           <button
                   [disabled]="(companyName===undefined || companyName==='') || (playerName===undefined || playerName==='')"

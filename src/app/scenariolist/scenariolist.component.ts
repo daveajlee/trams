@@ -10,6 +10,8 @@ export class ScenariolistComponent implements OnInit {
 
   company: string;
   playerName: string;
+  difficultyLevel: string;
+  startingDate: string;
 
   constructor(private route: ActivatedRoute) { }
 
@@ -18,8 +20,14 @@ export class ScenariolistComponent implements OnInit {
         .subscribe(params => {
               this.company = params.company;
               this.playerName = params.playerName;
+              this.difficultyLevel = params.difficultyLevel;
+              this.startingDate = params.startingDate;
             }
         );
+  }
+  onScenarioSelect(scenario: string): void {
+      console.log('Attempt to generate html request or service call with ' + this.company + ' ' + this.playerName +
+      ' ' + this.startingDate + ' ' + this.difficultyLevel + ' ' + scenario);
   }
 
 }

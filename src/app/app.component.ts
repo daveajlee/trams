@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import {Router} from '@angular/router';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [DatePipe]
 })
 export class AppComponent {
 
@@ -12,10 +14,16 @@ export class AppComponent {
   title = 'trams-frontend';
   companyName: string;
   playerName: string;
-
+  difficultyLevel: string;
+  startingDate: string;
   showOutlet: boolean;
+  currentDate = new Date();
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private datePipe: DatePipe) {
+    this.difficultyLevel = 'Easy';
+    this.startingDate = this.datePipe.transform(this.currentDate, 'dd.MM.yyyy');
+    console.log(this.startingDate);
+  }
 
   onFileInput(files: FileList | null): void {
     if (files) {
@@ -34,7 +42,8 @@ export class AppComponent {
    * On submission of the start game form, we create a game.
    */
   onStartSubmit(): void {
-    this.router.navigate(['scenariolist'], { queryParams: { company: this.companyName, playerName: this.playerName } });
+    this.router.navigate(['scenariolist'], { queryParams: { company: this.companyName,
+        playerName: this.playerName, startingDate: this.startingDate, difficultyLevel: this.difficultyLevel } });
   }
 
   /**
