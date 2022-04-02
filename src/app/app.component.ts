@@ -21,8 +21,7 @@ export class AppComponent {
 
   constructor(public router: Router, private datePipe: DatePipe) {
     this.difficultyLevel = 'Easy';
-    this.startingDate = this.datePipe.transform(this.currentDate, 'dd.MM.yyyy');
-    console.log(this.startingDate);
+    this.startingDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
   }
 
   onFileInput(files: FileList | null): void {
