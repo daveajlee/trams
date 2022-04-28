@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ScenarioService} from './scenario.service';
 
 @Component({
   selector: 'app-scenariolist',
@@ -13,8 +14,15 @@ export class ScenariolistComponent implements OnInit {
   difficultyLevel: string;
   startingDate: string;
 
-  constructor(private route: ActivatedRoute) { }
+  /**
+   * Create a new scenario list component which displays a series of scenarios that the user can choose from.
+   * @param scenarioService which manages the creation of a new company and scenario.
+   */
+  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, public router: Router) { }
 
+    /**
+     * Copy parameters from last request so that we do not lose the information that the user has provided.
+     */
   ngOnInit(): void {
       this.route.queryParams
         .subscribe(params => {
@@ -25,9 +33,13 @@ export class ScenariolistComponent implements OnInit {
             }
         );
   }
+
+    /**
+     * When the user has chosen a scenario, we should create the company via API.
+     * @param scenario which contains the name of the scenario that the user chose.
+     */
   onScenarioSelect(scenario: string): void {
-      console.log('Attempt to generate html request or service call with ' + this.company + ' ' + this.playerName +
-      ' ' + this.startingDate + ' ' + this.difficultyLevel + ' ' + scenario);
+      this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
 
 }

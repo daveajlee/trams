@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {CompanyRequest} from './company.request';
 
 @Injectable({ providedIn: 'root' })
 /**
@@ -18,19 +19,15 @@ export class ScenarioService {
      * @param startingDate the date and time as a string when the simulation should start.
      * @param scenarioName the name of the scenario that the player wants to play.
      */
-    upload(companyName: string, playerName: string, difficultyLevel: string, startingDate: string, scenarioName: string): void {
-        const data = new FormData();
-        data.append('name', companyName);
-        data.append('startingBalance', '80000.0');
-        data.append('playerName', playerName);
-        data.append('startingTime', startingDate);
-        data.append('scenarioName', scenarioName);
-        data.append('difficultyLevel', difficultyLevel);
+    createCompany(companyName: string, playerName: string, difficultyLevel: string, startingDate: string, scenarioName: string): void {
+        const company = new CompanyRequest(companyName, 80000.0, playerName, startingDate, scenarioName, difficultyLevel);
+        const headers = { 'content-type': 'application/json'};
+        const body = JSON.stringify(company);
         this.http
-            .post('http://localhost:8083/api/company/', data)
+            .post('http://localhost:8083/api/company/', body, { headers })
             .subscribe(
                 () => {
-                    this.router.navigate(['routes']);
+                    this.router.navigate(['management']);
                 });
     }
 
