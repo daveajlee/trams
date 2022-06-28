@@ -3,3 +3,7 @@
 
 #Intellij IDE
 .idea
+
+#Node files
+docs/build/
+docs/node_modules/
