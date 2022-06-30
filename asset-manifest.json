@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/trams/static/css/main.9cb6ac3b.css",
-    "main.js": "/trams/static/js/main.ced03cac.js",
+    "main.js": "/trams/static/js/main.7663fd6c.js",
     "static/js/787.809d8ca3.chunk.js": "/trams/static/js/787.809d8ca3.chunk.js",
     "static/media/architecture.png": "/trams/static/media/architecture.e27dfdf7aca8d7072f1d.png",
     "static/media/douglas-lopes-ehyV_XOZ4iA-unsplash.jpg": "/trams/static/media/douglas-lopes-ehyV_XOZ4iA-unsplash.0e2a85740846a7afab97.jpg",
@@ -14,11 +14,11 @@
     "static/media/trams-header-logo.png": "/trams/static/media/trams-header-logo.b443d3d0e7672abd4843.png",
     "index.html": "/trams/index.html",
     "main.9cb6ac3b.css.map": "/trams/static/css/main.9cb6ac3b.css.map",
-    "main.ced03cac.js.map": "/trams/static/js/main.ced03cac.js.map",
+    "main.7663fd6c.js.map": "/trams/static/js/main.7663fd6c.js.map",
     "787.809d8ca3.chunk.js.map": "/trams/static/js/787.809d8ca3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9cb6ac3b.css",
-    "static/js/main.ced03cac.js"
+    "static/js/main.7663fd6c.js"
   ]
 }
