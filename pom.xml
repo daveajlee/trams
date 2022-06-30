@@ -15,8 +15,8 @@
 
 	<!-- Git Connection -->
 	<scm>
-		<connection>scm:git:https://github.com/daveajlee/personalman</connection>
-		<url>https://github.com/daveajlee/personalman</url>
+		<connection>scm:git:https://github.com/daveajlee/trams-operations</connection>
+		<url>https://github.com/daveajlee/trams-operations</url>
 		<tag>v0.0.1</tag>
 	</scm>
 
