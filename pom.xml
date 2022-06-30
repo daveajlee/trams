@@ -9,15 +9,15 @@
 	</parent>
 	<groupId>de.davelee.trams</groupId>
 	<artifactId>trams-operations</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>trams-operations</name>
 	<description>TraMS Operations is a RESTful Web Service for everything for the day-to-day operations of a transport company.</description>
 
 	<!-- Git Connection -->
 	<scm>
-		<connection>scm:git:https://github.com/daveajlee/trams-operations</connection>
-		<url>https://github.com/daveajlee/trams-operations</url>
-		<tag>v0.0.1</tag>
+		<connection>scm:git:https://github.com/daveajlee/personalman</connection>
+		<url>https://github.com/daveajlee/personalman</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<!-- GitHub Packages -->
