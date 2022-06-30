@@ -19,7 +19,8 @@ const Download = () => (
                             server can be run on any computer which supports Java 11 or above. It can be
                              manually started via the supplied JAR file or the supplied Docker image.
                         </Card.Text>
-                        <Button variant="secondary">Coming Soon!</Button>
+                        <Button variant="primary" href="https://github.com/daveajlee/trams-business/packages/1512410">JAR</Button>
+                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-business">Docker</Button>
                     </Card.Body>
                 </Card>
             </Col>
@@ -33,7 +34,8 @@ const Download = () => (
                             server can be run on any computer which supports Java 11 or above. It can be
                             manually started via the supplied JAR file or the supplied Docker image.
                         </Card.Text>
-                        <Button variant="secondary">Coming Soon!</Button>
+                        <Button variant="primary" href="https://github.com/daveajlee/trams-crm/packages/1512449">JAR</Button>
+                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-crm">Docker</Button>
                     </Card.Body>
                 </Card>
             </Col>
@@ -47,7 +49,8 @@ const Download = () => (
                             server can be run on any computer which supports Java 11 or above. It can be
                             manually started via the supplied JAR file or the supplied Docker image.
                         </Card.Text>
-                        <Button variant="secondary">Coming Soon!</Button>
+                        <Button variant="primary" href="https://github.com/daveajlee/trams-operations/packages/1512385">JAR</Button>
+                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-operations">Docker</Button>
                     </Card.Body>
                 </Card>
             </Col>
