@@ -151,10 +151,11 @@ public class VehicleService {
     }
 
     /**
-     * Retrieve all vehicles allocated to a particular tour for a particular company from the database for all types.
+     * Retrieve all vehicles allocated to a particular tour and route for a particular company from the database for all types.
      * @param company a <code>String</code> with the company to search for.
+     * @param allocatedRoute a <code>String</code> with the route to search for.
      * @param allocatedTour a <code>String</code> with the tour to search for.
-     * @return a <code>List</code> of <code>Vehice</code> objects.
+     * @return a <code>List</code> of <code>Vehicle</code> objects.
      */
     public List<Vehicle> retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour ( final String company, final String allocatedRoute, final String allocatedTour) {
         //Return the vehicles found.
