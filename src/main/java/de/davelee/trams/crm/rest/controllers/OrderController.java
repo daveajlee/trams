@@ -43,16 +43,16 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Operation(summary = "Order a ticket", description="Method to process an order for a ticket")
-    @PostMapping(value="/")
-    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successful operation"), @ApiResponse(responseCode="400",description="Bad request"),
-            @ApiResponse(responseCode="500",description="Payment could not be processed")})
     /**
      * Order a ticket based on the supplied request. Credit card number must be fake for data protection.
      * @param purchaseTicketRequest a <code>PurchaseTicketRequest</code> object containing the ticket to be purchased.
      * @return a <code>ResponseEntity</code> object which is either 200, 400 or 500 depending on
      * whether request was valid and payment was successful.
      */
+    @Operation(summary = "Order a ticket", description="Method to process an order for a ticket")
+    @PostMapping(value="/")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successful operation"), @ApiResponse(responseCode="400",description="Bad request"),
+            @ApiResponse(responseCode="500",description="Payment could not be processed")})
     public ResponseEntity<PurchaseTicketResponse> orderTicket (@RequestBody final PurchaseTicketRequest purchaseTicketRequest ) {
         //First of all check that fields are not empty.
         if (StringUtils.isBlank(purchaseTicketRequest.getTicketType()) || StringUtils.isBlank(purchaseTicketRequest.getCompany())

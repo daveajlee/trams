@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfiguration {
 
+    /**
+     * This method returns a OpenApi object containing the api information and endpoints.
+     * @return a <code>OpenApi</code> object containing the api information and endpoints.
+     */
     @Bean
     public OpenAPI tramsCrmOpenAPI() {
         return new OpenAPI()

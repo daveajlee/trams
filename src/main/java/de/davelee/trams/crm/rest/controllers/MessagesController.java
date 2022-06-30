@@ -74,6 +74,7 @@ public class MessagesController {
     /**
      * Delete all messages for the specified company that are currently stored in the database.
      * @param company a <code>String</code> containing the name of the company to delete messages for.
+     * @return a <code>ResponseEntity</code> object with the status returned ba the server (usually 200 or 204).
      */
     @DeleteMapping("/")
     @Operation(summary = "Delete messages", description="Delete all messages")

@@ -28,7 +28,7 @@ public class TicketService {
 
     /**
      * Find tickets according to their company.
-     * @param company a <code>String</code> with the company to retrieve customer for.
+     * @param company a <code>String</code> with the company to retrieve tickets for.
      * @return a <code>List</code> of <code>Ticket</code> representing the tickets matching the criteria. Returns null if no matching tickets.
      */
     public List<Ticket> findByCompany (final String company) {
@@ -37,7 +37,8 @@ public class TicketService {
 
     /**
      * Find tickets according to their company and type.
-     * @param company a <code>String</code> with the company to retrieve customer for.
+     * @param company a <code>String</code> with the company to retrieve tickets  for.
+     * @param type a <code>String</code> with the company to retrieve tickets for.
      * @return a <code>List</code> of <code>Ticket</code> representing the tickets matching the criteria. Returns null if no matching tickets.
      */
     public List<Ticket> findByCompanyAndType ( final String company, final String type) {
