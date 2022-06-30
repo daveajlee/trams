@@ -19,6 +19,22 @@
         <spring-cloud.version>2021.0.0</spring-cloud.version>
     </properties>
 
+    <!-- Git Connection -->
+    <scm>
+        <connection>scm:git:https://github.com/daveajlee/trams-business</connection>
+        <url>https://github.com/daveajlee/trams-business</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- GitHub Packages -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub daveajlee Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/daveajlee/trams-business</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
