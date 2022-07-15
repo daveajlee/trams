@@ -55,11 +55,11 @@ const Roadmap = () => (
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="4">
-                        <Accordion.Header>Budget Planning and Monthly/Yearly Accounting</Accordion.Header>
+                        <Accordion.Header>Budget Planning and Monthly/Annual Accounting</Accordion.Header>
                         <Accordion.Body>
                             Vehicles, drivers and other costs should be reflected an accounting review of this month
                             and the current financial year. There should also be forecasts of these costs
-                            which provide the basis of a financial plan for the coming finanical year.
+                            which provide the basis of a financial plan for the coming financial year.
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="5">
