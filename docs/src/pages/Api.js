@@ -8,9 +8,9 @@ const Api = () => (
     <Container fluid>
         <Row>
             <Col>
-                <Card>
+                <Card className="border-0">
                     <Card.Img variant="top" className="img-responsive w-25 rounded mx-auto d-block mt-3" src={apiImage} />
-                    <Card.Title className="mt-5 text-center">API</Card.Title>
+                    <Card.Title as="h3" className="mt-5 text-center">API</Card.Title>
                     <Card.Body className="text-center mb-5">The current APIs of TraMS are displayed below. TraMS is
                         split into three APIs (TraMS Business API, TraMS Customer API and Trams Operations API). Click
                         on a tab to find out what the API is responsible for.

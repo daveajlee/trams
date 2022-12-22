@@ -6,9 +6,9 @@ const Vision = () => (
     <Container fluid>
         <Row>
             <Col>
-                <Card>
+                <Card className="border-0">
                     <Card.Img variant="top" className="img-responsive w-25 rounded mx-auto d-block mt-3" src={visionImage} />
-                    <Card.Title className="mt-5 text-center">TraMS Vision</Card.Title>
+                    <Card.Title as="h3" className="mt-5 text-center">TraMS Vision</Card.Title>
                     <Card.Body className="text-center mb-5">TraMS provides a realistic
                         simulation and gamification of public transport management from a public transport company perspective.</Card.Body>
                 </Card>
@@ -16,7 +16,7 @@ const Vision = () => (
         </Row>
         <Row>
             <Col>
-                <h5 className="mt-5 text-center">Goals</h5>
+                <h3 className="mt-5 text-center">Goals</h3>
                 <Accordion className="mt-3">
                     <Accordion.Item eventKey="0">
                         <Accordion.Header>Realistic daily operational process management</Accordion.Header>
