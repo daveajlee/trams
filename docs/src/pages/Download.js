@@ -10,7 +10,7 @@ const Download = () => (
         </Row>
         <Row className="mt-5">
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>TraMS Business Server</Card.Title>
                         <Card.Text>
@@ -25,7 +25,7 @@ const Download = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>TraMS CRM Server</Card.Title>
                         <Card.Text>
@@ -40,7 +40,7 @@ const Download = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>TraMS Operations Server</Card.Title>
                         <Card.Text>
@@ -55,7 +55,7 @@ const Download = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>Desktop Client</Card.Title>
                         <Card.Text>

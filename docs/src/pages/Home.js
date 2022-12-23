@@ -41,7 +41,7 @@ const Home = () => (
         <hr/>
         <Row className="mt-3">
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Img variant="top" src={visionImage} />
                     <Card.Body>
                         <Card.Title>Vision</Card.Title>
@@ -53,7 +53,7 @@ const Home = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Img variant="top" src={roadmapImage} />
                     <Card.Body>
                         <Card.Title>Features & Roadmap</Card.Title>
@@ -66,7 +66,7 @@ const Home = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Img variant="top" src={architectureImage} />
                     <Card.Body>
                         <Card.Title>Architecture</Card.Title>
@@ -78,7 +78,7 @@ const Home = () => (
                 </Card>
             </Col>
             <Col>
-                <Card style={{ width: '18rem' }}>
+                <Card className="text-center" style={{ width: '18rem' }}>
                     <Card.Img variant="top" src={apiImage} />
                     <Card.Body>
                         <Card.Title>API</Card.Title>

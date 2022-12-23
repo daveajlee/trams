@@ -8,7 +8,7 @@ const Header = () => (
 
     <div className="Header">
     <header className="App-header">
-        <Navbar bg="light" expand="lg">
+        <Navbar className="color-nav" variant="light" expand="lg">
             <Container>
                 <Navbar.Brand as={Link} to="/"><img src={logo} alt="TraMS"
                                                 className="img-responsive img-max-height"/></Navbar.Brand>
