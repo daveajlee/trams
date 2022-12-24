@@ -11,3 +11,9 @@
   background-color: white;
   margin-top: 5px;
 }
+
+@media only screen and (max-width: 900px) {
+  .nav-card {
+    margin-bottom: 10px;
+  }
+}
