@@ -16,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import { getDeviceType } from "react-native-device-info";
+import CreateGameScreen from './screens/smartphone/CreateGameScreen';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -24,24 +25,34 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? 'black' : 'white',
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? 'black' : 'white',
-          }}>
-          <Text>This device is: {getDeviceType()} </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+  if ( getDeviceType() === 'Tablet') {
+    return (
+      <SafeAreaView style={backgroundStyle}>
+        <StatusBar
+          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+          backgroundColor={backgroundStyle.backgroundColor}
+        />
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={backgroundStyle}>
+          <View
+            style={{
+              backgroundColor: isDarkMode ? 'black' : 'white',
+            }}>
+            <Text>This device is: {getDeviceType()} </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  else {
+    return (
+      <CreateGameScreen/>
+    );
+  }
+
+  
 }
 
 const styles = StyleSheet.create({
