@@ -1,7 +1,9 @@
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from "react-native-date-picker";
+import { Game } from "../../models/game";
+import { insertGame } from "../../utilities/sqlite";
 
 /**
  * This screen represents the create game screen on a Smartphone.
@@ -42,11 +44,10 @@ function CreateGameScreen() {
      * Create the game based on the information provided by the user.
      */
     function createGameHandler() {
-        console.log('Company Name: ' + companyName);
-        console.log('Player Name: ' + playerName);
-        console.log('Level: ' + levelValue);
-        console.log('Date: ' + startDate.toLocaleString())
-        console.log('Coming Soon!');
+        const game = new Game(companyName, playerName, levelValue, startDate.toLocaleString());
+        insertGame(game).then(
+            console.log('Game created successfully!')
+        )
     }
 
     /**

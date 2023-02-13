@@ -17,13 +17,42 @@ import {
 } from 'react-native';
 import { getDeviceType } from "react-native-device-info";
 import CreateGameScreen from './screens/smartphone/CreateGameScreen';
+import { useCallback, useEffect, useState } from 'react';
+import { init } from './utilities/sqlite';
+import SplashScreen from 'expo-splash-screen';
 
-function App(): JSX.Element {
+function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? 'black' : 'white',
   };
+
+  const [dbInitialized, setDbInitialized] = useState(false);
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        init().then(() => {
+          setDbInitialized(true);
+        })
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (dbInitialized) {
+      await SplashScreen.hideAsync();
+    }
+  }, [dbInitialized]);
+
+  if (!dbInitialized) {
+    return null;
+  }
 
   if ( getDeviceType() === 'Tablet') {
     return (
