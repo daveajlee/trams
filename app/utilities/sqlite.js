@@ -57,3 +57,24 @@ export function insertGame(game) {
 
     return promise;
 }
+
+/**
+ * Retrieve all of the games from the database.
+ * @returns a promise with all of the games or an error message if something bad happens
+ */
+export function fetchGames() {
+    const promise = new Promise((resolve, reject) => {
+        database.transaction((tx) => {
+            tx.executeSql('SELECT * FROM games', [],
+            (_, result) => {
+                const games = [];
+                for (const game of result.rows._array) {
+                    games.push(new Game(game.companyName, game.playerName, game.level, game.startDate, game.id));
+                }
+                resolve(games);
+            }, (_, error) => { reject(error); });
+        })
+    })
+
+    return promise;
+}
