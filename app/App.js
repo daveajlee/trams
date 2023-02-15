@@ -1,13 +1,7 @@
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
 } from 'react-native';
-import { getDeviceType } from "react-native-device-info";
 import CreateGameScreen from './screens/smartphone/CreateGameScreen';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchGames, init } from './utilities/sqlite';
@@ -75,45 +69,20 @@ export default function App() {
     return null;
   }
 
-  if ( getDeviceType() === 'Tablet') {
-    return (
-      <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
-        />
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <View
-            style={{
-              backgroundColor: isDarkMode ? 'black' : 'white',
-            }}>
-            <Text>This device is: {getDeviceType()} </Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={firstScreen}>
+        <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{
+          headerShown: false
+        }}/>
+        <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={({navigation}) => ({
+          title: 'Saved Games',
+          headerRight: ({tintColor}) => (
+            <IconButton icon="add" size={24} color={tintColor} onPress={() => navigation.navigate('CreateGameScreen')}/>
+          ),})}/>
+      </Stack.Navigator>
+    </NavigationContainer>
     );
-  }
-
-  else {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName={firstScreen}>
-          <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{
-            headerShown: false
-          }}/>
-          <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={({navigation}) => ({
-            title: 'Saved Games',
-            headerRight: ({tintColor}) => (
-              <IconButton icon="add" size={24} color={tintColor} onPress={() => navigation.navigate('CreateGameScreen')}/>
-            ),})}/>
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
-
-  
 }
 
 const styles = StyleSheet.create({
