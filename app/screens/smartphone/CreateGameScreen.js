@@ -11,7 +11,7 @@ import { insertGame } from "../../utilities/sqlite";
  * as choose their desired skill level and start date.
  * Clicking the create button, creates a game in the database.
  */
-function CreateGameScreen() {
+function CreateGameScreen({navigation}) {
 
     const [companyName, setCompanyName] = useState('');
     const [playerName, setPlayerName] = useState('');
@@ -41,12 +41,17 @@ function CreateGameScreen() {
     }
 
     /**
-     * Create the game based on the information provided by the user.
+     * Create the game based on the information provided by the user
+     * and move to the next screen which allows the user to choose the scenario.
      */
     function createGameHandler() {
         const game = new Game(companyName, playerName, levelValue, startDate.toLocaleString());
         insertGame(game).then(
-            console.log('Game created successfully!')
+            navigation.navigate("ChooseScenarioScreen", {
+                gameId: game.id,
+                companyName: companyName,
+                playerName: playerName
+            })
         )
     }
 

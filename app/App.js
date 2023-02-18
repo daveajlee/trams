@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoadGameScreen from './screens/smartphone/LoadGameScreen';
 import IconButton from './utilities/IconButton';
+import ChooseScenarioScreen from './screens/smartphone/ChooseScenarioScreen';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -72,14 +73,17 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={firstScreen}>
-        <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={{
+        <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={({navigation}) => ({
           headerShown: false
-        }}/>
+        })}/>
         <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={({navigation}) => ({
           title: 'Saved Games',
           headerRight: ({tintColor}) => (
             <IconButton icon="add" size={24} color={tintColor} onPress={() => navigation.navigate('CreateGameScreen')}/>
           ),})}/>
+        <Stack.Screen name="ChooseScenarioScreen" component={ChooseScenarioScreen} options={({navigation}) => ({
+          title: 'Choose Scenario'
+        })}/>
       </Stack.Navigator>
     </NavigationContainer>
     );

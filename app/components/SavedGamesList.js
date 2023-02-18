@@ -1,11 +1,19 @@
 import { FlatList, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import { fetchGames } from "../utilities/sqlite";
+import { Game } from "../models/game";
 
+/**
+ * This component displays a list of saved games from the database.
+ */
 function SavedGamesList({games, navigation}) {
 
     const [loadedGames, setLoadedGames] = useState([]);
 
+    /**
+     * Load the saved games from the database as soon as the screen
+     * is loaded.
+     */
     useEffect(() => {
         async function loadGames() {
             const games = await fetchGames();
@@ -15,6 +23,10 @@ function SavedGamesList({games, navigation}) {
         loadGames();
     }, []);
 
+    /**
+     * Load the game that the user clicked on.
+     * @param {Game} item 
+     */
     async function onLoadGame(item) {
         console.log('I loaded game with company name ' + item.companyName);
     }
