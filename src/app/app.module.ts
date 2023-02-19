@@ -21,6 +21,7 @@ import {VehiclesService} from './vehicles/vehicles.service';
 import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail.component';
 import { ManagementComponent } from './management/management.component';
 import { ScenariolistComponent } from './scenariolist/scenariolist.component';
+import {GameService} from './shared/game.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,7 @@ import { ScenariolistComponent } from './scenariolist/scenariolist.component';
     BrowserAnimationsModule,
     MatProgressBarModule
   ],
-  providers: [StopsService, RoutesService, VehiclesService],
+  providers: [StopsService, RoutesService, VehiclesService, GameService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

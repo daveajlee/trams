@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ScenarioService} from './scenario.service';
+import {GameService} from '../shared/game.service';
+import {Game} from '../game/game.model';
 
 @Component({
   selector: 'app-scenariolist',
@@ -18,7 +20,8 @@ export class ScenariolistComponent implements OnInit {
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
    * @param scenarioService which manages the creation of a new company and scenario.
    */
-  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, public router: Router) { }
+  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService: GameService,
+              public router: Router) { }
 
     /**
      * Copy parameters from last request so that we do not lose the information that the user has provided.
@@ -39,7 +42,9 @@ export class ScenariolistComponent implements OnInit {
      * @param scenario which contains the name of the scenario that the user chose.
      */
   onScenarioSelect(scenario: string): void {
-      this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
+      this.gameService.setGame(new Game(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario));
+      this.router.navigate(['management']);
+      // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
 
 }
