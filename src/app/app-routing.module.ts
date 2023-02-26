@@ -14,6 +14,7 @@ import {ManagementComponent} from './management/management.component';
  */
 const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
+    { path: 'management', component: ManagementComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'scenariolist', component: ScenariolistComponent },
   { path: 'stops', component: StopsComponent, children: [

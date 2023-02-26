@@ -7,3 +7,6 @@ node_modules/
 
 #Git files
 src/assets/.gitkeep
+
+#Dist folder
+dist/

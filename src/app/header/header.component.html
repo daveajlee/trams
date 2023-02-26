@@ -9,28 +9,34 @@
   <!-- Show the navigation bar with the options including drop down menus as required -->
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <!-- Routes Link -->
+      <!-- File Dropdown -->
       <li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" routerLink="/routes">Routes</a>
+        <a class="nav-link dropdown-toggle" href="#" id="fileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          File
+        </a>
       </li>
-      <!-- Stops Link -->
+      <!-- Tools Dropdown -->
       <li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" routerLink="/stops">Stops</a>
+        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tools
+        </a>
       </li>
-      <!-- Vehicles Link -->
+      <!-- Help Dropdown -->
       <li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" routerLink="/vehicles">Vehicles</a>
+        <a class="nav-link dropdown-toggle" href="#" id="helpDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Help
+        </a>
       </li>
       <!-- Dropdown menu to manage options -->
-      <li class="nav-item dropdown">
+      <!--<li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Manage
         </a>
-        <!-- Show the Upload GTFS file option -->
+        Show the Upload GTFS file option
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" routerLinkActive="active" routerLink="/upload">Upload Data File</a>
         </div>
-      </li>
+      </li>-->
     </ul>
   </div>
 </nav>

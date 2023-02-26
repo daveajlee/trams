@@ -3,17 +3,99 @@
 
 <!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
 <div class="jumbotron">
-    <h1 class="display-4">Management Screen</h1>
-    <br/>
-    <hr class="my-4">
-    <p>In this preview edition you can upload files according to the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or the CSV file format and view routes, stops and vehicles.</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/upload" role="button">Upload Data File</a>
-        <span style="padding:10px"></span>
-        <a class="btn btn-primary btn-lg"  routerLinkActive="active" routerLink="/routes" role="button">View Routes</a>
-        <span style="padding:10px"></span>
-        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/stops" role="button">View Stops</a>
-        <span style="padding:10px"></span>
-        <a class="btn btn-primary btn-lg" routerLinkActive="active" routerLink="/vehicles" role="button">View Vehicles</a>
-    </p>
+    <h1 class="display-4 text-center">Control Centre</h1>
+    <h2 class="display-5 text-center">{{getCurrentDate()}}</h2>
+    <h2 class="display-5 text-center">Balance: €{{getBalance()}}</h2>
+    <div class="progress" style="width: 100%; height: 20px;">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Passenger Satisfaction Rating - 100%</div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="alert alert-danger" style="width:100%" role="alert">
+            Warning: No routes have been defined yet. Click "Create Route" to define a route.
+        </div>
+    </div>
+    <div class="row">
+        <div class="card-group">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Messages</h5>
+                    <p class="card-text">You can contact the local authority or other external partners via messages. Occasionally the external partners
+                    will also contact you via messages.</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Messages</button>
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Resign</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Scenario</h5>
+                    <p class="card-text">View scenario information, game targets, the location map and the current live
+                        situation in the scenario.</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">View Information</button>
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Location Map</button>
+                        <a class="btn btn-primary btn-lg" style="margin: 10px;" routerLinkActive="active" routerLink="/stops" role="button">View Stops</a>
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Live Situation</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Routes</h5>
+                    <p class="card-text">Create routes, view/amend route timetables and remove routes.</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Create Route</button>
+                        <a class="btn btn-primary btn-lg" style="margin: 10px;" routerLinkActive="active" routerLink="/routes" role="button">View Route Info</a>
+                        <a class="btn btn-primary btn-lg" style="margin: 10px;" routerLinkActive="active" routerLink="/upload" role="button">Upload Data File</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="card-group" style="margin-top: 10px; width: 100%;">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Vehicles</h5>
+                    <p class="card-text">Purchase vehicles, view current vehicles and sell old vehicles.</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Purchase</button>
+                        <a class="btn btn-primary btn-lg" style="margin: 10px;" routerLinkActive="active" routerLink="/vehicles" role="button">View Depot</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Drivers</h5>
+                    <p class="card-text">Employ drivers, view current employees and sack drivers</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">Employ</button>
+                        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit">View Drivers</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Allocations</h5>
+                    <p class="card-text">Allocate or deallocate vehicles to routes.</p>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" type="submit">Change</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <p>In this preview edition you can upload files according to the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or the CSV file format and view routes, stops and vehicles.</p>
+    </div>
 </div>
