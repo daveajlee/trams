@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {GameService} from '../shared/game.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-management',
@@ -11,7 +12,7 @@ export class ManagementComponent implements OnInit {
   currentDate: Date;
   gameService: GameService;
 
-  constructor(private gameService2: GameService) {
+  constructor(private gameService2: GameService, public router: Router) {
     this.currentDate = new Date();
     this.gameService = gameService2;
   }
@@ -25,7 +26,10 @@ export class ManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.gameService.getGame().companyName);
+  }
+
+  onLocationMap(): void {
+    this.router.navigate(['scenariomap']);
   }
 
 }

@@ -42,7 +42,7 @@ export class ScenariolistComponent implements OnInit {
      * @param scenario which contains the name of the scenario that the user chose.
      */
   onScenarioSelect(scenario: string): void {
-      this.gameService.setGame(new Game(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario));
+      this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, scenario, this.difficultyLevel,));
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }

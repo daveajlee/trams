@@ -22,6 +22,7 @@ import { VehicleDetailComponent } from './vehicles/vehicle-detail/vehicle-detail
 import { ManagementComponent } from './management/management.component';
 import { ScenariolistComponent } from './scenariolist/scenariolist.component';
 import {GameService} from './shared/game.service';
+import { ScenariomapComponent } from './scenariomap/scenariomap.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {GameService} from './shared/game.service';
     VehiclesComponent,
     VehicleDetailComponent,
     ManagementComponent,
-    ScenariolistComponent
+    ScenariolistComponent,
+    ScenariomapComponent
   ],
   imports: [
     BrowserModule,

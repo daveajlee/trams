@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {RoutesComponent} from './routes/routes.component';
 import {ScenariolistComponent} from './scenariolist/scenariolist.component';
+import { ScenariomapComponent } from './scenariomap/scenariomap.component';
 import {StopsComponent} from './stops/stops.component';
 import {StopDetailComponent} from './stops/stop-detail/stop-detail.component';
 import {UploadComponent} from './upload/upload.component';
@@ -14,14 +15,14 @@ import {ManagementComponent} from './management/management.component';
  */
 const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
-    { path: 'management', component: ManagementComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'scenariolist', component: ScenariolistComponent },
-  { path: 'stops', component: StopsComponent, children: [
+    { path: 'scenariomap', component: ScenariomapComponent },
+    { path: 'stops', component: StopsComponent, children: [
       { path: ':id', component: StopDetailComponent }
-    ] },
-  { path: 'upload', component: UploadComponent },
-  { path: 'vehicles', component: VehiclesComponent, children: [
+      ] },
+    { path: 'upload', component: UploadComponent },
+    { path: 'vehicles', component: VehiclesComponent, children: [
       { path: ':id', component: VehicleDetailComponent}
     ]}
 ];
