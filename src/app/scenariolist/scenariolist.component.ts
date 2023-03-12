@@ -3,6 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ScenarioService} from './scenario.service';
 import {GameService} from '../shared/game.service';
 import {Game} from '../game/game.model';
+import { Scenario } from '../shared/scenario.model';
+import { SCENARIOS } from 'src/data/scenario.data';
 
 @Component({
   selector: 'app-scenariolist',
@@ -15,6 +17,8 @@ export class ScenariolistComponent implements OnInit {
   playerName: string;
   difficultyLevel: string;
   startingDate: string;
+
+  scenarios: Scenario[];
 
   /**
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
@@ -35,6 +39,7 @@ export class ScenariolistComponent implements OnInit {
               this.startingDate = params.startingDate;
             }
         );
+      this.scenarios = SCENARIOS;
   }
 
     /**
@@ -42,9 +47,13 @@ export class ScenariolistComponent implements OnInit {
      * @param scenario which contains the name of the scenario that the user chose.
      */
   onScenarioSelect(scenario: string): void {
+      console.log('Scenario is ' + scenario);
       this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, scenario, this.difficultyLevel,));
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
+
+
+  
 
 }
