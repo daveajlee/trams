@@ -1,0 +1,51 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<!-- Jumbotron with company name -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">{{getCompanyName()}}</h1>
+    
+</div>
+
+<!-- Matrix with title and value for name, description and target for selected scenario -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h5 class="text-center">Scenario Name:</h5>
+        </div>
+        <div class="col">
+            <p class="text-center">{{getScenario().scenarioName}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5 class="text-center">Scenario Description:</h5>
+        </div>
+        <div class="col">
+            <p class="text-center">{{getScenario().description}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5 class="text-center">Targets:</h5>
+        </div>
+        <div class="col">
+            <ol>
+                <li *ngFor="let target of getScenario().targets" class="text-center">{{target}}</li>
+            </ol>
+            <p>The contract to run public transport services in {{getScenario().scenarioName}} will be terminated if these targets are not met.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5 class="text-center">Player Name:</h5>
+        </div>
+        <div class="col">
+            <p class="text-center">{{getPlayerName()}}</p>
+        </div>
+    </div>
+    <!-- Button to return to management screen -->
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+    </div>
+</div>

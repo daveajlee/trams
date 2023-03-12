@@ -32,4 +32,8 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['scenariomap']);
   }
 
+  onViewInformation(): void {
+    this.router.navigate(['scenarioinfo']);
+  }
+
 }
