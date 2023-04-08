@@ -1,0 +1,28 @@
+<!-- Create a jumbotron component congratulating the user to starting their game -->
+<div class="jumbotron">
+    <h1 class="display-4"><img src="assets/trams-logo.png" alt="TraMS" class="img-responsive" style="max-height:80px;"></h1>
+    <br/>
+    <p class="lead">Congratulations - {{playerName}} has been appointed Managing Director of {{company}}! Now you are ready to choose your scenario and prove that your new company can make public transport run on time!</p>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div *ngFor="let scenario of scenarios" class="col-sm-4 card-group">
+            <div *ngIf="scenario" class="card">
+                <div class="card-body">
+                    <img src={{scenario.getImagePath()}} class="card-img-top" alt={{scenario.scenarioName}}>
+                    <h5 class="card-title text-center">{{scenario.scenarioName}}</h5>
+                    <p class="card-text">{{scenario.description}}</p>
+                    <h5>Targets</h5>
+                    <ol>
+                        <li *ngFor="let target of scenario.targets">{{target}}</li>
+                    </ol>
+                    <!-- Show start button -->
+                    <div class="col text-center">
+                        <button class="btn btn-primary btn-lg" type="submit" (click)="onScenarioSelect(scenario.scenarioName)">Select</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+{
+  "name": "trams-frontend",
+  "productName": "TraMS - Transport Management Simulator",
+  "description": "A fun computer game where you run your own fictional transport company and have to ensure passengers arrive at their destination on-time!",
+  "version": "0.1.0",
+  "main": "main.js"
+}

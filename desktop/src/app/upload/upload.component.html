@@ -1,0 +1,53 @@
+<!-- Display a jumbotron component which explains how the upload of GTFS files work in TraMS -->
+<div class="jumbotron" >
+  <h1 class="display-4">Upload Data File</h1>
+  <br/>
+  <p class="lead">In TraMS, you can upload and import GTFS or CSV data sets. This allows you to run your transportation company in real cities and with real transportation data.</p>
+  <hr class="my-4">
+  <p>In this preview edition you can only upload zip files which are a valid implementation of the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or a valid implementation of the Comma Separated Value (CSV) file specification which will be published at a later date.</p>
+</div>
+
+<!-- Display a heading for the file input area -->
+<h1>File</h1>
+<!-- Display a button with the name of the file or select if no file has been selected yet. -->
+<button class="btn-primary" (click)="fileInput.click()">
+  {{ file ? file.name : 'Select' }}
+</button>
+<!-- Set the file content to the server -->
+<input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
+<br/><br/>
+<!-- Show a drop down list with the supported file formats -->
+<div class="form-group">
+  <label for="fileFormat">File Format:</label>
+  <select class="form-control" #fileFormat id="fileFormat" (change)="onFileFormatChange(fileFormat.value)">
+    <option>General Transit Feed Specification (GTFS)</option>
+    <option>Comma Separated Value (CSV)</option>
+  </select>
+</div>
+<!-- Show an input box where route numbers can be added that only those route numbers should be imported. -->
+<div class="form-group">
+  <label for="routesImport">Routes to Import:</label>
+  <input class="form-control" #routesImport type="text" id="routesImport"/>
+</div>
+<!-- Show a date picker to choose valid from date -->
+<div class="form-group">
+  <label for="validFromDate">Valid From Date:</label>
+  <input class="form-control" #validFromDate type="date" id="validFromDate" disabled=true/>
+</div>
+<!-- Show a date picker to choose valid to date -->
+<div class="form-group">
+  <label for="validToDate">Valid To Date:</label>
+  <input class="form-control" #validToDate type="date" id="validToDate" disabled=true/>
+</div>
+
+<br/><br/>
+
+<!-- Show a submit button to upload the file -->
+<button
+  [disabled]="!file"
+  type="submit"
+  class="btn-primary"
+  (click)="onSubmit(routesImport.value, fileFormat.value, validFromDate.value, validToDate.value)"
+>
+  Submit
+</button>

@@ -1,0 +1,78 @@
+<!-- Show the stop name and the current time -->
+<h1 class="text-center">{{stop.name}} - <app-clock></app-clock></h1>
+
+<!-- Show an iframe with the location of the stop through integration of OpenStreetMap -->
+<iframe *ngIf="stop.latitude != 0 && stop.longitude != 0" class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
+
+<!-- Show a heading with next departures -->
+<h3 class="text-center">Next Departures</h3>
+
+<!-- Show a table with the next departures containing time, route and destination. -->
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Time</th>
+    <th scope="col">Route</th>
+    <th scope="col">Destination</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let departureEl of getDepartures(), let i = index">
+    <td>{{departureEl.departureTime}}</td>
+    <td>{{departureEl.routeNumber}}</td>
+    <td>{{departureEl.destination}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Show a heading with next arrivals -->
+<h3 class="text-center">Next Arrivals</h3>
+
+<!-- Show a table with the next arrivals containing time, route and destination -->
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Time</th>
+    <th scope="col">Route</th>
+    <th scope="col">Destination</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let arrivalEl of getArrivals(), let i = index">
+    <td>{{arrivalEl.arrivalTime}}</td>
+    <td>{{arrivalEl.routeNumber}}</td>
+    <td>{{arrivalEl.destination}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Show a heading with today's departures -->
+<h3 class="text-center">Today's departures</h3>
+
+<!-- Show a table with all departures for this date with time, route and destination -->
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Time</th>
+    <th scope="col">Route</th>
+    <th scope="col">Destination</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let todayDeparturesEl of getDeparturesByDate(), let i = index">
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.departureTime}}</td>
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.routeNumber}}</td>
+    <td [ngClass]="{
+            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
+            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
+         }">{{todayDeparturesEl.destination}}</td>
+  </tr>
+  </tbody>
+</table>
+

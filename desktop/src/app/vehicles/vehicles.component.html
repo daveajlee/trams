@@ -1,0 +1,38 @@
+<!-- Display a jumbotron component which explains what vehicle are and how they work in TraMS -->
+<div class="jumbotron" >
+    <h1 class="display-4">Vehicles</h1>
+    <br/>
+    <p class="lead">Vehicles ensure that your customers can travel from A to B. Therefore you should aim to have as many vehicles as possible to ensure reliable services. But don't forget if a vehicle is not in use then you are making a loss on this vehicle!</p>
+    <hr class="my-4">
+    <p>Click on a vehicle to access more information about the vehicle.</p>
+</div>
+
+<!-- Display a table with a list of vehicle fleet number that are currently available in TraMS. Clicking on the fleet number
+ brings up the detailed information for that vehicle -->
+<div class="row">
+    <div class="col-md-4">
+        <input type="text" #searchtext class="form-control" placeholder="Search By Fleet Number..."/>
+        <br/>
+        <button class="btn-primary" (click)="searchByFleetNumber(searchtext.value)">Search</button>
+        <br/>
+        <br/>
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Fleet Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let vehicleEl of vehicles, let i = index">
+                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{vehicleEl.fleetNumber}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Display the detailed information when a user clicks on a vehicle -->
+    <div class="col-md-8">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+

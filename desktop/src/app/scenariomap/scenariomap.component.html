@@ -1,0 +1,13 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<div class="jumbotron">
+    <h1 class="display-4 text-center">{{getScenarioName()}}</h1>
+</div>
+
+<div class="container-fluid">
+    <h1 class="display-4 text-center"><img src={{getScenarioImage()}} alt={{getScenarioName()}} class="img-responsive"></h1>
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+    </div>
+</div>
