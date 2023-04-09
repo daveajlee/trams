@@ -1,0 +1,21 @@
+mongo:
+  databaseName: tramsCrm
+  url: ${MONGODB_URI:mongodb://tramsCrm:myTraMSpassword@localhost:27017/tramsCrm}
+spring:
+  application:
+    name: trams-crm
+server:
+  port: 8082
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+#Length of authentification tokens
+token:
+  length: 10
+
+#Auto-logout after how many minutes
+logout:
+  minutes: 30
