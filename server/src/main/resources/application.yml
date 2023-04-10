@@ -5,10 +5,17 @@ spring:
   application:
     name: trams-server
 server:
-  port: 8083
+  port: 8085
 eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     preferIpAddress: true
+#Length of authentification tokens
+token:
+  length: 10
+
+#Auto-logout after how many minutes
+logout:
+  minutes: 30

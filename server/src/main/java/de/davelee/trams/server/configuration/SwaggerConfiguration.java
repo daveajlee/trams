@@ -23,7 +23,7 @@ public class SwaggerConfiguration {
     public OpenAPI tramsServerOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("TraMS Server API")
-                        .description("TraMS Server is a part of the TraMS Platform which is responsible for managing the backend processes of a transport company including managing budgets, running and simulating the business.")
+                        .description("TraMS Server is a part of the TraMS Platform which is responsible for managing the backend processes of a transport company including managing budgets, customer relationship, running and simulating the business.")
                         .version("v0.0.1")
                         .license(new License().name("Apache 2.0").url("https://www.davelee.de")))
                 .externalDocs(new ExternalDocumentation()

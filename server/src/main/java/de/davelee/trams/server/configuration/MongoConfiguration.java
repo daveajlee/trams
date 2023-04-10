@@ -39,7 +39,7 @@ public class MongoConfiguration {
 
     /**
      * Create a new template which can be used for querying the database. The name of the database is provided as a parameter
-     * in the Sprint Boot application properties.
+     * in the Spring Boot application properties.
      * @throws Exception <code>Exception</code> object if not able to connect to the database.
      * @return a <code>MongoTemplate</code> object containing the template for querying the database.
      */
