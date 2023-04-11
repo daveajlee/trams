@@ -24,7 +24,7 @@ public class VehicleHistoryEntryTest {
         vehicleHistoryEntry.setDate(LocalDateTime.of(2021,3,1,0,0));
         vehicleHistoryEntry.setComment("Purchased!");
         assertEquals(VehicleHistoryReason.PURCHASED, vehicleHistoryEntry.getVehicleHistoryReason());
-        assertEquals(LocalDate.of(2021,3,1), vehicleHistoryEntry.getDate());
+        assertEquals(LocalDateTime.of(2021,3,1,0,0), vehicleHistoryEntry.getDate());
         assertEquals("Purchased!", vehicleHistoryEntry.getComment());
     }
 

@@ -104,8 +104,8 @@ public class ImportGTFSDataService {
                             .destination(gtfsStopTime.getTrip().getTripHeadsign())
                             .routeNumber(gtfsStopTime.getTrip().getRoute().getShortName())
                             .journeyNumber(gtfsStopTime.getTrip().getId().getId())
-                            .validFromDate( serviceCalendarList.size() == 1 ? LocalDateTime.from(LocalDate.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay())): null )
-                            .validToDate( serviceCalendarList.size() == 1 ? LocalDateTime.from(LocalDate.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay())): null )
+                            .validFromDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay(), 0,0): null )
+                            .validToDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay(), 0, 0): null )
                             .operatingDays(serviceCalendarList.size() == 1 ? getOperatingDays(serviceCalendarList.get(0)) : null)
                             .build();
                     stopTimeRepository.insert(stopTime);

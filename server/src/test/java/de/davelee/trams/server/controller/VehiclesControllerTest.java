@@ -124,7 +124,7 @@ public class VehiclesControllerTest {
         assertEquals("Bus", responseEntity2.getBody().getVehicleResponses()[0].getVehicleType());
         assertEquals("Purchased!", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
         assertEquals("Purchased", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getVehicleHistoryReason());
-        assertEquals("01-03-2021", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
+        assertEquals("01-03-2021 00:00", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
         //Check that days until next inspection is calculated correctly.
         assertEquals("Inspected",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
         assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
@@ -156,7 +156,7 @@ public class VehiclesControllerTest {
         assertEquals("Bus", responseEntity3.getBody().getVehicleResponses()[0].getVehicleType());
         assertEquals("Purchased!", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
         assertEquals("Purchased", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getVehicleHistoryReason());
-        assertEquals("01-03-2021", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
+        assertEquals("01-03-2021 00:00", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
         //Fourth test is for retrieving without supplying a company.
         ResponseEntity<VehiclesResponse> responseEntity4 = vehiclesController.getVehiclesByCompanyAndFleetNumber("", Optional.empty(), Optional.empty());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity4.getStatusCode());

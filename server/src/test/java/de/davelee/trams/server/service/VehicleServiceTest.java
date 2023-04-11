@@ -181,7 +181,7 @@ public class VehicleServiceTest {
         List<Vehicle> vehicleResponseList = vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "21");
         assertEquals(VehicleType.TRAM, vehicleResponseList.get(0).getVehicleType());
         assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getVehicleHistoryReason().getText(), "Purchased");
-        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getDate(), LocalDate.of(2021,3,1));
+        assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getDate(), LocalDateTime.of(2021,3,1,0,0));
         assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getComment(), "Purchased!");
         assertNull(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(0).getId());
         assertEquals(vehicleResponseList.get(0).getVehicleHistoryEntryList().get(1).getVehicleHistoryReason().getText(), "Delivered");

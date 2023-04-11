@@ -92,7 +92,7 @@ public class StopTimeServiceTest {
         assertEquals(7, stopTimeTestArrivalList4.get(0).getId());
         assertEquals(8, stopTimeTestArrivalList4.get(1).getId());
         //Test case: test all departures for this date.
-        List<StopTime> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "Mustermann Bus GmbH", "2021-04-10");
+        List<StopTime> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "Mustermann Bus GmbH", "2021-04-10 00:00");
         assertEquals(8, stopTimeDepartureDateList.size());
         assertEquals(8, stopTimeDepartureDateList.get(0).getId());
         assertEquals(7, stopTimeDepartureDateList.get(stopTimeDepartureDateList.size()-1).getId());
@@ -143,8 +143,8 @@ public class StopTimeServiceTest {
     public void testDisruptedStopTimes ( ) {
         StopTime stopTime1 = createStopTime(LocalTime.of(10,21), LocalTime.of(10,22), "111", 1);
         stopTime1.getOperatingDays().setDisruptedOperatingDays(Lists.newArrayList(LocalDateTime.of(2021,03,12,0,0)));
-        assertTrue(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDate.of(2021,03,01)));
-        assertFalse(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDate.of(2021,03,12)));
+        assertTrue(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDateTime.of(2021,03,01,0,0)));
+        assertFalse(stopTime1.getOperatingDays().checkIfOperatingDay(LocalDateTime.of(2021,03,12,0,0)));
     }
 
     /**

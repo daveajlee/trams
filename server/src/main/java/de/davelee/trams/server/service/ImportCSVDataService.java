@@ -102,8 +102,8 @@ public class ImportCSVDataService {
             Reader reader = new FileReader(csvFilePath);
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withDelimiter(';').withTrim());
             String destination = ""; ArrayList<OperatingDays> operatingDays = new ArrayList<>();
-            LocalDateTime validFromLocalDate = LocalDateTime.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDateTime validToLocalDate = LocalDateTime.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDateTime validFromLocalDate = LocalDateTime.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            LocalDateTime validToLocalDate = LocalDateTime.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             ArrayList<String> routeNumberList = new ArrayList<>();
             Map<String, String> footnotes = new HashMap<>();
             for(CSVRecord record : csvParser.getRecords()) {

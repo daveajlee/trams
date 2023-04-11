@@ -38,14 +38,14 @@ public class OperatingDays {
     /**
      * Check if the supplied date is an operating day for this stop time. This means either that the stop times
      * run on this day of the week or on the supplied date and that this is not disrupted because of construction etc.
-     * @param currentDate a <code>LocalDate</code> containing the date to check.
+     * @param currentDateTime a <code>LocalDateTime</code> containing the date to check.
      * @return a <code>boolean</code> which is true iff this stop time operates on the supplied date.
      */
-    public boolean checkIfOperatingDay ( final LocalDate currentDate ) {
-        if ( disruptedOperatingDays != null && disruptedOperatingDays.contains(currentDate) ) {
+    public boolean checkIfOperatingDay ( final LocalDateTime currentDateTime ) {
+        if ( disruptedOperatingDays != null && disruptedOperatingDays.contains(currentDateTime) ) {
             return false;
         }
-        return operatingDays.contains(currentDate.getDayOfWeek()) || specialOperatingDays.contains(currentDate);
+        return operatingDays.contains(currentDateTime.getDayOfWeek()) || specialOperatingDays.contains(currentDateTime);
     }
 
 }

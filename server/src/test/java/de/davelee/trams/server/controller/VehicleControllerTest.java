@@ -1,7 +1,7 @@
 package de.davelee.trams.server.controller;
 
-import de.davelee.trams.server.model.Vehicle;
 import de.davelee.trams.server.constant.VehicleType;
+import de.davelee.trams.server.model.Vehicle;
 import de.davelee.trams.server.request.*;
 import de.davelee.trams.server.response.InspectVehicleResponse;
 import de.davelee.trams.server.response.PurchaseVehicleResponse;
@@ -17,13 +17,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 /**
@@ -242,33 +240,33 @@ public class VehicleControllerTest {
                 .timesheet(Map.of(LocalDateTime.of(2021,10,21,0,0), 14))
                 .build()));
         //Do test with a valid request for each vehicle Type.
-        ResponseEntity<VehicleHoursResponse> responseEntity = vehicleController.getHoursForDate("Lee Buses", "213", "21-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntity = vehicleController.getHoursForDate("Lee Buses", "213", "21-10-2021 00:00");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(2, responseEntity.getBody().getNumberOfHoursAvailable());
         assertEquals(14, responseEntity.getBody().getNumberOfHoursSoFar());
         assertFalse(responseEntity.getBody().isMaximumHoursReached());
-        ResponseEntity<VehicleHoursResponse> responseEntityTrain = vehicleController.getHoursForDate("Lee Buses", "215", "21-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntityTrain = vehicleController.getHoursForDate("Lee Buses", "215", "21-10-2021 00:00");
         assertEquals(HttpStatus.OK, responseEntityTrain.getStatusCode());
         assertEquals(7, responseEntityTrain.getBody().getNumberOfHoursAvailable());
         assertEquals(14, responseEntityTrain.getBody().getNumberOfHoursSoFar());
         assertFalse(responseEntityTrain.getBody().isMaximumHoursReached());
-        ResponseEntity<VehicleHoursResponse> responseEntityTram = vehicleController.getHoursForDate("Lee Buses", "214", "21-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntityTram = vehicleController.getHoursForDate("Lee Buses", "214", "21-10-2021 00:00");
         assertEquals(HttpStatus.OK, responseEntityTram.getStatusCode());
         assertEquals(6, responseEntityTram.getBody().getNumberOfHoursAvailable());
         assertEquals(14, responseEntityTram.getBody().getNumberOfHoursSoFar());
         assertFalse(responseEntity.getBody().isMaximumHoursReached());
         //Do test with a valid request but no hours.
-        ResponseEntity<VehicleHoursResponse> responseEntity1 = vehicleController.getHoursForDate("Lee Buses", "213", "22-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntity1 = vehicleController.getHoursForDate("Lee Buses", "213", "22-10-2021 00:00");
         assertEquals(HttpStatus.OK, responseEntity1.getStatusCode());
         assertEquals(16, responseEntity1.getBody().getNumberOfHoursAvailable());
         assertEquals(0, responseEntity1.getBody().getNumberOfHoursSoFar());
         assertFalse(responseEntity1.getBody().isMaximumHoursReached());
         //Do test with a bad request.
-        ResponseEntity<VehicleHoursResponse> responseEntity2 = vehicleController.getHoursForDate("", "213", "21-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntity2 = vehicleController.getHoursForDate("", "213", "21-10-2021 00:00");
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
         //Do test with 0 results from db.
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "212")).thenReturn(Lists.newArrayList());
-        ResponseEntity<VehicleHoursResponse> responseEntity3 = vehicleController.getHoursForDate("Lee Buses", "212", "21-10-2021");
+        ResponseEntity<VehicleHoursResponse> responseEntity3 = vehicleController.getHoursForDate("Lee Buses", "212", "21-10-2021 00:00");
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 

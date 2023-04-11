@@ -43,8 +43,8 @@ public class ImportCSVDataServiceTest {
         Mockito.when(routeRepository.findAll()).thenReturn(Lists.emptyList());
         Mockito.when(stopRepository.findAll()).thenReturn(Lists.emptyList());
         File file = new File("src/test/resources/my-network-landuff");
-        assertTrue(importCSVDataService.readCSVFile(file.getAbsolutePath(), "2021-01-01", "2021-12-31"));
-        assertFalse(importCSVDataService.readCSVFile("no-feed", "2021-01-01", "2021-12-31"));
+        assertTrue(importCSVDataService.readCSVFile(file.getAbsolutePath(), "2021-01-01 00:00", "2021-12-31 00:00"));
+        assertFalse(importCSVDataService.readCSVFile("no-feed", "2021-01-01 00:00", "2021-12-31 00:00"));
     }
 
 }

@@ -40,8 +40,8 @@ public class VehicleTest {
                 .build();
         //Verify the builder functionality through getter methods
         assertEquals("BendyBus 2000", vehicle.getModelName());
-        assertEquals(LocalDate.of(2021,3,25), vehicle.getDeliveryDate());
-        assertEquals(LocalDate.of(2021,4,25), vehicle.getInspectionDate());
+        assertEquals(LocalDateTime.of(2021,3,25,0,0), vehicle.getDeliveryDate());
+        assertEquals(LocalDateTime.of(2021,4,25,0,0), vehicle.getInspectionDate());
         assertEquals("Green with black slide", vehicle.getLivery());
         assertEquals(50, vehicle.getSeatingCapacity());
         assertEquals(80, vehicle.getStandingCapacity());
@@ -52,7 +52,7 @@ public class VehicleTest {
         assertEquals("1", vehicle.getAllocatedTour());
         assertEquals(1, vehicle.getTimesheet().size());
         //Verify the toString method
-        assertEquals("Vehicle(id=null, fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25, inspectionDate=2021-04-25, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=BUS, typeSpecificInfos={Registration Number=W234 DFFKD}, timesheet={2021-10-29=16}, vehicleHistoryEntryList=null)", vehicle.toString());
+        assertEquals("Vehicle(id=null, fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25T00:00, inspectionDate=2021-04-25T00:00, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=BUS, typeSpecificInfos={Registration Number=W234 DFFKD}, timesheet={2021-10-29T00:00=16}, vehicleHistoryEntryList=null)", vehicle.toString());
         //Now use the setter methods
         vehicle.setTypeSpecificInfos(Map.of("Power Mode", "Electric"));
         vehicle.setModelName("BendyTrain 500 Plus");
@@ -67,7 +67,7 @@ public class VehicleTest {
         vehicle.setVehicleType(VehicleType.TRAIN);
         vehicle.setTimesheet(Map.of(LocalDateTime.of(2021,10,26,0,0), 14));
         //And verify again through the toString methods
-        assertEquals("Vehicle(id=null, fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31, inspectionDate=2021-04-05, seatingCapacity=54, standingCapacity=82, modelName=BendyTrain 500 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=TRAIN, typeSpecificInfos={Power Mode=Electric}, timesheet={2021-10-26=14}, vehicleHistoryEntryList=null)", vehicle.toString());
+        assertEquals("Vehicle(id=null, fleetNumber=214, company=Lee Buses 2, deliveryDate=2021-03-31T00:00, inspectionDate=2021-04-05T00:00, seatingCapacity=54, standingCapacity=82, modelName=BendyTrain 500 Plus, livery=Red with plus logo, vehicleStatus=PURCHASED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=TRAIN, typeSpecificInfos={Power Mode=Electric}, timesheet={2021-10-26T00:00=14}, vehicleHistoryEntryList=null)", vehicle.toString());
     }
 
 }
