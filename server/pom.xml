@@ -70,6 +70,27 @@
             <version>1.18.26</version>
         </dependency>
 
+        <!-- GTFS Importer -->
+        <dependency>
+            <groupId>org.onebusaway</groupId>
+            <artifactId>onebusaway-gtfs</artifactId>
+            <version>1.3.4</version>
+        </dependency>
+
+        <!-- CSV Reader -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
+        <!-- Commons library to process strings -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
         <!-- MongoDB as NoSQL persistence -->
         <dependency>
             <groupId>org.springframework.data</groupId>
