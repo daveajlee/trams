@@ -9,7 +9,7 @@
     </parent>
     <groupId>de.davelee.trams</groupId>
     <artifactId>trams-server</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>trams-server</name>
     <description>TraMS Server is a RESTful Web Service for everything for the backend processes of managing a transport company.</description>
 
@@ -22,7 +22,7 @@
     <scm>
         <connection>scm:git:https://github.com/daveajlee/trams</connection>
         <url>https://github.com/daveajlee/trams</url>
-        <tag>trams-server-v0.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- GitHub Packages -->
