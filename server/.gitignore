@@ -29,3 +29,6 @@ target/
 
 #Mac files
 *.DS_STORE
+
+#Backup files
+*.bkp

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {Button, Card, CardGroup, Col, Container, Row} from "react-bootstrap";
 
 const Download = () => (
     <Container fluid>
@@ -9,52 +9,20 @@ const Download = () => (
             </Col>
         </Row>
         <Row className="mt-3">
-            <Col xs={12} sm={12} md={6} lg={3}>
+            <CardGroup>
                 <Card className="text-center download-card">
                     <Card.Body>
-                        <Card.Title>TraMS Business Server</Card.Title>
+                        <Card.Title>Server</Card.Title>
                         <Card.Text>
-                            A running business server instance is required before any client of TraMS can be used since
-                            the company functionality is essential! This
-                            server can be run on any computer which supports Java 11 or above. It can be
-                             manually started via the supplied JAR file or the supplied Docker image.
-                        </Card.Text>
-                        <Button variant="primary" href="https://github.com/daveajlee/trams-business/packages/1512410">JAR</Button>
-                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-business">Docker</Button>
-                    </Card.Body>
-                </Card>
-            </Col>
-            <Col xs={12} sm={12} md={6} lg={3}>
-                <Card className="text-center download-card">
-                    <Card.Body>
-                        <Card.Title>TraMS CRM Server</Card.Title>
-                        <Card.Text>
-                            A running CRM server instance is required before any client which wishes to use
-                            customer or revenue functionality for TraMS can be used. This
+                            A running server instance is required before any client of TraMS can be used. It ensures company,
+                            customer, revenue and simulation functionality is available for any client. This
                             server can be run on any computer which supports Java 11 or above. It can be
                             manually started via the supplied JAR file or the supplied Docker image.
                         </Card.Text>
-                        <Button variant="primary" href="https://github.com/daveajlee/trams-crm/packages/1512449">JAR</Button>
-                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-crm">Docker</Button>
+                        <Button variant="primary" href="https://github.com/daveajlee/trams/packages/1836444">JAR</Button>
+                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-server">Docker</Button>
                     </Card.Body>
                 </Card>
-            </Col>
-            <Col xs={12} sm={12} md={6} lg={3}>
-                <Card className="text-center download-card">
-                    <Card.Body>
-                        <Card.Title>TraMS Operations Server</Card.Title>
-                        <Card.Text>
-                            A running Operations server instance is required before any client which wishes to run
-                            a simulation can be used. This
-                            server can be run on any computer which supports Java 11 or above. It can be
-                            manually started via the supplied JAR file or the supplied Docker image.
-                        </Card.Text>
-                        <Button variant="primary" href="https://github.com/daveajlee/trams-operations/packages/1512385">JAR</Button>
-                        <Button variant="primary" className="ms-3" href="https://hub.docker.com/r/daveajlee/trams-operations">Docker</Button>
-                    </Card.Body>
-                </Card>
-            </Col>
-            <Col xs={12} sm={12} md={6} lg={3}>
                 <Card className="text-center download-card">
                     <Card.Body>
                         <Card.Title>Desktop Client</Card.Title>
@@ -66,7 +34,7 @@ const Download = () => (
                         <Button variant="primary" href="https://github.com/daveajlee/trams-game/releases/download/v0.4.0/trams-0.4.0.zip">ZIP file</Button>
                     </Card.Body>
                 </Card>
-            </Col>
+            </CardGroup>
         </Row>
     </Container>
 );
