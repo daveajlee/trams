@@ -1,9 +1,12 @@
 package de.davelee.trams.server.controller;
 
+import de.davelee.trams.server.model.RealTimeEntryModel;
+import de.davelee.trams.server.model.RealTimeModel;
 import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.request.GenerateStopTimesRequest;
 import de.davelee.trams.server.response.StopTimeResponse;
 import de.davelee.trams.server.response.StopTimesResponse;
+import de.davelee.trams.server.service.RouteService;
 import de.davelee.trams.server.service.StopService;
 import de.davelee.trams.server.service.StopTimeService;
 import de.davelee.trams.server.utils.DateUtils;
@@ -19,9 +22,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 
 /**
@@ -38,6 +44,9 @@ public class StopTimesController {
 
     @Autowired
     private StopService stopService;
+
+    @Autowired
+    private RouteService routeService;
 
     /**
      * Return the next departures and/or arrivals based on the supplied user parameters.
@@ -109,6 +118,60 @@ public class StopTimesController {
                 .count((long) stopTimeResponses.length)
                 .stopTimeResponses(stopTimeResponses).build());
     }
+
+    /**
+     * Return a model of the next departures for a particular stop and operator. The number of next departures to be
+     * retrieved must also be supplied. Optionally a route can be supplied to only display departures for a particular
+     * route. Further the language can be supplied for formatting purposes.
+     * @param stop a <code>String</code> with the name of the stop to retrieve departures for.
+     * @param numDepartures a <code>int</code> with the number of next departures to return.
+     * @param operator a <code>String</code> with the name of the operator to retrieve departures for.
+     * @param language a <code>String</code> with the language code e.g. DE or UK to use for formatting purposes.
+     * @param route a <code>String</code> with the name of the route to retrieve departures for (optional)
+     * @return a <code>RealTimeModel</code> with the next departures matching the specified criteria.
+     */
+    @GetMapping("/nextDepartures")
+    @CrossOrigin
+    @ResponseBody
+    @Operation(summary = "View the next departures for a particular stop", description="Return the stop times.")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stop times")})
+    public RealTimeModel nextDepartures(
+            final String stop,
+            final int numDepartures,
+            final String operator,
+            final String language,
+            final String route) {
+        //Get the current date and time.
+        RealTimeModel realTimeModel = new RealTimeModel();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).withLocale(Locale.UK);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        realTimeModel.setTimestamp(localDateTime.format(dateTimeFormatter));
+        List<RealTimeEntryModel> realTimeEntryModels = new ArrayList<>();
+        //Get the departures from this stop - optionally only for a particular route.
+        List<StopTime> stopTimes = stopTimeService.getDeparturesByDate(stop, operator, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        stopTimes.stream().
+                filter(stopTime -> stopTime.getDepartureTime().isAfter(LocalTime.of(localDateTime.getHour(), localDateTime.getMinute()))).
+                forEach(stopTime -> {
+                    RealTimeEntryModel realTimeEntryModel = new RealTimeEntryModel();
+                    realTimeEntryModel.setMins((int) Duration.between(LocalTime.now(), stopTime.getDepartureTime()).getSeconds() / 60);
+                    realTimeEntryModel.setRoute(routeService.getRoutesByCompanyAndRouteNumber(operator, stopTime.getRouteNumber()).get(0));
+                    if ( stopTime.getDestination().contentEquals(stop)) {
+                        realTimeEntryModel.setDestination("Journey Terminates Here");
+                    } else {
+                        realTimeEntryModel.setDestination(stopTime.getDestination());
+                    }
+                    realTimeEntryModels.add(realTimeEntryModel);
+                });
+        //Sort the list now by minutes - this is necessary as Spring Data JPA only sorts by hours and not by minutes.
+        Comparator<RealTimeEntryModel> byMinutes = Comparator.comparingInt(RealTimeEntryModel::getMins);
+        Collections.sort(realTimeEntryModels, byMinutes);
+        //Trim list to the maximum number of real time elements.
+        realTimeModel.setRealTimeEntryModelList( (realTimeEntryModels.size() > numDepartures) ?
+                realTimeEntryModels.subList(0, numDepartures) : realTimeEntryModels );
+        return realTimeModel;
+    }
+
+
 
     /**
      * Generate stop time entries within a specified time and frequency and save them to the database.

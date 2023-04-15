@@ -1,5 +1,6 @@
 package de.davelee.trams.server.service;
 
+import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.StopTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -166,6 +168,22 @@ public class StopTimeService {
      */
     public long countStopTimes ( final String company, final String stopName, final String routeNumber ) {
         return stopTimeRepository.countByCompanyAndStopNameAndRouteNumber(company, stopName, routeNumber);
+    }
+
+    /**
+     * Get all route numbers for a particular company and stop.
+     * @param company a <code>String</code> containing the name of the company to find routes for.
+     * @param stop a <code>String</code> containing the name of the stop.
+     * @return a <code>List</code> of <code>String</code> objects containing all route numbers for this operator and stop.
+     */
+    public List<String> getAllRouteNumbersByStop (final String company, final String stop ) {
+        List<String> routeNumbers = new ArrayList<>();
+        for ( StopTime stopTime : stopTimeRepository.findByCompanyAndStopName(company, stop) ) {
+            if ( !routeNumbers.contains(stopTime.getRouteNumber()) ) {
+                routeNumbers.add(stopTime.getRouteNumber());
+            }
+        }
+        return routeNumbers;
     }
 
     /**

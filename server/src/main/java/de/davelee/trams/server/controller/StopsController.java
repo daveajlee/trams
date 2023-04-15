@@ -5,6 +5,7 @@ import de.davelee.trams.server.response.StopResponse;
 import de.davelee.trams.server.response.StopsResponse;
 import de.davelee.trams.server.service.StopService;
 import de.davelee.trams.server.service.StopTimeService;
+import de.davelee.trams.server.service.SuggestStopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -33,6 +34,9 @@ public class StopsController {
 
     @Autowired
     private StopTimeService stopTimeService;
+
+    @Autowired
+    private SuggestStopService suggestStopService;
 
     /**
      * Return all stops currently stored in the database for a particular company or if a route number
@@ -73,6 +77,20 @@ public class StopsController {
         return ResponseEntity.ok(StopsResponse.builder()
                 .count((long) stopResponses.length)
                 .stopResponses(stopResponses).build());
+    }
+
+    /**
+     * Return all address and/or landmarks for a particular operator.
+     * @param operator a <code>String</code> containing the operator to return the addresses/landmarks for.
+     * @return a <code>List</code> of <code>String</code> containing the addresses/landmarks.
+     */
+    @GetMapping("/addressesForOperator")
+    @CrossOrigin
+    @ResponseBody
+    @Operation(summary = "Get addresses/landmarks", description="Get all addresses/landmarks for a particular operator")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned stops")})
+    public List<String> getAddressesForOperator ( final String operator) {
+        return suggestStopService.getAddressesForOperator(operator);
     }
 
     /**

@@ -4,6 +4,7 @@ import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.response.RouteResponse;
 import de.davelee.trams.server.response.RoutesResponse;
 import de.davelee.trams.server.service.RouteService;
+import de.davelee.trams.server.service.StopTimeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +29,9 @@ public class RoutesController {
 
     @Autowired
     private RouteService routeService;
+
+    @Autowired
+    private StopTimeService stopTimeService;
 
     /**
      * Return all routes for the specified company that are currently stored in the database.
@@ -45,6 +50,42 @@ public class RoutesController {
         }
         //Retrieve the routes for this company.
         List<Route> routes = routeService.getRoutesByCompany(company);
+        //If routes is null or empty then return 204.
+        if ( routes == null || routes.size() == 0 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Otherwise convert to routes response and return.
+        RouteResponse[] routeResponses = new RouteResponse[routes.size()];
+        for ( int i = 0; i < routeResponses.length; i++ ) {
+            routeResponses[i] = RouteResponse.builder()
+                    .company(routes.get(i).getCompany())
+                    .routeNumber(routes.get(i).getRouteNumber())
+                    .build();
+        }
+        return ResponseEntity.ok(RoutesResponse.builder()
+                .count((long) routeResponses.length)
+                .routeResponses(routeResponses).build());
+    }
+
+
+    /**
+     * Return all routes for a particular stop and company.
+     * @param stop a <code>String</code> containing the stop to return routes for.
+     * @param company a <code>String</code> containing the name of the company to return routes for.
+     * @return a <code>List</code> of <code>Route</code> objects which may be null if there are no routes in the database.
+     */
+    @GetMapping("/allRoutesForStop")
+    @CrossOrigin
+    @ResponseBody
+    @Operation(summary = "View all routes for a company for a particular stop", description="Return all matching routes")
+    public ResponseEntity<RoutesResponse> allRoutesForStop ( final String stop, final String company) {
+        // Retrieve the route numbers for this company and stop.
+        List<String> routeNumbers = stopTimeService.getAllRouteNumbersByStop(company, stop);
+        //Convert the list of route numbers to a list of routes.
+        List<Route> routes = new ArrayList<>();
+        for ( String routeNumber : routeNumbers ) {
+            routes.addAll(routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber));
+        }
         //If routes is null or empty then return 204.
         if ( routes == null || routes.size() == 0 ) {
             return ResponseEntity.noContent().build();
