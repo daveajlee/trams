@@ -1,6 +1,7 @@
 package de.davelee.trams.server.controller;
 
 import de.davelee.trams.server.model.Ticket;
+import de.davelee.trams.server.request.TicketRequest;
 import de.davelee.trams.server.response.TicketResponse;
 import de.davelee.trams.server.response.TicketsResponse;
 import de.davelee.trams.server.service.TicketService;
@@ -13,10 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class TicketsController {
     @Operation(summary = "Find all tickets for a company", description = "Find all tickets for a company in the system.")
     @GetMapping(value = "/")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found ticket(s)"), @ApiResponse(responseCode = "204", description = "Successful but no tickets found")})
-    public ResponseEntity<TicketsResponse> getFeedbacksByCompany(@RequestParam("company") final String company) {
+    public ResponseEntity<TicketsResponse> getTicketsByCompany(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
         if (StringUtils.isBlank(company)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -63,6 +61,37 @@ public class TicketsController {
                 .count((long) ticketResponses.length)
                 .ticketResponses(ticketResponses)
                 .build());
+    }
+
+    @Operation(summary = "Add a collection of available tickets", description="Method to add available tickets")
+    @PostMapping(value="/availableTickets")
+    @ApiResponses(value = {@ApiResponse(responseCode="201", description="All tickets successfully added")})
+    /**
+     * Save the supplied tickets into the system and return a 200 code to indicate that the tickets
+     * were added successfully.
+     * @param tickets a <code>Tickets</code> object containing the tickets to be added to the system.
+     * @return a <code>ResponseEntity</code> object with the appropriate http status code.
+     */
+    public ResponseEntity<Void> addAvailableTickets (@RequestBody final List<TicketRequest> ticketRequests ) {
+        // Go through the list of tickets.
+        for ( TicketRequest ticketRequest : ticketRequests ) {
+            // Save the ticket.
+            boolean result = ticketService.save(Ticket.builder()
+                    .shortId(ticketRequest.getShortId())
+                    .type(ticketRequest.getType())
+                    .company(ticketRequest.getCompany())
+                    .description(ticketRequest.getDescription())
+                    .sortOrder(ticketRequest.getSortOrder())
+                    .priceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()))
+                    .company(ticketRequest.getCompany())
+                    .build());
+            if ( !result ) {
+                // Return 500 if ticket could not be saved.
+                return ResponseEntity.status(500).build();
+            }
+        }
+        // Return 201 if all tickets could be created.
+        return ResponseEntity.status(201).build();
     }
 
 }
