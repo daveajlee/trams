@@ -49,7 +49,7 @@ public class TicketsControllerTest {
                         .priceList(Map.of("adult", new BigDecimal("0.80")))
                         .build()));
         //Perform test
-        ResponseEntity<TicketsResponse> responseEntity = ticketsController.getFeedbacksByCompany("Mustermann GmbH");
+        ResponseEntity<TicketsResponse> responseEntity = ticketsController.getTicketsByCompany("Mustermann GmbH");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
     }
 
@@ -60,7 +60,7 @@ public class TicketsControllerTest {
     @Test
     public void testInvalidGetByCompany() {
         //Perform test
-        ResponseEntity<TicketsResponse> responseEntity = ticketsController.getFeedbacksByCompany("");
+        ResponseEntity<TicketsResponse> responseEntity = ticketsController.getTicketsByCompany("");
         assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
     }
 
