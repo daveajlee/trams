@@ -11,6 +11,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoadGameScreen from './screens/smartphone/LoadGameScreen';
 import IconButton from './utilities/IconButton';
 import ChooseScenarioScreen from './screens/smartphone/ChooseScenarioScreen';
+import MainMenuScreen from './screens/MainMenuScreen';
+import SearchRouteScreen from './screens/SearchRouteScreen';
+import SearchFleetScreen from './screens/SearchFleetScreen';
+import RouteScreen from './screens/RouteScreen';
+import VehicleScreen from './screens/VehicleScreen';
+import FleetScreen from './screens/FleetScreen';
+import AssignTourScreen from './screens/AssignTourScreen';
+import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -84,6 +92,30 @@ export default function App() {
         <Stack.Screen name="ChooseScenarioScreen" component={ChooseScenarioScreen} options={({navigation}) => ({
           title: 'Choose Scenario'
         })}/>
+        <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{
+          title: 'Main Menu'
+        }}/>
+        <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{
+          title: 'Search by Route Number'
+        }}/>
+        <Stack.Screen name="SearchFleetScreen" component={SearchFleetScreen} options={{
+          title: 'Search by Fleet Number'
+        }}/>
+        <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
+          title: 'Route Details'
+        }}/>
+        <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
+          title: 'Vehicle Details'
+        }}/>
+        <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
+          title: 'Fleet Overview'
+        }}/>
+        <Stack.Screen name="AssignTourScreen" component={AssignTourScreen} options={{
+          title: 'Assign Routes and Vehicles'
+        }}/>
+        <Stack.Screen name="ChangeAssignmentScreen" component={ChangeAssignmentScreen} options={{
+          title: 'Assignments'
+        }}/>
       </Stack.Navigator>
     </NavigationContainer>
     );

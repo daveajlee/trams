@@ -28,7 +28,11 @@ function SavedGamesList({games, navigation}) {
      * @param {Game} item 
      */
     async function onLoadGame(item) {
-        console.log('I loaded game with company name ' + item.companyName);
+        navigation.navigate("ChooseScenarioScreen", {
+            gameId: item.id,
+            companyName: item.companyName,
+            playerName: item.playerName
+        })
     }
 
     if ( !loadedGames || loadedGames.length === 0 ) {

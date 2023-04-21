@@ -4,7 +4,7 @@ import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "rea
  * This component displays details of a particular scenario that
  * the user may play.
  */
-function ScenarioCard ({image, title, description, targets, }) {
+function ScenarioCard ({image, title, description, targets, navigation, companyName }) {
 
     const win = Dimensions.get('window');
     const ratio = win.width/800; // 800 is actual width of image. 
@@ -13,8 +13,11 @@ function ScenarioCard ({image, title, description, targets, }) {
      * Save the scenario that the user wishes to play.
      * @param {string} scenarioName 
      */
-    function selectScenarioHandler(scenarioName) {
-        console.log('I chose the scenario ' + scenarioName.title);
+    async function selectScenarioHandler(scenarioName) {
+        navigation.navigate("MainMenu", {
+            company: companyName,
+            scenarioName: scenarioName.title
+        });
     }
 
     return ( 

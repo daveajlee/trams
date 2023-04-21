@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from "react-native-date-picker";
@@ -60,7 +60,7 @@ function CreateGameScreen({navigation}) {
      * player name, skill level and start date.
      */
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.headerContainer}>
                 <Text style={styles.headerText}>Welcome to TraMS</Text>
             </View>
@@ -88,7 +88,7 @@ function CreateGameScreen({navigation}) {
                     <Text style={styles.buttonText}>Create Game</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     );
 
 }
@@ -143,18 +143,18 @@ const styles = StyleSheet.create({
     playerNameContainer: {
         flexDirection: 'column',
         width: '80%',
-        marginTop: 20
+        marginTop: 10
     },
     levelContainer: {
         flexDirection: 'column',
         width: '80%',
-        marginTop: 20,
-        marginBottom: 100
+        marginTop: 10,
+        marginBottom: 10
     },
     dateContainer: {
         flexDirection: 'column',
         width: '80%',
-        marginTop: 20,
+        marginTop: 10,
         alignItems: 'center',
         justifyContent: 'center'
     },
