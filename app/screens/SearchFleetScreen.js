@@ -13,7 +13,8 @@ function SearchFleetScreen({route, navigation}) {
     function onSearchFleetPress() {
         navigation.navigate("VehicleScreen", {
             fleetNumber: enteredFleetNumber,
-            scenarioName: route.params.scenarioName
+            scenarioName: route.params.scenarioName,
+            company: route.params.company
         });
     }
 

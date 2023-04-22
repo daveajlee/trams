@@ -1,7 +1,7 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { AssignContext } from "../store/context/assign-context";
 import { useContext } from "react";
-import { Button } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { deleteAssignment } from "../utilities/sqlite";
 
@@ -23,10 +23,10 @@ function AssignmentList({items, companyName, scenarioName}) {
     function renderAssignmentItem(itemData) {
         return (
             <View style={styles.details}>
-                <Text style={styles.details}>Route Number: {itemData.item.routeNumber}</Text>
-                <Text style={styles.details}>Tour Number: {itemData.item.tourNumber}</Text>
-                <Text style={styles.details}>Fleet Number: {itemData.item.fleetNumber}</Text>
-                <Button title="Delete" onPress={deleteAssignmentFromDB.bind(null, itemData.item.routeNumber, itemData.item.tourNumber, companyName)}/>
+                <Text style={styles.heading}>{itemData.item.routeNumber}/{itemData.item.tourNumber} assigned to vehicle {itemData.item.fleetNumber}</Text>
+                <TouchableOpacity style={styles.button} onPress={deleteAssignmentFromDB.bind(null, itemData.item.routeNumber, itemData.item.tourNumber, companyName)}>
+                    <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
                 <View style={styles.lineStyle}/>
             </View>
         )
@@ -56,5 +56,23 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor:'black',
         width: '100%',
-   }
+    },
+    heading: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 15
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#5e7947",
+        width: '90%',
+        padding: 10,
+        marginBottom: 15,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    }
 })

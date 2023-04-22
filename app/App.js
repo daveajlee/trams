@@ -106,7 +106,8 @@ export default function App() {
           title: 'Search by Fleet Number'
         }}/>
         <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
-          title: 'Route Details'
+          title: 'Route Details',
+          headerBackVisible: false,
         }}/>
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
           title: 'Vehicle Details',

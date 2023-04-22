@@ -13,7 +13,8 @@ function SearchRouteScreen({route, navigation}) {
     function onSearchRoutePress() {
         navigation.navigate("RouteScreen", {
             routeNumber: enteredRouteNumber,
-            scenarioName: route.params.scenarioName
+            scenarioName: route.params.scenarioName,
+            company: route.params.company
         });
     }
 
