@@ -13,7 +13,7 @@ function SearchRouteScreen({route, navigation}) {
     function onSearchRoutePress() {
         navigation.navigate("RouteScreen", {
             routeNumber: enteredRouteNumber,
-            routeDatabase: route.params.routes
+            scenarioName: route.params.scenarioName
         });
     }
 

@@ -1,10 +1,13 @@
 import { StyleSheet, View, Text, TextInput, Button, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { LANDUFF_ROUTES, MDORF_ROUTES, LONGTS_ROUTES, LANDUFF_VEHICLES, MDORF_VEHICLES, LONGTS_VEHICLES } from "../data/scenario-data";
+import { LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
+import { MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
+import { LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import { useContext, useState } from "react";
 import { AssignContext } from "../store/context/assign-context";
 import Assignment from "../models/assignment";
 import { insertAssignment } from "../utilities/sqlite";
+import { TouchableOpacity } from "react-native";
 
 function AssignTourScreen({route, navigation}) {
     const assignContext = useContext(AssignContext);
@@ -28,8 +31,7 @@ function AssignTourScreen({route, navigation}) {
     const [tourNumber, setTourNumber] = useState(1);
     const [vehicleDropdown, setVehicleDropdown] = useState(null);
     const [disableAssignButton, setDisableAssignButton] = useState(true);
-    const routeDatabase = route.params.routes;
-    const vehicleDatabase = route.params.vehicles;
+    const scenarioName = route.params.scenarioName;
 
     const _renderItem = item => {
         return (
@@ -55,21 +57,21 @@ function AssignTourScreen({route, navigation}) {
             LANDUFF_ROUTES.forEach(addToRouteData);
             LANDUFF_VEHICLES.forEach(addToVehicleData);
         }
-        else if ( route.params.routes === 'MDorf') {
+        else if ( route.params.scenarioName=== 'MDorf') {
             MDORF_ROUTES.forEach(addToRouteData);
             MDORF_VEHICLES.forEach(addToVehicleData);
         }
-        else if ( route.params.routes=== 'Longts') {
+        else if ( route.params.scenarioName === 'Longts') {
             LONGTS_ROUTES.forEach(addToRouteData);
             LONGTS_VEHICLES.forEach(addToVehicleData);
         }
         if ( route.params.scenarioName === 'Landuff') {
             numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
-        else if ( route.params.routes === 'MDorf') {
+        else if ( route.params.scenarioName === 'MDorf') {
             numberTours = MDORF_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
-        else if ( route.params.routes=== 'Longts') {
+        else if ( route.params.scenarioName === 'Longts') {
             numberTours = LONGTS_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
         // Don't forget to add any tours which were already automatically generated.
@@ -88,13 +90,12 @@ function AssignTourScreen({route, navigation}) {
     }
 
     async function assignTourHandler() {
-        var assignment = new Assignment(routeDropdown, tourNumber, vehicleDropdown, routeDatabase, vehicleDatabase, route.params.company);
+        var assignment = new Assignment(routeDropdown, tourNumber, vehicleDropdown, scenarioName, route.params.company);
         assignContext.addAssignment(assignment)
         insertAssignment(assignment).then(
             navigation.navigate("ChangeAssignmentScreen", {
                 company: route.params.company,
-                routes: route.params.routes,
-                vehicles: route.params.vehicles
+                scenarioName: route.params.scenarioName
             }));
         
     }
@@ -138,15 +139,14 @@ function AssignTourScreen({route, navigation}) {
                 <TextInput
                     style={styles.tourInput}
                     onChangeText={onChangeTourNumber}
-                    value={tourNumber}
-                    placeholder="1"
+                    value={"" + tourNumber}
                     keyboardType="numeric"
                 />
             </View>
             
-            <View style={styles.buttonContainer}>
-                <Button title="Assign Tour" onPress={assignTourHandler} disabled={disableAssignButton}/>
-            </View>
+            <TouchableOpacity style={styles.button} onPress={assignTourHandler} disabled={disableAssignButton}>
+                <Text style={styles.buttonText}>Assign Tour</Text>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -184,11 +184,25 @@ const styles = StyleSheet.create({
     tourField: {
         flexDirection: 'row',
         marginTop: 120,
+        marginBottom: 30
     },
     tourInput: {
         height: 40,
         borderWidth: 1,
         padding: 10,
         marginLeft: 10
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#5e7947",
+        width: '90%',
+        padding: 20,
+        marginBottom: 20,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center'
     }
 })

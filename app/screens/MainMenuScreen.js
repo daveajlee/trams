@@ -5,40 +5,35 @@ function MainMenuScreen({navigation, route}) {
     function onAssignPress() {
         navigation.navigate("AssignTourScreen", {
             company: route.params.company,
-            routes: route.params.routes,
-            vehicles: route.params.vehicles
+            scenarioName: route.params.scenarioName,
         });
     }
 
     function onChangePress() {
         navigation.navigate("ChangeAssignmentScreen", {
             company: route.params.company,
-            routes: route.params.routes,
-            vehicles: route.params.vehicles
+            scenarioName: route.params.scenarioName,
         });
     }
 
     function onSearchRoutePress() {
         navigation.navigate("SearchRouteScreen", {
             company: route.params.company,
-            routes: route.params.routes,
-            vehicles: route.params.vehicles
+            scenarioName: route.params.scenarioName,
         });
     }
 
     function onSearchFleetPress() {
         navigation.navigate("SearchFleetScreen", {
             company: route.params.company,
-            routes: route.params.routes,
-            vehicles: route.params.vehicles
+            scenarioName: route.params.scenarioName,
         });
     }
 
     function onDisplayFleetPress() {
         navigation.navigate("FleetScreen", {
             company: route.params.company,
-            routes: route.params.routes,
-            vehicles: route.params.vehicles
+            scenarioName: route.params.scenarioName,
         });
     }
 

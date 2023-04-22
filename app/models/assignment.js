@@ -1,10 +1,9 @@
 class Assignment {
-    constructor(routeNumber, tourNumber, fleetNumber, routeDatabase, vehicleDatabase, company) {
+    constructor(routeNumber, tourNumber, fleetNumber, scenarioName, company) {
         this.routeNumber = routeNumber;
         this.tourNumber = tourNumber;
         this.fleetNumber = fleetNumber;
-        this.routeDatabase = routeDatabase;
-        this.vehicleDatabase = vehicleDatabase;
+        this.scenarioName = scenarioName;
         this.company = company;
     }
 }

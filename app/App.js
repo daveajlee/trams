@@ -19,6 +19,7 @@ import VehicleScreen from './screens/VehicleScreen';
 import FleetScreen from './screens/FleetScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
+import AssignContextProvider from './store/context/assign-context.js';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -79,6 +80,8 @@ export default function App() {
   }
 
   return (
+    <>
+    <AssignContextProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName={firstScreen}>
         <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={({navigation}) => ({
@@ -92,8 +95,9 @@ export default function App() {
         <Stack.Screen name="ChooseScenarioScreen" component={ChooseScenarioScreen} options={({navigation}) => ({
           title: 'Choose Scenario'
         })}/>
-        <Stack.Screen name="MainMenu" component={MainMenuScreen} options={{
-          title: 'Main Menu'
+        <Stack.Screen name="MainMenuScreen" component={MainMenuScreen} options={{
+          title: 'Main Menu',
+          headerBackVisible: false,
         }}/>
         <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{
           title: 'Search by Route Number'
@@ -105,7 +109,8 @@ export default function App() {
           title: 'Route Details'
         }}/>
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
-          title: 'Vehicle Details'
+          title: 'Vehicle Details',
+          headerBackVisible: false
         }}/>
         <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
           title: 'Fleet Overview'
@@ -114,10 +119,13 @@ export default function App() {
           title: 'Assign Routes and Vehicles'
         }}/>
         <Stack.Screen name="ChangeAssignmentScreen" component={ChangeAssignmentScreen} options={{
-          title: 'Assignments'
+          title: 'Assignments',
+          headerBackVisible: false
         }}/>
       </Stack.Navigator>
     </NavigationContainer>
+    </AssignContextProvider>
+    </>
     );
 }
 

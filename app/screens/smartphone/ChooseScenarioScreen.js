@@ -1,5 +1,8 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import ScenarioCard from "../../components/ScenarioCard";
+import { LANDUFF_DESCRIPTION, LANDUFF_NAME, LANDUFF_TARGETS } from "../../scenarios/landuff-scenario";
+import { LONGTS_DESCRIPTION, LONGTS_NAME, LONGTS_TARGETS } from "../../scenarios/longts-scenario";
+import { MDORF_DESCRIPTION, MDORF_NAME, MDORF_TARGETS } from "../../scenarios/mdorf-scenario";
 
 const landuffImage = require("./../../assets/landuff-map-picture.jpg");
 const longtsImage = require("./../../assets/longts-map-picture.jpg");
@@ -22,12 +25,9 @@ function ChooseScenarioScreen({route, navigation}) {
                 <Text style={styles.headerText}>Congratulations - {playerName} has been appointed Managing Director of {companyName}!</Text>
                 <Text style={styles.headerText2}>Choose your scenario and prove that your new company can make public transport run on time!</Text>
             </View>
-            <ScenarioCard image={landuffImage} title="Landuff" description="Landuff Town is a small town with a very friendly town council. They want to work with you in providing an efficient and effective transport service for Landuff Town."
-                targets="Serve all bus stops in Landuff. // Ensure a frequent service on all routes. // Ensure that passenger satisfaction remains above 70% at all times." navigation={navigation} companyName={companyName}/>
-            <ScenarioCard image={longtsImage} title="Longts City" description="Longts City is a very large city. The city council are suspicious of your new company and you will need to impress them very quickly in order to establish a good working relationship."
-                targets="Serve all bus stops in Longts. // Ensure a very frequent service on all routes. // Ensure that passenger satisfaction remains above 50% at all times." navigation={navigation} companyName={companyName}/>
-            <ScenarioCard image={mdorfImage} title="MDorf" description="Millenium Dorf City is a small city. The city council are prepared to work with you providing that you can meet their targets within their timescales."
-                targets="Serve all bus stops in MDorf. // Ensure a frequent service on all routes. // Ensure that passenger satisfaction remains above 35% at all times." navigation={navigation} companyName={companyName}/>
+            <ScenarioCard image={landuffImage} title={LANDUFF_NAME} description={LANDUFF_DESCRIPTION} targets={LANDUFF_TARGETS} navigation={navigation} companyName={companyName}/>
+            <ScenarioCard image={longtsImage} title={LONGTS_NAME} description={LONGTS_DESCRIPTION} targets={LONGTS_TARGETS} navigation={navigation} companyName={companyName}/>
+            <ScenarioCard image={mdorfImage} title={MDORF_NAME} description={MDORF_DESCRIPTION} targets={MDORF_TARGETS} navigation={navigation} companyName={companyName}/>
             <View style={{
                 borderColor:'black',
                 borderWidth: StyleSheet.hairlineWidth,

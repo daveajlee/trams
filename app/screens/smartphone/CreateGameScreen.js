@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '80%',
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 100
     },
     dateContainer: {
         flexDirection: 'column',

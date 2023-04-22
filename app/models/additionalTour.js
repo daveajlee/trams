@@ -1,9 +1,8 @@
 class AdditionalTour {
-    constructor(routeNumber, tourNumber, routeDatabase, vehicleDatabase, company) {
+    constructor(routeNumber, tourNumber, scenarioName, company) {
         this.routeNumber = routeNumber;
         this.tourNumber = tourNumber;
-        this.routeDatabase = routeDatabase;
-        this.vehicleDatabase = vehicleDatabase;
+        this.scenarioName = scenarioName;
         this.company = company;
     }
 }

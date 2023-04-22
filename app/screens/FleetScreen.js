@@ -1,4 +1,6 @@
-import { LANDUFF_VEHICLES, MDORF_VEHICLES, LONGTS_VEHICLES } from "../data/scenario-data";
+import { LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
+import { MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
+import { LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import FleetList from "../components/FleetList";
 import { StyleSheet, View } from "react-native";
 

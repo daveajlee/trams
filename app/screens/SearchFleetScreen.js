@@ -12,7 +12,8 @@ function SearchFleetScreen({route, navigation}) {
 
     function onSearchFleetPress() {
         navigation.navigate("VehicleScreen", {
-            fleetNumber: enteredFleetNumber
+            fleetNumber: enteredFleetNumber,
+            scenarioName: route.params.scenarioName
         });
     }
 

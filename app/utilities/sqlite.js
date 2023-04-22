@@ -62,52 +62,7 @@ export function init() {
                     id INTEGER PRIMARY KEY NOT NULL,
                     routeNumber TEXT NOT NULL,
                     tourNumber INTEGER NOT NULL,
-                    routeDatabase TEXT NOT NULL,
-                    vehicleDatabase TEXT NOT NULL,
-                    company TEXT NOT NULL
-                )`,
-                [],
-                () => {
-                    resolve();
-                },
-                (_, error) => {
-                    reject(error);
-                }
-                );
-            });
-        }));
-    
-    promise.then(
-        promise = new Promise((resolve, reject) => {
-            database.transaction((tx) => {
-                tx.executeSql(`CREATE TABLE IF NOT EXISTS additionalTours (
-                    id INTEGER PRIMARY KEY NOT NULL,
-                    routeNumber TEXT NOT NULL,
-                    tourNumber INTEGER NOT NULL,
-                    routeDatabase TEXT NOT NULL,
-                    vehicleDatabase TEXT NOT NULL,
-                    company TEXT NOT NULL
-                )`,
-                [],
-                () => {
-                    resolve();
-                },
-                (_, error) => {
-                    reject(error);
-                }
-                );
-            });
-        }));
-
-    promise.then(
-        promise = new Promise((resolve, reject) => {
-            database.transaction((tx) => {
-                tx.executeSql(`CREATE TABLE IF NOT EXISTS additionalTours (
-                    id INTEGER PRIMARY KEY NOT NULL,
-                    routeNumber TEXT NOT NULL,
-                    tourNumber INTEGER NOT NULL,
-                    routeDatabase TEXT NOT NULL,
-                    vehicleDatabase TEXT NOT NULL,
+                    scenarioName TEXT NOT NULL,
                     company TEXT NOT NULL
                 )`,
                 [],
@@ -156,7 +111,7 @@ export function insertGame(game) {
 export function insertAssignment(assignment) {
     const promise = new Promise((resolve, reject) => {
         database.transaction((tx) => {
-            tx.executeSql(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?, ?)`,
+            tx.executeSql(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?)`,
             [assignment.routeNumber, assignment.tourNumber, assignment.fleetNumber, assignment.scenarioName, assignment.company],
             (_, result) => {
                 resolve(result);
@@ -204,7 +159,7 @@ export function fetchAssignments(company) {
             (_, result) => {
                 const assignments = [];
                 for (const assignment of result.rows._array) {
-                    assignments.push(new Assignment(assignment.routeNumber, assignment.tourNumber, assignment.fleetNumber, assignment.routeDatabase, assignment.vehicleDatabase, assignment.company));
+                    assignments.push(new Assignment(assignment.routeNumber, assignment.tourNumber, assignment.fleetNumber, assignment.scenarioName, assignment.company));
                 }
                 resolve(assignments);
             }, (_, error) => { reject(error); });
@@ -247,8 +202,8 @@ export function deleteAssignment(routeNumber, tourNumber, company) {
 export function insertAdditionalTour(additionalTour) {
     const promise = new Promise((resolve, reject) => {
         database.transaction((tx) => {
-            tx.executeSql(`INSERT INTO additionalTours (routeNumber, tourNumber, routeDatabase, vehicleDatabase, company) VALUES (?, ?, ?, ?, ?)`,
-            [additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.routeDatabase, additionalTour.vehicleDatabase, additionalTour.company],
+            tx.executeSql(`INSERT INTO additionalTours (routeNumber, tourNumber, scenarioName, company) VALUES (?, ?, ?, ?)`,
+            [additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.scenarioName, additionalTour.company],
             (_, result) => {
                 resolve(result);
             },
@@ -274,7 +229,7 @@ export function fetchAdditionalTours(company) {
             (_, result) => {
                 const additionalTours = [];
                 for (const additionalTour of result.rows._array) {
-                    additionalTours.push(new AdditionalTour(additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.routeDatabase, additionalTour.vehicleDatabase, additionalTour.company));
+                    additionalTours.push(new AdditionalTour(additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.scenarioName, additionalTour.company));
                 }
                 resolve(additionalTours);
             }, (_, error) => { reject(error); });

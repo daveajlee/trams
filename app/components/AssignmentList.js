@@ -5,7 +5,7 @@ import { Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { deleteAssignment } from "../utilities/sqlite";
 
-function AssignmentList({items, companyName, routeDatabase, vehicleDatabase}) {
+function AssignmentList({items, companyName, scenarioName}) {
 
     const assignContext = useContext(AssignContext);
     const navigation = useNavigation();
@@ -13,10 +13,9 @@ function AssignmentList({items, companyName, routeDatabase, vehicleDatabase}) {
     async function deleteAssignmentFromDB(routeNumber, tourNumber, companyName) {
         assignContext.removeAssignment(routeNumber, tourNumber); 
         deleteAssignment(routeNumber, tourNumber, companyName).then(
-            navigation.navigate("MainMenu", {
+            navigation.navigate("MainMenuScreen", {
                 company: companyName,
-                routes: routeDatabase,
-                vehicles: vehicleDatabase
+                scenarioName: scenarioName
             }));
         
     }

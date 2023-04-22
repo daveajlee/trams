@@ -16,10 +16,9 @@ function SavedGamesList({games, navigation}) {
         for (const additionalTour of additionalTours) {
             assignContext.addAdditionalTour(additionalTour.routeNumber, additionalTour.tourNumber);
         }
-        navigation.navigate("MainMenu", {
+        navigation.navigate("MainMenuScreen", {
             company: item.companyName,
-            routes: item.routeDatabase,
-            vehicles: item.vehicleDatabase
+            scenarioName: item.scenarioName,
           });
     }
 

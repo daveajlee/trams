@@ -1,8 +1,7 @@
 export class Assignments {
-    constructor(companyName, routeDatabase, vehicleDatabase, id) {
+    constructor(companyName, scenarioName, id) {
         this.companyName = companyName;
-        this.routeDatabase = routeDatabase;
-        this.vehicleDatabase = vehicleDatabase;
+        this.scenarioName = scenarioName
         this.id = id;
     }
 }

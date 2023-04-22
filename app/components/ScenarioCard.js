@@ -14,7 +14,7 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
      * @param {string} scenarioName 
      */
     async function selectScenarioHandler(scenarioName) {
-        navigation.navigate("MainMenu", {
+        navigation.navigate("MainMenuScreen", {
             company: companyName,
             scenarioName: scenarioName.title
         });
