@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
-import DropDownPicker from "react-native-dropdown-picker";
+import { Dropdown } from "react-native-element-dropdown";
 import DatePicker from "react-native-date-picker";
 import { Game } from "../../models/game";
 import { insertGame } from "../../utilities/sqlite";
@@ -50,10 +50,18 @@ function CreateGameScreen({navigation}) {
             navigation.navigate("ChooseScenarioScreen", {
                 gameId: game.id,
                 companyName: companyName,
-                playerName: playerName
+                playerName: playerName,
             })
         )
     }
+
+    const _renderLevelItem = item => {
+        return (
+            <View>
+                <Text style={styles.levelItem}>{item.label}</Text>
+            </View>
+        );
+    };
 
     /**
      * Display the screen with a title and fields to enter company name,
@@ -75,12 +83,23 @@ function CreateGameScreen({navigation}) {
                 </View>
                 <View style={styles.levelContainer}>
                     <Text style={styles.bodyText}>Level:</Text>
-                    <DropDownPicker open={openLevelDropdown} value={levelValue} items={levelItems}
-                        setOpen={setOpenLevelDropdown} setValue={setLevelValue} setItems={setLevelItems}/>
+                    <Dropdown
+                        style={styles.levelDropdown}
+                        data={levelItems}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Easy"
+                        value={levelValue}
+                        onChange={item => {
+                            setLevelValue(item.value);
+                            console.log('selected', item);                  
+                        }}
+                        renderItem={item => _renderLevelItem(item)}
+                    />
                 </View>
                 <View style={styles.dateContainer}>
                     <Text style={styles.bodyText}>Start Date & Time:</Text>
-                    <DatePicker date={startDate} onDateChange={setStartDate} />
+                    <DatePicker style={styles.bodyText} date={startDate} onDateChange={setStartDate} />
                 </View>
             </View>
             <View style={styles.buttonContainer}>
@@ -170,5 +189,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    levelDropdown: {
+        borderWidth: 1,
+        borderColor: '#e4d0ff',
+        backgroundColor: 'white',
+        color: 'black',
+        padding: 2,
+    },
+    levelItem: {
+        color: 'black',
+        fontSize: 18,
+        marginLeft: 5
     }
 });

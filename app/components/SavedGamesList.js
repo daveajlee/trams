@@ -28,6 +28,7 @@ function SavedGamesList({games, navigation}) {
      * @param {Game} item 
      */
     async function onLoadGame(item) {
+        console.log('Scenario would be ' + item.scenarioName);
         navigation.navigate("ChooseScenarioScreen", {
             gameId: item.id,
             companyName: item.companyName,

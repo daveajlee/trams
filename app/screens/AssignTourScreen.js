@@ -35,7 +35,7 @@ function AssignTourScreen({route, navigation}) {
 
     const _renderItem = item => {
         return (
-            <View style={styles.item}>
+            <View>
                 <Text style={styles.textItem}>{item.label}</Text>
             </View>
         );
@@ -46,7 +46,16 @@ function AssignTourScreen({route, navigation}) {
     }
 
     function addToVehicleData(item) {
-        vehicleData.push({label: item.fleetNumber, value: item.fleetNumber});
+        // Check if this vehicle is assigned already, if so do not include it.
+        var vehicleAssigned = false;
+        for ( const assignment of assignContext.savedAssignments ) {
+            if ( assignment.fleetNumber === item.fleetNumber ) {
+                vehicleAssigned = true;
+            }
+        }
+        if ( !vehicleAssigned ) {
+            vehicleData.push({label: item.fleetNumber, value: item.fleetNumber});
+        }
     }
 
     function onChangeTourNumber(tourNumber) {
@@ -162,20 +171,22 @@ const styles = StyleSheet.create({
     },
     routeField: {
         flexDirection: 'row',
-        marginTop: 80
+        marginTop: 80,
     },
     formLabel: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        paddingBottom: 16
+        paddingBottom: 16,
+        marginRight: 10
     },
     dropdown: {
-        backgroundColor: '#e4d0ff',
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-        width: '50%',
-        marginLeft: 10
+        borderWidth: 1,
+        borderColor: '#e4d0ff',
+        backgroundColor: 'white',
+        color: 'black',
+        padding: 2,
+        width: '30%'
     },
     vehicleField: {
         flexDirection: 'row',
@@ -204,5 +215,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    textItem: {
+        color: 'black',
+        fontSize: 18,
+        marginLeft: 5
     }
 })

@@ -1,7 +1,7 @@
 import {
   StyleSheet,
-  useColorScheme,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import CreateGameScreen from './screens/smartphone/CreateGameScreen';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchGames, init } from './utilities/sqlite';
@@ -32,11 +32,6 @@ const Stack = createNativeStackNavigator();
  * @returns the content to be displayed to the user
  */
 export default function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-  };
 
   const [firstScreen, setFirstScreen] = useState('');
 
@@ -82,6 +77,7 @@ export default function App() {
   return (
     <>
     <AssignContextProvider>
+    <StatusBar style="dark" />
     <NavigationContainer>
       <Stack.Navigator initialRouteName={firstScreen}>
         <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={({navigation}) => ({
