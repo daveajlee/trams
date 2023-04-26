@@ -1,9 +1,9 @@
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DatePicker from "react-native-date-picker";
 import { Game } from "../../models/game";
-import { insertGame } from "../../utilities/sqlite";
+import { fetchGame, insertGame } from "../../utilities/sqlite";
 
 /**
  * This screen represents the create game screen on a Smartphone.
@@ -44,15 +44,22 @@ function CreateGameScreen({navigation}) {
      * Create the game based on the information provided by the user
      * and move to the next screen which allows the user to choose the scenario.
      */
-    function createGameHandler() {
-        const game = new Game(companyName, playerName, levelValue, startDate.toLocaleString());
-        insertGame(game).then(
-            navigation.navigate("ChooseScenarioScreen", {
-                gameId: game.id,
-                companyName: companyName,
-                playerName: playerName,
-            })
-        )
+    async function createGameHandler() {
+        const game = new Game(companyName, playerName, '', levelValue, startDate.toLocaleString());
+        // WHen creating a game, then check if the company already exists then show an alert and do not add.
+        const games = await fetchGame(companyName);
+        if ( games.length > 0 ) {
+            Alert.alert('Duplicate Company', 'Please choose another company name');
+        }
+        else{
+            insertGame(game).then(
+                navigation.navigate("ChooseScenarioScreen", {
+                    companyName: companyName,
+                    playerName: playerName,
+                    })
+            );            
+        } 
+        
     }
 
     const _renderLevelItem = item => {

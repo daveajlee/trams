@@ -1,4 +1,5 @@
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { setScenarioNameForGame } from "../utilities/sqlite";
 
 /**
  * This component displays details of a particular scenario that
@@ -14,6 +15,7 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
      * @param {string} scenarioName 
      */
     async function selectScenarioHandler(scenarioName) {
+        setScenarioNameForGame(companyName, scenarioName.title);
         navigation.navigate("MainMenuScreen", {
             company: companyName,
             scenarioName: scenarioName.title

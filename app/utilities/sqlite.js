@@ -19,6 +19,7 @@ export function init() {
                 id INTEGER PRIMARY KEY NOT NULL,
                 companyName TEXT NOT NULL,
                 playerName TEXT NOT NULL,
+                scenarioName TEXT NOT NULL,
                 level TEXT NOT NULL,
                 startDate TEXT NOT NULL
             )`,
@@ -88,9 +89,10 @@ export function init() {
 export function insertGame(game) {
     const promise = new Promise((resolve, reject) => {
         database.transaction((tx) => {
-            tx.executeSql(`INSERT INTO games (companyName, playerName, level, startDate) VALUES (?, ?, ?, ?)`,
-            [game.companyName, game.playerName, game.level, game.startDate],
+            tx.executeSql(`INSERT INTO games (companyName, playerName, scenarioName, level, startDate) VALUES (?, ?, ?, ?, ?)`,
+            [game.companyName, game.playerName, game.scenarioName, game.level, game.startDate],
             (_, result) => {
+
                 resolve(result);
             },
             (_, error) => {
@@ -137,13 +139,79 @@ export function fetchGames() {
             (_, result) => {
                 const games = [];
                 for (const game of result.rows._array) {
-                    games.push(new Game(game.companyName, game.playerName, game.level, game.startDate, game.id));
+                    games.push(new Game(game.companyName, game.playerName, game.scenarioName, game.level, game.startDate, game.id));
                 }
                 resolve(games);
             }, (_, error) => { reject(error); });
         })
     })
 
+    return promise;
+}
+
+/**
+ * Retrieve the game with the specified company name from the database.
+ * @param companyName the company name of the game to retrieve.
+ * @returns a promise with all of the games or an error message if something bad happens
+ */
+export function fetchGame(companyName) {
+    const promise = new Promise((resolve, reject) => {
+        database.transaction((tx) => {
+            tx.executeSql('SELECT * FROM games where companyName = ?', [companyName],
+            (_, result) => {
+                const games = [];
+                for (const game of result.rows._array) {
+                    games.push(new Game(game.companyName, game.playerName, game.scenarioName, game.level, game.startDate, game.id));
+                }
+                resolve(games);
+            }, (_, error) => { reject(error); });
+        })
+    })
+
+    return promise;
+}
+
+/**
+ * Delete a game based on the supplied company name.
+ * @param {string} companyName the company name to delete
+ * @returns a promise with either a success result or error message
+ */
+export function deleteGame(company) {
+    const promise = new Promise((resolve, reject) => {
+        database.transaction((tx) => {
+            tx.executeSql('DELETE FROM games WHERE companyName = ?', [company],
+            (_, result) => {
+                console.log(result);
+                resolve(result);
+            },
+            (_, error) => {
+                reject(error);
+            })
+        })
+    })
+    
+    return promise;
+}
+
+/**
+ * Set the scenario name of the supplied game company name to the supplied scenario name.
+ * @param companyName the company name of the game to retrieve.
+ * @param scenarioName the scenario name to set.
+ * @returns a promise with either a success result or error message
+ */
+export function setScenarioNameForGame(companyName, scenarioName) {
+    const promise = new Promise((resolve, reject) => {
+        database.transaction((tx) => {
+            tx.executeSql('UPDATE games SET scenarioName = ? WHERE companyName = ?', [scenarioName, companyName],
+            (_, result) => {
+                resolve(result);
+            },
+            (_, error) => {
+                reject(error);
+            })
+        })
+    })
+    
     return promise;
 }
 

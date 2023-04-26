@@ -28,12 +28,10 @@ function SavedGamesList({games, navigation}) {
      * @param {Game} item 
      */
     async function onLoadGame(item) {
-        console.log('Scenario would be ' + item.scenarioName);
-        navigation.navigate("ChooseScenarioScreen", {
-            gameId: item.id,
-            companyName: item.companyName,
-            playerName: item.playerName
-        })
+        navigation.navigate("MainMenuScreen", {
+            company: item.companyName,
+            scenarioName: item.scenarioName
+        });
     }
 
     if ( !loadedGames || loadedGames.length === 0 ) {
@@ -41,7 +39,7 @@ function SavedGamesList({games, navigation}) {
             <Text style={styles.fallbackTitle}>No games added yet - start adding some!</Text>
         </View>
     }
-    return <FlatList style={styles.list} data={loadedGames} keyExtractor={(item) => item.id} renderItem={({item}) => <TouchableOpacity style={styles.button} onPress={onLoadGame.bind(null, item)}>
+    return <FlatList style={styles.list} data={loadedGames} keyExtractor={(item) => item.companyName} renderItem={({item}) => <TouchableOpacity style={styles.button} onPress={onLoadGame.bind(null, item)}>
         <Text style={styles.buttonText}>{item.companyName}</Text>
     </TouchableOpacity>}/>
 

@@ -4,9 +4,10 @@
  * start date and an id which is assigned by the database.
  */
 export class Game {
-    constructor(companyName, playerName, level, startDate, id) {
+    constructor(companyName, playerName, scenarioName, level, startDate, id) {
         this.companyName = companyName;
         this.playerName = playerName;
+        this.scenarioName = scenarioName;
         this.level = level;
         this.startDate = startDate;
         this.id = id;

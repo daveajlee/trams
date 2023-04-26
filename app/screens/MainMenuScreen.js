@@ -1,6 +1,17 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useLayoutEffect } from "react";
+import IconButton from "../utilities/IconButton";
+import { deleteGame, fetchGames } from "../utilities/sqlite";
 
 function MainMenuScreen({navigation, route}) {
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          headerRight: ({tintColor}) => (
+            <IconButton icon="trash-outline" size={24} color={tintColor} onPress={onDeleteGame}/>
+          ),
+        });
+      }, [navigation]); // pass method directly here
 
     function onAssignPress() {
         navigation.navigate("AssignTourScreen", {
@@ -35,6 +46,18 @@ function MainMenuScreen({navigation, route}) {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
+    }
+
+    /**
+     * If the current game is the only game remaining then back to create game otherwise load game menu.
+     */
+    async function onDeleteGame() {
+        await deleteGame(route.params.company);
+        if ( fetchGames().length > 0 ) {
+            navigation.navigate("LoadGameScreen");
+        } else {
+            navigation.navigate("CreateGameScreen");
+        }
     }
 
     return (

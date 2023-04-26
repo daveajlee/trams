@@ -94,7 +94,7 @@ export default function App() {
         <Stack.Screen name="MainMenuScreen" component={MainMenuScreen} options={{
           title: 'Main Menu',
           headerBackVisible: false,
-        }}/>
+          }}/>
         <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{
           title: 'Search by Route Number'
         }}/>
