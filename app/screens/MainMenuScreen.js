@@ -7,9 +7,15 @@ function MainMenuScreen({navigation, route}) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-          headerRight: ({tintColor}) => (
-            <IconButton icon="trash-outline" size={24} color={tintColor} onPress={onDeleteGame}/>
-          ),
+            headerLeft: ({tintColor}) => (
+                <IconButton icon="trash-outline" size={24} color={tintColor} onPress={onDeleteGame}/>
+            ),
+            headerRight: ({tintColor}) => (
+                <>
+                <IconButton icon="add" size={24} color={tintColor} onPress={onCreateGame}/>
+                <IconButton icon="apps" size={24} color={tintColor} onPress={onLoadGame}/>
+                </>
+            ),
         });
       }, [navigation]); // pass method directly here
 
@@ -58,6 +64,14 @@ function MainMenuScreen({navigation, route}) {
         } else {
             navigation.navigate("CreateGameScreen");
         }
+    }
+
+    function onCreateGame() {
+        navigation.navigate("CreateGameScreen");
+    }
+
+    function onLoadGame() {
+        navigation.navigate("LoadGameScreen");
     }
 
     return (

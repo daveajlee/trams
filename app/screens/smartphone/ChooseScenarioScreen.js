@@ -18,6 +18,9 @@ function ChooseScenarioScreen({route, navigation}) {
     var playerName = route.params.playerName;
     var companyName = route.params.companyName;
 
+    /**
+     * Return the components to be displayed to the user.
+     */
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: 'center',
         justifyContent: 'center'}}>

@@ -1,28 +1,29 @@
 import { StyleSheet, View, Text, TextInput, Button, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
-import { MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
-import { LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
+import { LANDUFF_NAME, LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
+import { MDORF_NAME, MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
+import { LONGTS_NAME, LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import { useContext, useState } from "react";
 import { AssignContext } from "../store/context/assign-context";
 import Assignment from "../models/assignment";
 import { insertAssignment } from "../utilities/sqlite";
 import { TouchableOpacity } from "react-native";
 
+
 function AssignTourScreen({route, navigation}) {
     const assignContext = useContext(AssignContext);
 
     var routeData = [];
     var vehicleData = [];
-    if ( route.params.scenarioName === 'Landuff') {
+    if ( route.params.scenarioName === LANDUFF_NAME) {
         LANDUFF_ROUTES.forEach(addToRouteData);
         LANDUFF_VEHICLES.forEach(addToVehicleData);
     }
-    else if ( route.params.routes === 'MDorf') {
+    else if ( route.params.scenarioName === MDORF_NAME) {
         MDORF_ROUTES.forEach(addToRouteData);
         MDORF_VEHICLES.forEach(addToVehicleData);
     }
-    else if ( route.params.routes=== 'Longts') {
+    else if ( route.params.scenarioName=== LONGTS_NAME) {
         LONGTS_ROUTES.forEach(addToRouteData);
         LONGTS_VEHICLES.forEach(addToVehicleData);
     }

@@ -5,28 +5,40 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import VehicleDetails from "../components/VehicleDetails";
 import { TouchableOpacity } from "react-native";
 
-function VehicleScreen(props) {
+/**
+ * This screen shows the details of the vehicle that the user searched for by fleet number.
+ * @param route the company, scenario name and fleet number that the user provided
+ * @param navigation the navigation object to allow switching screens.
+ * @returns the components to be displayed to the user.
+ */
+function VehicleScreen({route, navigation}) {
 
-    const fleetNumber = parseInt(props.route.params.fleetNumber);
+    // Note the fleet number as an integer that the user provided.
+    const fleetNumber = parseInt(route.params.fleetNumber);
 
+    /**
+     * Clicking on the main menu button moves the user back to the main menu screen.
+     */
     function mainMenuPress() {
-        props.navigation.navigate("MainMenuScreen", {
-            company: props.route.params.company,
-            scenarioName: props.route.params.scenarioName,
+        navigation.navigate("MainMenuScreen", {
+            company: route.params.company,
+            scenarioName: route.params.scenarioName,
         });
     }
 
+    // Search by scenario name and fleet number.
     var selectedVehicle;
-    if ( props.route.params.scenarioName === LANDUFF_NAME) {
+    if ( route.params.scenarioName === LANDUFF_NAME) {
         selectedVehicle = LANDUFF_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
     }
-    else if ( props.route.params.scenarioName === MDORF_NAME) {
+    else if ( route.params.scenarioName === MDORF_NAME) {
         selectedVehicle = MDORF_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
     }
-    else if ( props.route.params.scenarioName === LONGTS_NAME) {
+    else if ( route.params.scenarioName === LONGTS_NAME) {
         selectedVehicle = LONGTS_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
     }
 
+    // Display the vehicle to the user or a message to the user if it could not be found.
     if ( selectedVehicle ) {
         return <ScrollView contentContainerStyle={styles.rootContainer}>
             <VehicleDetails fleetNumber={selectedVehicle.fleetNumber} registrationNumber={selectedVehicle.registrationNumber} 
@@ -39,7 +51,7 @@ function VehicleScreen(props) {
     }
     else {
         return <ScrollView contentContainerStyle={styles.rootContainer}>
-            <Text style={styles.noVehicleText}>Did not find any vehicle for the specified fleet number: {props.route.params.fleetNumber}</Text>
+            <Text style={styles.noVehicleText}>Did not find any vehicle for the specified fleet number: {route.params.fleetNumber}</Text>
             <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
                 <Text style={styles.buttonText}>Main Menu</Text>
             </TouchableOpacity>

@@ -92,7 +92,7 @@ export default function App() {
           title: 'Choose Scenario'
         })}/>
         <Stack.Screen name="MainMenuScreen" component={MainMenuScreen} options={{
-          title: 'Main Menu',
+          title: 'Game Menu',
           headerBackVisible: false,
           }}/>
         <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{

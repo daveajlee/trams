@@ -45,7 +45,13 @@ function CreateGameScreen({navigation}) {
      * and move to the next screen which allows the user to choose the scenario.
      */
     async function createGameHandler() {
-        const game = new Game(companyName, playerName, '', levelValue, startDate.toLocaleString());
+        // Create game - if level is not set then use default easy level.
+        var game;
+        if ( !levelValue ) {
+            game = new Game(companyName, playerName, '', 'easy', startDate.toLocaleString());
+        } else {
+            game = new Game(companyName, playerName, '', levelValue, startDate.toLocaleString());
+        }
         // WHen creating a game, then check if the company already exists then show an alert and do not add.
         const games = await fetchGame(companyName);
         if ( games.length > 0 ) {
@@ -62,6 +68,11 @@ function CreateGameScreen({navigation}) {
         
     }
 
+    /**
+     * Render the item on the level dropdown list with the label and the appropriate styling.
+     * @param item the item to be displayed on the level dropdown list.
+     * @returns the appropriate components to display to the user.
+     */
     const _renderLevelItem = item => {
         return (
             <View>
