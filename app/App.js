@@ -19,7 +19,6 @@ import VehicleScreen from './screens/VehicleScreen';
 import FleetScreen from './screens/FleetScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
-import AssignContextProvider from './store/context/assign-context.js';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -76,7 +75,6 @@ export default function App() {
 
   return (
     <>
-    <AssignContextProvider>
     <StatusBar style="dark" />
     <NavigationContainer>
       <Stack.Navigator initialRouteName={firstScreen}>
@@ -121,7 +119,6 @@ export default function App() {
         }}/>
       </Stack.Navigator>
     </NavigationContainer>
-    </AssignContextProvider>
     </>
     );
 }

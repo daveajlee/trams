@@ -1,17 +1,13 @@
 import { View, Text, FlatList, StyleSheet } from "react-native";
-import { AssignContext } from "../store/context/assign-context";
-import { useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { deleteAssignment } from "../utilities/sqlite";
 
 function AssignmentList({items, companyName, scenarioName}) {
 
-    const assignContext = useContext(AssignContext);
     const navigation = useNavigation();
 
     async function deleteAssignmentFromDB(routeNumber, tourNumber, companyName) {
-        assignContext.removeAssignment(routeNumber, tourNumber); 
         deleteAssignment(routeNumber, tourNumber, companyName).then(
             navigation.navigate("MainMenuScreen", {
                 company: companyName,

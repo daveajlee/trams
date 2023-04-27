@@ -1,37 +1,50 @@
-import { StyleSheet, View, Text, TextInput, Button, Alert } from "react-native";
+import { StyleSheet, View, Text, TextInput, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LANDUFF_NAME, LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { MDORF_NAME, MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
 import { LONGTS_NAME, LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
-import { useContext, useState } from "react";
-import { AssignContext } from "../store/context/assign-context";
+import { useEffect, useState } from "react";
 import Assignment from "../models/assignment";
-import { insertAssignment } from "../utilities/sqlite";
+import { fetchAdditionalTours, fetchAssignments, insertAssignment } from "../utilities/sqlite";
 import { TouchableOpacity } from "react-native";
 
 
 function AssignTourScreen({route, navigation}) {
-    const assignContext = useContext(AssignContext);
 
-    var routeData = [];
-    var vehicleData = [];
-    if ( route.params.scenarioName === LANDUFF_NAME) {
-        LANDUFF_ROUTES.forEach(addToRouteData);
-        LANDUFF_VEHICLES.forEach(addToVehicleData);
-    }
-    else if ( route.params.scenarioName === MDORF_NAME) {
-        MDORF_ROUTES.forEach(addToRouteData);
-        MDORF_VEHICLES.forEach(addToVehicleData);
-    }
-    else if ( route.params.scenarioName=== LONGTS_NAME) {
-        LONGTS_ROUTES.forEach(addToRouteData);
-        LONGTS_VEHICLES.forEach(addToVehicleData);
-    }
-
+    const [routeData, setRouteData] = useState([]);
+    const [vehicleData, setVehicleData] = useState([]);
     const [routeDropdown, setRouteDropdown] = useState(null);
     const [tourNumber, setTourNumber] = useState(1);
     const [vehicleDropdown, setVehicleDropdown] = useState(null);
     const [disableAssignButton, setDisableAssignButton] = useState(true);
+    const [assignments, setAssignments] = useState([]);
+
+    useEffect(() => {
+        async function loadVehicleAndRouteData() {
+            // Retrieve any assignments that already exist.
+            setAssignments(await fetchAssignments(route.params.company));
+            // Retrieve routes and vehicles for the specified scenario.
+            if ( route.params.scenarioName === LANDUFF_NAME) {
+                setRouteData(formatRouteData(LANDUFF_ROUTES));
+                setVehicleData(await filterVehicleData(LANDUFF_VEHICLES));
+            }
+            else if ( route.params.scenarioName === MDORF_NAME) {
+                setRouteData(formatRouteData(MDORF_ROUTES));
+                setVehicleData(await filterVehicleData(MDORF_VEHICLES));
+            }
+            else if ( route.params.scenarioName=== LONGTS_NAME) {
+                setRouteData(formatRouteData(LONGTS_ROUTES));
+                setVehicleData(await filterVehicleData(LONGTS_VEHICLES));
+            }
+            // Perform random situation if more than 3 assignments.
+            if ( assignments.length > 3 ) {
+                performRandomSituation();
+            }
+        }
+
+        loadVehicleAndRouteData();
+    }, []);
+
     const scenarioName = route.params.scenarioName;
 
     const _renderItem = item => {
@@ -42,50 +55,48 @@ function AssignTourScreen({route, navigation}) {
         );
     };
 
-    function addToRouteData(item) {
-        routeData.push({label: item.number, value: item.number});
-    }
-
-    function addToVehicleData(item) {
-        // Check if this vehicle is assigned already, if so do not include it.
-        var vehicleAssigned = false;
-        for ( const assignment of assignContext.savedAssignments ) {
-            if ( assignment.fleetNumber === item.fleetNumber ) {
-                vehicleAssigned = true;
+    async function filterVehicleData(scenarioVehicles ) {
+        var vehicleFilteredData = [];
+        for ( const vehicle of scenarioVehicles ) {
+            var vehicleAssigned = false;
+            var assignments = await fetchAssignments(route.params.company);
+            for ( const assignment of assignments ) {
+                if ( assignment.fleetNumber === vehicle.fleetNumber ) {
+                    vehicleAssigned = true;
+                }
+            }
+            if ( !vehicleAssigned ) {
+                console.log('Adding vehicle ' + vehicle.fleetNumber);
+                vehicleFilteredData.push({label: vehicle.fleetNumber, value: vehicle.fleetNumber});
             }
         }
-        if ( !vehicleAssigned ) {
-            vehicleData.push({label: item.fleetNumber, value: item.fleetNumber});
-        }
+        return vehicleFilteredData;
     }
 
-    function onChangeTourNumber(tourNumber) {
+    function formatRouteData(scenarioRoutes) {
+        var routeData = [];
+        for ( const route of scenarioRoutes ) {
+            routeData.push({label: route.number, value: route.number});
+        }
+        return routeData;
+    }
+
+    async function onChangeTourNumber(tourNumber) {
         setTourNumber(tourNumber);
         // Calculate the number of tours for the selected route number based on route database.
         var numberTours = 0;
-        if ( route.params.scenarioName === 'Landuff') {
-            LANDUFF_ROUTES.forEach(addToRouteData);
-            LANDUFF_VEHICLES.forEach(addToVehicleData);
-        }
-        else if ( route.params.scenarioName=== 'MDorf') {
-            MDORF_ROUTES.forEach(addToRouteData);
-            MDORF_VEHICLES.forEach(addToVehicleData);
-        }
-        else if ( route.params.scenarioName === 'Longts') {
-            LONGTS_ROUTES.forEach(addToRouteData);
-            LONGTS_VEHICLES.forEach(addToVehicleData);
-        }
-        if ( route.params.scenarioName === 'Landuff') {
+        if ( scenarioName === 'Landuff') {
             numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
-        else if ( route.params.scenarioName === 'MDorf') {
+        else if ( scenarioName === 'MDorf') {
             numberTours = MDORF_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
-        else if ( route.params.scenarioName === 'Longts') {
+        else if ( scenarioName === 'Longts') {
             numberTours = LONGTS_ROUTES.find((route) => route.number === routeDropdown).numberTours
         }
         // Don't forget to add any tours which were already automatically generated.
-        assignContext.savedAdditionalTours.forEach((additionalTour) => {
+        const additionalTours = await fetchAdditionalTours(route.params.company);
+        additionalTours.forEach((additionalTour) => {
             if ( additionalTour.split('/')[0] === routeDropdown ) {
                 numberTours++;
             }
@@ -101,7 +112,6 @@ function AssignTourScreen({route, navigation}) {
 
     async function assignTourHandler() {
         var assignment = new Assignment(routeDropdown, tourNumber, vehicleDropdown, scenarioName, route.params.company);
-        assignContext.addAssignment(assignment)
         insertAssignment(assignment).then(
             navigation.navigate("ChangeAssignmentScreen", {
                 company: route.params.company,

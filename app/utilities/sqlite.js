@@ -1,6 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { Game } from "../models/game";
 import AdditionalTour from '../models/additionalTour';
+import Assignment from "../models/assignment";
 
 /**
  * Define the file where the database will be stored by SQLite.
@@ -230,7 +231,7 @@ export function fetchAssignments(company) {
                     assignments.push(new Assignment(assignment.routeNumber, assignment.tourNumber, assignment.fleetNumber, assignment.scenarioName, assignment.company));
                 }
                 resolve(assignments);
-            }, (_, error) => { reject(error); });
+            }, (_, error) => { console.log(error); reject(error); });
         })
     })
     

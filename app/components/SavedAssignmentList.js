@@ -1,21 +1,8 @@
 import { FlatList, View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { fetchAdditionalTours, fetchAssignments } from "../utilities/sqlite";
-import { useContext } from "react";
-import { AssignContext } from "../store/context/assign-context";
 
 function SavedGamesList({games, navigation}) {
 
-    const assignContext = useContext(AssignContext);
-
     async function onLoadGame(item) {
-        const assignments = await fetchAssignments(item.companyName);
-        for (const assignment of assignments) {
-            assignContext.addAssignment(assignment);
-        }
-        const additionalTours = await fetchAdditionalTours(item.companyName);
-        for (const additionalTour of additionalTours) {
-            assignContext.addAdditionalTour(additionalTour.routeNumber, additionalTour.tourNumber);
-        }
         navigation.navigate("MainMenuScreen", {
             company: item.companyName,
             scenarioName: item.scenarioName,
