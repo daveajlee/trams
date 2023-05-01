@@ -72,7 +72,7 @@ const Roadmap = () => (
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="6">
-                        <Accordion.Header>Security and Single Sign-on</Accordion.Header>
+                        <Accordion.Header>Security</Accordion.Header>
                         <Accordion.Body>
                             TraMS should be secured so that only the player can access their own saved games and play
                             them even if other users have access to the TraMS server.
