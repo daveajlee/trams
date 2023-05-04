@@ -12,7 +12,7 @@ TraMS is a transport management game where you ensure that your own public trans
 | Folder | Description |
 | --- | ----------- |
 | app | Future App for TraMS based on React Native for Android and iOS. (Currently being developed and not yet feature complete). Please use the old Desktop Client instead: https://github.com/daveajlee/trams-game |
-| desktop | Future Desktop Client for TraMS based on Electron and React for Windows, Linux and Mac OS. (Currently being developed and not yet feature complete). Please use the old Desktop Client instead: https://github.com/daveajlee/trams-game  |
+| desktop | Future Desktop Client for TraMS based on Electron and Angular for Windows, Linux and Mac OS. (Currently being developed and not yet feature complete). Please use the old Desktop Client instead: https://github.com/daveajlee/trams-game  |
 | docs | Current TraMS website with more information about the goals of the TraMS project. |
 | docker | Old docker files to build docker environment which is not currently used. |
 | server | This is the server application of TraMS with a RESTful API which any client can then implement in any programming language. |
