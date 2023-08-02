@@ -126,5 +126,7 @@
       }
     }
   },
-  "defaultProject": "trams-frontend"
+  "cli": {
+    "analytics": false
+  }
 }
