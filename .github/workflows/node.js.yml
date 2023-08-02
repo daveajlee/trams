@@ -6,8 +6,13 @@ name: Node.js CI
 on:
   push:
     branches: [ main ]
+    paths:
+      - "desktop/**"
   pull_request:
     branches: [ main ]
+    paths:
+      - "desktop/**"
+  workflow_dispatch:
 
 jobs:
   build:

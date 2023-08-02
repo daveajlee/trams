@@ -6,8 +6,13 @@ name: Java CI with Maven for TraMS Server
 on:
   push:
     branches: [ main ]
+    paths:
+      - "server/**"
   pull_request:
     branches: [ main ]
+    paths:
+      - "server/**"
+  workflow_dispatch:
 
 jobs:
   build:

@@ -13,3 +13,6 @@ dist/
 
 #Mac OS X
 .DS_Store
+
+#Angular build files
+.angular/
