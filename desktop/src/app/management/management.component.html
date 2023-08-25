@@ -51,7 +51,7 @@
                     <p class="card-text text-center">Create routes, view/amend route timetables and remove routes.</p>
                     <!-- Show start button -->
                     <div class="col text-center">
-                        <button class="btn btn-primary btn-lg button-margin" type="submit" >Create Route</button>
+                        <button class="btn btn-primary btn-lg button-margin" type="submit" (click)="onCreateRoute()">Create Route</button>
                         <a class="btn btn-primary btn-lg button-margin" routerLinkActive="active" routerLink="/routes" role="button">View Route Info</a>
                         <a class="btn btn-primary btn-lg button-margin" routerLinkActive="active" routerLink="/upload" role="button">Upload Data File</a>
                     </div>

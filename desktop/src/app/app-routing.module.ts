@@ -10,6 +10,7 @@ import {UploadComponent} from './upload/upload.component';
 import {VehiclesComponent} from './vehicles/vehicles.component';
 import {VehicleDetailComponent} from './vehicles/vehicle-detail/vehicle-detail.component';
 import {ManagementComponent} from './management/management.component';
+import {RoutecreatorComponent} from "./routecreator/routecreator.component";
 
 /**
  * Define the links which work in this application.
@@ -17,6 +18,7 @@ import {ManagementComponent} from './management/management.component';
 const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
     { path: 'routes', component: RoutesComponent },
+    { path: 'routecreator', component: RoutecreatorComponent },
     { path: 'scenariolist', component: ScenariolistComponent },
     { path: 'scenarioinfo', component: ScenarioinfoComponent },
     { path: 'scenariomap', component: ScenariomapComponent },

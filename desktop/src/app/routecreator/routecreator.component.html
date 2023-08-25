@@ -1,0 +1,14 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Create New Route for {{getScenarioName()}}</h1>
+</div>
+
+<!-- Show an input box where the user can enter the route number. -->
+<div class="form-group top-space m-5">
+    <label for="routeNumber" style="font-weight: bold;">Route Number:</label>
+    <input class="form-control" [(ngModel)]="routeNumber" type="text" id="routeNumber"/>
+</div>
+
