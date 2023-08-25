@@ -1,8 +1,8 @@
 <!-- Create a jumbotron component congratulating the user to starting their game -->
-<div class="jumbotron">
-    <h1 class="display-4"><img src="assets/trams-logo.png" alt="TraMS" class="img-responsive" style="max-height:80px;"></h1>
+<div class="jumbotron text-center top-space">
+    <h1 class="display-4 text-center"><img src="assets/trams-logo.png" alt="TraMS" class="img-responsive" style="max-height:80px;"></h1>
     <br/>
-    <p class="lead">Congratulations - {{playerName}} has been appointed Managing Director of {{company}}! Now you are ready to choose your scenario and prove that your new company can make public transport run on time!</p>
+    <p class="lead left-space">Congratulations - {{playerName}} has been appointed Managing Director of {{company}}! <br/> Now you are ready to choose your scenario and prove that your new company can make public transport run on time!</p>
 </div>
 
 <div class="container-fluid">
@@ -11,9 +11,9 @@
             <div *ngIf="scenario" class="card">
                 <div class="card-body">
                     <img src={{scenario.getImagePath()}} class="card-img-top" alt={{scenario.scenarioName}}>
-                    <h5 class="card-title text-center">{{scenario.scenarioName}}</h5>
-                    <p class="card-text">{{scenario.description}}</p>
-                    <h5>Targets</h5>
+                    <h5 class="card-title text-center top-space">{{scenario.scenarioName}}</h5>
+                    <p class="card-text text-center">{{scenario.description}}</p>
+                    <h5 class="text-center">Targets</h5>
                     <ol>
                         <li *ngFor="let target of scenario.targets">{{target}}</li>
                     </ol>

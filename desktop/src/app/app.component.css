@@ -1,1 +1,21 @@
-/* CSS options for the main page which is not currently used */
+/* CSS options for the main page */
+.center-button {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.left-space {
+    padding-left: 10px;
+}
+
+.top-space {
+    padding-top: 10px;
+}
+
+.big-top-space {
+    padding-top: 40px;
+}
+
+.big-big-top-space {
+    padding-top: 80px;
+}
