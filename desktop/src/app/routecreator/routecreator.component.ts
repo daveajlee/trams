@@ -10,17 +10,23 @@ import {Router} from "@angular/router";
 export class RoutecreatorComponent implements OnInit {
 
   routeNumber: string;
+  startStop: string;
   gameService: GameService;
 
   constructor(private gameService2: GameService, public router: Router) {
     this.gameService = gameService2;
+    this.startStop = this.getScenarioStops()[0].split(":")[0];
   }
 
   ngOnInit(): void {
   }
 
   getScenarioName(): string {
-    return this.gameService.getGame().scenarioName;
+    return this.gameService.getGame().scenario.scenarioName;
+  }
+
+  getScenarioStops(): string[] {
+    return this.gameService.getGame().scenario.stopDistances;
   }
 
 }

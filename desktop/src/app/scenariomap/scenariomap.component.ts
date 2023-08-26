@@ -20,11 +20,11 @@ export class ScenariomapComponent implements OnInit {
   }
 
   getScenarioName(): string {
-    return this.gameService.getGame().scenarioName;
+    return this.gameService.getGame().scenario.scenarioName;
   }
 
   getScenarioImage(): string {
-    return 'assets/' + this.gameService.getGame().scenarioName.toLowerCase().replace(' ','') + '-map-picture.jpg';
+    return 'assets/' + this.gameService.getGame().scenario.scenarioName.toLowerCase().replace(' ','') + '-map-picture.jpg';
   }
 
   backToManagementScreen(): void {

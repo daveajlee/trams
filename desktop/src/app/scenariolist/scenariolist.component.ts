@@ -5,6 +5,9 @@ import {GameService} from '../shared/game.service';
 import {Game} from '../game/game.model';
 import { Scenario } from '../shared/scenario.model';
 import { SCENARIOS } from 'src/data/scenario.data';
+import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
+import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
+import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 
 @Component({
   selector: 'app-scenariolist',
@@ -47,11 +50,28 @@ export class ScenariolistComponent implements OnInit {
      * @param scenario which contains the name of the scenario that the user chose.
      */
   onScenarioSelect(scenario: string): void {
-      this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, scenario, this.difficultyLevel,));
+      this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, this.loadScenario(scenario), this.difficultyLevel,));
+      console.log(this.gameService.getGame().scenario.scenarioName);
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
 
+    /**
+     * This is a helper method to load the correct scenario based on the supplied scenario name.
+     * @param scenario which contains the name of the scenario that the user chose.
+     * @returns the scenario object corresponding to the supplied name.
+     */
+    loadScenario(scenario: string): Scenario {
+        if ( scenario === SCENARIO_LANDUFF.scenarioName ) {
+            return SCENARIO_LANDUFF;
+        } else if ( scenario === SCENARIO_LONGTS.scenarioName) {
+            return SCENARIO_LONGTS;
+        } else if ( scenario === SCENARIO_MDORF.scenarioName ) {
+            return SCENARIO_MDORF;
+        } else {
+            return null;
+        }
+    }
 
   
 

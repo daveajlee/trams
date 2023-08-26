@@ -48,7 +48,7 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the scenario object with all information about the selected scenario
    */
   getScenario(): Scenario {
-    const scenarioName = this.gameService.getGame().scenarioName;
+    const scenarioName = this.gameService.getGame().scenario.scenarioName;
     for ( var i = 0; i < SCENARIOS.length; i++ ) {
       if ( SCENARIOS[i].scenarioName === scenarioName ) {
         return SCENARIOS[i];
