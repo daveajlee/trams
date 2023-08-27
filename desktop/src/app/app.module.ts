@@ -13,7 +13,7 @@ import { StopDetailComponent } from './stops/stop-detail/stop-detail.component';
 import {RoutesService} from './routes/routes.service';
 import { ClockComponent } from './clock/clock.component';
 import { UploadComponent } from './upload/upload.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { VehiclesComponent } from './vehicles/vehicles.component';
@@ -50,7 +50,8 @@ import { RoutecreatorComponent } from './routecreator/routecreator.component';
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    ReactiveFormsModule
   ],
   providers: [StopsService, RoutesService, VehiclesService, GameService],
   bootstrap: [AppComponent]
