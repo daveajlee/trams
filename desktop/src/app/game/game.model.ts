@@ -1,4 +1,5 @@
 import {Scenario} from "../shared/scenario.model";
+import {Route} from "../routes/route.model";
 
 /**
  * This class defines a model for the game that is currently loaded in the TraMS application.
@@ -11,11 +12,11 @@ export class Game {
     public startingTime: string;
     public scenario: Scenario;
     public difficultyLevel: string;
+    public routes: Route[];
 
     /**
      * Construct a new game which contains the supplied data.
      * @param companyName the name of the company
-     * @param startingBalance the starting balance of the company
      * @param playerName the player name who will run the company
      * @param startingTime the starting date and time for playing this company
      * @param scenario the scenario that the player will play with this company
@@ -30,6 +31,15 @@ export class Game {
         this.startingTime = startingTime;
         this.scenario = scenario;
         this.difficultyLevel = difficultyLevel;
+        this.routes = [];
+    }
+
+    /**
+     * This method adds a route to the routes array if we are currently saving routes locally.
+     * @param route a route object with the route information to add to the routes array.
+     */
+    addRoute(route: Route): void {
+        this.routes.push(route);
     }
 
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
-import {FormGroup} from "@angular/forms";
+import {Route} from "../routes/route.model";
 
 @Component({
   selector: 'app-routecreator',
@@ -13,8 +13,7 @@ export class RoutecreatorComponent implements OnInit {
   routeNumber: string;
   startStop: string;
   endStop: string;
-  stops: boolean[];
-  routeCreatorForm: FormGroup;
+  stops: string[];
   gameService: GameService;
 
   /**
@@ -26,6 +25,7 @@ export class RoutecreatorComponent implements OnInit {
     this.gameService = gameService2;
     this.startStop = this.getScenarioStops()[0].split(":")[0];
     this.endStop = this.getScenarioStops()[1].split(":")[0];
+    this.stops = [];
   }
 
   /**
@@ -57,7 +57,18 @@ export class RoutecreatorComponent implements OnInit {
   }
 
   onSubmitRoute(): void {
-    console.log('Creating route ' + this.routeNumber + ' from ' + this.startStop + ' to ' + this.endStop +
-    ' with stops ' + this.routeCreatorForm);
+    var scenarioStops = this.getScenarioStops();
+    for ( var i = 0; i < scenarioStops.length; i++ ) {
+      if ( (document.getElementById('checkbox-' + i) as HTMLInputElement).checked ) {
+        this.stops.push(scenarioStops[i].split(":")[0]);
+      }
+    }
+    var route = new Route();
+    route.routeNumber = this.routeNumber;
+    route.startStop = this.startStop;
+    route.endStop = this.endStop;
+    route.stops = this.stops;
+    this.gameService.getGame().addRoute(route);
   }
+
 }

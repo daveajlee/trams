@@ -6,41 +6,37 @@
     <h1 class="display-4 text-center">Create New Route for {{getScenarioName()}}</h1>
 </div>
 
+<!-- Show an input box where the user can enter the route number. -->
+<div class="form-group top-space m-5">
+    <label for="routeNumber" style="font-weight: bold;">Route Number:</label>
+    <input class="form-control" [(ngModel)]="routeNumber" type="text" id="routeNumber"/>
+</div>
 
-    <!-- Show an input box where the user can enter the route number. -->
-    <div class="form-group top-space m-5">
-        <label for="routeNumber" style="font-weight: bold;">Route Number:</label>
-        <input class="form-control" [(ngModel)]="routeNumber" type="text" id="routeNumber"/>
-    </div>
+<!-- Show an input box where the user can choose the start stop -->
+<div class="form-group top-space m-5">
+    <label for="startStop" style="font-weight: bold;">Start Stop:</label>
+    <select class="form-control" [(ngModel)]="startStop" id="startStop">
+        <option *ngFor="let item of this.getScenarioStops()" [ngValue]="item.split(':')[0]">{{ item.split(":")[0] }}</option>
+    </select>
+</div>
 
-    <!-- Show an input box where the user can choose the start stop -->
-    <div class="form-group top-space m-5">
-        <label for="startStop" style="font-weight: bold;">Start Stop:</label>
-        <select class="form-control" [(ngModel)]="startStop" id="startStop">
-            <option *ngFor="let item of getScenarioStops()" [ngValue]="item.split(':')[0]">{{ item.split(":")[0] }}</option>
-        </select>
-    </div>
+<!-- Show an input box where the user can choose the end stop -->
+<div class="form-group top-space m-5">
+    <label for="endStop" style="font-weight: bold;">End Stop:</label>
+    <select class="form-control" [(ngModel)]="endStop" id="endStop">
+        <option *ngFor="let item of this.getScenarioStops()" [ngValue]="item.split(':')[0]">{{ item.split(":")[0] }}</option>
+    </select>
+</div>
 
-    <!-- Show an input box where the user can choose the end stop -->
-    <div class="form-group top-space m-5">
-        <label for="endStop" style="font-weight: bold;">End Stop:</label>
-        <select class="form-control" [(ngModel)]="endStop" id="endStop">
-            <option *ngFor="let item of getScenarioStops()" [ngValue]="item.split(':')[0]">{{ item.split(":")[0] }}</option>
-        </select>
+<!-- Show a set of checkboxes so that the user can choose the intermediate stops -->
+<div class="form-group top-space m-5">
+    <label style="font-weight: bold;">Intermediate Stop(s):</label>
+    <div class="col-6" *ngFor="let item of this.getScenarioStops() let i = index" >
+        <input class="checkbox" type="checkbox" [id]="'checkbox-' + i" [disabled]="disableStop(item.split(':')[0])"> {{item.split(':')[0]}}
     </div>
+</div>
 
-    <!-- Show a set of checkboxes so that the user can choose the intermediate stops -->
-    <div class="form-group top-space m-5">
-        <label style="font-weight: bold;">Intermediate Stop(s):</label>
-        <div class="col-6" *ngFor="let item of getScenarioStops() let i = index" >
-            <input class="checkbox" type="checkbox" [id]="'checkbox-' + i" [disabled]="disableStop(item.split(':')[0])"> {{item.split(':')[0]}}
-        </div>
-    </div>
-
-    <!-- Show continue button -->
-    <div class="center-button">
-        <button
-            type="submit"
-            class="btn btn-primary btn-lg"
-            (click)="onSubmitRoute()">Continue</button>
-    </div>
+<!-- Submit button -->
+<div class="center-button">
+    <button type="submit" (click)="onSubmitRoute()" class="btn btn-primary btn-lg">Continue</button>
+</div>
