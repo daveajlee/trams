@@ -1,0 +1,84 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Create New Timetable for Route {{getRouteNumber()}}</h1>
+</div>
+
+<!-- Show an input box where the user can enter a name for this timetable. -->
+<div class="form-group top-space m-5">
+    <label for="timetableName" style="font-weight: bold;">Timetable Name:</label>
+    <input class="form-control" [(ngModel)]="timetableName" type="text" id="timetableName"/>
+</div>
+
+<!-- Show an input box where the user can choose the valid from date -->
+<div class="form-group top-space m-5">
+    <label for="validFromDate" style="font-weight: bold;">Valid From:</label>
+    <input class="form-control" [(ngModel)]="validFromDate" type="date" id="validFromDate"/>
+</div>
+
+<!-- Show an input box where the user can choose the valid to date -->
+<div class="form-group top-space m-5">
+    <label for="validToDate" style="font-weight: bold;">Valid To:</label>
+    <input class="form-control" [(ngModel)]="validToDate" type="date" id="validToDate"/>
+</div>
+
+<!-- Button to open the frequency pattern modal -->
+<div class="center-button">
+    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#frequencyPatternModal">
+        Create Frequency Pattern
+    </button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="frequencyPatternModal" tabindex="-1" aria-labelledby="frequencyPatternModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Frequency Pattern</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Show an input box where the user can enter a name for this frequency pattern. -->
+                <div class="form-group top-space m-2">
+                    <label for="frequencyPatternName" style="font-weight: bold;">Name:</label>
+                    <input class="form-control" [(ngModel)]="frequencyPatternName" type="text" id="frequencyPatternName"/>
+                </div>
+
+                <!-- Show a set of checkboxes so that the user can choose the days of operation -->
+                <div class="form-group top-space m-2">
+                    <label style="font-weight: bold;">Days of Operation:</label>
+                    <div class="col" *ngFor="let item of this.getDaysOfWeek() let i = index" >
+                        <input class="checkbox" type="checkbox" [id]="'checkbox-' + i"> {{item.split(':')[0]}}
+                    </div>
+                </div>
+
+                <div class="form-group top-space m-2">
+                    <div class="row">
+                        <div class="col">
+                            From: <select class="form-control" [(ngModel)]="frequencyPatternStartStop" id="frequencyPatternStartStop">
+                                <option *ngFor="let item of this.getFrequencyPatternStartStops()" [ngValue]="item">{{ item }}</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            To: <select class="form-control" [(ngModel)]="frequencyPatternEndStop" id="frequencyPatternEndStop">
+                                <option *ngFor="let item of this.getFrequencyPatternEndStops()" [ngValue]="item">{{ item }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Button to save the timetable -->
+<div class="center-button">
+    <button type="submit" (click)="onSubmitTimetable()" class="btn btn-primary btn-lg">Save Timetable</button>
+</div>

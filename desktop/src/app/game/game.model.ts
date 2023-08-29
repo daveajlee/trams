@@ -42,4 +42,18 @@ export class Game {
         this.routes.push(route);
     }
 
+    /**
+     * This method returns the route object corresponding to the route number or null if none was found.
+     * @param routeNumber the route number to retrieve the route object for.
+     * @returns the route object or null if no route object matching the route number was found,
+     */
+    getRoute( routeNumber: string ): Route {
+        for ( var i = 0; i < this.routes.length; i++ ) {
+            if ( this.routes[i].routeNumber === routeNumber ) {
+                return this.routes[i];
+            }
+        }
+        return null;
+    }
+
 }

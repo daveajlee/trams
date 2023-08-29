@@ -69,6 +69,7 @@ export class RoutecreatorComponent implements OnInit {
     route.endStop = this.endStop;
     route.stops = this.stops;
     this.gameService.getGame().addRoute(route);
+    this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
   }
 
 }

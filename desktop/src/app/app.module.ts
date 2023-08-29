@@ -25,6 +25,7 @@ import {GameService} from './shared/game.service';
 import { ScenariomapComponent } from './scenariomap/scenariomap.component';
 import { ScenarioinfoComponent } from './scenarioinfo/scenarioinfo.component';
 import { RoutecreatorComponent } from './routecreator/routecreator.component';
+import { TimetablecreatorComponent } from './timetablecreator/timetablecreator.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { RoutecreatorComponent } from './routecreator/routecreator.component';
     ScenariolistComponent,
     ScenariomapComponent,
     ScenarioinfoComponent,
-    RoutecreatorComponent
+    RoutecreatorComponent,
+    TimetablecreatorComponent
   ],
   imports: [
     BrowserModule,

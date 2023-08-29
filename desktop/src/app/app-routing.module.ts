@@ -11,6 +11,7 @@ import {VehiclesComponent} from './vehicles/vehicles.component';
 import {VehicleDetailComponent} from './vehicles/vehicle-detail/vehicle-detail.component';
 import {ManagementComponent} from './management/management.component';
 import {RoutecreatorComponent} from "./routecreator/routecreator.component";
+import {TimetablecreatorComponent} from "./timetablecreator/timetablecreator.component";
 
 /**
  * Define the links which work in this application.
@@ -19,6 +20,7 @@ const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
+    { path: 'timetablecreator', component: TimetablecreatorComponent},
     { path: 'scenariolist', component: ScenariolistComponent },
     { path: 'scenarioinfo', component: ScenarioinfoComponent },
     { path: 'scenariomap', component: ScenariomapComponent },
