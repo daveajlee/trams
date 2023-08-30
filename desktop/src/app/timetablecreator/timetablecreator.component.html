@@ -57,14 +57,35 @@
                 <div class="form-group top-space m-2">
                     <div class="row">
                         <div class="col">
-                            From: <select class="form-control" [(ngModel)]="frequencyPatternStartStop" id="frequencyPatternStartStop">
+                            Between: <select class="form-control" [(ngModel)]="frequencyPatternStartStop" id="frequencyPatternStartStop">
                                 <option *ngFor="let item of this.getFrequencyPatternStartStops()" [ngValue]="item">{{ item }}</option>
                             </select>
                         </div>
                         <div class="col">
-                            To: <select class="form-control" [(ngModel)]="frequencyPatternEndStop" id="frequencyPatternEndStop">
+                            and <select class="form-control" [(ngModel)]="frequencyPatternEndStop" id="frequencyPatternEndStop">
                                 <option *ngFor="let item of this.getFrequencyPatternEndStops()" [ngValue]="item">{{ item }}</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group top-space m-4">
+                    <div class="row">
+                        <div class="col">
+                            From: <input type="time" [(ngModel)]="frequencyPatternStartTime" [value]="frequencyPatternStartTime"/>
+                        </div>
+                        <div class="col">
+                            To: <input type="time" [(ngModel)]="frequencyPatternEndTime" [value]="frequencyPatternEndTime"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            Frequency (in minutes): <input type="number" min="1" max="1440" [(ngModel)]="frequencyPatternFrequency" [value]="frequencyPatternFrequency"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            Note: {{getNumberVehicles()}} vehicles are required to operate a {{getFrequencyPatternFrequency()}} minute frequency!
                         </div>
                     </div>
                 </div>

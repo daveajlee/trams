@@ -19,6 +19,9 @@ export class TimetablecreatorComponent {
   frequencyPatternName: string;
   frequencyPatternStartStop: string;
   frequencyPatternEndStop: string;
+  frequencyPatternStartTime: string;
+  frequencyPatternEndTime: string;
+  frequencyPatternFrequency: number;
 
   constructor(private route: ActivatedRoute, private gameService2: GameService,
               public router: Router, private datePipe: DatePipe) {
@@ -28,6 +31,12 @@ export class TimetablecreatorComponent {
     // Valid to date is current date + 1 year.
     let oneFromYearNow = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
     this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
+    // Set start time to 06:00
+    this.frequencyPatternStartTime = "06:00";
+    // set end time to 18:30
+    this.frequencyPatternEndTime = "18:30";
+    // Set frequency to 10.
+    this.frequencyPatternFrequency = 10;
   }
 
   /**
@@ -69,6 +78,52 @@ export class TimetablecreatorComponent {
     possibleStops.push(route.endStop);
     possibleStops = possibleStops.concat(route.stops);
     return possibleStops;
+  }
+
+  getNumberVehicles() : number {
+    // Calculate the duration.
+    var duration = 0;
+    let route = this.gameService.getGame().getRoute(this.routeNumber);
+    if ( route.stops.length > 0 ) {
+      duration += this.getDistanceBetweenStop(route.startStop, route.stops[0]);
+      if ( route.stops.length > 1 ) {
+        for ( var i = 0; i < route.stops.length-1; i++ ) {
+          duration += this.getDistanceBetweenStop(route.stops[i], route.stops[i+1]);
+        }
+        duration += this.getDistanceBetweenStop(route.stops[route.stops.length-1], route.endStop);
+      } else {
+        duration += this.getDistanceBetweenStop(route.stops[0], route.endStop);
+      }
+    } else {
+      duration += this.getDistanceBetweenStop(route.startStop, route.endStop);
+    }
+    // Check that duration is greater than 0.
+    if ( duration > 0 ) {
+      // The duration is one-way so double it for both directions.
+      duration *= 2;
+      // Now calculate vehicles by dividing duration through frequency.
+      return Math.round(duration/this.frequencyPatternFrequency);
+    }
+    return 0;
+  }
+
+  getDistanceBetweenStop (stop1, stop2): number {
+    var stopDistances = this.gameService.getGame().scenario.stopDistances;
+    var stop1Pos: number; var stop2Pos: number;
+    for ( var i = 0; i < stopDistances.length; i++ ) {
+      if ( stopDistances[i].startsWith(stop1) ) {
+        stop1Pos = i;
+      } else if ( stopDistances[i].startsWith(stop2) ) {
+        stop2Pos = i;
+      }
+    }
+    if ( stop1Pos && stop2Pos ) {
+      return parseInt(stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
+    }
+  }
+
+  getFrequencyPatternFrequency() {
+    return this.frequencyPatternFrequency;
   }
 
   onSubmitTimetable(): void {
