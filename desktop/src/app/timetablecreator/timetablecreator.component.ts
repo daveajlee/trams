@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {GameService} from "../shared/game.service";
 import {DatePipe} from "@angular/common";
+import {FrequencyPattern} from "../shared/frequencypattern.model";
+import {Timetable} from "../shared/timetable.model";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -23,6 +25,8 @@ export class TimetablecreatorComponent {
   frequencyPatternEndTime: string;
   frequencyPatternFrequency: number;
 
+  frequencyPatterns: FrequencyPattern[];
+
   constructor(private route: ActivatedRoute, private gameService2: GameService,
               public router: Router, private datePipe: DatePipe) {
     this.gameService = gameService2;
@@ -37,6 +41,8 @@ export class TimetablecreatorComponent {
     this.frequencyPatternEndTime = "18:30";
     // Set frequency to 10.
     this.frequencyPatternFrequency = 10;
+    // Create new array to store frequencies.
+    this.frequencyPatterns = [];
   }
 
   /**
@@ -126,8 +132,28 @@ export class TimetablecreatorComponent {
     return this.frequencyPatternFrequency;
   }
 
+  onSubmitFrequencyPattern(): void {
+    // Process days of operation from checkboxes.
+    var daysOfOperation = [];
+    for ( var i = 0; i < this.getDaysOfWeek().length; i++ ) {
+      if ( (document.getElementById('checkbox-' + i) as HTMLInputElement).checked ) {
+        daysOfOperation.push(this.getDaysOfWeek()[i]);
+      }
+    }
+    // Create frequency pattern.
+    var frequencyPattern = new FrequencyPattern(this.frequencyPatternName, daysOfOperation,
+        this.frequencyPatternStartStop, this.frequencyPatternEndStop, this.frequencyPatternStartTime,
+        this.frequencyPatternEndTime, this.frequencyPatternFrequency);
+    this.frequencyPatterns.push(frequencyPattern);
+  }
+
   onSubmitTimetable(): void {
-    console.log('Timetable submission coming soon!');
+    // Create Timetable.
+    var timetable = new Timetable(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns);
+    // Add it to the route.
+    this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
+    // Print alert since we do not know yet how to proceed.
+    alert('Timetable was created successfully');
   }
 
 }
