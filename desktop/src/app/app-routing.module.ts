@@ -12,12 +12,14 @@ import {VehicleDetailComponent} from './vehicles/vehicle-detail/vehicle-detail.c
 import {ManagementComponent} from './management/management.component';
 import {RoutecreatorComponent} from "./routecreator/routecreator.component";
 import {TimetablecreatorComponent} from "./timetablecreator/timetablecreator.component";
+import {MessagesComponent} from "./messages/messages.component";
 
 /**
  * Define the links which work in this application.
  */
 const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
+    { path: 'messages', component: MessagesComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
     { path: 'timetablecreator', component: TimetablecreatorComponent},

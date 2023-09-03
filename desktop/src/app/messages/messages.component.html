@@ -1,0 +1,33 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Messages</h1>
+</div>
+
+<div class="row">
+    <div class="col-2 nav-background-color">
+        <div class="m-5">
+            <span (click)="onInboxSelect()"><fa-icon [icon]="faInbox"></fa-icon> INBOX</span>
+        </div>
+        <div class="m-5">
+            <span (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</span>
+        </div>
+        <div class="m-5">
+            <span (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</span>
+        </div>
+        <div class="m-5">
+            <span (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</span>
+        </div>
+    </div>
+    <div class="col-10">
+        <div *ngIf="displayMessages.length === 0">
+            <h1>There are no messages in this folder.</h1>
+        </div>
+        <div *ngFor="let message of displayMessages, let i = index">
+            <h2>{{message.subject}}</h2>
+            <p style="white-space: pre-wrap">{{message.content}}</p>
+        </div>
+    </div>
+</div>

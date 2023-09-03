@@ -40,4 +40,8 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['routecreator']);
   }
 
+  onViewMessages(): void {
+    this.router.navigate(['messages']);
+  }
+
 }

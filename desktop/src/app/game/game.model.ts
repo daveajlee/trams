@@ -1,5 +1,6 @@
 import {Scenario} from "../shared/scenario.model";
 import {Route} from "../routes/route.model";
+import {Message} from "../messages/message.model";
 
 /**
  * This class defines a model for the game that is currently loaded in the TraMS application.
@@ -13,6 +14,7 @@ export class Game {
     public scenario: Scenario;
     public difficultyLevel: string;
     public routes: Route[];
+    public messages: Message[];
 
     /**
      * Construct a new game which contains the supplied data.
@@ -32,6 +34,7 @@ export class Game {
         this.scenario = scenario;
         this.difficultyLevel = difficultyLevel;
         this.routes = [];
+        this.messages = [];
     }
 
     /**
@@ -40,6 +43,16 @@ export class Game {
      */
     addRoute(route: Route): void {
         this.routes.push(route);
+    }
+
+    /**
+     * This method adds a message to the messages array if we are currently saving messages locally.
+     * @param subject the subject of the message to add.
+     * @param content the content of the message to add.
+     * @param folder the folder of the message to add.
+     */
+    addMessage(subject: string, content: string, folder: string ): void {
+        this.messages.push(new Message(subject, content, folder));
     }
 
     /**

@@ -26,6 +26,8 @@ import { ScenariomapComponent } from './scenariomap/scenariomap.component';
 import { ScenarioinfoComponent } from './scenarioinfo/scenarioinfo.component';
 import { RoutecreatorComponent } from './routecreator/routecreator.component';
 import { TimetablecreatorComponent } from './timetablecreator/timetablecreator.component';
+import { MessagesComponent } from './messages/messages.component';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   declarations: [
@@ -44,12 +46,14 @@ import { TimetablecreatorComponent } from './timetablecreator/timetablecreator.c
     ScenariomapComponent,
     ScenarioinfoComponent,
     RoutecreatorComponent,
-    TimetablecreatorComponent
+    TimetablecreatorComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FontAwesomeModule,
     FormsModule,
     BrowserAnimationsModule,
     MatProgressBarModule,

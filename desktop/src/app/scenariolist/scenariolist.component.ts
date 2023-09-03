@@ -22,13 +22,19 @@ export class ScenariolistComponent implements OnInit {
   startingDate: string;
 
   scenarios: Scenario[];
+  gameService: GameService;
 
   /**
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
+   * @param route which manages the current route in Angular.
    * @param scenarioService which manages the creation of a new company and scenario.
+   * @param gameService2 which manages the game that is currently being played.
+   * @param router which manages routing in Angular.
    */
-  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService: GameService,
-              public router: Router) { }
+  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService2: GameService,
+              public router: Router) {
+      this.gameService = gameService2;
+  }
 
     /**
      * Copy parameters from last request so that we do not lose the information that the user has provided.
@@ -51,10 +57,27 @@ export class ScenariolistComponent implements OnInit {
      */
   onScenarioSelect(scenario: string): void {
       this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, this.loadScenario(scenario), this.difficultyLevel,));
-      console.log(this.gameService.getGame().scenario.scenarioName);
+      this.gameService.getGame().addMessage("New Managing Director Announced",
+            "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
+            +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).targets)
+            + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
+            + "\n\nGood luck!",
+            "INBOX");
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
+
+    /**
+     * This is a helper method to process the targets into a formatted string for adding to a message.
+     * @param targets the targets array for the scenario.
+     */
+    formatTargets(targets): string {
+        var formattedTarget = "";
+        for ( var i = 0; i < targets.length; i++ ) {
+            formattedTarget += (i+1) + ". " + targets[i] + "\n";
+        }
+        return formattedTarget;
+    }
 
     /**
      * This is a helper method to load the correct scenario based on the supplied scenario name.
