@@ -1,71 +1,32 @@
-<!-- Show the vehicle picture -->
-<img src="assets/{{ getVehiclePictureLink() }}.jpg" class="img-responsive" alt="Vehicle Picture"/>
+
 
 <br/><br/>
 
-<div class="col-sm-12">
+<div class="row">
 
-    <div class="row">
-        <!-- Show the vehicle fleet number -->
-        <div class="col-sm-6">
-            <h3 class="text-center">Fleet Number:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.fleetNumber}}</h3>
-        </div>
+    <div class="col">
+        <!-- Show the vehicle picture -->
+        <img src="assets/{{ getVehiclePictureLink() }}.jpg" class="img-responsive" alt="Vehicle Picture"/>
     </div>
-    <!-- Show the vehicle type -->
-    <div class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">Type:</h3>
+    <div class="col">
+        <!-- Show the fleet number -->
+        <h3 class="text-center">Fleet Number: {{vehicle.fleetNumber}}</h3>
+        <!-- Show the vehicle type -->
+        <h3 class="text-center">Type: {{vehicle.vehicleType}}</h3>
+        <!-- Show the livery -->
+        <h3 class="text-center">Livery: {{vehicle.livery}}</h3>
+        <!-- Show the allocation -->
+        <h3 class="text-center">Allocation: {{vehicle.allocatedTour ? vehicle.allocatedTour : 'Not Assigned'}}</h3>
+        <!-- Show the extra information for this vehicle -->
+        <div *ngFor="let recipient of vehicle.additionalTypeInformationMap | keyvalue" class="row">
+            <h3 class="text-center">{{recipient.key}}: {{recipient.value}}</h3>
         </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.vehicleType}}</h3>
-        </div>
+        <!-- Show the inspection status for this vehicle -->
+        <h3 class="text-center">Inspection Status: {{vehicle.inspectionStatus}}</h3>
+        <!-- Show the days until next inspection for this vehicle -->
+        <h3 class="text-center">Days until next inspection: {{vehicle.nextInspectionDueInDays}}</h3>
     </div>
-    <!-- Show the livery -->
-    <div class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">Livery:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.livery}}</h3>
-        </div>
-    </div>
-    <!-- Show the allocation -->
-    <div class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">Allocation:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.allocatedTour}}</h3>
-        </div>
-    </div>
-    <!-- Show the extra information for this vehicle -->
-    <div *ngFor="let recipient of vehicle.additionalTypeInformationMap | keyvalue" class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">{{recipient.key}}:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3> {{recipient.value}}</h3>
-        </div>
-    </div>
-    <!-- Show the inspection status for this vehicle -->
-    <div class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">Inspection Status:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.inspectionStatus}}</h3>
-        </div>
-    </div>
-    <!-- Show the days until next inspection for this vehicle -->
-    <div class="row">
-        <div class="col-sm-6">
-            <h3 class="text-center">Days until next inspection:</h3>
-        </div>
-        <div class="col-sm-6">
-            <h3>{{vehicle.nextInspectionDueInDays}}</h3>
-        </div>
-    </div>
+</div>
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="sellVehicle(vehicle)">Sell Vehicle</button>
 </div>

@@ -5,6 +5,7 @@ import { faShareFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import {Message} from "./message.model";
 import {GameService} from "../shared/game.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-messages',
@@ -19,7 +20,7 @@ export class MessagesComponent {
   displayMessages: Message[];
   gameService: GameService;
 
-  constructor(private gameService2: GameService) {
+  constructor(private gameService2: GameService, public router: Router) {
     this.displayMessages = [];
     this.gameService = gameService2;
     this.onInboxSelect();
@@ -55,5 +56,9 @@ export class MessagesComponent {
 
   checkForTrash(message) {
     return message.folder.valueOf() === "TRASH";
+  }
+
+  backToManagementScreen(): void {
+    this.router.navigate(['management']);
   }
 }

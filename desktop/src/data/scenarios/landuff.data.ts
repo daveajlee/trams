@@ -1,5 +1,6 @@
 import { Scenario } from "src/app/shared/scenario.model";
 import {SuppliedVehicles} from "../../app/vehicles/suppliedvehicle.model";
+import {VehicleModel} from "../../app/vehicles/vehiclemodel.model";
 
 // Map of the scenario.
 const MAP = "landuff-map-picture.jpg";
@@ -17,7 +18,7 @@ const TARGETS = ["Serve all bus stops in Landuff.", "Ensure a frequent service o
 const MINIMUM_SATISFACTION= 70;
 
 // The type and number of supplied vehicles.
-const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", "MyBus Single Decker", 4)];
+const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 44, 36, 85000.0), 4)];
 
 // The supplied drivers for this scenario.
 const SUPPLIED_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann","Daniel Mustermann"];

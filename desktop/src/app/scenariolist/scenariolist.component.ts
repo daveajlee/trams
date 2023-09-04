@@ -8,6 +8,7 @@ import { SCENARIOS } from 'src/data/scenario.data';
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {Vehicle} from "../vehicles/vehicle.model";
 
 @Component({
   selector: 'app-scenariolist',
@@ -57,12 +58,27 @@ export class ScenariolistComponent implements OnInit {
      */
   onScenarioSelect(scenario: string): void {
       this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, this.loadScenario(scenario), this.difficultyLevel,));
+      // Add the message.
       this.gameService.getGame().addMessage("New Managing Director Announced",
             "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
             +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).targets)
             + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
             + "\n\nGood luck!",
             "INBOX");
+      // Add the supplied vehicles.
+      var mySuppliedVehicles = this.loadScenario(scenario).suppliedVehicles;
+      for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
+          for ( var j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+              const additionalProps = new Map<string, string>();
+              additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
+              additionalProps.set('Age', '0 months');
+              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
+              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
+              additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
+              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].vehicleType, '',
+                  '', '', 0, additionalProps));
+          }
+      }
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }

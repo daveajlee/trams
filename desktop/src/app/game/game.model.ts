@@ -1,6 +1,7 @@
 import {Scenario} from "../shared/scenario.model";
 import {Route} from "../routes/route.model";
 import {Message} from "../messages/message.model";
+import {Vehicle} from "../vehicles/vehicle.model";
 
 /**
  * This class defines a model for the game that is currently loaded in the TraMS application.
@@ -15,6 +16,7 @@ export class Game {
     public difficultyLevel: string;
     public routes: Route[];
     public messages: Message[];
+    public vehicles: Vehicle[];
 
     /**
      * Construct a new game which contains the supplied data.
@@ -35,6 +37,7 @@ export class Game {
         this.difficultyLevel = difficultyLevel;
         this.routes = [];
         this.messages = [];
+        this.vehicles = [];
     }
 
     /**
@@ -43,6 +46,14 @@ export class Game {
      */
     addRoute(route: Route): void {
         this.routes.push(route);
+    }
+
+    /**
+     * This method adds a vehicle to the vehicles array if we are currently saving routes locally.
+     * @param vehicle a vehicle object with the vehicle information to add to the vehicles array.
+     */
+    addVehicle(vehicle: Vehicle): void {
+        this.vehicles.push(vehicle);
     }
 
     /**
