@@ -58,7 +58,14 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    console.log('It is currently not possible to sell vehicles for vehicle ' + vehicle.fleetNumber);
+    var allVehicles = this.gameService.getGame().vehicles;
+    for ( var i = 0; i < allVehicles.length; i++ ) {
+      if ( this.gameService.getGame().vehicles[i].fleetNumber.valueOf() === vehicle.fleetNumber.valueOf() ) {
+        this.gameService.getGame().balance += parseFloat(this.gameService.getGame().vehicles[i].additionalTypeInformationMap.get('Value'));
+        this.gameService.getGame().vehicles.splice(i, 1);
+      }
+    }
+    console.log('Currently the length of vehicles is: ' + this.gameService.getGame().vehicles.length )
   }
   /*verifyMap(): void {
     this.vehicle.additionalTypeInformationMap.forEach().forEach((key: string, value: string) => {

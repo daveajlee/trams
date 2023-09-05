@@ -9,7 +9,7 @@ import {Vehicle} from "../vehicles/vehicle.model";
 export class Game {
 
     public companyName: string;
-    public startingBalance: number;
+    public balance: number;
     public playerName: string;
     public startingTime: string;
     public scenario: Scenario;
@@ -30,7 +30,7 @@ export class Game {
     constructor( companyName: string, playerName: string, startingTime: string, scenario: Scenario,
                  difficultyLevel: string ) {
         this.companyName = companyName;
-        this.startingBalance = 80000.0;
+        this.balance = 80000.0;
         this.playerName = playerName;
         this.startingTime = startingTime;
         this.scenario = scenario;

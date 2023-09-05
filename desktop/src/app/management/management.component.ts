@@ -22,7 +22,7 @@ export class ManagementComponent implements OnInit {
   }
 
   getBalance(): string {
-    return '' + this.gameService.getGame().startingBalance;
+    return '' + this.gameService.getGame().balance;
   }
 
   ngOnInit(): void {

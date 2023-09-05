@@ -48,18 +48,29 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   searchByFleetNumber(searchValue: string): void {
-    this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/api/' +
-        'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
-      this.vehicles = vehicleInfos.vehicleResponses;
-    });
+    if ( this.gameService.getGame().vehicles.length > 0 ) {
+      var allVehicles =  this.gameService.getGame().vehicles;
+      for ( var i = 0; i < allVehicles.length; i++ ) {
+        if ( allVehicles[i].fleetNumber.valueOf() === searchValue ) {
+          this.vehicles = new Array(allVehicles[i]);
+        }
+      }
+    } else {
+      this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/api/' +
+          'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
+        this.vehicles = vehicleInfos.vehicleResponses;
+      });
+    }
   }
 
   /**
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    this.searchSubscription.unsubscribe();
+    if ( this.gameService.getGame().vehicles.length === 0 ) {
+      this.subscription.unsubscribe();
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   backToManagementScreen(): void {
