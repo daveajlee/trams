@@ -29,6 +29,7 @@ import { TimetablecreatorComponent } from './timetablecreator/timetablecreator.c
 import { MessagesComponent } from './messages/messages.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { DriversComponent } from './drivers/drivers.component';
+import { DriverDetailComponent } from './drivers/driver-detail/driver-detail.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DriversComponent } from './drivers/drivers.component';
     RoutecreatorComponent,
     TimetablecreatorComponent,
     MessagesComponent,
-    DriversComponent
+    DriversComponent,
+    DriverDetailComponent
   ],
   imports: [
     BrowserModule,
