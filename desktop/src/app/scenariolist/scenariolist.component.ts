@@ -9,6 +9,7 @@ import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 import {Vehicle} from "../vehicles/vehicle.model";
+import {Driver} from "../drivers/driver.model";
 
 @Component({
   selector: 'app-scenariolist',
@@ -78,6 +79,11 @@ export class ScenariolistComponent implements OnInit {
               this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].vehicleType, '',
                   '', '', 0, additionalProps));
           }
+      }
+      // Add the supplied drivers.
+      var mySuppliedDrivers = this.loadScenario(scenario).suppliedDrivers;
+      for ( i = 0; i < mySuppliedDrivers.length; i++ ) {
+          this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
       }
       this.router.navigate(['management']);
       // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);

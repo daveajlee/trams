@@ -28,6 +28,7 @@ import { RoutecreatorComponent } from './routecreator/routecreator.component';
 import { TimetablecreatorComponent } from './timetablecreator/timetablecreator.component';
 import { MessagesComponent } from './messages/messages.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { DriversComponent } from './drivers/drivers.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
     ScenarioinfoComponent,
     RoutecreatorComponent,
     TimetablecreatorComponent,
-    MessagesComponent
+    MessagesComponent,
+    DriversComponent
   ],
   imports: [
     BrowserModule,

@@ -13,11 +13,13 @@ import {ManagementComponent} from './management/management.component';
 import {RoutecreatorComponent} from "./routecreator/routecreator.component";
 import {TimetablecreatorComponent} from "./timetablecreator/timetablecreator.component";
 import {MessagesComponent} from "./messages/messages.component";
+import {DriversComponent} from "./drivers/drivers.component";
 
 /**
  * Define the links which work in this application.
  */
 const appRoutes: Routes = [
+    { path: 'drivers', component: DriversComponent },
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'routes', component: RoutesComponent },

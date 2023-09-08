@@ -1,0 +1,40 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Display a jumbotron component which explains what drivers are and how they work in TraMS -->
+<div class="jumbotron" >
+    <h1 class="display-4 text-center">Drivers</h1>
+    <br/>
+    <p class="lead m-4">Drivers help your customers to get from A to B. Without enough drivers, your vehicles will remain in the depot and you will not be able to run reliable services.
+        But don't forget if a driver does not have enough duties then they are costing you money!</p>
+    <hr class="my-4">
+    <p class="m-4">Click on a driver to access more information about the driver.</p>
+</div>
+
+<!-- Display a table with a list of driver names that are currently available in TraMS. Clicking on the driver name
+ brings up the detailed information for that driver -->
+<div class="row">
+    <div class="col-md-4 m-4">
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let driverEl of drivers, let i = index">
+                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{driverEl.name}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Display the detailed information when a user clicks on a driver -->
+    <div class="col-md-8">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>

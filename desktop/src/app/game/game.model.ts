@@ -2,6 +2,7 @@ import {Scenario} from "../shared/scenario.model";
 import {Route} from "../routes/route.model";
 import {Message} from "../messages/message.model";
 import {Vehicle} from "../vehicles/vehicle.model";
+import {Driver} from "../drivers/driver.model";
 
 /**
  * This class defines a model for the game that is currently loaded in the TraMS application.
@@ -17,6 +18,7 @@ export class Game {
     public routes: Route[];
     public messages: Message[];
     public vehicles: Vehicle[];
+    public drivers: Driver[];
 
     /**
      * Construct a new game which contains the supplied data.
@@ -38,6 +40,7 @@ export class Game {
         this.routes = [];
         this.messages = [];
         this.vehicles = [];
+        this.drivers = [];
     }
 
     /**
@@ -49,11 +52,19 @@ export class Game {
     }
 
     /**
-     * This method adds a vehicle to the vehicles array if we are currently saving routes locally.
+     * This method adds a vehicle to the vehicles array if we are currently saving vehicles locally.
      * @param vehicle a vehicle object with the vehicle information to add to the vehicles array.
      */
     addVehicle(vehicle: Vehicle): void {
         this.vehicles.push(vehicle);
+    }
+
+    /**
+     * This method adds a driver to the drivers array if we are currently saving drivers locally.
+     * @param driver a driver object with the driver information to add to the drivers array.
+     */
+    addDriver(driver: Driver): void {
+        this.drivers.push(driver);
     }
 
     /**

@@ -35,7 +35,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
               private gameService: GameService, private router:Router) { }
 
   /**
-   * Initialise a new vheicles component which maintains a list of vehicles that can be updated and set from the server calls.
+   * Initialise a new vehicles component which maintains a list of vehicles that can be updated and set from the server calls.
    */
   ngOnInit(): void {
     if ( this.gameService.getGame().vehicles.length > 0 ) {
