@@ -7,6 +7,7 @@ import {HttpClient} from '@angular/common/http';
 import {RealTimeInfo} from './realtimeinfos.model';
 import {Subscription} from 'rxjs';
 import {StopTimesResponse} from "./stoptimes-response.model";
+import {GameService} from "../../shared/game.service";
 
 @Component({
   selector: 'app-stop-detail',
@@ -43,23 +44,33 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * @param http a http client which can retrieve data via http calls from the server.
    * @param stopsService a service which can retrieve and format stop information
    * @param route a variable which contains the current stop that the user clicked on.
+   * @param gameService a service which retrieves game information
    * @param router a navigational aid from Angular
    * @param dom a variable which ensures that security settings allow iframes.
    */
   constructor(private http: HttpClient, private stopsService: StopsService, private route: ActivatedRoute,
-              private router: Router, private dom: DomSanitizer) { }
+              private gameService: GameService, private router: Router, private dom: DomSanitizer) { }
 
   /**
    * Initialise the stop information during construction and ensure all variables are set to the correct data.
    */
   ngOnInit(): void {
     // Save the stop information based on the id.
+    if ( this.gameService.getGame().scenario.stopDistances ) {
+
+    } else {
+
+    }
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      this.stop = this.stopsService.getStop(this.id);
-      this.mapUrl = this.dom.bypassSecurityTrustResourceUrl('http://www.openstreetmap.org/export/embed.html?bbox='
-          + (this.stop.longitude - 0.003) + ',' + (this.stop.latitude - 0.003) + ',' + (this.stop.longitude + 0.003) +
-          ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
+      if ( this.gameService.getGame().scenario.stopDistances ) {
+        this.stop = new Stop('' + this.id, this.gameService.getGame().scenario.stopDistances[this.id].split(":")[0], 0, 0)
+      } else {
+        this.stop = this.stopsService.getStop(this.id);
+        this.mapUrl = this.dom.bypassSecurityTrustResourceUrl('http://www.openstreetmap.org/export/embed.html?bbox='
+            + (this.stop.longitude - 0.003) + ',' + (this.stop.latitude - 0.003) + ',' + (this.stop.longitude + 0.003) +
+            ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
+      }
     });
     // Determine current date & time
     const time = new Date(Date.now());
@@ -67,8 +78,6 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     let monthStr = String(month);
     if ( month < 10 ) { monthStr = '0' + month; }
     const dayOfMonth = time.getDate();
-    let dayOfMonthStr = String(dayOfMonth);
-    if ( dayOfMonth < 10 ) { dayOfMonthStr = '0' + dayOfMonth; }
     this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
     this.hours = this.leftPadZero(time.getHours());
     this.minutes = this.leftPadZero(time.getMinutes());
