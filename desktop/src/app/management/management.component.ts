@@ -44,4 +44,13 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['messages']);
   }
 
+  onResign(): void {
+    if(confirm("Are you sure you want to resign from " + this.gameService.getGame().companyName + "? This will end " +
+        "your game and any changes you have made will not be saved.")) {
+      // Currently it is enough to redirect to the homepage since we do not save data in local storage yet.
+      this.router.navigate([''])
+    }
+  }
+
+
 }

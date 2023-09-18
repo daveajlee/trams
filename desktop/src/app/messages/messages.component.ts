@@ -20,14 +20,19 @@ export class MessagesComponent {
   displayMessages: Message[];
   gameService: GameService;
 
+  selectedFolder: string;
+
   constructor(private gameService2: GameService, public router: Router) {
     this.displayMessages = [];
     this.gameService = gameService2;
     this.onInboxSelect();
+    this.selectedFolder = "INBOX";
+    console.log(this.selectedFolder);
   }
 
   onInboxSelect(): void {
     this.displayMessages = this.gameService.getGame().messages.filter(this.checkForInbox);
+    this.selectedFolder = "INBOX";
   }
 
   checkForInbox(message) {
@@ -35,6 +40,7 @@ export class MessagesComponent {
   }
 
   onOutboxSelect(): void {
+    this.selectedFolder = "OUTBOX";
     this.displayMessages = this.gameService.getGame().messages.filter(this.checkForOutbox);
   }
 
@@ -43,6 +49,7 @@ export class MessagesComponent {
   }
 
   onSentSelect(): void {
+    this.selectedFolder = "SENT ITEMS";
     this.displayMessages = this.gameService.getGame().messages.filter(this.checkForSentItems);
   }
 
@@ -51,6 +58,7 @@ export class MessagesComponent {
   }
 
   onTrashSelect(): void {
+    this.selectedFolder = "TRASH";
     this.displayMessages = this.gameService.getGame().messages.filter(this.checkForTrash);
   }
 

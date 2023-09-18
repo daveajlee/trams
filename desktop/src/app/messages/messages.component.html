@@ -7,21 +7,25 @@
 </div>
 
 <div class="row">
-    <div class="col-2 nav-background-color">
-        <div class="m-5">
-            <span (click)="onInboxSelect()"><fa-icon [icon]="faInbox"></fa-icon> INBOX</span>
+    <div class="col-3 nav-background-color">
+        <div class="m-5" >
+            <h3 *ngIf="selectedFolder==='INBOX'" (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h3>
+            <h5 *ngIf="selectedFolder!='INBOX'" (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h5>
         </div>
         <div class="m-5">
-            <span (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</span>
+            <h3 *ngIf="selectedFolder==='OUTBOX'" (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h3>
+            <h5 *ngIf="selectedFolder!='OUTBOX'" (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h5>
         </div>
         <div class="m-5">
-            <span (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</span>
+            <h3 *ngIf="selectedFolder==='SENT ITEMS'" (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h3>
+            <h5 *ngIf="selectedFolder!='SENT ITEMS'" (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h5>
         </div>
         <div class="m-5">
-            <span (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</span>
+            <h3 *ngIf="selectedFolder==='TRASH'" (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h3>
+            <h5 *ngIf="selectedFolder!='TRASH'" (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h5>
         </div>
     </div>
-    <div class="col-10">
+    <div class="col-9">
         <div *ngIf="displayMessages.length === 0">
             <h1>There are no messages in this folder.</h1>
         </div>
