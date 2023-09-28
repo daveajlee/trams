@@ -12,7 +12,7 @@
 </div>
 
 <div class="container-fluid top-space">
-    <div class="row">
+    <div class="row" *ngIf="noRoutesExist()">
         <div class="alert alert-danger w-100 text-center" role="alert">
             Warning: No routes have been defined yet. Click "Create Route" to define a route.
         </div>

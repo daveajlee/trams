@@ -52,5 +52,9 @@ export class ManagementComponent implements OnInit {
     }
   }
 
+  noRoutesExist(): boolean {
+    return this.gameService.getGame().routes.length === 0;
+  }
+
 
 }

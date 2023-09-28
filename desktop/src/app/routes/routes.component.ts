@@ -3,6 +3,8 @@ import {Route} from './route.model';
 import {Subscription} from 'rxjs';
 import {DataService} from '../shared/data.service';
 import {RoutesService} from './routes.service';
+import {GameService} from "../shared/game.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-routes',
@@ -22,24 +24,37 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Create a new routes component which constructs a data service and a route service to retreive data from the server.
    * @param dataService which contains the HTTP connection to the server
    * @param routesService which formats the HTTP calls into a way which the frontend can read and render.
+   * @param gameService a service which retrieves game information
+   * @param router a router service provided by Angular
    */
-  constructor(private dataService: DataService, private routesService: RoutesService) { }
+  constructor(private dataService: DataService, private routesService: RoutesService, private gameService: GameService,
+              private router:Router) { }
 
   /**
    * Initialise a new routes component which maintains a list of routes that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
-      this.routes = routes;
-    });
-    this.routes = this.routesService.getRoutes();
+    if ( this.gameService.getGame().routes.length > 0 ) {
+      this.routes = this.gameService.getGame().routes;
+    } else {
+      this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
+        this.routes = routes;
+      });
+      this.routes = this.routesService.getRoutes();
+    }
   }
 
   /**
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if ( this.gameService.getGame().routes.length === 0 ) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  backToManagementScreen(): void {
+    this.router.navigate(['management']);
   }
 
 }

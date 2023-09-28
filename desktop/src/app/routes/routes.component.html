@@ -1,10 +1,13 @@
+<!-- Show the header -->
+<app-header></app-header>
+
 <!-- Display a jumbotron component which explains what routes are and how they work in TraMS -->
 <div class="jumbotron" >
   <h1 class="display-4">Routes</h1>
   <br/>
   <p class="lead">A route connects a series of stops with one another. This ensures that customers can travel between stops. If you want to run a successful transport company then you need to ensure that you are providing the routes that your potential customers need to fulfil their needs.</p>
   <hr class="my-4">
-  <p>In this preview edition you can only view routes but in the future you will be able to add or remove routes as necessary to make your company a success.</p>
+  <p>In this preview edition you can only add or view routes but in the future you will be able to remove routes where necessary.</p>
 </div>
 
 <!-- Display a table of all route numbers and the agency running the routes which are stored in TraMS -->
@@ -12,13 +15,21 @@
   <thead class="thead-light">
     <tr>
       <th scope="col">Route Number</th>
+      <th scope="col">From</th>
+      <th scope="col">To</th>
       <th scope="col">Operator</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let routeEl of routes, let i = index">
       <th scope="row">{{routeEl.routeNumber}}</th>
+      <td>{{routeEl.startStop}}</td>
+      <td>{{routeEl.endStop}}</td>
       <td>{{routeEl.company}}</td>
     </tr>
   </tbody>
 </table>
+
+<div class="col text-center">
+  <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>

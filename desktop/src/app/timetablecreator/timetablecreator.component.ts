@@ -152,8 +152,7 @@ export class TimetablecreatorComponent {
     var timetable = new Timetable(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns);
     // Add it to the route.
     this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
-    // Print alert since we do not know yet how to proceed.
-    alert('Timetable was created successfully');
+    this.router.navigate(['management']);
   }
 
 }
