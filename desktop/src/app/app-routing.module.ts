@@ -15,6 +15,7 @@ import {TimetablecreatorComponent} from "./timetablecreator/timetablecreator.com
 import {MessagesComponent} from "./messages/messages.component";
 import {DriversComponent} from "./drivers/drivers.component";
 import {DriverDetailComponent} from "./drivers/driver-detail/driver-detail.component";
+import {OptionsComponent} from "./options/options.component";
 
 /**
  * Define the links which work in this application.
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
     ] },
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
+    { path: 'options', component: OptionsComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
     { path: 'timetablecreator', component: TimetablecreatorComponent},

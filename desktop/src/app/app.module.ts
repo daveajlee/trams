@@ -30,6 +30,7 @@ import { MessagesComponent } from './messages/messages.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { DriversComponent } from './drivers/drivers.component';
 import { DriverDetailComponent } from './drivers/driver-detail/driver-detail.component';
+import { OptionsComponent } from './options/options.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { DriverDetailComponent } from './drivers/driver-detail/driver-detail.com
     TimetablecreatorComponent,
     MessagesComponent,
     DriversComponent,
-    DriverDetailComponent
+    DriverDetailComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserModule,

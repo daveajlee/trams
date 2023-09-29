@@ -1,0 +1,44 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Options</h1>
+</div>
+
+<div class="row justify-content-center m-5">
+    <div class="col justify-content-center">
+        <h2 class="text-center">Difficulty</h2>
+        <table class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Difficulty Level</th>
+                <th scope="col">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><input type="radio" value="easy" name="level" [ngModel]="level" (change)="changeLevel($event)"/><span class="m-3">Easy</span></td>
+                <td>Minimal delays requiring little intervention</td>
+            </tr>
+            <tr>
+                <td><input type="radio" value="intermediate" name="level" [ngModel]="level" (change)="changeLevel($event)"/><span class="m-3">Intermediate</span></td>
+                <td>Minimal delays requiring intervention</td>
+            </tr>
+            <tr>
+                <td><input type="radio" value="medium" name="level" [ngModel]="level" (change)="changeLevel($event)"/><span class="m-3">Medium</span></td>
+                <td class="m-3">Frequent delays requiring occasional intervention</td>
+            </tr>
+            <tr>
+                <td><input type="radio" value="hard" name="level" [ngModel]="level" (change)="changeLevel($event)"/><span class="m-3">Hard</span></td>
+                <td class="m-3">Regular substantial delays</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>
