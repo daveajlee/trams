@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import packageJson from '../../../package.json';
 
 @Component({
   selector: 'app-header',
@@ -9,6 +10,8 @@ import { Component, OnInit } from '@angular/core';
  * This class implements the functionality for the header component which currently only ensures that the navigation is collapsed.
  */
 export class HeaderComponent implements OnInit {
+
+  public version: string = packageJson.version;
 
   collapsed = true;
 
