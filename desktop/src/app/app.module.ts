@@ -31,6 +31,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import { DriversComponent } from './drivers/drivers.component';
 import { DriverDetailComponent } from './drivers/driver-detail/driver-detail.component';
 import { OptionsComponent } from './options/options.component';
+import { DrivercreatorComponent } from './drivercreator/drivercreator.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { OptionsComponent } from './options/options.component';
     MessagesComponent,
     DriversComponent,
     DriverDetailComponent,
-    OptionsComponent
+    OptionsComponent,
+    DrivercreatorComponent
   ],
   imports: [
     BrowserModule,

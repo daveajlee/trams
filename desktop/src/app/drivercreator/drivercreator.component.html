@@ -1,0 +1,37 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Employ Driver</h1>
+</div>
+
+<!-- Show an input box where the user can enter the name. -->
+<div class="form-group top-space m-5">
+    <label for="routeNumber" style="font-weight: bold;">Name:</label>
+    <input class="form-control" [(ngModel)]="name" type="text" id="routeNumber"/>
+</div>
+
+<!-- Show an input box where the user can choose the contracted hours -->
+<div class="form-group top-space m-5">
+    <label for="startStop" style="font-weight: bold;">Contracted Hours:</label>
+    <select class="form-control" [(ngModel)]="contractedHours" id="startStop">
+        <option *ngFor="let item of this.getPossibleContractedHours()" [ngValue]="item">{{ item }}</option>
+    </select>
+</div>
+
+<!-- Show an input box where the user can choose the starting date -->
+<div class="form-group top-space m-5">
+    <label for="startingDate" style="font-weight: bold;">Your Start Date:</label>
+    <input class="form-control" [(ngModel)]="startingDate" type="date" id="startingDate"/>
+</div>
+
+<!-- Submit button -->
+<div class="center-button">
+    <button type="submit" (click)="onSubmitDriver()" class="btn btn-primary btn-lg">Employ Driver</button>
+</div>
+
+<!-- Back to Management Screen button -->
+<div class="center-button">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>
