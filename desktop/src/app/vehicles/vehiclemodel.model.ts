@@ -8,6 +8,7 @@ export class VehicleModel {
     public seatingCapacity: number;
     public standingCapacity: number;
     public value: number;
+    public picture: string;
 
     /**
      * Construct a new VehicleModel object with the supplied data.
@@ -15,12 +16,14 @@ export class VehicleModel {
      * @param seatingCapacity the seating capacity of this model
      * @param standingCapacity the standing capacity of this model
      * @param value the current selling price of this model.
+     * @param picture the current picture to be displayed of this vehicle model
      */
-    constructor ( modelName: string, seatingCapacity: number, standingCapacity: number, value: number ) {
+    constructor ( modelName: string, seatingCapacity: number, standingCapacity: number, value: number, picture: string ) {
         this.modelName = modelName;
         this.seatingCapacity = seatingCapacity;
         this.standingCapacity = standingCapacity;
         this.value = value;
+        this.picture = picture;
     }
 
 }

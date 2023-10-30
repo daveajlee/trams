@@ -1,0 +1,71 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Vehicle Showroom</h1>
+</div>
+
+<div class="row" style="margin-top: 20px;">
+
+    <div class="col">
+        <!-- Show the vehicle picture -->
+        <img src="{{ getVehiclePicture() }}" class="mx-auto d-block" style="max-height: 500px;" alt="Vehicle Picture"/>
+    </div>
+    <div class="col">
+        <!-- Show the vehicle type -->
+        <div class="form-group top-space m-3">
+            <label for="vehicleType" style="font-weight: bold;">Type:</label>
+            <h5 id="vehicleType">{{getVehicleType()}}</h5>
+        </div>
+        <!-- Show the seating capacity -->
+        <div class="form-group top-space m-3">
+            <label for="seatingCapacity" style="font-weight: bold;">Seating Capacity:</label>
+            <h5 id="seatingCapacity">{{getVehicleSeatingCapacity()}}</h5>
+        </div>
+        <!-- Show the standing capacity -->
+        <div class="form-group top-space m-3">
+            <label for="standingCapacity" style="font-weight: bold;">Standing Capacity:</label>
+            <h5 id="standingCapacity">{{getVehicleStandingCapacity()}}</h5>
+        </div>
+        <!-- Show the delivery date -->
+        <div class="form-group top-space m-3">
+            <label for="deliveryDate" style="font-weight: bold;">Delivery Date:</label>
+            <h5 id="deliveryDate">{{getVehicleDeliveryDate()}}</h5>
+        </div>
+        <!-- Show the purchase price -->
+        <div class="form-group top-space m-3">
+            <label for="purchasePrice" style="font-weight: bold;">Purchase Price:</label>
+            <h5 id="purchasePrice">€{{getVehiclePurchasePrice()}},00</h5>
+        </div>
+        <!-- Show an input box where the user can choose the quantity -->
+        <div class="form-group top-space m-3">
+            <label for="startStop" style="font-weight: bold;">Quantity:</label>
+            <select class="form-control" [(ngModel)]="quantity" id="startStop">
+                <option *ngFor="let item of this.getPossibleQuantities()" [ngValue]="item">{{ item }}</option>
+            </select>
+        </div>
+        <!-- Show the total price -->
+        <h3 class="text-center">Total Price: €{{getTotalPrice()}},00</h3>
+    </div>
+</div>
+
+<!-- Submit button -->
+<div class="center-button">
+    <button type="submit" (click)="onPurchaseVehicle()" class="btn btn-primary btn-lg" [disabled]="checkDisablePrevious()">Previous Vehicle Type</button>
+</div>
+
+<!-- Back to Management Screen button -->
+<div class="center-button">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" [disabled]="checkDisableNext()">Next Vehicle Type</button>
+</div>
+
+<!-- Submit button -->
+<div class="center-button">
+    <button type="submit" (click)="onPurchaseVehicle()" class="btn btn-primary btn-lg">Purchase Vehicle</button>
+</div>
+
+<!-- Back to Management Screen button -->
+<div class="center-button">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>

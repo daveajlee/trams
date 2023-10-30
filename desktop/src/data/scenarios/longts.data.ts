@@ -18,7 +18,7 @@ const TARGETS = ["Serve all bus stops in Longts.", "Ensure a very frequent servi
 const MINIMUM_SATISFACTION= 50;
 
 // The type and number of supplied vehicles.
-const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 44, 36, 85000.0), 2)];
+const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 44, 36, 85000.0, 'assets/Bus.jpg'), 2)];
 
 // The supplied drivers for this scenario.
 const SUPPLIED_DRIVERS = ["Max Mustermann","Robert Mustermann"];

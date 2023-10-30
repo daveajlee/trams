@@ -48,6 +48,9 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['drivercreator']);
   }
 
+  onPurchaseVehicle(): void {
+    this.router.navigate(['vehicleshowroom']);
+  }
   onResign(): void {
     if(confirm("Are you sure you want to resign from " + this.gameService.getGame().companyName + "? This will end " +
         "your game and any changes you have made will not be saved.")) {

@@ -17,6 +17,7 @@ import {DriversComponent} from "./drivers/drivers.component";
 import {DriverDetailComponent} from "./drivers/driver-detail/driver-detail.component";
 import {OptionsComponent} from "./options/options.component";
 import {DrivercreatorComponent} from "./drivercreator/drivercreator.component";
+import {VehicleshowroomComponent} from "./vehicleshowroom/vehicleshowroom.component";
 
 /**
  * Define the links which work in this application.
@@ -41,7 +42,8 @@ const appRoutes: Routes = [
     { path: 'upload', component: UploadComponent },
     { path: 'vehicles', component: VehiclesComponent, children: [
       { path: ':id', component: VehicleDetailComponent}
-    ]}
+    ]},
+    { path: 'vehicleshowroom', component: VehicleshowroomComponent },
 ];
 
 @NgModule({

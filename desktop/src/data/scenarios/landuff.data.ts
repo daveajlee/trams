@@ -18,7 +18,7 @@ const TARGETS = ["Serve all bus stops in Landuff.", "Ensure a frequent service o
 const MINIMUM_SATISFACTION= 70;
 
 // The type and number of supplied vehicles.
-const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 44, 36, 85000.0), 4)];
+const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 44, 36, 85000.0, 'assets/Bus.jpg'), 4)];
 
 // The supplied drivers for this scenario.
 const SUPPLIED_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann","Daniel Mustermann"];
