@@ -51,10 +51,20 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   getVehiclePictureLink(): string {
-    if ( this.vehicle.vehicleType === 'Train') {
-      return this.vehicle.vehicleType + '-' + this.vehicle.additionalTypeInformationMap['Power Mode'];
+    if ( this.vehicle.vehicleType === 'Single Decker Bus') {
+      return 'assets/singledecker-bus-pixabay.png';
+    } else if ( this.vehicle.vehicleType === 'Double Decker Bus') {
+      return 'assets/doubledecker-bus-pixabay.png';
+    } else if ( this.vehicle.vehicleType === 'Bendy Bus') {
+      return 'assets/bendybus-albertstoynov-unsplash.jpg';
+    } else if ( this.vehicle.vehicleType === 'Tram') {
+      return 'assets/tram-pixabay.png';
     }
-    return this.vehicle.vehicleType;
+    else if ( this.vehicle.vehicleType === 'Train') {
+      return 'assets/' + this.vehicle.vehicleType + '-' + this.vehicle.additionalTypeInformationMap['Power Mode'] + '.jpg';
+    } else {
+      return 'assets/' + this.vehicle.vehicleType + '.jpg';
+    }
   }
 
   sellVehicle(vehicle: Vehicle): void {

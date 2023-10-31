@@ -10,7 +10,7 @@
 
     <div class="col">
         <!-- Show the vehicle picture -->
-        <img src="{{ getVehiclePicture() }}" class="mx-auto d-block" style="max-height: 500px;" alt="Vehicle Picture"/>
+        <img src="{{ getVehiclePicture() }}" class="mx-auto d-block" style="max-height: 500px; max-width: 400px;" alt="Vehicle Picture"/>
     </div>
     <div class="col">
         <!-- Show the vehicle type -->
@@ -52,12 +52,12 @@
 
 <!-- Submit button -->
 <div class="center-button">
-    <button type="submit" (click)="onPurchaseVehicle()" class="btn btn-primary btn-lg" [disabled]="checkDisablePrevious()">Previous Vehicle Type</button>
+    <button type="submit" class="btn btn-primary btn-lg" [disabled]="checkDisablePrevious()" (click)="moveToPreviousVehicleType()">Previous Vehicle Type</button>
 </div>
 
 <!-- Back to Management Screen button -->
 <div class="center-button">
-    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" [disabled]="checkDisableNext()">Next Vehicle Type</button>
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" [disabled]="checkDisableNext()" (click)="moveToNextVehicleType()">Next Vehicle Type</button>
 </div>
 
 <!-- Submit button -->

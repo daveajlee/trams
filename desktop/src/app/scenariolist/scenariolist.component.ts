@@ -76,7 +76,7 @@ export class ScenariolistComponent implements OnInit {
               additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
               additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
               additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
-              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].vehicleType, '',
+              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].model.modelType, '',
                   '', '', 0, additionalProps));
           }
       }
