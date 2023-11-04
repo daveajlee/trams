@@ -83,8 +83,13 @@ export class VehicleshowroomComponent {
     additionalProps.set('Standing Capacity', '' + this.getVehicleStandingCapacity());
     additionalProps.set('Seating Capacity', '' + this.getVehicleSeatingCapacity());
     additionalProps.set('Value', '' + this.getVehiclePurchasePrice());
-    this.gameService.getGame().addVehicle(new Vehicle('' + (highestFleetNumberSoFar+1), this.models[this.currentDisplay].modelType, '',
-        '', '', 0, additionalProps));
+    if ( this.getVehiclePurchasePrice() > this.gameService.getGame().balance ) {
+      alert('You need to earn more money before you can buy new vehicles!');
+    } else {
+      this.gameService.getGame().addVehicle(new Vehicle('' + (highestFleetNumberSoFar + 1), this.models[this.currentDisplay].modelType, '',
+          '', '', 0, additionalProps));
+      this.gameService.getGame().balance -= this.getVehiclePurchasePrice();
+    }
     this.router.navigate(['management']);
   }
 

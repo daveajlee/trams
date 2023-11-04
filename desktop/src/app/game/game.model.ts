@@ -32,7 +32,7 @@ export class Game {
     constructor( companyName: string, playerName: string, startingTime: string, scenario: Scenario,
                  difficultyLevel: string ) {
         this.companyName = companyName;
-        this.balance = 80000.0;
+        this.balance = 200000.0;
         this.playerName = playerName;
         this.startingTime = startingTime;
         this.scenario = scenario;
