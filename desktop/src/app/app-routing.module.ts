@@ -18,11 +18,15 @@ import {DriverDetailComponent} from "./drivers/driver-detail/driver-detail.compo
 import {OptionsComponent} from "./options/options.component";
 import {DrivercreatorComponent} from "./drivercreator/drivercreator.component";
 import {VehicleshowroomComponent} from "./vehicleshowroom/vehicleshowroom.component";
+import {AllocationsComponent} from "./allocations/allocations.component";
+import {AllocationslistComponent} from "./allocationslist/allocationslist.component";
 
 /**
  * Define the links which work in this application.
  */
 const appRoutes: Routes = [
+    { path: 'allocations', component: AllocationsComponent },
+    { path: 'allocationsList', component: AllocationslistComponent },
     { path: 'drivers', component: DriversComponent, children: [
         { path: ':id', component: DriverDetailComponent}
     ] },

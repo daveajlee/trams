@@ -143,7 +143,7 @@ export class TimetablecreatorComponent {
     // Create frequency pattern.
     var frequencyPattern = new FrequencyPattern(this.frequencyPatternName, daysOfOperation,
         this.frequencyPatternStartStop, this.frequencyPatternEndStop, this.frequencyPatternStartTime,
-        this.frequencyPatternEndTime, this.frequencyPatternFrequency);
+        this.frequencyPatternEndTime, this.frequencyPatternFrequency, this.getNumberVehicles());
     this.frequencyPatterns.push(frequencyPattern);
   }
 

@@ -89,7 +89,8 @@
                     <p class="card-text text-center">Allocate or deallocate vehicles to routes.</p>
                     <!-- Show start button -->
                     <div class="col text-center">
-                        <button class="btn btn-primary btn-lg" type="submit">Change</button>
+                        <button class="btn btn-primary btn-lg" type="submit" (click)="onChangeAllocation()">Change</button>
+                        <a class="btn btn-primary btn-lg button-margin" style="margin: 10px;" routerLinkActive="active" routerLink="/allocationsList" role="button">View Allocations</a>
                     </div>
                 </div>
             </div>

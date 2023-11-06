@@ -33,6 +33,8 @@ import { DriverDetailComponent } from './drivers/driver-detail/driver-detail.com
 import { OptionsComponent } from './options/options.component';
 import { DrivercreatorComponent } from './drivercreator/drivercreator.component';
 import { VehicleshowroomComponent } from './vehicleshowroom/vehicleshowroom.component';
+import { AllocationsComponent } from './allocations/allocations.component';
+import { AllocationslistComponent } from './allocationslist/allocationslist.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { VehicleshowroomComponent } from './vehicleshowroom/vehicleshowroom.comp
     DriverDetailComponent,
     OptionsComponent,
     DrivercreatorComponent,
-    VehicleshowroomComponent
+    VehicleshowroomComponent,
+    AllocationsComponent,
+    AllocationslistComponent
   ],
   imports: [
     BrowserModule,
