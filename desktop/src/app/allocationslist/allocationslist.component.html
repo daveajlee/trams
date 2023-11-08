@@ -6,7 +6,25 @@
     <h1 class="display-4 text-center">Vehicle Allocations</h1>
 </div>
 
-<h1>Coming Soon!</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Route Number</th>
+            <th scope="col">Fleet Number</th>
+            <th scope="col">Tour Number</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let allocationEl of allocations, let i = index">
+            <td> {{allocationEl.routeNumber}} </td>
+            <td> {{allocationEl.fleetNumber}} </td>
+            <td> {{allocationEl.tourNumber}} </td>
+            <td><button class="btn btn-danger" style="margin: 5px;" type="submit" (click)="deleteAllocation()">Delete</button></td>
+        </tr>
+    </tbody>
+
+</table>
 
 <!-- Back to Management Screen button -->
 <div class="center-button">

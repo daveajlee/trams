@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
+import {Allocation} from "../allocations/allocation.model";
 
 @Component({
   selector: 'app-allocationslist',
@@ -10,6 +11,7 @@ import {Router} from "@angular/router";
 export class AllocationslistComponent {
 
   gameService: GameService;
+  allocations: Allocation[];
 
   /**
    * Construct a new Allocations list component
@@ -18,6 +20,18 @@ export class AllocationslistComponent {
    */
   constructor(private gameService2: GameService, public router: Router) {
     this.gameService = gameService2;
+    this.allocations = this.gameService.getGame().allocations;
+  }
+
+  /**
+   * Initialise a new allocations component which maintains a list of allocations.
+   */
+  ngOnInit(): void {
+    this.allocations = this.gameService.getGame().allocations;
+  }
+
+  deleteAllocation(): void {
+    alert('Coming Soon!');
   }
 
   backToManagementScreen(): void {

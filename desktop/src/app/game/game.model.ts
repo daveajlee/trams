@@ -3,6 +3,7 @@ import {Route} from "../routes/route.model";
 import {Message} from "../messages/message.model";
 import {Vehicle} from "../vehicles/vehicle.model";
 import {Driver} from "../drivers/driver.model";
+import {Allocation} from "../allocations/allocation.model";
 
 /**
  * This class defines a model for the game that is currently loaded in the TraMS application.
@@ -19,6 +20,7 @@ export class Game {
     public messages: Message[];
     public vehicles: Vehicle[];
     public drivers: Driver[];
+    public allocations: Allocation[];
 
     /**
      * Construct a new game which contains the supplied data.
@@ -41,6 +43,7 @@ export class Game {
         this.messages = [];
         this.vehicles = [];
         this.drivers = [];
+        this.allocations = [];
     }
 
     /**
@@ -65,6 +68,14 @@ export class Game {
      */
     addDriver(driver: Driver): void {
         this.drivers.push(driver);
+    }
+
+    /**
+     * This method adds an allocation to the allocations array if we are currently saving allocations locally.
+     * @param allocation a allocation object with the allocation information to add to the allocations array.
+     */
+    addAllocation(allocation: Allocation): void {
+        this.allocations.push(allocation);
     }
 
     /**

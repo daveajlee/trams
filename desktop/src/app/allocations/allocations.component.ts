@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {Route} from "../routes/route.model";
+import {Allocation} from "./allocation.model";
 
 @Component({
   selector: 'app-allocations',
@@ -84,7 +85,7 @@ export class AllocationsComponent {
   }
 
   onSaveAllocation(): void {
-    alert('I want to use vehicle ' + this.selectedFleetNumber + ' for ' + this.selectedRouteNumber + '/' + this.selectedTourNumber);
+    this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
     this.router.navigate(['management']);
   }
 
