@@ -20,7 +20,7 @@
             <td> {{allocationEl.routeNumber}} </td>
             <td> {{allocationEl.fleetNumber}} </td>
             <td> {{allocationEl.tourNumber}} </td>
-            <td><button class="btn btn-danger" style="margin: 5px;" type="submit" (click)="deleteAllocation()">Delete</button></td>
+            <td><button class="btn btn-danger" style="margin: 5px;" type="submit" (click)="deleteAllocation(allocationEl.routeNumber, allocationEl.fleetNumber, allocationEl.tourNumber)">Delete</button></td>
         </tr>
     </tbody>
 

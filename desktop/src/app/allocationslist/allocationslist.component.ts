@@ -30,8 +30,19 @@ export class AllocationslistComponent {
     this.allocations = this.gameService.getGame().allocations;
   }
 
-  deleteAllocation(): void {
-    alert('Coming Soon!');
+  deleteAllocation(routeNumber: string, fleetNumber: string, tourNumber: string): void {
+    var allAllocations = this.gameService.getGame().allocations;
+    for ( var i = 0; i < allAllocations.length; i++ ) {
+      if ( this.gameService.getGame().allocations[i].fleetNumber.valueOf() === fleetNumber.valueOf() &&
+          this.gameService.getGame().allocations[i].routeNumber.valueOf() === routeNumber.valueOf() &&
+          this.gameService.getGame().allocations[i].tourNumber.valueOf() === tourNumber.valueOf()
+      ) {
+        this.gameService.getGame().allocations.splice(i, 1);
+        alert('Allocation was deleted successfully');
+        this.router.navigate(['allocationslist']);
+      }
+    }
+
   }
 
   backToManagementScreen(): void {
