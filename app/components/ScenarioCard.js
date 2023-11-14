@@ -1,4 +1,4 @@
-import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Appearance, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { setScenarioNameForGame } from "../utilities/sqlite";
 
 /**
@@ -9,6 +9,7 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
 
     const win = Dimensions.get('window');
     const ratio = win.width/800; // 800 is actual width of image. 
+    const colorScheme = Appearance.getColorScheme();
 
     /**
      * Save the scenario that the user wishes to play.
@@ -26,10 +27,10 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
         <>
         <View style={styles.scenarioContainer}>
             <Image style={{marginTop: 10, width: win.width, height: 398 * ratio}} source={image}/>
-            <Text style={styles.scenarioTitle}>{title}</Text>
-            <Text style={styles.scenarioDesc}>{description}</Text>
-            <Text style={styles.scenarioTargets}>Targets</Text>
-            <Text style={styles.scenarioTarget}>{targets}</Text>
+            <Text style={[styles.scenarioTitle, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{title}</Text>
+            <Text style={[styles.scenarioDesc, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{description}</Text>
+            <Text style={[styles.scenarioTargets, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Targets</Text>
+            <Text style={[styles.scenarioTarget, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{targets}</Text>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={selectScenarioHandler.bind(this, {title})}>
                     <Text style={styles.buttonText}>Select</Text>
@@ -50,6 +51,12 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
 export default ScenarioCard;
 
 const styles = StyleSheet.create({
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
+    },
     scenarioContainer: {
         marginTop: 10,
         alignItems: 'center',

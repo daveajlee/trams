@@ -1,4 +1,4 @@
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Appearance, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DatePicker from "react-native-date-picker";
@@ -23,6 +23,7 @@ function CreateGameScreen({navigation}) {
         {label: 'Hard', value: 'hard'},
       ]);
     const [startDate, setStartDate] = useState(new Date());
+    const colorScheme = Appearance.getColorScheme();
 
     /**
      * Set the company name that the user entered.
@@ -76,7 +77,7 @@ function CreateGameScreen({navigation}) {
     const _renderLevelItem = item => {
         return (
             <View>
-                <Text style={styles.levelItem}>{item.label}</Text>
+                <Text style={colorScheme === 'dark' ? styles.levelItemDark : styles.levelItemLight}>{item.label}</Text>
             </View>
         );
     };
@@ -86,23 +87,23 @@ function CreateGameScreen({navigation}) {
      * player name, skill level and start date.
      */
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.headerContainer}>
-                <Text style={styles.headerText}>Welcome to TraMS</Text>
+                <Text style={[styles.headerText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Welcome to TraMS</Text>
             </View>
             <View style={styles.bodyContainer}>
                 <View style={styles.companyNameContainer}>
-                    <Text style={styles.bodyText}>Company Name:</Text>
-                    <TextInput style={styles.textInput} placeholder='Your Company Name' onChangeText={companyNameInputHandler} value={companyName}/>
+                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company Name:</Text>
+                    <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Company Name' onChangeText={companyNameInputHandler} value={companyName}/>
                 </View>
                 <View style={styles.playerNameContainer}>
-                    <Text style={styles.bodyText}>Player Name:</Text>
-                    <TextInput style={styles.textInput} placeholder='Your Name' onChangeText={playerNameInputHandler} value={playerName}/>
+                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Player Name:</Text>
+                    <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Name' onChangeText={playerNameInputHandler} value={playerName}/>
                 </View>
                 <View style={styles.levelContainer}>
-                    <Text style={styles.bodyText}>Level:</Text>
+                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Level:</Text>
                     <Dropdown
-                        style={styles.levelDropdown}
+                        style={colorScheme === 'dark' ? styles.levelDropdownDark : styles.levelDropdownLight}
                         data={levelItems}
                         labelField="label"
                         valueField="value"
@@ -116,7 +117,7 @@ function CreateGameScreen({navigation}) {
                     />
                 </View>
                 <View style={styles.dateContainer}>
-                    <Text style={styles.bodyText}>Start Date & Time:</Text>
+                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Start Date & Time:</Text>
                     <DatePicker style={styles.bodyText} date={startDate} onDateChange={setStartDate} />
                 </View>
             </View>
@@ -133,10 +134,20 @@ function CreateGameScreen({navigation}) {
 export default CreateGameScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
+    },
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
-        height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -164,11 +175,20 @@ const styles = StyleSheet.create({
         marginTop: 20,
         flexDirection: 'row'
     },
-    textInput: {
+    textInputLight: {
         borderWidth: 1,
         borderColor: '#e4d0ff',
         backgroundColor: 'white',
         color: '#120438',
+        borderRadius: 6,
+        width: '100%',
+        padding: 8
+    },
+    textInputDark: {
+        borderWidth: 1,
+        borderColor: 'white',
+        backgroundColor: 'black',
+        color: 'white',
         borderRadius: 6,
         width: '100%',
         padding: 8
@@ -208,15 +228,28 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    levelDropdown: {
+    levelDropdownLight: {
         borderWidth: 1,
         borderColor: '#e4d0ff',
         backgroundColor: 'white',
         color: 'black',
         padding: 2,
     },
-    levelItem: {
+    levelDropdownDark: {
+        borderWidth: 1,
+        borderColor: '#e4d0ff',
+        backgroundColor: 'gray',
+        color: 'white',
+        padding: 2,
+    },
+    levelItemLight: {
         color: 'black',
+        fontSize: 18,
+        marginLeft: 5
+    },
+    levelItemDark: {
+        color: 'white',
+        backgroundColor: 'black',
         fontSize: 18,
         marginLeft: 5
     }

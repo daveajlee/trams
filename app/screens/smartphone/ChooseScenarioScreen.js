@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Appearance, ScrollView, StyleSheet, Text, View } from "react-native";
 import ScenarioCard from "../../components/ScenarioCard";
 import { LANDUFF_DESCRIPTION, LANDUFF_NAME, LANDUFF_TARGETS } from "../../scenarios/landuff-scenario";
 import { LONGTS_DESCRIPTION, LONGTS_NAME, LONGTS_TARGETS } from "../../scenarios/longts-scenario";
@@ -17,16 +17,17 @@ function ChooseScenarioScreen({route, navigation}) {
 
     var playerName = route.params.playerName;
     var companyName = route.params.companyName;
+    const colorScheme = Appearance.getColorScheme();
 
     /**
      * Return the components to be displayed to the user.
      */
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{alignItems: 'center',
+        <ScrollView style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]} contentContainerStyle={{alignItems: 'center',
         justifyContent: 'center'}}>
             <View style={styles.headerContainer}>
-                <Text style={styles.headerText}>Congratulations - {playerName} has been appointed Managing Director of {companyName}!</Text>
-                <Text style={styles.headerText2}>Choose your scenario and prove that your new company can make public transport run on time!</Text>
+                <Text style={[styles.headerText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Congratulations - {playerName} has been appointed Managing Director of {companyName}!</Text>
+                <Text style={[styles.headerText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Choose your scenario and prove that your new company can make public transport run on time!</Text>
             </View>
             <ScenarioCard image={landuffImage} title={LANDUFF_NAME} description={LANDUFF_DESCRIPTION} targets={LANDUFF_TARGETS} navigation={navigation} companyName={companyName}/>
             <ScenarioCard image={longtsImage} title={LONGTS_NAME} description={LONGTS_DESCRIPTION} targets={LONGTS_TARGETS} navigation={navigation} companyName={companyName}/>
@@ -44,9 +45,20 @@ function ChooseScenarioScreen({route, navigation}) {
 export default ChooseScenarioScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
+    },
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
         height: '100%',
     },
     headerContainer: {

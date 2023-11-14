@@ -1,9 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Appearance, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useLayoutEffect } from "react";
 import IconButton from "../utilities/IconButton";
 import { deleteGame, fetchGames } from "../utilities/sqlite";
 
 function MainMenuScreen({navigation, route}) {
+
+    const colorScheme = Appearance.getColorScheme();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -75,9 +77,9 @@ function MainMenuScreen({navigation, route}) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Company: {route.params.company}</Text>
+                <Text style={[styles.header, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company: {route.params.company}</Text>
             </View>
             <View style={styles.bodyContainer}>
                 <TouchableOpacity style={styles.button} onPress={onAssignPress}>
@@ -104,9 +106,20 @@ function MainMenuScreen({navigation, route}) {
 export default MainMenuScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
+    },
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: 'center',
         justifyContent: 'center',
     },

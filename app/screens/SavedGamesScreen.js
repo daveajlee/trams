@@ -2,10 +2,12 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import SavedGamesList from "../components/SavedGamesList";
 import { fetchGames } from "../utilities/sqlite";
-import { View, StyleSheet } from "react-native";
+import { Appearance, View, StyleSheet } from "react-native";
 
 function SavedGamesScreen({route, navigation}) {
     const [loadedGames, setLoadedGames] = useState([]);
+
+    const colorScheme = Appearance.getColorScheme();
 
     const isFocused = useIsFocused;
     useEffect(() => {
@@ -19,7 +21,7 @@ function SavedGamesScreen({route, navigation}) {
         }
     }, [isFocused]);
 
-    return <View style={styles.container}>
+    return <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
         <View style={styles.bodyContainer}>
             <SavedGamesList games={loadedGames} navigation={navigation}/>
         </View>
@@ -29,9 +31,14 @@ function SavedGamesScreen({route, navigation}) {
 export default SavedGamesScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: 'center',
         justifyContent: 'center',
     },
