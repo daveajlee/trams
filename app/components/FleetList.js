@@ -1,15 +1,18 @@
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { Appearance, StyleSheet, View, FlatList, Text } from "react-native";
 
 function FleetList({items}) {
+
+    const colorScheme = Appearance.getColorScheme();
+
     function renderFleetItem(itemData) {
         return (
             <View style={styles.details}>
-                <Text style={styles.heading}>{itemData.item.fleetNumber} - {itemData.item.registrationNumber}</Text>
-                <Text style={styles.detailText}>Chassis Type: {itemData.item.chassisType}</Text>
-                <Text style={styles.detailText}>Body Type: {itemData.item.bodyType}</Text>
-                <Text style={styles.detailText}>Special Features: {itemData.item.specialFeatures}</Text>
-                <Text style={styles.detailText}>Livery: {itemData.item.livery}</Text>
-                <View style={styles.lineStyle}/>
+                <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{itemData.item.fleetNumber} - {itemData.item.registrationNumber}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Chassis Type: {itemData.item.chassisType}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Body Type: {itemData.item.bodyType}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Special Features: {itemData.item.specialFeatures}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Livery: {itemData.item.livery}</Text>
+                <View style={[styles.lineStyle, colorScheme === 'dark' ? styles.darkLine : styles.lightLine]}/>
             </View>
         )
     }
@@ -27,6 +30,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     details: {
         flexDirection: 'column',
@@ -47,9 +56,14 @@ const styles = StyleSheet.create({
     },
     lineStyle:{
         borderWidth: 0.5,
-        borderColor:'black',
         width: '100%',
         marginTop: 10,
         marginBottom: 10
-   }
+    },
+    darkLine: {
+        borderColor: 'white'
+    },
+    lightLine: {
+        borderColor: 'black'
+    },
 })

@@ -1,9 +1,10 @@
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { Appearance, View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 
 function SearchRouteScreen({route, navigation}) {
 
-    const [enteredRouteNumber, setEnteredRouteNumber] = useState('')
+    const [enteredRouteNumber, setEnteredRouteNumber] = useState('');
+    const colorScheme = Appearance.getColorScheme();
 
 
     function onChangeRouteNumber(enteredText) {
@@ -19,13 +20,13 @@ function SearchRouteScreen({route, navigation}) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.headerContainer}>
-                <Text style={styles.header}>Company: {route.params.company}</Text>
+                <Text style={[styles.header, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company: {route.params.company}</Text>
             </View>
             <View style={styles.bodyContainer}>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, colorScheme === 'dark' ? styles.darkText : styles.lightText]}
                     onChangeText={onChangeRouteNumber}
                     value={enteredRouteNumber}
                     placeholder="Route Number"
@@ -44,9 +45,20 @@ export default SearchRouteScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     headerContainer: {
         paddingTop: 10

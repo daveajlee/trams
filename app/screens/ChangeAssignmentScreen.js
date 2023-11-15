@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Appearance, Alert, StyleSheet, Text, View } from "react-native";
 import AssignmentList from "../components/AssignmentList";
 import { LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
@@ -11,6 +11,8 @@ import { TouchableOpacity } from "react-native";
 function ChangeAssignmentScreen({route, navigation}) {
 
     const [assignments, setAssignments] = useState([]);
+
+    const colorScheme = Appearance.getColorScheme();
 
     useEffect(() => {
         async function loadAssignments() {
@@ -79,7 +81,7 @@ function ChangeAssignmentScreen({route, navigation}) {
 
     if ( assignments.length > 0) {
         return (
-            <View style={styles.bodyContainer}>
+            <View style={[styles.bodyContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
                 <AssignmentList items={assignments} companyName={route.params.company} scenarioName={route.params.scenarioName} />
                 <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
                     <Text style={styles.buttonText}>Main Menu</Text>
@@ -87,8 +89,8 @@ function ChangeAssignmentScreen({route, navigation}) {
             </View>
         );
     } else {
-        return (<View style={styles.bodyContainer}>
-            <Text style={styles.noAssignmentText}>There are currently no assignments.</Text>
+        return (<View style={[styles.bodyContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
+            <Text style={[styles.noAssignmentText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>There are currently no assignments.</Text>
             <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
                     <Text style={styles.buttonText}>Main Menu</Text>
             </TouchableOpacity>
@@ -105,6 +107,18 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         backgroundColor: '#f2ffe6',
+    },
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     noAssignmentText: {
         alignItems: "center",

@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { Appearance, View, Text, FlatList, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { deleteAssignment } from "../utilities/sqlite";
@@ -6,6 +6,7 @@ import { deleteAssignment } from "../utilities/sqlite";
 function AssignmentList({items, companyName, scenarioName}) {
 
     const navigation = useNavigation();
+    const colorScheme = Appearance.getColorScheme();
 
     async function deleteAssignmentFromDB(routeNumber, tourNumber, companyName) {
         deleteAssignment(routeNumber, tourNumber, companyName).then(
@@ -19,7 +20,7 @@ function AssignmentList({items, companyName, scenarioName}) {
     function renderAssignmentItem(itemData) {
         return (
             <View style={styles.details}>
-                <Text style={styles.heading}>{itemData.item.routeNumber}/{itemData.item.tourNumber} assigned to vehicle {itemData.item.fleetNumber}</Text>
+                <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{itemData.item.routeNumber}/{itemData.item.tourNumber} assigned to vehicle {itemData.item.fleetNumber}</Text>
                 <TouchableOpacity style={styles.button} onPress={deleteAssignmentFromDB.bind(null, itemData.item.routeNumber, itemData.item.tourNumber, companyName)}>
                     <Text style={styles.buttonText}>Delete</Text>
                 </TouchableOpacity>
@@ -41,6 +42,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     details: {
         flexDirection: 'column',

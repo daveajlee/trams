@@ -2,9 +2,11 @@ import { LANDUFF_NAME, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { MDORF_NAME, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
 import { LONGTS_NAME, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import FleetList from "../components/FleetList";
-import { StyleSheet, View } from "react-native";
+import { Appearance, StyleSheet, View } from "react-native";
 
 function FleetScreen({route}) {
+
+    const colorScheme = Appearance.getColorScheme();
 
     var vehicles;
     if ( route.params.scenarioName === LANDUFF_NAME ) {
@@ -17,7 +19,7 @@ function FleetScreen({route}) {
         vehicles = LONGTS_VEHICLES;
     }
 
-    return <View style={styles.rootContainer}>
+    return <View style={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
         <FleetList items={vehicles} />
     </View>
 }
@@ -25,10 +27,15 @@ function FleetScreen({route}) {
 export default FleetScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
     rootContainer: {
         marginBottom: 32,
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: 'center',
         justifyContent: 'center',
     }

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TextInput, Alert } from "react-native";
+import { Appearance, StyleSheet, View, Text, TextInput, Alert } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { LANDUFF_NAME, LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { MDORF_NAME, MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
@@ -18,6 +18,8 @@ function AssignTourScreen({route, navigation}) {
     const [vehicleDropdown, setVehicleDropdown] = useState(null);
     const [disableAssignButton, setDisableAssignButton] = useState(true);
     const [assignments, setAssignments] = useState([]);
+
+    const colorScheme = Appearance.getColorScheme();
 
     useEffect(() => {
         async function loadVehicleAndRouteData() {
@@ -121,11 +123,11 @@ function AssignTourScreen({route, navigation}) {
     }
 
     return (
-        <View style={styles.bodyContainer}>
+        <View style={[styles.bodyContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.routeField}>
-                <Text style={styles.formLabel}>Route Number:</Text>
+                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Route Number:</Text>
                 <Dropdown
-                    style={styles.dropdown}
+                    style={[styles.dropdown, colorScheme === 'dark' ? styles.dropdownDark : styles.dropdownLight]}
                     data={routeData}
                     labelField="label"
                     valueField="value"
@@ -139,9 +141,9 @@ function AssignTourScreen({route, navigation}) {
                  />
             </View>
             <View style={styles.vehicleField}>
-                <Text style={styles.formLabel}>Fleet Number:</Text>
+                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Fleet Number:</Text>
                 <Dropdown
-                    style={styles.dropdown}
+                    style={[styles.dropdown, colorScheme === 'dark' ? styles.dropdownDark : styles.dropdownLight]}
                     data={vehicleData}
                     labelField="label"
                     valueField="value"
@@ -155,9 +157,9 @@ function AssignTourScreen({route, navigation}) {
                 />
             </View>
             <View style={styles.tourField}>
-                <Text style={styles.formLabel}>Tour Number:</Text>
+                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Tour Number:</Text>
                 <TextInput
-                    style={styles.tourInput}
+                    style={[styles.tourInput, colorScheme === 'dark' ? styles.darkBorder : styles.lightBorder]}
                     onChangeText={onChangeTourNumber}
                     value={"" + tourNumber}
                     keyboardType="numeric"
@@ -178,7 +180,26 @@ const styles = StyleSheet.create({
         flex: 4,
         width: '100%',
         alignItems: 'center',
+    },
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
         backgroundColor: '#f2ffe6',
+    },
+    darkBorder: {
+        borderColor: 'white',
+        color: 'white'
+    },
+    lightBorder: {
+        borderColor: 'black',
+        color: 'black'
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     routeField: {
         flexDirection: 'row',
@@ -193,11 +214,18 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         borderWidth: 1,
+        padding: 2,
+        width: '30%'
+    },
+    dropdownLight: {
         borderColor: '#e4d0ff',
         backgroundColor: 'white',
         color: 'black',
-        padding: 2,
-        width: '30%'
+    },
+    dropdownDark: {
+        borderColor: '#e4d0ff',
+        backgroundColor: 'gray',
+        color: 'white',
     },
     vehicleField: {
         flexDirection: 'row',

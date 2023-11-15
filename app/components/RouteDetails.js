@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet } from "react-native"
+import { Appearance, View, Text, StyleSheet } from "react-native"
 
 function RouteDetails(props) {
+
+    const colorScheme = Appearance.getColorScheme();
+
     return <View style={styles.details}>
-        <Text style={styles.heading}>{props.number} - {props.outwardTerminus} &lt;&gt; {props.returnTerminus}</Text>
-        <Text style={styles.tours}>Number of tours/vehicles required: {props.numberTours}</Text>
+        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{props.number} - {props.outwardTerminus} &lt;&gt; {props.returnTerminus}</Text>
+        <Text style={[styles.tours, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Number of tours/vehicles required: {props.numberTours}</Text>
     </View>
 }
 
@@ -27,5 +30,11 @@ const styles = StyleSheet.create({
     detailItem: {
         marginHorizontal: 4,
         fontSize: 12
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     }
 })

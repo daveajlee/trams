@@ -1,12 +1,15 @@
-import { View, Text, StyleSheet } from "react-native"
+import { Appearance, View, Text, StyleSheet } from "react-native"
 
 function VehicleDetails(props) {
+
+    const colorScheme = Appearance.getColorScheme();
+
     return <View style={styles.details}>
-        <Text style={styles.heading}>{props.fleetNumber} - {props.registrationNumber}</Text>
-        <Text style={styles.detailText}>Chassis Type: {props.chassisType}</Text>
-        <Text style={styles.detailText}>Body Type: {props.bodyType}</Text>
-        <Text style={styles.detailText}>Special Features: {props.specialFeatures}</Text>
-        <Text style={styles.detailText}>Livery: {props.livery}</Text>
+        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{props.fleetNumber} - {props.registrationNumber}</Text>
+        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Chassis Type: {props.chassisType}</Text>
+        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Body Type: {props.bodyType}</Text>
+        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Special Features: {props.specialFeatures}</Text>
+        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Livery: {props.livery}</Text>
     </View>
 }
 
@@ -31,5 +34,11 @@ const styles = StyleSheet.create({
     detailItem: {
         marginHorizontal: 4,
         fontSize: 12
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     }
 })

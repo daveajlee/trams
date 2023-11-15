@@ -1,11 +1,13 @@
 import { LANDUFF_NAME, LANDUFF_ROUTES } from "../scenarios/landuff-scenario";
 import { LONGTS_NAME, LONGTS_ROUTES } from "../scenarios/longts-scenario";
 import { MDORF_ROUTES, MDORF_NAME } from "../scenarios/mdorf-scenario";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { Appearance, ScrollView, StyleSheet, Text } from "react-native";
 import RouteDetails from "../components/RouteDetails";
 import { TouchableOpacity } from "react-native";
 
 function RouteScreen(props) {
+
+    const colorScheme = Appearance.getColorScheme();
 
     const routeNumber = props.route.params.routeNumber;
 
@@ -28,7 +30,7 @@ function RouteScreen(props) {
     }
 
     if ( selectedRoute ) {
-        return <ScrollView contentContainerStyle={styles.rootContainer}>
+        return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <RouteDetails number={selectedRoute.number} outwardTerminus={selectedRoute.outwardTerminus} returnTerminus={selectedRoute.returnTerminus}
             numberTours={selectedRoute.numberTours}/>
             <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
@@ -37,8 +39,8 @@ function RouteScreen(props) {
         </ScrollView>
     }
     else {
-        return <ScrollView contentContainerStyle={styles.rootContainer}>
-            <Text style={styles.noRouteText}>Did not find any route for the specified route number: {props.route.params.routeNumber}</Text>
+        return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
+            <Text style={[styles.noRouteText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Did not find any route for the specified route number: {props.route.params.routeNumber}</Text>
             <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
                 <Text style={styles.buttonText}>Main Menu</Text>
             </TouchableOpacity>
@@ -52,8 +54,19 @@ const styles = StyleSheet.create({
     rootContainer: {
         marginBottom: 32,
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: "center",
+    },
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
+    darkText: {
+        color: 'white'
+    },
+    lightText: {
+        color: 'black'
     },
     noRouteText: {
         alignItems: "center",
