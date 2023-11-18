@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { Appearance, View, StyleSheet } from "react-native";
 import SavedGamesList from "../../components/SavedGamesList";
 
 /**
@@ -8,7 +8,9 @@ import SavedGamesList from "../../components/SavedGamesList";
  */
 function LoadGameScreen({navigation}) {
 
-    return <View style={styles.container}>
+    const colorScheme = Appearance.getColorScheme();
+
+    return <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
         <View style={styles.bodyContainer}>
             <SavedGamesList navigation={navigation}/>
         </View>
@@ -18,9 +20,14 @@ function LoadGameScreen({navigation}) {
 export default LoadGameScreen;
 
 const styles = StyleSheet.create({
+    darkBackground: {
+        backgroundColor: 'black',
+    },
+    lightBackground: {
+        backgroundColor: '#f2ffe6',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#f2ffe6',
         alignItems: 'center',
         justifyContent: 'center',
     },
