@@ -4,6 +4,15 @@
 #Intellij IDE
 .idea
 
+#Visual Studio Code
+.vscode
+
 #Node files
 docs/build/
 docs/node_modules/
+
+# Built application files
+*.aab
+
+# Auto generated files
+index.android.bundle

@@ -1,4 +1,4 @@
-package com.tramsgameapp;
+package de.davelee.trams.app;
 import expo.modules.ReactActivityDelegateWrapper;
 
 import com.facebook.react.ReactActivity;

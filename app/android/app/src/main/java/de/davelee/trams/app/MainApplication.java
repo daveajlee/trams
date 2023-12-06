@@ -1,4 +1,4 @@
-package com.tramsgameapp;
+package de.davelee.trams.app;
 import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
