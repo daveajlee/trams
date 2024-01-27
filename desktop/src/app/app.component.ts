@@ -48,8 +48,36 @@ export class AppComponent {
   /**
    * On submission of the load game form, we load the game.
    */
-  onLoadSubmit(): void {
+  async onLoadSubmit(): Promise<void> {
+    var fileContent = await this.readFileContent(this.file);
+    var xmlDoc;
+    if (window.DOMParser) {
+      let parser = new DOMParser();
+      xmlDoc = parser.parseFromString(fileContent, "text/xml");
+      console.log(xmlDoc);
+    }
     console.log('Loading game from file ' + this.file);
+  }
+
+  /**
+   * Read the contents of the file.
+   */
+  readFileContent(file: File): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      if (!file) {
+        resolve('');
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const text = reader.result.toString();
+        resolve(text);
+
+      };
+
+      reader.readAsText(file);
+    });
   }
 
 }
