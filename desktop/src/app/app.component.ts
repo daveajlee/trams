@@ -56,7 +56,7 @@ export class AppComponent {
       xmlDoc = parser.parseFromString(fileContent, "text/xml");
       console.log(xmlDoc);
     }
-    console.log('Loading game from file ' + this.file);
+    this.router.navigate(['management']);
   }
 
   /**
