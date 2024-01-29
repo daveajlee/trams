@@ -1,4 +1,10 @@
 {
   "name": "TraMSGameApp",
-  "displayName": "TraMS"
+  "displayName": "TraMS",
+  "splash": {
+    "image": "./assets/images/trams-app-logo.png",
+    "resizeMode": "cover",
+    "backgroundColor": "#ffffff"
+  },
+  "ios": {"userInterfaceStyle": "automatic"}
 }

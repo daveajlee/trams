@@ -2,8 +2,8 @@ import { Appearance, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOp
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import DatePicker from "react-native-date-picker";
-import { Game } from "../../models/game";
-import { fetchGame, insertGame } from "../../utilities/sqlite";
+import { Game } from "../models/game";
+import { fetchGame, insertGame } from "../utilities/sqlite";
 
 /**
  * This screen represents the create game screen on a Smartphone.

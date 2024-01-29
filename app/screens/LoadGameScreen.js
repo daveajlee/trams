@@ -1,5 +1,5 @@
 import { Appearance, View, StyleSheet } from "react-native";
-import SavedGamesList from "../../components/SavedGamesList";
+import SavedGamesList from "../components/SavedGamesList";
 
 /**
  * This screen represents the load game screen on a Smartphone.

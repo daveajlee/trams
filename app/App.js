@@ -2,15 +2,15 @@ import {
   StyleSheet,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import CreateGameScreen from './screens/smartphone/CreateGameScreen';
+import CreateGameScreen from './screens/CreateGameScreen';
 import { useCallback, useEffect, useState } from 'react';
 import { fetchGames, init } from './utilities/sqlite';
 import SplashScreen from 'expo-splash-screen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import LoadGameScreen from './screens/smartphone/LoadGameScreen';
+import LoadGameScreen from './screens/LoadGameScreen';
 import IconButton from './utilities/IconButton';
-import ChooseScenarioScreen from './screens/smartphone/ChooseScenarioScreen';
+import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import SearchRouteScreen from './screens/SearchRouteScreen';
 import SearchFleetScreen from './screens/SearchFleetScreen';

@@ -1,12 +1,12 @@
 import { Appearance, ScrollView, StyleSheet, Text, View } from "react-native";
-import ScenarioCard from "../../components/ScenarioCard";
-import { LANDUFF_DESCRIPTION, LANDUFF_NAME, LANDUFF_TARGETS } from "../../scenarios/landuff-scenario";
-import { LONGTS_DESCRIPTION, LONGTS_NAME, LONGTS_TARGETS } from "../../scenarios/longts-scenario";
-import { MDORF_DESCRIPTION, MDORF_NAME, MDORF_TARGETS } from "../../scenarios/mdorf-scenario";
+import ScenarioCard from "../components/ScenarioCard";
+import { LANDUFF_DESCRIPTION, LANDUFF_NAME, LANDUFF_TARGETS } from "../scenarios/landuff-scenario";
+import { LONGTS_DESCRIPTION, LONGTS_NAME, LONGTS_TARGETS } from "../scenarios/longts-scenario";
+import { MDORF_DESCRIPTION, MDORF_NAME, MDORF_TARGETS } from "../scenarios/mdorf-scenario";
 
-const landuffImage = require("./../../assets/landuff-map-picture.jpg");
-const longtsImage = require("./../../assets/longts-map-picture.jpg");
-const mdorfImage = require("./../../assets/mdorf-map-picture.jpg")
+const landuffImage = require("./../assets/images/landuff-map-picture.jpg");
+const longtsImage = require("./../assets/images/longts-map-picture.jpg");
+const mdorfImage = require("./../assets/images/mdorf-map-picture.jpg")
 
 /**
  * This screen represents the choose scenario screen on a Smartphone.
