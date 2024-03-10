@@ -1,1 +1,9 @@
-2023-04-21 22:33:52.904 xcodebuild[98879:357736] DVTCoreDeviceEnabledState: DVTCoreDeviceEnabledState_Disabled set via user default (DVTEnableCoreDevice=disabled)
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, id:E3049FE6-835E-4A34-A712-DDF47FFF9469, OS:17.0.1, name:iPhone 15 Pro }
+{ platform:iOS Simulator, id:E3049FE6-835E-4A34-A712-DDF47FFF9469, OS:17.0.1, name:iPhone 15 Pro }
+** BUILD FAILED **
+
+
+The following build commands failed:
+	CompileC /Users/davelee/Library/Developer/Xcode/DerivedData/TramsApp-dfkmpwnzawrahqarogppemaglfwz/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/FlipperKit.build/Objects-normal/arm64/FlipperPlatformWebSocket.o /Users/davelee/workspace/trams/app073/TramsApp/ios/Pods/FlipperKit/iOS/FlipperKit/FlipperPlatformWebSocket.mm normal arm64 objective-c++ com.apple.compilers.llvm.clang.1_0.compiler (in target 'FlipperKit' from project 'Pods')
+(1 failure)

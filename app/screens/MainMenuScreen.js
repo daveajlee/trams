@@ -1,4 +1,4 @@
-import { Appearance, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Appearance, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useLayoutEffect } from "react";
 import IconButton from "../utilities/IconButton";
 import { deleteGame, fetchGames } from "../utilities/sqlite";
@@ -60,12 +60,25 @@ function MainMenuScreen({navigation, route}) {
      * If the current game is the only game remaining then back to create game otherwise load game menu.
      */
     async function onDeleteGame() {
-        await deleteGame(route.params.company);
-        if ( fetchGames().length > 0 ) {
-            navigation.navigate("LoadGameScreen");
-        } else {
-            navigation.navigate("CreateGameScreen");
-        }
+        Alert.alert(
+            'Delete ' + route.params.company,
+            'Are you sure you want to delete this transport company?',
+            [
+              {text: 'Yes', onPress: async () => {
+                await deleteGame(route.params.company);
+                if ( fetchGames().length > 0 ) {
+                    navigation.navigate("LoadGameScreen");
+                } else {
+                    navigation.navigate("CreateGameScreen");
+                }
+              }},
+              {text: 'No', onPress: async () => {
+                // Do nothing if no is clicked.
+              }},
+            ],
+            {cancelable: true},
+          );
+       
     }
 
     function onCreateGame() {

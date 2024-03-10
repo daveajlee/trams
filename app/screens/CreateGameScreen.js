@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     headerContainer: {
-        paddingTop: 50
+        paddingTop: 10
     },
     headerText: {
         fontSize: 32,
@@ -206,7 +206,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '80%',
         marginTop: 10,
-        marginBottom: 100
+        marginBottom: 10
+
     },
     dateContainer: {
         flexDirection: 'column',
