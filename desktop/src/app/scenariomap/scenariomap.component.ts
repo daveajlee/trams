@@ -24,7 +24,11 @@ export class ScenariomapComponent implements OnInit {
   }
 
   getScenarioImage(): string {
-    return 'assets/' + this.gameService.getGame().scenario.scenarioName.toLowerCase().replace(' ','') + '-map-picture.jpg';
+    if ( this.gameService.getGame().scenario.locationMap && this.gameService.getGame().scenario.locationMap != '') {
+      return 'assets/' + this.gameService.getGame().scenario.locationMap;
+    } else {
+      return '';
+    }
   }
 
   backToManagementScreen(): void {
