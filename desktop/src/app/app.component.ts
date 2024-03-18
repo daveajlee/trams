@@ -7,6 +7,8 @@ import {Scenario} from "./shared/scenario.model";
 import {SuppliedVehicles} from "./vehicles/suppliedvehicle.model";
 import {VehicleModel} from "./vehicles/vehiclemodel.model";
 import {Vehicle} from "./vehicles/vehicle.model";
+import {Route} from "./routes/route.model";
+import {Allocation} from "./allocations/allocation.model";
 
 @Component({
   selector: 'app-root',
@@ -91,11 +93,53 @@ export class AppComponent {
           const operatorName: string = operatorElements.item(i).childNodes.item(0).parentElement.attributes.getNamedItem("name").value
           // Save an array for supplied vehicles.
           var suppliedVehicles = [];
+          // Save an array for routes.
+          var routes = [];
+          var stopDistances = [];
           // Go through the child nodes of operator elements.
           for ( var j = 0; j < operatorElements.item(i).childNodes.length; j++ ) {
             if ( operatorElements.item(i).childNodes.item(j).nodeName === 'route' ) {
+              // Process the route elements.
+              const route = operatorElements.item(i).childNodes.item(j).childNodes;
+              var routeObj = new Route();
+              routeObj.company = operatorName;
+              routeObj.routeNumber = route[0].parentElement.attributes.getNamedItem("number").value;
+              // Process the stops.
+              const stops = [];
+              const routeInfo = route[0].parentElement.children;
+              // Go through either outstops, instops and detailsched.
+              for ( var m = 0; m < routeInfo.length; m++ ) {
+                // The out stops we have to add.
+                if ( routeInfo[m].parentElement.children[m].nodeName === 'outstops' ) {
+                  var outstops = routeInfo[m].parentElement.children[m].children;
+                  for ( var n = 0; n < outstops.length; n++ ) {
+                    stopDistances.push(outstops[n].parentElement.children[n].attributes.getNamedItem("name").value
+                    + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("daytime").value);
+                  }
+                  // Add start and end stop.
+                  routeObj.startStop = stopDistances[0].split(":")[0];
+                  routeObj.endStop = stopDistances[stopDistances.length-1].split(":")[0];
+                }
+                // The in stops we only add if they have not yet been added.
+                if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {
+                  var instops = routeInfo[m].parentElement.children[m].children;
+                  for ( var n = 0; n < instops.length; n++ ) {
+                    var instopName = instops[n].parentElement.children[n].attributes.getNamedItem("name").value;
+                    var addStop = true;
+                    for ( var p = 0; p < stopDistances.length; p++ ){
+                      if ( stopDistances[p].startsWith(instopName) ) {
+                        addStop = false;
+                      }
+                    }
+                    if ( addStop ) {
+                      stopDistances.push(instops[n].parentElement.children[n].attributes.getNamedItem("name").value
+                          + ":" + instops[n].parentElement.children[n].attributes.getNamedItem("daytime").value);
+                    }
+                  }
+                }
+              }
               // Process each route element and save it to route db.
-              console.log('This is where we process routes in the future...');
+              routes.push(routeObj);
             } else if ( operatorElements.item(i).childNodes.item(j).nodeName === 'vehicles' ) {
               // Process the vehicles elements.
               const vehicles = operatorElements.item(i).childNodes.item(j).childNodes;
@@ -117,7 +161,7 @@ export class AppComponent {
               70,
               suppliedVehicles,
               [],
-              []
+              stopDistances
           );
           // Create the game.
           // Defaults: empty player name, starting time is now, scenario will be created soon and difficulty level is easy.
@@ -134,6 +178,16 @@ export class AppComponent {
               additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
               this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].model.modelName === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
                   mySuppliedVehicles[i].model.modelType, '', 0, additionalProps));
+            }
+          }
+          // Add the routes.
+          for ( var t = 0; t < routes.length; t++ ) {
+            this.gameService.getGame().addRoute(routes[t]);
+            // Add the allocations.
+            for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
+              for (var j = 0; j < mySuppliedVehicles[i].quantity; j++) {
+                this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].model.modelType ));
+              }
             }
           }
         }
