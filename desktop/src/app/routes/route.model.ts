@@ -1,4 +1,5 @@
 import {Timetable} from "../shared/timetable.model";
+import {ScheduleModel} from "../stops/stop-detail/schedule.model";
 
 /**
  * This class defines a model for Routes in TraMS which consist of an id, routeNumber and agency.
@@ -12,6 +13,7 @@ export class Route {
   public endStop: string;
   public stops: string[];
   public timetables: Timetable[];
+  public schedules: ScheduleModel[];
 
   addTimetable ( timetable: Timetable ) {
     if ( this.timetables ) {

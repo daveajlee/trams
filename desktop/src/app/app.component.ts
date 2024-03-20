@@ -9,6 +9,8 @@ import {VehicleModel} from "./vehicles/vehiclemodel.model";
 import {Vehicle} from "./vehicles/vehicle.model";
 import {Route} from "./routes/route.model";
 import {Allocation} from "./allocations/allocation.model";
+import {ServiceModel} from "./stops/stop-detail/service.model";
+import {ScheduleModel} from "./stops/stop-detail/schedule.model";
 
 @Component({
   selector: 'app-root',
@@ -114,14 +116,15 @@ export class AppComponent {
                   var outstops = routeInfo[m].parentElement.children[m].children;
                   for ( var n = 0; n < outstops.length; n++ ) {
                     stopDistances.push(outstops[n].parentElement.children[n].attributes.getNamedItem("name").value
-                    + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("daytime").value);
+                        + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("daytime").value
+                        + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("evetime").value);
                   }
                   // Add start and end stop.
                   routeObj.startStop = stopDistances[0].split(":")[0];
                   routeObj.endStop = stopDistances[stopDistances.length-1].split(":")[0];
                 }
                 // The in stops we only add if they have not yet been added.
-                if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {
+                else if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {
                   var instops = routeInfo[m].parentElement.children[m].children;
                   for ( var n = 0; n < instops.length; n++ ) {
                     var instopName = instops[n].parentElement.children[n].attributes.getNamedItem("name").value;
@@ -133,12 +136,109 @@ export class AppComponent {
                     }
                     if ( addStop ) {
                       stopDistances.push(instops[n].parentElement.children[n].attributes.getNamedItem("name").value
-                          + ":" + instops[n].parentElement.children[n].attributes.getNamedItem("daytime").value);
+                          + ":" + instops[n].parentElement.children[n].attributes.getNamedItem("daytime").value
+                          + ":" + instops[n].parentElement.children[n].attributes.getNamedItem("evetime").value);
                     }
                   }
                 }
+                // Now we start to process the schedules.
+                else if ( routeInfo[m].parentElement.children[m].nodeName === 'detailsched' ) {
+                  var scheds = routeInfo[m].parentElement.children[m].children;
+                  // Store the schedules here.
+                  const schedules = [];
+                  for ( var a = 0; a < scheds.length; a++ ) {
+                    // Read this schedule and service line,
+                    var schedId = scheds[a].parentElement.children[a].attributes.getNamedItem("id").value;
+                    var serviceId = scheds[a].parentElement.children[a].attributes.getNamedItem("serviceId").value;
+                    var startTime = scheds[a].parentElement.children[a].attributes.getNamedItem("startTime").value;
+                    var startStop = scheds[a].parentElement.children[a].attributes.getNamedItem("startStop").value;
+                    var endDest = scheds[a].parentElement.children[a].attributes.getNamedItem("endDest").value;
+                    var times = scheds[a].parentElement.children[a].attributes.getNamedItem("times").value;
+                    // Either retrieve the schedule or create a new schedule.
+                    var mySchedule = null;
+                    for ( var z = 0; z < schedules.length; z++ ) {
+                      if ( schedules[z].scheduleId === schedId ) {
+                        mySchedule = schedules[z];
+                      }
+                    }
+                    if ( !mySchedule ) {
+                      mySchedule = new ScheduleModel(routeObj.routeNumber, schedId);
+                      schedules.push(mySchedule);
+                    }
+                    // Now we create a service for this schedule.
+                    const serviceModel = new ServiceModel(serviceId);
+                    // Add the start time and stop.
+                    serviceModel.addStop(startTime, startTime, startStop);
+                    // Determine start position in array.
+                    var startPos = 0;
+                    for ( var b = 0; b < stopDistances.length; b++ ) {
+                       if ( stopDistances[b].startsWith(startStop)) {
+                         startPos = b;
+                       }
+                    }
+                    // Now check direction.
+                    var outDirection = false;
+                    for ( var c = startPos; c < stopDistances.length; c++ ) {
+                      if ( stopDistances[c].startsWith(endDest) ) {
+                        outDirection = true;
+                      }
+                    }
+                    // Now add the remaining stops and times.
+                    if ( outDirection ) {
+                      // Set the current time that we are processing.
+                      var thisTime = new Date();
+                      thisTime.setHours(parseInt(startTime.split(":")[0]));
+                      thisTime.setMinutes(parseInt(startTime.split(":")[1]));
+                      thisTime.setSeconds(0);
+                      for ( var d = (startPos+1); d < stopDistances.length; d++ ) {
+                        // Now add the distance to the next stop to the current time.
+                        var distanceInMins = parseInt(stopDistances[d].split(":")[(times === 'daytime') ? 1 : 2]) - parseInt(stopDistances[d-1].split(":")[(times === 'daytime') ? 1 : 2]);
+                        var nextTime = new Date();
+                        // If we go over the hour, then handle appropriately.
+                        if ((thisTime.getMinutes() + distanceInMins) > 59) {
+                          nextTime.setHours(thisTime.getHours() + 1);
+                          nextTime.setMinutes((thisTime.getMinutes() + distanceInMins) % 60);
+                        } else {
+                          nextTime.setHours(thisTime.getHours());
+                          nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
+                        }
+                        // Create the stop time.
+                        serviceModel.addStop(this.formatTimeAsString(nextTime), this.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                        // Now we set this time to next time and we are done for this loop.
+                        thisTime = nextTime;
+                      }
+                      mySchedule.addService(serviceModel);
+                    } else {
+                      // Set the current time that we are processing.
+                      var thisTime = new Date();
+                      thisTime.setHours(parseInt(startTime.split(":")[0]));
+                      thisTime.setMinutes(parseInt(startTime.split(":")[1]));
+                      thisTime.setSeconds(0);
+                      for ( var d = (startPos-1); d >= 0; d-- ) {
+                        // Now add the distance to the next stop to the current time.
+                        var distanceInMins = parseInt(stopDistances[d+1].split(":")[(times === 'daytime') ? 1 : 2]) - parseInt(stopDistances[d].split(":")[(times === 'daytime') ? 1 : 2]);
+                        var nextTime = new Date();
+                        // If we go over the hour, then handle appropriately.
+                        if ((thisTime.getMinutes() + distanceInMins) > 59) {
+                          nextTime.setHours(thisTime.getHours() + 1);
+                          nextTime.setMinutes((thisTime.getMinutes() + distanceInMins) % 60);
+                        } else {
+                          nextTime.setHours(thisTime.getHours());
+                          nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
+                        }
+                        // Create the stop time.
+                        serviceModel.addStop(this.formatTimeAsString(nextTime), this.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                        // Now we set this time to next time and we are done for this loop.
+                        thisTime = nextTime;
+                      }
+                      mySchedule.addService(serviceModel);
+                    }
+                  }
+                  routeObj.schedules = schedules;
+                }
               }
               // Process each route element and save it to route db.
+              console.log(routeObj);
               routes.push(routeObj);
             } else if ( operatorElements.item(i).childNodes.item(j).nodeName === 'vehicles' ) {
               // Process the vehicles elements.
@@ -193,6 +293,27 @@ export class AppComponent {
         }
       }
     }
+  }
+
+  /**
+   * Helper method to format time.
+   */
+  formatTimeAsString(time: Date): string {
+    var hour: string;
+    // Format hour with a 0 as prefix if before 10.
+    if ( time.getHours() < 10 ) {
+      hour = "0" + time.getHours();
+    } else {
+      hour = "" + time.getHours();
+    }
+    var minute: string;
+    // Format minutes with a 0 as prefix if before 10.
+    if ( time.getMinutes() < 10 ) {
+      minute = "0" + time.getMinutes();
+    } else {
+      minute = "" + time.getMinutes();
+    }
+    return hour + ":" + minute;
   }
 
   /**
