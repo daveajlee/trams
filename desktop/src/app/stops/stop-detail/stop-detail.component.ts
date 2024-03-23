@@ -77,10 +77,32 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.minutes = this.leftPadZero(time.getMinutes());
     // Retrieve departures for first stop id.
     // Save the stop information based on the id.
+    // Get first of all relevant departures.
     if ( this.gameService.getGame().scenario.stopDistances ) {
+        this.todayDepartures = [];
+        // Go through all of the routes,
+        var routes = this.gameService.getGame().routes;
+        for ( let a = 0; a < routes.length; a++ ) {
+          var schedules = routes[a].schedules;
+          for ( let b = 0; b < schedules.length; b++ ) {
+            var services = schedules[b].services;
+            for ( let c = 0; c < services.length; c++ ) {
+              var stops = services[c].stopList;
+              for ( let d = 0; d < stops.length; d++ ) {
+                if ( this.stop.name === stops[d].stop ) {
+                  // This service stops here so now create the real time model and add it to today departures.
+                  this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                }
+              }
+            }
+          }
+        }
+        // Sort departures.
+        this.todayDepartures.sort(this.sortDepartures);
+        // Now we have to check if departures or arrivals are after current time.
         this.departures = [];
         this.arrivals = [];
-        this.todayDepartures = [];
+
     } else {
       this.departuresSubscription = this.http.get<StopTimesResponse>(
           'http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
@@ -96,6 +118,15 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         this.todayDepartures = departureInfos.stopTimeResponses;
       });
     }
+  }
+
+  sortDepartures(first: RealTimeInfo, second: RealTimeInfo) {
+    if ( first.departureTime < second.departureTime ) {
+      return -1;
+    } else if ( first.departureTime > second.departureTime ) {
+      return 1;
+    }
+    return 0;
   }
 
   /**
