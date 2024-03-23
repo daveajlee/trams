@@ -11,6 +11,7 @@ import {Route} from "./routes/route.model";
 import {Allocation} from "./allocations/allocation.model";
 import {ServiceModel} from "./stops/stop-detail/service.model";
 import {ScheduleModel} from "./stops/stop-detail/schedule.model";
+import {TimeHelper} from "./shared/time.helper";
 
 @Component({
   selector: 'app-root',
@@ -88,7 +89,7 @@ export class AppComponent {
       const gameElement = xmlDoc.documentElement;
       // Now we read the child nodes with the operators.
       const operatorElements = gameElement.childNodes;
-      for (var i = 0; i < operatorElements.length; i++) {
+      for (let i = 0; i < operatorElements.length; i++) {
         // We can ignore all text nodes. Otherwise it will be an operator.
         if (operatorElements.item(i).nodeName != '#text') {
           // Retrieve the name.
@@ -99,7 +100,7 @@ export class AppComponent {
           var routes = [];
           var stopDistances = [];
           // Go through the child nodes of operator elements.
-          for ( var j = 0; j < operatorElements.item(i).childNodes.length; j++ ) {
+          for ( let j = 0; j < operatorElements.item(i).childNodes.length; j++ ) {
             if ( operatorElements.item(i).childNodes.item(j).nodeName === 'route' ) {
               // Process the route elements.
               const route = operatorElements.item(i).childNodes.item(j).childNodes;
@@ -107,14 +108,13 @@ export class AppComponent {
               routeObj.company = operatorName;
               routeObj.routeNumber = route[0].parentElement.attributes.getNamedItem("number").value;
               // Process the stops.
-              const stops = [];
               const routeInfo = route[0].parentElement.children;
               // Go through either outstops, instops and detailsched.
-              for ( var m = 0; m < routeInfo.length; m++ ) {
+              for ( let m = 0; m < routeInfo.length; m++ ) {
                 // The out stops we have to add.
                 if ( routeInfo[m].parentElement.children[m].nodeName === 'outstops' ) {
-                  var outstops = routeInfo[m].parentElement.children[m].children;
-                  for ( var n = 0; n < outstops.length; n++ ) {
+                  let outstops = routeInfo[m].parentElement.children[m].children;
+                  for ( let n = 0; n < outstops.length; n++ ) {
                     stopDistances.push(outstops[n].parentElement.children[n].attributes.getNamedItem("name").value
                         + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("daytime").value
                         + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("evetime").value);
@@ -126,7 +126,7 @@ export class AppComponent {
                 // The in stops we only add if they have not yet been added.
                 else if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {
                   var instops = routeInfo[m].parentElement.children[m].children;
-                  for ( var n = 0; n < instops.length; n++ ) {
+                  for ( let n = 0; n < instops.length; n++ ) {
                     var instopName = instops[n].parentElement.children[n].attributes.getNamedItem("name").value;
                     var addStop = true;
                     for ( var p = 0; p < stopDistances.length; p++ ){
@@ -186,14 +186,14 @@ export class AppComponent {
                     // Now add the remaining stops and times.
                     if ( outDirection ) {
                       // Set the current time that we are processing.
-                      var thisTime = new Date();
+                      let thisTime = new Date();
                       thisTime.setHours(parseInt(startTime.split(":")[0]));
                       thisTime.setMinutes(parseInt(startTime.split(":")[1]));
                       thisTime.setSeconds(0);
-                      for ( var d = (startPos+1); d < stopDistances.length; d++ ) {
+                      for ( let d = (startPos+1); d < stopDistances.length; d++ ) {
                         // Now add the distance to the next stop to the current time.
-                        var distanceInMins = parseInt(stopDistances[d].split(":")[(times === 'daytime') ? 1 : 2]) - parseInt(stopDistances[d-1].split(":")[(times === 'daytime') ? 1 : 2]);
-                        var nextTime = new Date();
+                        let distanceInMins = parseInt(stopDistances[d].split(":")[(times === 'daytime') ? 1 : 2]) - parseInt(stopDistances[d-1].split(":")[(times === 'daytime') ? 1 : 2]);
+                        let nextTime = new Date();
                         // If we go over the hour, then handle appropriately.
                         if ((thisTime.getMinutes() + distanceInMins) > 59) {
                           nextTime.setHours(thisTime.getHours() + 1);
@@ -203,7 +203,7 @@ export class AppComponent {
                           nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                         }
                         // Create the stop time.
-                        serviceModel.addStop(this.formatTimeAsString(nextTime), this.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                        serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
                         // Now we set this time to next time and we are done for this loop.
                         thisTime = nextTime;
                       }
@@ -227,7 +227,7 @@ export class AppComponent {
                           nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                         }
                         // Create the stop time.
-                        serviceModel.addStop(this.formatTimeAsString(nextTime), this.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                        serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
                         // Now we set this time to next time and we are done for this loop.
                         thisTime = nextTime;
                       }
@@ -268,8 +268,8 @@ export class AppComponent {
           this.gameService.setGame(new Game(operatorName, "", this.datePipe.transform(new Date(), 'yyyy-MM-dd'), customScenario, "Easy"))
           // Add the supplied vehicles.
           var mySuppliedVehicles = customScenario.suppliedVehicles;
-          for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
-            for ( var j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+          for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
+            for ( let j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
               const additionalProps = new Map<string, string>();
               additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
               additionalProps.set('Age', ((mySuppliedVehicles[i].model.modelName === "Single") ? (200000 / mySuppliedVehicles[i].model.value) * 12 : (400000 / mySuppliedVehicles[i].model.value) * 12) + " months" );
@@ -293,27 +293,6 @@ export class AppComponent {
         }
       }
     }
-  }
-
-  /**
-   * Helper method to format time.
-   */
-  formatTimeAsString(time: Date): string {
-    var hour: string;
-    // Format hour with a 0 as prefix if before 10.
-    if ( time.getHours() < 10 ) {
-      hour = "0" + time.getHours();
-    } else {
-      hour = "" + time.getHours();
-    }
-    var minute: string;
-    // Format minutes with a 0 as prefix if before 10.
-    if ( time.getMinutes() < 10 ) {
-      minute = "0" + time.getMinutes();
-    } else {
-      minute = "" + time.getMinutes();
-    }
-    return hour + ":" + minute;
   }
 
   /**

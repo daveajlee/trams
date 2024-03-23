@@ -8,6 +8,7 @@ import {RealTimeInfo} from './realtimeinfos.model';
 import {Subscription} from 'rxjs';
 import {StopTimesResponse} from "./stoptimes-response.model";
 import {GameService} from "../../shared/game.service";
+import {TimeHelper} from "../../shared/time.helper";
 
 @Component({
   selector: 'app-stop-detail',
@@ -80,14 +81,14 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     // Get first of all relevant departures.
     if ( this.gameService.getGame().scenario.stopDistances ) {
         this.todayDepartures = [];
-        // Go through all of the routes,
-        var routes = this.gameService.getGame().routes;
+        // Go through the routes,
+        let routes = this.gameService.getGame().routes;
         for ( let a = 0; a < routes.length; a++ ) {
-          var schedules = routes[a].schedules;
+          let schedules = routes[a].schedules;
           for ( let b = 0; b < schedules.length; b++ ) {
-            var services = schedules[b].services;
+            let services = schedules[b].services;
             for ( let c = 0; c < services.length; c++ ) {
-              var stops = services[c].stopList;
+              let stops = services[c].stopList;
               for ( let d = 0; d < stops.length; d++ ) {
                 if ( this.stop.name === stops[d].stop ) {
                   // This service stops here so now create the real time model and add it to today departures.
@@ -99,10 +100,17 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         }
         // Sort departures.
         this.todayDepartures.sort(this.sortDepartures);
-        // Now we have to check if departures or arrivals are after current time.
-        this.departures = [];
-        this.arrivals = [];
-
+        // Save the next 5 departures into the departures array and save the next 5 arrivals into the arrivals array.
+        let currentTime = TimeHelper.formatTimeAsString(new Date());
+        this.departures = []; this.arrivals = [];
+        for ( let a = 0; a < this.todayDepartures.length; a++ ) {
+          if ( this.todayDepartures[a].departureTime >= currentTime && this.departures.length < 5 ) {
+            this.departures.push(this.todayDepartures[a]);
+          }
+          if ( this.todayDepartures[a].arrivalTime >= currentTime && this.arrivals.length < 5 ) {
+            this.arrivals.push(this.todayDepartures[a]);
+          }
+        }
     } else {
       this.departuresSubscription = this.http.get<StopTimesResponse>(
           'http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
@@ -120,6 +128,12 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Helper method to sort departures array.
+   * @param first the first RealTimeInfo object to sort.
+   * @param second the second RealTimeInfo object to sort.
+   * @return an int which is -1 if the first before the second or 1 if second before first.
+   */
   sortDepartures(first: RealTimeInfo, second: RealTimeInfo) {
     if ( first.departureTime < second.departureTime ) {
       return -1;
@@ -128,6 +142,8 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     }
     return 0;
   }
+
+
 
   /**
    * Return the URL on OpenStreetMap which contains the map of this stop.
