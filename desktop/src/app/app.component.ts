@@ -284,8 +284,8 @@ export class AppComponent {
           for ( var t = 0; t < routes.length; t++ ) {
             this.gameService.getGame().addRoute(routes[t]);
             // Add the allocations.
-            for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
-              for (var j = 0; j < mySuppliedVehicles[i].quantity; j++) {
+            for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
+              for (let j = 0; j < mySuppliedVehicles[i].quantity; j++) {
                 this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].model.modelType ));
               }
             }

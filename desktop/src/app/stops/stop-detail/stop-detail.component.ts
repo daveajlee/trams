@@ -58,28 +58,18 @@ export class StopDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
+      // Determine current date & time
+      const time = new Date(Date.now());
+      const month = time.getMonth() + 1;
+      let monthStr = String(month);
+      if ( month < 10 ) { monthStr = '0' + month; }
+      const dayOfMonth = time.getDate();
+      this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
+      this.hours = this.leftPadZero(time.getHours());
+      this.minutes = this.leftPadZero(time.getMinutes());
       if ( this.gameService.getGame().scenario.stopDistances ) {
         this.stop = new Stop('' + this.id, this.gameService.getGame().scenario.stopDistances[this.id].split(":")[0], 0, 0)
-      } else {
-        this.stop = this.stopsService.getStop(this.id);
-        this.mapUrl = this.dom.bypassSecurityTrustResourceUrl('http://www.openstreetmap.org/export/embed.html?bbox='
-            + (this.stop.longitude - 0.003) + ',' + (this.stop.latitude - 0.003) + ',' + (this.stop.longitude + 0.003) +
-            ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
-      }
-    });
-    // Determine current date & time
-    const time = new Date(Date.now());
-    const month = time.getMonth() + 1;
-    let monthStr = String(month);
-    if ( month < 10 ) { monthStr = '0' + month; }
-    const dayOfMonth = time.getDate();
-    this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
-    this.hours = this.leftPadZero(time.getHours());
-    this.minutes = this.leftPadZero(time.getMinutes());
-    // Retrieve departures for first stop id.
-    // Save the stop information based on the id.
-    // Get first of all relevant departures.
-    if ( this.gameService.getGame().scenario.stopDistances ) {
+        console.log('Retrieving ' + this.stop.name);
         this.todayDepartures = [];
         // Go through the routes,
         let routes = this.gameService.getGame().routes;
@@ -91,8 +81,11 @@ export class StopDetailComponent implements OnInit, OnDestroy {
               let stops = services[c].stopList;
               for ( let d = 0; d < stops.length; d++ ) {
                 if ( this.stop.name === stops[d].stop ) {
-                  // This service stops here so now create the real time model and add it to today departures.
-                  this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                  // Exclude those stops which end here as they are not departures,
+                  if ( stops[d].stop != stops[stops.length-1].stop ) {
+                    // This service stops here so now create the real time model and add it to today departures.
+                    this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                  }
                 }
               }
             }
@@ -111,21 +104,26 @@ export class StopDetailComponent implements OnInit, OnDestroy {
             this.arrivals.push(this.todayDepartures[a]);
           }
         }
-    } else {
-      this.departuresSubscription = this.http.get<StopTimesResponse>(
-          'http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
-          this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-        this.departures = realTimeInfos.stopTimeResponses;
-      });
-      // Retrieve arrivals for first stop id.
-      this.arrivalsSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-        this.arrivals = realTimeInfos.stopTimeResponses;
-      });
-      // Retrieve departures for complete day.
-      this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
-        this.todayDepartures = departureInfos.stopTimeResponses;
-      });
-    }
+      } else {
+        this.stop = this.stopsService.getStop(this.id);
+        this.mapUrl = this.dom.bypassSecurityTrustResourceUrl('http://www.openstreetmap.org/export/embed.html?bbox='
+            + (this.stop.longitude - 0.003) + ',' + (this.stop.latitude - 0.003) + ',' + (this.stop.longitude + 0.003) +
+            ',' + (this.stop.latitude + 0.003) + '&layer=mapnik');
+        this.departuresSubscription = this.http.get<StopTimesResponse>(
+            'http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' +
+            this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
+          this.departures = realTimeInfos.stopTimeResponses;
+        });
+        // Retrieve arrivals for first stop id.
+        this.arrivalsSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.name + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
+          this.arrivals = realTimeInfos.stopTimeResponses;
+        });
+        // Retrieve departures for complete day.
+        this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>('http://localhost:8084/api/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.name + '&date=' + this.today).subscribe(departureInfos => {
+          this.todayDepartures = departureInfos.stopTimeResponses;
+        });
+      }
+    });
   }
 
   /**
