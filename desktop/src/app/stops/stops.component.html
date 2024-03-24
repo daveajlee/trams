@@ -1,6 +1,9 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
 <!-- Display a jumbotron component which explains what stops are and how they work in TraMS -->
 <div class="jumbotron" >
-  <h1 class="display-4">Stops</h1>
+  <h1 class="display-4 text-center">Stops</h1>
   <br/>
   <p class="lead">A stop is a location where customers can either start or finish using your services. Therefore you should aim to have as many stops as possible as near to your potential customers as possible. But don't forget if a stop is not served by any routes then customers will not use it!</p>
   <hr class="my-4">
@@ -29,5 +32,9 @@
   <div class="col-md-7">
     <router-outlet></router-outlet>
   </div>
+
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+    </div>
 </div>
 

@@ -20,6 +20,7 @@ import {DrivercreatorComponent} from "./drivercreator/drivercreator.component";
 import {VehicleshowroomComponent} from "./vehicleshowroom/vehicleshowroom.component";
 import {AllocationsComponent} from "./allocations/allocations.component";
 import {AllocationslistComponent} from "./allocationslist/allocationslist.component";
+import {LivesituationComponent} from "./livesituation/livesituation.component";
 
 /**
  * Define the links which work in this application.
@@ -30,6 +31,7 @@ const appRoutes: Routes = [
     { path: 'drivers', component: DriversComponent, children: [
         { path: ':id', component: DriverDetailComponent}
     ] },
+    { path: 'livesituation', component: LivesituationComponent },
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'options', component: OptionsComponent },

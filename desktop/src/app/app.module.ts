@@ -35,6 +35,7 @@ import { DrivercreatorComponent } from './drivercreator/drivercreator.component'
 import { VehicleshowroomComponent } from './vehicleshowroom/vehicleshowroom.component';
 import { AllocationsComponent } from './allocations/allocations.component';
 import { AllocationslistComponent } from './allocationslist/allocationslist.component';
+import { LivesituationComponent } from './livesituation/livesituation.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { AllocationslistComponent } from './allocationslist/allocationslist.comp
     DrivercreatorComponent,
     VehicleshowroomComponent,
     AllocationsComponent,
-    AllocationslistComponent
+    AllocationslistComponent,
+    LivesituationComponent
   ],
   imports: [
     BrowserModule,

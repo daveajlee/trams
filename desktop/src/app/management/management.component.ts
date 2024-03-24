@@ -36,6 +36,10 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['scenarioinfo']);
   }
 
+  onLoadLiveSituation(): void {
+    this.router.navigate(['livesituation'])
+  }
+
   onCreateRoute(): void {
     this.router.navigate(['routecreator']);
   }
