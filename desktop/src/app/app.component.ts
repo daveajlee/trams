@@ -122,6 +122,11 @@ export class AppComponent {
                   // Add start and end stop.
                   routeObj.startStop = stopDistances[0].split(":")[0];
                   routeObj.endStop = stopDistances[stopDistances.length-1].split(":")[0];
+                  const stops = [];
+                  for ( let h = 0; h < stopDistances.length; h++ ) {
+                    stops.push(stopDistances[h].split(":")[0]);
+                  }
+                  routeObj.stops = stops;
                 }
                 // The in stops we only add if they have not yet been added.
                 else if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {

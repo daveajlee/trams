@@ -1,12 +1,32 @@
 <!-- Show the header on the start page -->
 <app-header></app-header>
 
+<!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
 <div class="jumbotron">
     <h1 class="display-4 text-center">Live Situation</h1>
+    <h2 class="display-5 text-center">{{getCurrentDate()}}</h2>
+    <h2 class="display-5 text-center">Balance: €{{getBalance()}}</h2>
+    <div class="progress progress-bar-size">
+        <div class="progress-bar bg-success w-100 progress-bar-text" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Passenger Satisfaction Rating - 100%</div>
+    </div>
 </div>
 
 <div class="container-fluid">
-    <h1 class="display-4 text-center">Coming Soon...</h1>
+    <!-- Show an input box where the user can choose the route -->
+    <div class="form-group top-space m-5">
+        <label for="route" style="font-weight: bold;">Route:</label>
+        <select class="form-control" [(ngModel)]="selectedRoute" id="route">
+            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.routeNumber">{{ item.routeNumber + ": " + item.startStop + " <> " + item.endStop }}</option>
+        </select>
+        <table class="mt-5">
+            <tr>
+                <td class="fw-bold text-center" *ngFor="let stop of this.getSelectedRouteStops()">{{ stop }}</td>
+            </tr>
+            <tr *ngFor="let scheds of this.getRouteScheds()">
+                <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">-</td>
+            </tr>
+        </table>
+    </div>
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
     </div>
