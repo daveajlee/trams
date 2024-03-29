@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {GameService} from "../shared/game.service";
 
 @Component({
   selector: 'app-clock',
@@ -13,6 +14,12 @@ export class ClockComponent implements OnInit, OnDestroy {
   minutes: string;
   seconds: string;
   private timerId = null;
+
+  gameService: GameService;
+
+  constructor(private gameService2: GameService) {
+    this.gameService = gameService2;
+  }
 
   /**
    * When constructing the object, the time should be set to the current time and marked that the time was last refreshed at this time.
@@ -33,7 +40,7 @@ export class ClockComponent implements OnInit, OnDestroy {
    * Private helper method to set the current time in the format HH:mm
    */
   private setCurrentTime(): void {
-    const time = new Date(Date.now());
+    const time = this.gameService.getGame().currentDateTime;
     this.hours = this.leftPadZero(time.getHours());
     this.minutes = this.leftPadZero(time.getMinutes());
   }

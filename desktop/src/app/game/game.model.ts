@@ -13,9 +13,10 @@ export class Game {
     public companyName: string;
     public balance: number;
     public playerName: string;
-    public startingTime: string;
+    public currentDateTime: Date;
     public scenario: Scenario;
     public difficultyLevel: string;
+    public passengerSatisfaction: number;
     public routes: Route[];
     public messages: Message[];
     public vehicles: Vehicle[];
@@ -26,19 +27,20 @@ export class Game {
      * Construct a new game which contains the supplied data.
      * @param companyName the name of the company
      * @param playerName the player name who will run the company
-     * @param startingTime the starting date and time for playing this company
+     * @param startingDateTime the starting date and time for playing this company
      * @param scenario the scenario that the player will play with this company
      * @param difficultyLevel the level of difficulty that the player wants to play
      */
 
-    constructor( companyName: string, playerName: string, startingTime: string, scenario: Scenario,
+    constructor( companyName: string, playerName: string, startingDateTime: Date, scenario: Scenario,
                  difficultyLevel: string ) {
         this.companyName = companyName;
         this.balance = 200000.0;
         this.playerName = playerName;
-        this.startingTime = startingTime;
+        this.currentDateTime = startingDateTime;
         this.scenario = scenario;
         this.difficultyLevel = difficultyLevel;
+        this.passengerSatisfaction = 90;
         this.routes = [];
         this.messages = [];
         this.vehicles = [];

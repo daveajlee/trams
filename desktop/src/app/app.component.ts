@@ -28,13 +28,12 @@ export class AppComponent {
   difficultyLevel: string;
   startingDate: string;
   showOutlet: boolean;
-  currentDate = new Date();
 
   gameService: GameService;
 
   constructor(public router: Router, private datePipe: DatePipe, private gameService2: GameService) {
     this.difficultyLevel = 'Easy';
-    this.startingDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+    this.startingDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.gameService = gameService2;
   }
 
@@ -270,7 +269,7 @@ export class AppComponent {
           );
           // Create the game.
           // Defaults: empty player name, starting time is now, scenario will be created soon and difficulty level is easy.
-          this.gameService.setGame(new Game(operatorName, "", this.datePipe.transform(new Date(), 'yyyy-MM-dd'), customScenario, "Easy"))
+          this.gameService.setGame(new Game(operatorName, "", new Date(), customScenario, "Easy"))
           // Add the supplied vehicles.
           var mySuppliedVehicles = customScenario.suppliedVehicles;
           for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {

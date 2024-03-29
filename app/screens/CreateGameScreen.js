@@ -49,9 +49,9 @@ function CreateGameScreen({navigation}) {
         // Create game - if level is not set then use default easy level.
         var game;
         if ( !levelValue ) {
-            game = new Game(companyName, playerName, '', 'easy', startDate.toLocaleString());
+            game = new Game(companyName, playerName, '', 'easy', startDate);
         } else {
-            game = new Game(companyName, playerName, '', levelValue, startDate.toLocaleString());
+            game = new Game(companyName, playerName, '', levelValue, startDate);
         }
         // WHen creating a game, then check if the company already exists then show an alert and do not add.
         const games = await fetchGame(companyName);

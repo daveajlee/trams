@@ -11,25 +11,29 @@ import {ScheduleModel} from "../stops/stop-detail/schedule.model";
 })
 export class LivesituationComponent implements OnInit {
 
-  currentDate: Date;
   gameService: GameService;
   selectedRoute: String;
+  simulationRunning: boolean;
 
   constructor(private gameService2: GameService, public router: Router) {
-    this.currentDate = new Date();
     this.gameService = gameService2;
     this.selectedRoute = this.getRoutes()[0].routeNumber;
+    this.simulationRunning = false;
   }
 
   ngOnInit(): void {
   }
 
   getCurrentDate(): string {
-    return this.currentDate.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return this.gameService.getGame().currentDateTime.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
   getBalance(): string {
     return '' + this.gameService.getGame().balance;
+  }
+
+  getPassengerSatisfaction(): number {
+    return this.gameService.getGame().passengerSatisfaction;
   }
 
   getRoutes(): Route[] {
@@ -53,7 +57,8 @@ export class LivesituationComponent implements OnInit {
   }
 
   getCurrentPosition(schedule: ScheduleModel): string {
-    var currentTime = this.currentDate.getHours() + ":" + this.currentDate.getMinutes();
+    var currentDateTime = this.gameService.getGame().currentDateTime;
+    var currentTime = currentDateTime.getHours() + ":" + currentDateTime.getMinutes();
     for ( let i = 0; i < schedule.services.length; i++ ) {
       for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
         // If we exactly match the departure time then this is where we are.
@@ -83,6 +88,14 @@ export class LivesituationComponent implements OnInit {
     }
     // If we still did not match, then we must be at the depot.
     return "Depot";
+  }
+
+  isSimulationRunning() {
+    return this.simulationRunning;
+  }
+
+  setSimulationRunning(value: boolean) {
+    this.simulationRunning = value;
   }
 
   backToManagementScreen(): void {

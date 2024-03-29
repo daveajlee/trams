@@ -94,7 +94,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         // Sort departures.
         this.todayDepartures.sort(this.sortDepartures);
         // Save the next 5 departures into the departures array and save the next 5 arrivals into the arrivals array.
-        let currentTime = TimeHelper.formatTimeAsString(new Date());
+        let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame().currentDateTime);
         this.departures = []; this.arrivals = [];
         for ( let a = 0; a < this.todayDepartures.length; a++ ) {
           if ( this.todayDepartures[a].departureTime >= currentTime && this.departures.length < 5 ) {
