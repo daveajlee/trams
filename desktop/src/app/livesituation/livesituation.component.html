@@ -23,12 +23,12 @@
                 <td class="fw-bold text-center" *ngFor="let stop of this.getSelectedRouteStops()">{{ stop }}</td>
             </tr>
             <tr *ngFor="let sched of this.getRouteScheds()">
-                <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">-</td>
+                <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">
+                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white" style="background-color: green; color: white; padding: 3px;">{{stop}}</span>
+                    <ng-template #position_white><span style="background-color: white; color: white; padding: 3px;">{{stop}}</span></ng-template>
+                </td>
             </tr>
         </table>
-        <div class="mt-5" *ngFor="let sched of this.getRouteScheds()">
-            <p>Current position of {{sched.scheduleId}} is: {{this.getCurrentPosition(sched)}}</p>
-        </div>
     </div>
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
