@@ -52,6 +52,39 @@ export class LivesituationComponent implements OnInit {
     }
   }
 
+  getCurrentPosition(schedule: ScheduleModel): string {
+    var currentTime = this.currentDate.getHours() + ":" + this.currentDate.getMinutes();
+    for ( let i = 0; i < schedule.services.length; i++ ) {
+      for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
+        // If we exactly match the departure time then this is where we are.
+        if ( schedule.services[i].stopList[j].departureTime === currentTime ) {
+          return schedule.services[i].stopList[j].stop;
+        }
+        // If we are before departure time but after arrival time then we are also here.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime <= currentTime) {
+          return schedule.services[i].stopList[j].stop;
+        }
+        // If we are before both departure time and arrival time then we are at the previous stop if there was one.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime > currentTime
+            && j != 0 ) {
+          return schedule.services[i].stopList[j-1].stop;
+        }
+        // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime > currentTime
+            && j === 0
+            && i != 0 ) {
+          return schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop;
+        }
+
+      }
+    }
+    // If we still did not match, then we must be at the depot.
+    return "Depot";
+  }
+
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }
