@@ -36,6 +36,7 @@ import { VehicleshowroomComponent } from './vehicleshowroom/vehicleshowroom.comp
 import { AllocationsComponent } from './allocations/allocations.component';
 import { AllocationslistComponent } from './allocationslist/allocationslist.component';
 import { LivesituationComponent } from './livesituation/livesituation.component';
+import { ScheduleInformationComponent } from './schedule-information/schedule-information.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { LivesituationComponent } from './livesituation/livesituation.component'
     VehicleshowroomComponent,
     AllocationsComponent,
     AllocationslistComponent,
-    LivesituationComponent
+    LivesituationComponent,
+    ScheduleInformationComponent
   ],
   imports: [
     BrowserModule,

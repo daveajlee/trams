@@ -7,7 +7,7 @@
     <h2 class="display-5 text-center">{{getCurrentDate()}}</h2>
     <h2 class="display-5 text-center">Balance: €{{getBalance()}}</h2>
     <div class="progress progress-bar-size">
-        <div class="progress-bar bg-success progress-bar-text" style="width:{{getPassengerSatisfaction()}}%" role="progressbar">Passenger Satisfaction Rating - {{getPassengerSatisfaction()}}%</div>
+        <div class="progress-bar bg-success progress-bar-text" [ngStyle]="{width:getPassengerSatisfaction()+'%'}" role="progressbar">Passenger Satisfaction Rating - {{getPassengerSatisfaction()}}%</div>
     </div>
 </div>
 
@@ -24,12 +24,17 @@
             </tr>
             <tr *ngFor="let sched of this.getRouteScheds()">
                 <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">
-                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white" style="background-color: green; color: white; padding: 3px;">{{stop}}</span>
+                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" [routerLink]="[selectedRoute + ':' + sched.scheduleId]" routerLinkActive="active">{{selectedRoute + "/" + sched.scheduleId}}</button></span>
                     <ng-template #position_white><span style="background-color: white; color: white; padding: 3px;">{{stop}}</span></ng-template>
                 </td>
             </tr>
         </table>
     </div>
+
+    <div class="col-md-8">
+        <router-outlet></router-outlet>
+    </div>
+
     <div class="col text-center">
         <button *ngIf="this.isSimulationRunning(); else stop_simulation" class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="setSimulationRunning(false)">Stop Simulation</button>
         <ng-template #stop_simulation><button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="setSimulationRunning(true)">Start Simulation</button></ng-template>
@@ -37,4 +42,6 @@
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
     </div>
+
+
 </div>

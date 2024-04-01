@@ -21,6 +21,7 @@ import {VehicleshowroomComponent} from "./vehicleshowroom/vehicleshowroom.compon
 import {AllocationsComponent} from "./allocations/allocations.component";
 import {AllocationslistComponent} from "./allocationslist/allocationslist.component";
 import {LivesituationComponent} from "./livesituation/livesituation.component";
+import {ScheduleInformationComponent} from "./schedule-information/schedule-information.component";
 
 /**
  * Define the links which work in this application.
@@ -31,7 +32,8 @@ const appRoutes: Routes = [
     { path: 'drivers', component: DriversComponent, children: [
         { path: ':id', component: DriverDetailComponent}
     ] },
-    { path: 'livesituation', component: LivesituationComponent },
+    { path: 'livesituation', component: LivesituationComponent,
+        children: [{path: ':routeScheduleId', component: ScheduleInformationComponent}]},
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'options', component: OptionsComponent },

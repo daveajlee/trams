@@ -8,7 +8,7 @@ import {TimeHelper} from "../shared/time.helper";
 @Component({
   selector: 'app-livesituation',
   templateUrl: './livesituation.component.html',
-  styleUrls: ['./livesituation.component.css']
+  styleUrls: ['./livesituation.component.css'],
 })
 export class LivesituationComponent implements OnInit {
 
@@ -16,6 +16,8 @@ export class LivesituationComponent implements OnInit {
   selectedRoute: String;
   simulationRunning: boolean;
   interval: any;
+
+  display = "none";
 
   constructor(private gameService2: GameService, public router: Router) {
     this.gameService = gameService2;
@@ -59,7 +61,6 @@ export class LivesituationComponent implements OnInit {
   }
 
   getCurrentPosition(schedule: ScheduleModel): string {
-    console.log('We are at schedule ' + schedule.scheduleId);
     var currentDateTime = this.gameService.getGame().currentDateTime;
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
     for ( let i = 0; i < schedule.services.length; i++ ) {
