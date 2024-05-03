@@ -37,9 +37,20 @@ export class AppComponent {
     this.gameService = gameService2;
   }
 
-  onFileInput(files: FileList | null): void {
+  /**
+   * Load the first of the selected files into the game memory.
+   * @param files the selected files
+   */
+  async onFileInput(files: FileList | null): Promise<void> {
     if (files) {
-      this.file = files.item(0);
+      // Currently we only support tcs files.
+      if ( files.item(0).name.endsWith(".tcs") ) {
+        console.log('We process this in the tcs file');
+        await this.onLoadTcsFile(files.item(0));
+        await this.router.navigate(['management']);
+      } else {
+        alert('This file type is not supported. Please choose another file.');
+      }
     }
   }
   onActivate(event: any): void {
@@ -51,26 +62,10 @@ export class AppComponent {
   }
 
   /**
-   * On submission of the start game form, we create a game.
+   * Clicking on the new game button redirects to the new game screen.
    */
-  onStartSubmit(): void {
-    this.router.navigate(['scenariolist'], { queryParams: { company: this.companyName,
-        playerName: this.playerName, startingDate: this.startingDate, difficultyLevel: this.difficultyLevel } });
-  }
-
-  /**
-   * On submission of the load game form, we load the game.
-   */
-  async onLoadSubmit(): Promise<void> {
-    // Currently we only support tcs files.
-    if ( this.file.name.endsWith(".tcs") ) {
-      console.log('We process this in the tcs file');
-      await this.onLoadTcsFile(this.file);
-      await this.router.navigate(['management']);
-    } else {
-      alert('This file type is not supported. Please choose another file.');
-    }
-
+  onNewGameClick(): void {
+    this.router.navigate(['newgame']);
   }
 
   /**

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import packageJson from '../../../package.json';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -20,7 +21,7 @@ export class HeaderComponent implements OnInit {
   /**
    * Construct a new HeaderComponent and do nothing.
    */
-  constructor() { }
+  constructor(public router: Router) { }
 
   /**
    * When constructing the object, on initialisation do nothing.
@@ -46,6 +47,13 @@ export class HeaderComponent implements OnInit {
         "Vehicle Info Screen",
         "Web Site"
     ];
+  }
+
+  /**
+   * Clicking on the new game button redirects to the new game screen.
+   */
+  onNewGameClick(): void {
+      this.router.navigate(['newgame']);
   }
 
   /**

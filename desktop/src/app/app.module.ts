@@ -37,6 +37,7 @@ import { AllocationsComponent } from './allocations/allocations.component';
 import { AllocationslistComponent } from './allocationslist/allocationslist.component';
 import { LivesituationComponent } from './livesituation/livesituation.component';
 import { ScheduleInformationComponent } from './schedule-information/schedule-information.component';
+import { NewgameComponent } from './newgame/newgame.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { ScheduleInformationComponent } from './schedule-information/schedule-in
     AllocationsComponent,
     AllocationslistComponent,
     LivesituationComponent,
-    ScheduleInformationComponent
+    ScheduleInformationComponent,
+    NewgameComponent
   ],
   imports: [
     BrowserModule,

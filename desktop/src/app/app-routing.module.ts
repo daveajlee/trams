@@ -22,6 +22,7 @@ import {AllocationsComponent} from "./allocations/allocations.component";
 import {AllocationslistComponent} from "./allocationslist/allocationslist.component";
 import {LivesituationComponent} from "./livesituation/livesituation.component";
 import {ScheduleInformationComponent} from "./schedule-information/schedule-information.component";
+import {NewgameComponent} from "./newgame/newgame.component";
 
 /**
  * Define the links which work in this application.
@@ -36,6 +37,7 @@ const appRoutes: Routes = [
         children: [{path: ':routeScheduleId', component: ScheduleInformationComponent}]},
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
+    { path: 'newgame', component: NewgameComponent },
     { path: 'options', component: OptionsComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
