@@ -10,7 +10,9 @@
     </button>
     <ul class="dropdown-menu">
       <li><a class="dropdown-item" (click)="onNewGameClick()">New Game</a></li>
-      <li><a class="dropdown-item" href="#">Load Game</a></li>
+      <li><a class="dropdown-item" (click)="fileInput.click()">Load Game</a></li>
+        <!-- Set the file content to the server -->
+        <input hidden type="file" #fileInput (change)="onLoadGameClick(fileInput.files)" />
       <hr/>
       <li><a class="dropdown-item" href="#">Save Game</a></li>
       <hr/>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import packageJson from '../../../package.json';
 import {Router} from "@angular/router";
+import {LoadService} from "../shared/load.service";
 
 @Component({
   selector: 'app-header',
@@ -18,10 +19,14 @@ export class HeaderComponent implements OnInit {
 
   collapsed = true;
 
+  loadService: LoadService;
+
   /**
    * Construct a new HeaderComponent and do nothing.
    */
-  constructor(public router: Router) { }
+  constructor(public router: Router, private loadService2: LoadService) {
+      this.loadService = loadService2;
+  }
 
   /**
    * When constructing the object, on initialisation do nothing.
@@ -54,6 +59,23 @@ export class HeaderComponent implements OnInit {
    */
   onNewGameClick(): void {
       this.router.navigate(['newgame']);
+  }
+
+  /**
+   * Load the first of the selected files into the game memory.
+   * @param files the selected files
+   */
+  async onLoadGameClick(files: FileList | null): Promise<void> {
+      if (files) {
+          // Currently we only support tcs files.
+          if ( files.item(0).name.endsWith(".tcs") ) {
+              console.log('We process this in the tcs file');
+              await this.loadService.onLoadTcsFile(files.item(0));
+              await this.router.navigate(['management']);
+          } else {
+              alert('This file type is not supported. Please choose another file.');
+          }
+      }
   }
 
   /**
