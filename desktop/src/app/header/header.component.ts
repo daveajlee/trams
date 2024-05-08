@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import packageJson from '../../../package.json';
 import {Router} from "@angular/router";
 import {LoadService} from "../shared/load.service";
+import {SaveService} from "../shared/save.service";
 
 @Component({
   selector: 'app-header',
@@ -21,11 +22,14 @@ export class HeaderComponent implements OnInit {
 
   loadService: LoadService;
 
+  saveService: SaveService;
+
   /**
    * Construct a new HeaderComponent and do nothing.
    */
-  constructor(public router: Router, private loadService2: LoadService) {
+  constructor(public router: Router, private loadService2: LoadService, private saveService2: SaveService) {
       this.loadService = loadService2;
+      this.saveService = saveService2;
   }
 
   /**
@@ -91,7 +95,9 @@ export class HeaderComponent implements OnInit {
                   },
               },
           ],
-        });
+      });
+      console.log('result is ' + result);
+      await this.saveService.onSaveFile(result);
   }
 
   /**

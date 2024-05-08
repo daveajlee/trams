@@ -39,6 +39,7 @@ import { LivesituationComponent } from './livesituation/livesituation.component'
 import { ScheduleInformationComponent } from './schedule-information/schedule-information.component';
 import { NewgameComponent } from './newgame/newgame.component';
 import {LoadService} from "./shared/load.service";
+import {SaveService} from "./shared/save.service";
 
 @NgModule({
   declarations: [
@@ -80,7 +81,7 @@ import {LoadService} from "./shared/load.service";
     MatProgressBarModule,
     ReactiveFormsModule
   ],
-  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService],
+  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
