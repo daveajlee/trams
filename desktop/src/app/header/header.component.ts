@@ -78,6 +78,22 @@ export class HeaderComponent implements OnInit {
       }
   }
 
+    /**
+     * Save the current game to a json file.
+     */
+  async onSaveGameClick(): Promise<void> {
+      const result = await window.showSaveFilePicker({
+          types: [
+              {
+                  description: 'JSON Files',
+                  accept: {
+                      'application/json': ['.json'],
+                  },
+              },
+          ],
+        });
+  }
+
   /**
    * Retrieve
    */
