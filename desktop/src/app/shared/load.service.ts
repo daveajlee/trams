@@ -250,6 +250,16 @@ export class LoadService {
     }
 
     /**
+     * Load a json file.
+     * @param file the file to load.
+     */
+    async onLoadJSONFile(file: File): Promise<void> {
+        var fileContent = await this.readFileContent(file);
+        var game = JSON.parse(fileContent);
+        this.gameService.setGame(game);
+    }
+
+    /**
      * Read the contents of the file.
      */
     readFileContent(file: File): Promise<string> {

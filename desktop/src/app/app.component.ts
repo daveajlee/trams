@@ -38,6 +38,9 @@ export class AppComponent {
         console.log('We process this in the tcs file');
         await this.loadService.onLoadTcsFile(files.item(0));
         await this.router.navigate(['management']);
+      } else if ( files.item(0).name.endsWith(".json") ) {
+        await this.loadService.onLoadJSONFile(files.item(0));
+        await this.router.navigate(['management']);
       } else {
         alert('This file type is not supported. Please choose another file.');
       }
