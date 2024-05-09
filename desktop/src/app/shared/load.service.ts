@@ -10,6 +10,9 @@ import {VehicleModel} from "../vehicles/vehiclemodel.model";
 import {Scenario} from "./scenario.model";
 import {Vehicle} from "../vehicles/vehicle.model";
 import {Allocation} from "../allocations/allocation.model";
+import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
+import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
+import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 
 @Injectable()
 /**
@@ -219,7 +222,8 @@ export class LoadService {
                     );
                     // Create the game.
                     // Defaults: empty player name, starting time is now, scenario will be created soon and difficulty level is easy.
-                    this.gameService.setGame(new Game(operatorName, "", new Date(), customScenario, "Easy"))
+                    this.gameService.setGame(new Game(operatorName, "", new Date(), customScenario, "Easy",
+                        200000.0, 90, [], [], [], [], []));
                     // Add the supplied vehicles.
                     var mySuppliedVehicles = customScenario.suppliedVehicles;
                     for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
@@ -255,8 +259,29 @@ export class LoadService {
      */
     async onLoadJSONFile(file: File): Promise<void> {
         var fileContent = await this.readFileContent(file);
-        var game = JSON.parse(fileContent);
+        var jsonContent = JSON.parse(fileContent);
+        var game = new Game(jsonContent.companyName, jsonContent.playerName,
+            new Date(jsonContent.currentDateTime), this.loadScenario(jsonContent.scenario.scenarioName), jsonContent.difficultyLevel,
+            jsonContent.balance, jsonContent.passengerSatisfaction, jsonContent.routes,
+            jsonContent.messages, jsonContent.vehicles, jsonContent.drivers, jsonContent.allocations);
         this.gameService.setGame(game);
+    }
+
+    /**
+     * This is a helper method to load the correct scenario based on the supplied scenario name.
+     * @param scenario which contains the name of the scenario that the user chose.
+     * @returns the scenario object corresponding to the supplied name.
+     */
+    loadScenario(scenario: string): Scenario {
+        if ( scenario === SCENARIO_LANDUFF.scenarioName ) {
+            return SCENARIO_LANDUFF;
+        } else if ( scenario === SCENARIO_LONGTS.scenarioName) {
+            return SCENARIO_LONGTS;
+        } else if ( scenario === SCENARIO_MDORF.scenarioName ) {
+            return SCENARIO_MDORF;
+        } else {
+            return null;
+        }
     }
 
     /**

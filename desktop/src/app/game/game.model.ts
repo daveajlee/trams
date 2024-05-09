@@ -30,22 +30,30 @@ export class Game {
      * @param startingDateTime the starting date and time for playing this company
      * @param scenario the scenario that the player will play with this company
      * @param difficultyLevel the level of difficulty that the player wants to play
+     * @param balance the balance of the company when creating or loading the company.
+     * @param passengerSatisfaction the passenger satisfaction value when creating or loading the company.
+     * @param routes an array of routes which have already been created (can be an empty array if none exist).
+     * @param messages an array of messages which have already been created (can be an empty array if none exist).
+     * @param vehicles an array of vehicles which have already been created (can be an empty array if none exist).
+     * @param drivers an array of drivers which have already been created (can be an empty array if none exist).
+     * @param allocations an array of allocations which have already been created (can be an empty array if none exist).
      */
 
     constructor( companyName: string, playerName: string, startingDateTime: Date, scenario: Scenario,
-                 difficultyLevel: string ) {
+                 difficultyLevel: string, balance: number, passengerSatisfaction: number,
+                 routes: [], messages: [], vehicles: [], drivers: [], allocations: []) {
         this.companyName = companyName;
-        this.balance = 200000.0;
+        this.balance = balance;
         this.playerName = playerName;
         this.currentDateTime = startingDateTime;
         this.scenario = scenario;
         this.difficultyLevel = difficultyLevel;
-        this.passengerSatisfaction = 90;
-        this.routes = [];
-        this.messages = [];
-        this.vehicles = [];
-        this.drivers = [];
-        this.allocations = [];
+        this.passengerSatisfaction = passengerSatisfaction;
+        this.routes = routes;
+        this.messages = messages;
+        this.vehicles = vehicles;
+        this.drivers = drivers;
+        this.allocations = allocations;
     }
 
     /**
