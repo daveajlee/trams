@@ -17,6 +17,16 @@
             Warning: No routes have been defined yet. Click "Create Route" to define a route.
         </div>
     </div>
+    <div class="row" *ngIf="noVehiclesExist()">
+        <div class="alert alert-danger w-100 text-center" role="alert">
+            Warning: No vehicles have been purchased yet. Click "Purchase Vehicle" to purchase a vehicle.
+        </div>
+    </div>
+    <div class="row" *ngIf="noAllocationsExist()">
+        <div class="alert alert-danger w-100 text-center" role="alert">
+            Warning: No vehicles have been assigned to routes yet. Click "Change" in the Allocations Section to assign vehicles to routes.
+        </div>
+    </div>
     <div class="row">
         <div class="card-group">
             <div class="card">

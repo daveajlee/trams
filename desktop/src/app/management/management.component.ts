@@ -73,5 +73,13 @@ export class ManagementComponent implements OnInit {
     return this.gameService.getGame().routes.length === 0;
   }
 
+  noVehiclesExist(): boolean {
+    return this.gameService.getGame().routes.length != 0 && this.gameService.getGame().vehicles.length === 0;
+  }
+
+  noAllocationsExist(): boolean {
+    return this.gameService.getGame().routes.length != 0 && this.gameService.getGame().vehicles.length != 0
+        && this.gameService.getGame().allocations.length === 0;
+  }
 
 }
