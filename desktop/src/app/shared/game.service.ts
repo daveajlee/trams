@@ -8,6 +8,7 @@ import {Game} from '../game/game.model';
 export class GameService {
 
     private game: Game;
+    private offlineVersion: boolean = true;
 
     /**
      * Set the game to the current game that was supplied by the user.
@@ -19,6 +20,18 @@ export class GameService {
 
     getGame(): Game {
         return this.game;
+    }
+
+    /**
+     * Set whether the offline version should be used.
+     * @param useOfflineVersion a boolean which is true iff the offline version should be used.
+     */
+    setOfflineVersion(useOfflineVersion: boolean) {
+        this.offlineVersion = useOfflineVersion;
+    }
+
+    isOfflineVersion(): boolean {
+        return this.offlineVersion;
     }
 
 }

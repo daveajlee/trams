@@ -40,6 +40,7 @@ import { ScheduleInformationComponent } from './schedule-information/schedule-in
 import { NewgameComponent } from './newgame/newgame.component';
 import {LoadService} from "./shared/load.service";
 import {SaveService} from "./shared/save.service";
+import { SwitchlocalComponent } from './switchlocal/switchlocal.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import {SaveService} from "./shared/save.service";
     AllocationslistComponent,
     LivesituationComponent,
     ScheduleInformationComponent,
-    NewgameComponent
+    NewgameComponent,
+    SwitchlocalComponent
   ],
   imports: [
     BrowserModule,

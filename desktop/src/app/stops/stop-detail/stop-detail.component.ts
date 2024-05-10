@@ -67,7 +67,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
       this.hours = this.leftPadZero(time.getHours());
       this.minutes = this.leftPadZero(time.getMinutes());
-      if ( this.gameService.getGame().scenario.stopDistances ) {
+      if ( this.gameService.isOfflineVersion() ) {
         this.stop = new Stop('' + this.id, this.gameService.getGame().scenario.stopDistances[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.name);
         this.todayDepartures = [];
@@ -75,16 +75,18 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         let routes = this.gameService.getGame().routes;
         for ( let a = 0; a < routes.length; a++ ) {
           let schedules = routes[a].schedules;
-          for ( let b = 0; b < schedules.length; b++ ) {
-            let services = schedules[b].services;
-            for ( let c = 0; c < services.length; c++ ) {
-              let stops = services[c].stopList;
-              for ( let d = 0; d < stops.length; d++ ) {
-                if ( this.stop.name === stops[d].stop ) {
-                  // Exclude those stops which end here as they are not departures,
-                  if ( stops[d].stop != stops[stops.length-1].stop ) {
-                    // This service stops here so now create the real time model and add it to today departures.
-                    this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+          if ( routes[a].schedules ) {
+            for ( let b = 0; b < schedules.length; b++ ) {
+              let services = schedules[b].services;
+              for ( let c = 0; c < services.length; c++ ) {
+                let stops = services[c].stopList;
+                for ( let d = 0; d < stops.length; d++ ) {
+                  if ( this.stop.name === stops[d].stop ) {
+                    // Exclude those stops which end here as they are not departures,
+                    if ( stops[d].stop != stops[stops.length-1].stop ) {
+                      // This service stops here so now create the real time model and add it to today departures.
+                      this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                    }
                   }
                 }
               }
@@ -183,10 +185,12 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * When destroying this component we should ensure that all subscriptions are cancelled.
    */
   ngOnDestroy(): void {
-    this.idSubscription.unsubscribe();
-    this.departuresSubscription.unsubscribe();
-    this.arrivalsSubscription.unsubscribe();
-    this.todaysDeparturesSubscription.unsubscribe();
+    if ( !this.gameService.isOfflineVersion() ) {
+      this.idSubscription.unsubscribe();
+      this.departuresSubscription.unsubscribe();
+      this.arrivalsSubscription.unsubscribe();
+      this.todaysDeparturesSubscription.unsubscribe();
+    }
   }
 
 }
