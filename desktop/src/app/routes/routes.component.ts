@@ -55,6 +55,17 @@ export class RoutesComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * This method deletes the route with the supplied route number.
+   * @param routeNumber the route number to delete.
+   */
+  deleteRoute(routeNumber: string) {
+    if(confirm("Are you sure you want to delete route " + routeNumber + "?") == true) {
+      this.gameService.getGame().deleteRoute(routeNumber);
+      this.router.navigate(['management']);
+    }
+  }
+
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }

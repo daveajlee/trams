@@ -65,6 +65,22 @@ export class Game {
     }
 
     /**
+     * This method deletes the route supplied with the route number.
+     * @param routeNumber the route number as a string to be deleted.
+     */
+    deleteRoute(routeNumber: string): boolean {
+        let counter = 0;
+        this.routes.forEach((element) => {
+            if ( element.routeNumber == routeNumber ) {
+                this.routes.splice(counter, 1);
+                return true;
+            }
+            counter++;
+        } );
+        return false;
+    }
+
+    /**
      * This method adds a vehicle to the vehicles array if we are currently saving vehicles locally.
      * @param vehicle a vehicle object with the vehicle information to add to the vehicles array.
      */
