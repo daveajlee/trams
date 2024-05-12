@@ -117,13 +117,13 @@ export class TimetablecreatorComponent {
     var stopDistances = this.gameService.getGame().scenario.stopDistances;
     var stop1Pos: number; var stop2Pos: number;
     for ( var i = 0; i < stopDistances.length; i++ ) {
-      if ( stopDistances[i].startsWith(stop1) ) {
+      if ( stopDistances[i].split(":")[0] == stop1 ) {
         stop1Pos = i;
-      } else if ( stopDistances[i].startsWith(stop2) ) {
+      } else if ( stopDistances[i].split(":")[0] == stop2 ) {
         stop2Pos = i;
       }
     }
-    if ( stop1Pos && stop2Pos ) {
+    if ( stop1Pos >= 0 && stop2Pos >= 0 ) {
       return parseInt(stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
     }
   }
