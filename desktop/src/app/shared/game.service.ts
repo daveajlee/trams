@@ -9,6 +9,7 @@ export class GameService {
 
     private game: Game;
     private offlineVersion: boolean = true;
+    private serverUrl: string;
 
     /**
      * Set the game to the current game that was supplied by the user.
@@ -32,6 +33,18 @@ export class GameService {
 
     isOfflineVersion(): boolean {
         return this.offlineVersion;
+    }
+
+    /**
+     * Set the server url.
+     * @param serverUrl the new server url to be set
+     */
+    setServerUrl(serverUrl: string) {
+        this.serverUrl = serverUrl;
+    }
+
+    getServerUrl() {
+        return this.serverUrl;
     }
 
 }

@@ -25,13 +25,13 @@ export class DataService {
   constructor(private http: HttpClient, private stopsService: StopsService, private routesService: RoutesService,
               private vehiclesService: VehiclesService, private gameService: GameService) {
     if ( !this.gameService.isOfflineVersion() ) {
-      this.http.get<StopsResponse>('http://localhost:8084/api/stops/?company=Company').subscribe(stops => {
+      this.http.get<StopsResponse>(this.gameService.getServerUrl() + '/stops/?company=Company').subscribe(stops => {
         this.stopsService.setStops(stops);
       });
-      this.http.get<RoutesResponse>('http://localhost:8084/api/routes/?company=Company').subscribe(routes => {
+      this.http.get<RoutesResponse>(this.gameService.getServerUrl() + '/routes/?company=Company').subscribe(routes => {
         this.routesService.setRoutes(routes);
       });
-      this.http.get<VehiclesResponse>('http://localhost:8084/api/vehicles/?company=Company').subscribe(vehicles => {
+      this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/vehicles/?company=Company').subscribe(vehicles => {
         this.vehiclesService.setVehicles(vehicles);
       });
     }
