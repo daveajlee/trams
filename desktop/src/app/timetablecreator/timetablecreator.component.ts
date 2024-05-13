@@ -108,7 +108,7 @@ export class TimetablecreatorComponent {
       // The duration is one-way so double it for both directions.
       duration *= 2;
       // Now calculate vehicles by dividing duration through frequency.
-      return Math.round(duration/this.frequencyPatternFrequency);
+      return Math.ceil(duration/this.frequencyPatternFrequency);
     }
     return 0;
   }
@@ -152,6 +152,9 @@ export class TimetablecreatorComponent {
     var timetable = new Timetable(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns);
     // Add it to the route.
     this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
+    // This is where we should now generate the timetables.
+
+    // Now go to management screen.
     this.router.navigate(['management']);
   }
 
