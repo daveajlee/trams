@@ -6,8 +6,8 @@ import {FrequencyPattern} from "./frequencypattern.model";
 export class Timetable {
 
     public name: string;
-    public validFromDate: string;
-    public validToDate: string;
+    public validFromDate: Date;
+    public validToDate: Date;
     public frequencyPatterns: FrequencyPattern[];
 
     /**
@@ -20,8 +20,8 @@ export class Timetable {
 
     constructor( name: string, validFromDate: string, validToDate: string, frequencyPatterns: FrequencyPattern[] ) {
         this.name = name;
-        this.validFromDate = validFromDate;
-        this.validToDate = validToDate;
+        this.validFromDate = new Date(validFromDate);
+        this.validToDate = new Date(validToDate);
         this.frequencyPatterns = frequencyPatterns;
     }
 

@@ -4,6 +4,8 @@ import {GameService} from "../shared/game.service";
 import {DatePipe} from "@angular/common";
 import {FrequencyPattern} from "../shared/frequencypattern.model";
 import {Timetable} from "../shared/timetable.model";
+import {ScheduleModel} from "../stops/stop-detail/schedule.model";
+import {ServiceModel} from "../stops/stop-detail/service.model";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -61,7 +63,7 @@ export class TimetablecreatorComponent {
   }
 
   getDaysOfWeek(): string[] {
-    return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Public Holidays", "Schooldays", "School Holidays"]
   }
 
   getFrequencyPatternStartStops(): string[] {
@@ -152,10 +154,61 @@ export class TimetablecreatorComponent {
     var timetable = new Timetable(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns);
     // Add it to the route.
     this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
-    // This is where we should now generate the timetables.
-
+    // This is where we should now generate the schedules for the relevant timetable.
+    if ( timetable.validFromDate <= this.gameService.getGame().currentDateTime && timetable.validToDate >= this.gameService.getGame().currentDateTime ) {
+      // Timetable is relevant so get frequency pattern.
+      for ( let i = 0; i < timetable.frequencyPatterns.length; i++ ) {
+          // Now we go through the tours which are the schedules.
+          for ( let j = 0; j < timetable.frequencyPatterns[i].numTours; j++ ) {
+            let routeSchedule = new ScheduleModel(this.routeNumber, "" + (i+1) * (j+1));
+            console.log('Generating schedule ' + routeSchedule.routeNumber + '/' + routeSchedule.scheduleId);
+            // Now we start generating the services.
+            let service = new ServiceModel("" + (j+1));
+            // Add the start stop.
+            service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, j * timetable.frequencyPatterns[i].frequencyInMinutes), this.addTime(timetable.frequencyPatterns[i].startTime, j * timetable.frequencyPatterns[i].frequencyInMinutes), timetable.frequencyPatterns[i].startStop);
+            // Go through remaining stops for the route.
+            let distance = 0;
+            for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).stops.length; k++ ) {
+                // Get the distance between this stop and the last stop.
+                distance += (k == 0 ) ? this.getDistanceBetweenStop(timetable.frequencyPatterns[i].startStop, this.gameService.getGame().getRoute(this.routeNumber).stops[k])
+                    : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[k-1], this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+                service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+            }
+            // Now we need to do the end stop.
+            distance += this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[this.gameService.getGame().getRoute(this.routeNumber).stops.length-1], timetable.frequencyPatterns[i].endStop);
+            service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), timetable.frequencyPatterns[i].endStop);
+            // Add this service to the route schedule.
+            routeSchedule.addService(service);
+            // Now we add the route schedule.
+            this.gameService.getGame().getRoute(this.routeNumber).addSchedule(routeSchedule);
+          }
+      }
+    }
+    console.log('Schedules are: ' + JSON.stringify(this.gameService.getGame().getRoute(this.routeNumber).schedules));
     // Now go to management screen.
     this.router.navigate(['management']);
+  }
+
+  /**
+   * This is a helper method which adds a number of minutes to the time.
+   */
+  addTime(time: string, addMinutes: number): string {
+      // Extract the time from the string.
+      var hours = parseInt(time.split(":")[0]);
+      var minutes = parseInt(time.split(":")[1]);
+      // Add the minutes to the current time.
+      minutes += addMinutes;
+      // Adjust the minutes if it is now higher than 60.
+      while ( minutes > 60 ) {
+        hours++;
+        minutes -= 60;
+      }
+      // Adjust the hours if it is now higher than 23.
+      while ( hours > 23 ) {
+        hours -= 24;
+      }
+      // Return the time in format HH:mm
+      return (hours < 10 ? "0" + hours : hours ) + ":" + (minutes < 10 ? "0" + minutes : minutes )
   }
 
 }

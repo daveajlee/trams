@@ -16,12 +16,17 @@ export class Route {
   public schedules: ScheduleModel[];
 
   addTimetable ( timetable: Timetable ) {
-    if ( this.timetables ) {
-      this.timetables.push(timetable);
-    } else {
+    if ( !this.timetables ) {
       this.timetables = [];
-      this.timetables.push(timetable);
     }
+    this.timetables.push(timetable);
+  }
+
+  addSchedule ( schedule: ScheduleModel ) {
+    if ( !this.schedules ) {
+      this.schedules = [];
+    }
+    this.schedules.push(schedule);
   }
 
 }
