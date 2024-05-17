@@ -169,19 +169,19 @@ export class TimetablecreatorComponent {
             let serviceCounter = 0;
             // Now repeat until we reach the end time.
             while ( this.isBeforeTime(loopTime, timetable.frequencyPatterns[i].endTime) ) {
-              // Add an outgoing service (we ignore return services at the moment).
-              routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], loopTime, serviceCounter, j));
-              // Add the duration to the time.
-              loopTime = this.addTime(loopTime, duration);
+              // Add an outgoing service.
+              routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], loopTime, serviceCounter, j, true));
+              // Add half of duration to cover outgoing service.
+              loopTime = this.addTime(loopTime, (duration/2));
+              // Increase service counter
+              serviceCounter++;
+              // Add return service.
+              routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], loopTime, serviceCounter, j, false));
+              // Add half of duration to cover return service.
+              loopTime = this.addTime(loopTime, (duration/2));
               // Increase service counter
               serviceCounter++;
             }
-            // Add the first service to the route schedule.
-            /*routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], timetable.frequencyPatterns[i].startTime, 1, j));
-            // Add the second service (opposite direction).
-            // ... currently ignored.
-            // Add the third service.
-            routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], this.addTime(timetable.frequencyPatterns[i].startTime, duration), 3, j));*/
             // Now we add the route schedule.
             this.gameService.getGame().getRoute(this.routeNumber).addSchedule(routeSchedule);
           }
@@ -195,22 +195,32 @@ export class TimetablecreatorComponent {
   /**
    * This is a helper method to generate a service based on the information provided.
    */
-  generateService(frequencyPattern: FrequencyPattern, startTime: string, serviceNumber: number, tourNumber: number): ServiceModel {
+  generateService(frequencyPattern: FrequencyPattern, startTime: string, serviceNumber: number, tourNumber: number, outgoing: boolean): ServiceModel {
     // Now we start generating the services.
     let service = new ServiceModel("" + serviceNumber);
     // Add the start stop.
-    service.addStop(this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), frequencyPattern.startStop);
+    service.addStop(this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), outgoing ? frequencyPattern.startStop : frequencyPattern.endStop);
     // Go through remaining stops for the route.
     let distance = 0;
-    for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).stops.length; k++ ) {
-      // Get the distance between this stop and the last stop.
-      distance += (k == 0 ) ? this.getDistanceBetweenStop(frequencyPattern.startStop, this.gameService.getGame().getRoute(this.routeNumber).stops[k])
-          : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[k-1], this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
-      service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+    if ( outgoing ) {
+      for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).stops.length; k++ ) {
+        // Get the distance between this stop and the last stop.
+        distance += (k == 0 ) ? this.getDistanceBetweenStop(frequencyPattern.startStop, this.gameService.getGame().getRoute(this.routeNumber).stops[k])
+            : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[k-1], this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+        service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+      }
+    } else {
+      for ( let m = this.gameService.getGame().getRoute(this.routeNumber).stops.length - 1; m >= 0; m-- ) {
+        // Get the distance between this stop and the last stop.
+        distance += ( m == this.gameService.getGame().getRoute(this.routeNumber).stops.length - 1 ) ? this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[m], frequencyPattern.endStop)
+            : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[m], this.gameService.getGame().getRoute(this.routeNumber).stops[m+1]);
+        console.log('Distance is ' + distance);
+        service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[m]);
+      }
     }
     // Now we need to do the end stop.
-    distance += this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[this.gameService.getGame().getRoute(this.routeNumber).stops.length-1], frequencyPattern.endStop);
-    service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), frequencyPattern.endStop);
+    distance += this.getDistanceBetweenStop(frequencyPattern.endStop, this.gameService.getGame().getRoute(this.routeNumber).stops[this.gameService.getGame().getRoute(this.routeNumber).stops.length-1]);
+    service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), outgoing ? frequencyPattern.endStop : frequencyPattern.startStop);
     return service;
   }
 
