@@ -162,23 +162,26 @@ export class TimetablecreatorComponent {
           for ( let j = 0; j < timetable.frequencyPatterns[i].numTours; j++ ) {
             let routeSchedule = new ScheduleModel(this.routeNumber, "" + (i+1) * (j+1));
             console.log('Generating schedule ' + routeSchedule.routeNumber + '/' + routeSchedule.scheduleId);
-            // Now we start generating the services.
-            let service = new ServiceModel("" + (j+1));
-            // Add the start stop.
-            service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, j * timetable.frequencyPatterns[i].frequencyInMinutes), this.addTime(timetable.frequencyPatterns[i].startTime, j * timetable.frequencyPatterns[i].frequencyInMinutes), timetable.frequencyPatterns[i].startStop);
-            // Go through remaining stops for the route.
-            let distance = 0;
-            for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).stops.length; k++ ) {
-                // Get the distance between this stop and the last stop.
-                distance += (k == 0 ) ? this.getDistanceBetweenStop(timetable.frequencyPatterns[i].startStop, this.gameService.getGame().getRoute(this.routeNumber).stops[k])
-                    : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[k-1], this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
-                service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+            // Note the duration which is the frequency * num Tours
+            let duration = timetable.frequencyPatterns[i].frequencyInMinutes * timetable.frequencyPatterns[i].numTours;
+            // Set the loop time to the starting time.
+            let loopTime = timetable.frequencyPatterns[i].startTime;
+            let serviceCounter = 0;
+            // Now repeat until we reach the end time.
+            while ( this.isBeforeTime(loopTime, timetable.frequencyPatterns[i].endTime) ) {
+              // Add an outgoing service (we ignore return services at the moment).
+              routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], loopTime, serviceCounter, j));
+              // Add the duration to the time.
+              loopTime = this.addTime(loopTime, duration);
+              // Increase service counter
+              serviceCounter++;
             }
-            // Now we need to do the end stop.
-            distance += this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[this.gameService.getGame().getRoute(this.routeNumber).stops.length-1], timetable.frequencyPatterns[i].endStop);
-            service.addStop(this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), this.addTime(timetable.frequencyPatterns[i].startTime, ((j * timetable.frequencyPatterns[i].frequencyInMinutes)) + distance), timetable.frequencyPatterns[i].endStop);
-            // Add this service to the route schedule.
-            routeSchedule.addService(service);
+            // Add the first service to the route schedule.
+            /*routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], timetable.frequencyPatterns[i].startTime, 1, j));
+            // Add the second service (opposite direction).
+            // ... currently ignored.
+            // Add the third service.
+            routeSchedule.addService(this.generateService(timetable.frequencyPatterns[i], this.addTime(timetable.frequencyPatterns[i].startTime, duration), 3, j));*/
             // Now we add the route schedule.
             this.gameService.getGame().getRoute(this.routeNumber).addSchedule(routeSchedule);
           }
@@ -190,6 +193,28 @@ export class TimetablecreatorComponent {
   }
 
   /**
+   * This is a helper method to generate a service based on the information provided.
+   */
+  generateService(frequencyPattern: FrequencyPattern, startTime: string, serviceNumber: number, tourNumber: number): ServiceModel {
+    // Now we start generating the services.
+    let service = new ServiceModel("" + serviceNumber);
+    // Add the start stop.
+    service.addStop(this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), this.addTime(startTime, tourNumber * frequencyPattern.frequencyInMinutes), frequencyPattern.startStop);
+    // Go through remaining stops for the route.
+    let distance = 0;
+    for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).stops.length; k++ ) {
+      // Get the distance between this stop and the last stop.
+      distance += (k == 0 ) ? this.getDistanceBetweenStop(frequencyPattern.startStop, this.gameService.getGame().getRoute(this.routeNumber).stops[k])
+          : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[k-1], this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+      service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.gameService.getGame().getRoute(this.routeNumber).stops[k]);
+    }
+    // Now we need to do the end stop.
+    distance += this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).stops[this.gameService.getGame().getRoute(this.routeNumber).stops.length-1], frequencyPattern.endStop);
+    service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.frequencyInMinutes)) + distance), frequencyPattern.endStop);
+    return service;
+  }
+
+  /**
    * This is a helper method which adds a number of minutes to the time.
    */
   addTime(time: string, addMinutes: number): string {
@@ -198,8 +223,8 @@ export class TimetablecreatorComponent {
       var minutes = parseInt(time.split(":")[1]);
       // Add the minutes to the current time.
       minutes += addMinutes;
-      // Adjust the minutes if it is now higher than 60.
-      while ( minutes > 60 ) {
+      // Adjust the minutes if it is now higher than 59.
+      while ( minutes > 59 ) {
         hours++;
         minutes -= 60;
       }
@@ -209,6 +234,23 @@ export class TimetablecreatorComponent {
       }
       // Return the time in format HH:mm
       return (hours < 10 ? "0" + hours : hours ) + ":" + (minutes < 10 ? "0" + minutes : minutes )
+  }
+
+  /**
+   * This is a helper method which determines if the current time is before the supplied time.
+   * If so, return true. Otherwise return false.
+   */
+  isBeforeTime(currentTime: string, suppliedTime: string) {
+    // Extract the current time from the string.
+    let currentHours = parseInt(currentTime.split(":")[0]);
+    let currentMinutes = parseInt(currentTime.split(":")[1]);
+    // Extract the supplied time from the string.
+    let suppliedHours = parseInt(suppliedTime.split(":")[0]);
+    let suppliedMinutes = parseInt(suppliedTime.split(":")[1]);
+    // Return true if and only if current time is before supplied time.
+    if ( currentHours > suppliedHours ) {
+      return false;
+    } else return !(currentHours == suppliedHours && currentMinutes >= suppliedMinutes);
   }
 
 }
