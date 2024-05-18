@@ -47,7 +47,11 @@ export class LivesituationComponent implements OnInit {
   getSelectedRouteStops(): String[] {
     for ( let i = 0; i < this.getRoutes().length; i++ ) {
       if ( this.selectedRoute == this.getRoutes()[i].routeNumber ) {
-        return this.getRoutes()[i].stops;
+        var stops = [];
+        stops.push(this.getRoutes()[i].startStop);
+        stops = stops.concat(this.getRoutes()[i].stops)
+        stops.push(this.getRoutes()[i].endStop);
+        return stops;
       }
     }
   }
@@ -72,7 +76,6 @@ export class LivesituationComponent implements OnInit {
         // If we are before departure time but after arrival time then we are also here.
         else if ( schedule.services[i].stopList[j].departureTime > currentTime
             && schedule.services[i].stopList[j].arrivalTime <= currentTime) {
-          console.log(schedule.services[i].stopList[j].departureTime + ' with ' + currentTime);
           return schedule.services[i].stopList[j].stop;
         }
         // If we are before both departure time and arrival time then we are at the previous stop if there was one.

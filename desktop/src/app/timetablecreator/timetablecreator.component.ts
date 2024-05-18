@@ -35,7 +35,8 @@ export class TimetablecreatorComponent {
     // Valid from date is current date.
     this.validFromDate = this.datePipe.transform(this.gameService.getGame().currentDateTime, 'yyyy-MM-dd');
     // Valid to date is current date + 1 year.
-    let oneFromYearNow = new Date(this.gameService.getGame().currentDateTime.setFullYear(this.gameService.getGame().currentDateTime.getFullYear() + 1));
+    let oneFromYearNow = new Date(this.gameService.getGame().currentDateTime);
+    oneFromYearNow.setFullYear(oneFromYearNow.getFullYear() + 1)
     this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
     // Set start time to 06:00
     this.frequencyPatternStartTime = "06:00";
