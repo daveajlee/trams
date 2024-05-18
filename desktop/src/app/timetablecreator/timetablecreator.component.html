@@ -24,6 +24,19 @@
     <input class="form-control" [(ngModel)]="validToDate" type="date" id="validToDate"/>
 </div>
 
+<!-- List of existing frequency patterns -->
+<div class="top-space m-5">
+    <p class="h2 text-center">Frequency Patterns</p>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let frequencyPattern of frequencyPatterns">
+            <p class="lead text-center">{{frequencyPattern.name}}
+                <button type="button" class="btn btn-primary ms-5" data-bs-toggle="modal" data-bs-target="#frequencyPatternModal" (click)="onEditFrequencyPattern(frequencyPattern.name)">Edit</button>
+                <button type="button" class="btn btn-danger ms-5" (click)="onDeleteFrequencyPattern(frequencyPattern.name)">Delete</button>
+            </p>
+        </li>
+    </ul>
+</div>
+
 <!-- Button to open the frequency pattern modal -->
 <div class="center-button">
     <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#frequencyPatternModal">

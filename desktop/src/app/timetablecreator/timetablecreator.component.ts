@@ -138,7 +138,7 @@ export class TimetablecreatorComponent {
   onSubmitFrequencyPattern(): void {
     // Process days of operation from checkboxes.
     var daysOfOperation = [];
-    for ( var i = 0; i < this.getDaysOfWeek().length; i++ ) {
+    for ( let i = 0; i < this.getDaysOfWeek().length; i++ ) {
       if ( (document.getElementById('checkbox-' + i) as HTMLInputElement).checked ) {
         daysOfOperation.push(this.getDaysOfWeek()[i]);
       }
@@ -148,6 +148,36 @@ export class TimetablecreatorComponent {
         this.frequencyPatternStartStop, this.frequencyPatternEndStop, this.frequencyPatternStartTime,
         this.frequencyPatternEndTime, this.frequencyPatternFrequency, this.getNumberVehicles());
     this.frequencyPatterns.push(frequencyPattern);
+    // Now we reset the form.
+    this.frequencyPatternName = "";
+    // Set start time to 06:00
+    this.frequencyPatternStartTime = "06:00";
+    // set end time to 18:30
+    this.frequencyPatternEndTime = "18:30";
+    // Set frequency to 10.
+    this.frequencyPatternFrequency = 10;
+  }
+
+  onEditFrequencyPattern(frequencyPatternName: string): void {
+    for ( let i = 0; i < this.frequencyPatterns.length; i++ ) {
+      if ( this.frequencyPatterns[i].name === frequencyPatternName ) {
+        this.frequencyPatternName = this.frequencyPatterns[i].name;
+        this.frequencyPatternStartTime = this.frequencyPatterns[i].startTime;
+        this.frequencyPatternEndTime = this.frequencyPatterns[i].endTime;
+        this.frequencyPatternStartStop = this.frequencyPatterns[i].startStop;
+        this.frequencyPatternEndStop = this.frequencyPatterns[i].endStop;
+        this.frequencyPatternFrequency = this.frequencyPatterns[i].frequencyInMinutes;
+      }
+    }
+    console.log('I would like to edit ' + frequencyPatternName);
+  }
+
+  onDeleteFrequencyPattern(frequencyPatternName: string): void {
+    for ( let i = 0; i < this.frequencyPatterns.length; i++ ) {
+      if ( this.frequencyPatterns[i].name === frequencyPatternName ) {
+        this.frequencyPatterns.splice(i, 1);
+      }
+    }
   }
 
   onSubmitTimetable(): void {
