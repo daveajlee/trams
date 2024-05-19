@@ -66,6 +66,14 @@ export class RoutesComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * This method opens the route editor with the supplied route number.
+   * @param routeNumber the route number to edit.
+   */
+  editRoute(routeNumber: string) {
+    this.router.navigate(['routeeditor', routeNumber]);
+  }
+
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }

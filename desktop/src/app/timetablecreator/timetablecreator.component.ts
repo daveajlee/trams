@@ -218,9 +218,8 @@ export class TimetablecreatorComponent {
           }
       }
     }
-    console.log('Schedules are: ' + JSON.stringify(this.gameService.getGame().getRoute(this.routeNumber).schedules));
-    // Now go to management screen.
-    this.router.navigate(['management']);
+    // Now go to route editor screen.
+    this.router.navigate(['routeeditor', this.routeNumber]);
   }
 
   /**

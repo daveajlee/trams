@@ -23,6 +23,7 @@ import {AllocationslistComponent} from "./allocationslist/allocationslist.compon
 import {LivesituationComponent} from "./livesituation/livesituation.component";
 import {ScheduleInformationComponent} from "./schedule-information/schedule-information.component";
 import {NewgameComponent} from "./newgame/newgame.component";
+import {RouteeditorComponent} from "./routeeditor/routeeditor.component";
 
 /**
  * Define the links which work in this application.
@@ -41,6 +42,7 @@ const appRoutes: Routes = [
     { path: 'options', component: OptionsComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
+    { path: 'routeeditor/:routeNumber', component: RouteeditorComponent},
     { path: 'timetablecreator', component: TimetablecreatorComponent},
     { path: 'drivercreator', component: DrivercreatorComponent },
     { path: 'scenariolist', component: ScenariolistComponent },

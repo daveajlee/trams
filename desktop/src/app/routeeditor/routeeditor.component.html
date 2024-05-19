@@ -1,0 +1,37 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Route {{routeNumber}}: {{startStop}} <> {{endStop}}</h1>
+</div>
+
+<!-- Show the list of stops that are served -->
+<div class="top-space m-5">
+    <p class="h2 text-center">Intermediate Stops</p>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let stop of stops">
+            <p class="lead text-center">{{stop}}</p>
+        </li>
+    </ul>
+</div>
+
+<!-- Show the timetables that are available -->
+<div class="top-space m-5">
+    <p class="h2 text-center">Timetables</p>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let timetable of timetables">
+            <p class="lead text-center">{{timetable.name}} <button type="button" class="btn btn-danger ms-5" (click)="onDeleteTimetable(timetable.name)">Delete</button></p>
+        </li>
+    </ul>
+</div>
+
+<!-- Create Timetable button -->
+<div class="center-button m-5">
+    <button type="submit" (click)="onCreateTimetable()" class="btn btn-primary btn-lg">Create Timetable</button>
+</div>
+
+<!-- Submit button -->
+<div class="center-button">
+    <button type="submit" (click)="onSubmitRoute()" class="btn btn-primary btn-lg">Save & Close</button>
+</div>
