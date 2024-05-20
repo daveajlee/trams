@@ -6,75 +6,28 @@
 </div>
 
 <div class="container-fluid" *ngIf="!showOutlet">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-center">New Game</h5>
-          <p class="card-text text-center">Start your own transport company and make it a big success.</p>
-            <!-- Show an input box where the user can enter their company and their name. -->
-          <div class="form-group top-space">
-            <label for="companyName" style="font-weight: bold;">Company Name:</label>
-            <input class="form-control" [(ngModel)]="companyName" type="text" id="companyName"/>
-          </div>
-          <!-- Show an input box where the user can enter their name. -->
-          <div class="form-group top-space">
-            <label for="playerName" style="font-weight: bold;">Player Name:</label>
-            <input class="form-control" [(ngModel)]="playerName" type="text" id="playerName"/>
-          </div>
-          <!-- Show an input box where the user can choose their difficulty level -->
-          <div class="form-group top-space">
-            <label for="difficultyLevel" style="font-weight: bold;">Level:</label>
-            <select class="form-control" [(ngModel)]="difficultyLevel" id="difficultyLevel">
-              <option>Easy</option>
-              <option>Intermediate</option>
-              <option>Hard</option>
-            </select>
-          </div>
-          <!-- Show an input box where the user can choose their starting time -->
-          <div class="form-group top-space">
-            <label for="startingDate" style="font-weight: bold;">Your Start Date:</label>
-            <input class="form-control" [(ngModel)]="startingDate" type="date" id="startingDate"/>
-          </div>
-          <!-- Show start button -->
-          <div class="center-button">
-            <button
-                  [disabled]="(companyName===undefined || companyName==='') || (playerName===undefined || playerName==='')"
-                  type="submit"
-                  class="btn btn-primary btn-lg"
-                  (click)="onStartSubmit()"
-            >Start</button>
-          </div>
-        </div>
-      </div>
+    <div class="row">
+        <div class="big-top-space"></div>
+        <app-switchlocal></app-switchlocal>
     </div>
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title top-space text-center">Load Game</h5>
-          <p class="card-text top-space text-center">Continue building your own transport company and make your customers happy.</p>
-          <!-- Display a button with the name of the file or select if no file has been selected yet. -->
-          <div class="center-button big-top-space">
-            <button class="btn btn-primary btn-lg" (click)="fileInput.click()">
-              {{ file ? file.name : 'Select' }}
-            </button>
-          </div>
-          <!-- Set the file content to the server -->
-          <input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
-          <div class="center-button big-big-top-space">
-            <!-- Show continue button -->
-            <button
-                    [disabled]="(file===null)"
-                    type="submit"
-                    class="btn btn-primary btn-lg"
-                    (click)="onLoadSubmit()"
-            >Continue</button>
-          </div>
-
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- New Game -->
+            <div class="center-button big-top-space">
+                <button class="btn btn-primary btn-lg" (click)="onNewGameClick()">New Game
+                </button>
+            </div>
         </div>
-      </div>
+        <div class="col-sm-6">
+            <!-- Load Game -->
+            <div class="center-button big-top-space">
+                <button class="btn btn-primary btn-lg" (click)="fileInput.click()">Load Game
+                </button>
+            </div>
+            <!-- Set the file content to the server -->
+            <input hidden type="file" #fileInput (change)="onFileInput(fileInput.files)" />
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Display the output of the link that the user clicked on -->

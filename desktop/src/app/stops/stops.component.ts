@@ -4,6 +4,7 @@ import {StopsService} from './stops.service';
 import {Stop} from './stop.model';
 import {Subscription} from 'rxjs';
 import {GameService} from "../shared/game.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-stops',
@@ -24,8 +25,9 @@ export class StopsComponent implements OnInit, OnDestroy {
    * @param dataService which contains the HTTP connection to the server
    * @param gameService a service which retrieves game information
    * @param stopsService which formats the HTTP calls into a way which the frontend can read and render.
+   * @param router the router object from Angular to move screens.
    */
-  constructor(private dataService: DataService, private gameService: GameService, private stopsService: StopsService) { }
+  constructor(private dataService: DataService, private gameService: GameService, private stopsService: StopsService, public router: Router) { }
 
   /**
    * Initialise a new stops component which maintains a list of stops that can be updated and set from the server calls.
@@ -49,7 +51,13 @@ export class StopsComponent implements OnInit, OnDestroy {
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if ( this.subscription ) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  backToManagementScreen(): void {
+    this.router.navigate(['management']);
   }
 
 }

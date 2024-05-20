@@ -14,7 +14,7 @@ function AssignTourScreen({route, navigation}) {
     const [routeData, setRouteData] = useState([]);
     const [vehicleData, setVehicleData] = useState([]);
     const [routeDropdown, setRouteDropdown] = useState(null);
-    const [tourNumber, setTourNumber] = useState(1);
+    const [tourNumber, setTourNumber] = useState('');
     const [vehicleDropdown, setVehicleDropdown] = useState(null);
     const [disableAssignButton, setDisableAssignButton] = useState(true);
     const [assignments, setAssignments] = useState([]);
@@ -39,9 +39,9 @@ function AssignTourScreen({route, navigation}) {
                 setVehicleData(await filterVehicleData(LONGTS_VEHICLES));
             }
             // Perform random situation if more than 3 assignments.
-            if ( assignments.length > 3 ) {
+            /*if ( assignments.length > 3 ) {
                 performRandomSituation();
-            }
+            }*/
         }
 
         loadVehicleAndRouteData();
@@ -69,9 +69,10 @@ function AssignTourScreen({route, navigation}) {
             }
             if ( !vehicleAssigned ) {
                 console.log('Adding vehicle ' + vehicle.fleetNumber);
-                vehicleFilteredData.push({label: vehicle.fleetNumber, value: vehicle.fleetNumber});
+                vehicleFilteredData.push({label: "" + vehicle.fleetNumber, value: "" + vehicle.fleetNumber});
             }
         }
+        console.log('Length: ' + vehicleFilteredData.length);
         return vehicleFilteredData;
     }
 
@@ -87,32 +88,39 @@ function AssignTourScreen({route, navigation}) {
         setTourNumber(tourNumber);
         // Calculate the number of tours for the selected route number based on route database.
         var numberTours = 0;
-        if ( scenarioName === 'Landuff') {
-            numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown).numberTours
-        }
-        else if ( scenarioName === 'MDorf') {
-            numberTours = MDORF_ROUTES.find((route) => route.number === routeDropdown).numberTours
-        }
-        else if ( scenarioName === 'Longts') {
-            numberTours = LONGTS_ROUTES.find((route) => route.number === routeDropdown).numberTours
-        }
-        // Don't forget to add any tours which were already automatically generated.
-        const additionalTours = await fetchAdditionalTours(route.params.company);
-        additionalTours.forEach((additionalTour) => {
-            if ( additionalTour.split('/')[0] === routeDropdown ) {
-                numberTours++;
-            }
-        })
-        // If the tour number was less than or equal to 0 or higher than the number of tours for the selected route number then show an alert and ask for a valid tour number.
-        if ( tourNumber <= 0 || tourNumber > numberTours ) {
-            Alert.alert('Please enter a valid tour number between 1 and ' +  numberTours);
+        if ( !routeDropdown ) {
+            Alert.alert('Please select a route first before entering a tour number');
             setDisableAssignButton(true);
+            setTourNumber('');
         } else {
-            setDisableAssignButton(false);
+            if ( scenarioName === 'Landuff') {
+                numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown).numberTours
+            }
+            else if ( scenarioName === 'MDorf') {
+                numberTours = MDORF_ROUTES.find((route) => route.number === routeDropdown).numberTours
+            }
+            else if ( scenarioName === 'Longts') {
+                numberTours = LONGTS_ROUTES.find((route) => route.number === routeDropdown).numberTours
+            }
+            // Don't forget to add any tours which were already automatically generated.
+            const additionalTours = await fetchAdditionalTours(route.params.company);
+            additionalTours.forEach((additionalTour) => {
+                if ( additionalTour.split('/')[0] === routeDropdown ) {
+                    numberTours++;
+                }
+            })
+            // If the tour number was less than or equal to 0 or higher than the number of tours for the selected route number then show an alert and ask for a valid tour number.
+            if ( tourNumber <= 0 || tourNumber > numberTours ) {
+                Alert.alert('Please enter a valid tour number between 1 and ' +  numberTours);
+                setDisableAssignButton(true);
+            } else {
+                setDisableAssignButton(false);
+            }
         }
     }
 
     async function assignTourHandler() {
+        console.log('In assign tour handler...');
         var assignment = new Assignment(routeDropdown, tourNumber, vehicleDropdown, scenarioName, route.params.company);
         insertAssignment(assignment).then(
             navigation.navigate("ChangeAssignmentScreen", {

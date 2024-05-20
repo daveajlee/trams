@@ -68,6 +68,9 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
+// Enable experimental features to allow File System Handler API
+app.commandLine.appendSwitch("enable-experimental-web-platform-features");
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar

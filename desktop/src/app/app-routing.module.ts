@@ -20,6 +20,10 @@ import {DrivercreatorComponent} from "./drivercreator/drivercreator.component";
 import {VehicleshowroomComponent} from "./vehicleshowroom/vehicleshowroom.component";
 import {AllocationsComponent} from "./allocations/allocations.component";
 import {AllocationslistComponent} from "./allocationslist/allocationslist.component";
+import {LivesituationComponent} from "./livesituation/livesituation.component";
+import {ScheduleInformationComponent} from "./schedule-information/schedule-information.component";
+import {NewgameComponent} from "./newgame/newgame.component";
+import {RouteeditorComponent} from "./routeeditor/routeeditor.component";
 
 /**
  * Define the links which work in this application.
@@ -30,11 +34,15 @@ const appRoutes: Routes = [
     { path: 'drivers', component: DriversComponent, children: [
         { path: ':id', component: DriverDetailComponent}
     ] },
+    { path: 'livesituation', component: LivesituationComponent,
+        children: [{path: ':routeScheduleId', component: ScheduleInformationComponent}]},
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
+    { path: 'newgame', component: NewgameComponent },
     { path: 'options', component: OptionsComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
+    { path: 'routeeditor/:routeNumber', component: RouteeditorComponent},
     { path: 'timetablecreator', component: TimetablecreatorComponent},
     { path: 'drivercreator', component: DrivercreatorComponent },
     { path: 'scenariolist', component: ScenariolistComponent },

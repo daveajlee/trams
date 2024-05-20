@@ -18,8 +18,8 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    increment_build_number(xcodeproj: "TraMSGameApp.xcodeproj")
-    build_app(workspace: "TraMSGameApp.xcworkspace", scheme: "TraMSGameApp")
+    increment_build_number(xcodeproj: "TramsApp.xcodeproj")
+    build_app(workspace: "TramsApp.xcworkspace", scheme: "TramsApp")
     upload_to_testflight
   end
 end

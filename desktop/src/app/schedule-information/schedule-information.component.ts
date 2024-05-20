@@ -1,0 +1,107 @@
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Params} from '@angular/router';
+import {Subscription} from "rxjs";
+import {GameService} from "../shared/game.service";
+import {ScheduleModel} from "../stops/stop-detail/schedule.model";
+import {TimeHelper} from "../shared/time.helper";
+import {PositionModel} from "../livesituation/position.model";
+
+@Component({
+  selector: 'app-schedule-information',
+  templateUrl: './schedule-information.component.html',
+  styleUrls: ['./schedule-information.component.css']
+})
+export class ScheduleInformationComponent implements OnInit, OnDestroy {
+
+  idSubscription: Subscription;
+  id: string;
+
+  selectedRoute: string;
+  scheduleId: string;
+  vehicleId: string;
+  stop: string;
+  destination: string;
+
+  gameService: GameService;
+
+  constructor(private gameService2: GameService, private route: ActivatedRoute ) {
+    this.gameService = gameService2;
+  }
+
+  /**
+   * Initialise the stop information during construction and ensure all variables are set to the correct data.
+   */
+  ngOnInit(): void {
+    this.idSubscription = this.route.params.subscribe((params: Params) => {
+      this.id = params['routeScheduleId'];
+      console.log('Param is: ' + this.id);
+      this.selectedRoute = this.id.split(":")[0];
+      this.scheduleId = this.id.split(":")[1];
+
+      // Get the route and schedule objects.
+      let route = this.gameService.getGame().getRoute(this.selectedRoute);
+      let schedules = route.schedules;
+      for ( let i = 0; i < schedules.length; i++ ) {
+        if ( schedules[i].scheduleId === this.scheduleId ) {
+          // Retrieve the stop and the destination.
+          let positionModel = this.getCurrentPosition(schedules[i]);
+          this.stop = positionModel.stop;
+          this.destination = positionModel.destination;
+        }
+      }
+
+      // Retrieve the vehicle assigned to this schedule id.
+      let vehicles = this.gameService.getGame().vehicles;
+      for ( let i = 0; i < vehicles.length; i++ ) {
+        if ( vehicles[i].allocatedTour === this.scheduleId ) {
+          this.vehicleId = vehicles[i].fleetNumber;
+        }
+      }
+
+
+    });
+  }
+
+  getCurrentPosition(schedule: ScheduleModel): PositionModel {
+    var currentDateTime = this.gameService.getGame().currentDateTime;
+    var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
+    for ( let i = 0; i < schedule.services.length; i++ ) {
+      for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
+        // If we exactly match the departure time then this is where we are.
+        if ( schedule.services[i].stopList[j].departureTime === currentTime ) {
+          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+        }
+        // If we are before departure time but after arrival time then we are also here.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime <= currentTime) {
+          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+        }
+        // If we are before both departure time and arrival time then we are at the previous stop if there was one.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime > currentTime
+            && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
+            && j != 0 ) {
+          return new PositionModel(schedule.services[i].stopList[j-1].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+        }
+        // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
+        else if ( schedule.services[i].stopList[j].departureTime > currentTime
+            && schedule.services[i].stopList[j].arrivalTime > currentTime
+            && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
+            && j === 0
+            && i != 0 ) {
+          return new PositionModel(schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop, schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop);
+        }
+
+      }
+    }
+    // If we still did not match, then we must be at the depot.
+    return new PositionModel("Depot", "");
+  }
+
+  /**
+   * When destroying this component we should ensure that all subscriptions are cancelled.
+   */
+  ngOnDestroy(): void {
+  }
+
+}

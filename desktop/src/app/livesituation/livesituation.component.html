@@ -1,0 +1,47 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Live Situation</h1>
+    <h2 class="display-5 text-center">{{getCurrentDate()}}</h2>
+    <h2 class="display-5 text-center">Balance: €{{getBalance()}}</h2>
+    <div class="progress progress-bar-size">
+        <div class="progress-bar bg-success progress-bar-text" [ngStyle]="{width:getPassengerSatisfaction()+'%'}" role="progressbar">Passenger Satisfaction Rating - {{getPassengerSatisfaction()}}%</div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Show an input box where the user can choose the route -->
+    <div class="form-group top-space m-5">
+        <label for="route" style="font-weight: bold;">Route:</label>
+        <select class="form-control" [(ngModel)]="selectedRoute" id="route">
+            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.routeNumber">{{ item.routeNumber + ": " + item.startStop + " <> " + item.endStop }}</option>
+        </select>
+        <table class="mt-5">
+            <tr>
+                <td class="fw-bold text-center" *ngFor="let stop of this.getSelectedRouteStops()">{{ stop }}</td>
+            </tr>
+            <tr *ngFor="let sched of this.getRouteScheds()">
+                <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">
+                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" [routerLink]="[selectedRoute + ':' + sched.scheduleId]" routerLinkActive="active">{{selectedRoute + "/" + sched.scheduleId}}</button></span>
+                    <ng-template #position_white><span style="background-color: white; color: white; padding: 3px;">{{stop}}</span></ng-template>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md-8">
+        <router-outlet></router-outlet>
+    </div>
+
+    <div class="col text-center">
+        <button *ngIf="this.isSimulationRunning(); else stop_simulation" class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="setSimulationRunning(false)">Stop Simulation</button>
+        <ng-template #stop_simulation><button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="setSimulationRunning(true)">Start Simulation</button></ng-template>
+    </div>
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+    </div>
+
+
+</div>

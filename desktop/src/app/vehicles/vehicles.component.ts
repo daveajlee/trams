@@ -56,7 +56,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      this.searchSubscription = this.http.get<VehiclesResponse>('http://localhost:8084/api/' +
+      this.searchSubscription = this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/' +
           'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
         this.vehicles = vehicleInfos.vehicleResponses;
       });

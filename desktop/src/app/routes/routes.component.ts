@@ -28,15 +28,17 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * @param router a router service provided by Angular
    */
   constructor(private dataService: DataService, private routesService: RoutesService, private gameService: GameService,
-              private router:Router) { }
+              private router:Router) {
+  }
 
   /**
    * Initialise a new routes component which maintains a list of routes that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    if ( this.gameService.getGame().routes.length > 0 ) {
+    if ( this.gameService.isOfflineVersion() ) {
       this.routes = this.gameService.getGame().routes;
     } else {
+      console.log('Doing subscription anyway');
       this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
         this.routes = routes;
       });
@@ -48,9 +50,28 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    if ( this.gameService.getGame().routes.length === 0 ) {
+    if ( !this.gameService.isOfflineVersion() ) {
       this.subscription.unsubscribe();
     }
+  }
+
+  /**
+   * This method deletes the route with the supplied route number.
+   * @param routeNumber the route number to delete.
+   */
+  deleteRoute(routeNumber: string) {
+    if(confirm("Are you sure you want to delete route " + routeNumber + "?") == true) {
+      this.gameService.getGame().deleteRoute(routeNumber);
+      this.router.navigate(['management']);
+    }
+  }
+
+  /**
+   * This method opens the route editor with the supplied route number.
+   * @param routeNumber the route number to edit.
+   */
+  editRoute(routeNumber: string) {
+    this.router.navigate(['routeeditor', routeNumber]);
   }
 
   backToManagementScreen(): void {

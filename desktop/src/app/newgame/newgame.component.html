@@ -1,0 +1,48 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<!-- Create a jumbotron component with new game -->
+<div class="jumbotron text-center top-space">
+    <h1 class="display-4 text-center"><img src="assets/trams-logo.png" alt="TraMS" class="img-responsive" style="max-height:80px;"></h1>
+    <br/>
+    <p class="lead left-space">Start your own transport company and make it a big success.</p>
+</div>
+
+
+<div class="container-fluid">
+
+    <!-- Show an input box where the user can enter their company and their name. -->
+    <div class="form-group top-space m-5">
+        <label for="companyName" style="font-weight: bold;">Company Name:</label>
+        <input class="form-control" [(ngModel)]="companyName" type="text" id="companyName"/>
+    </div>
+    <!-- Show an input box where the user can enter their name. -->
+    <div class="form-group top-space m-5">
+        <label for="playerName" style="font-weight: bold;">Player Name:</label>
+        <input class="form-control" [(ngModel)]="playerName" type="text" id="playerName"/>
+    </div>
+    <!-- Show an input box where the user can choose their difficulty level -->
+    <div class="form-group top-space m-5">
+        <label for="difficultyLevel" style="font-weight: bold;">Level:</label>
+        <select class="form-control" [(ngModel)]="difficultyLevel" id="difficultyLevel">
+            <option>Easy</option>
+            <option>Intermediate</option>
+            <option>Hard</option>
+        </select>
+    </div>
+    <!-- Show an input box where the user can choose their starting time -->
+    <div class="form-group top-space m-5">
+        <label for="startingDate" style="font-weight: bold;">Your Start Date:</label>
+        <input class="form-control" [(ngModel)]="startingDate" type="date" id="startingDate"/>
+    </div>
+    <!-- Show start button -->
+    <div class="center-button">
+        <button
+                [disabled]="(companyName===undefined || companyName==='') || (playerName===undefined || playerName==='')"
+                type="submit"
+                class="btn btn-primary btn-lg"
+                (click)="onStartSubmit()"
+        >Start</button>
+    </div>
+
+</div>

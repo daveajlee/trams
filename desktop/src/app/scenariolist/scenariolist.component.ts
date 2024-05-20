@@ -58,7 +58,8 @@ export class ScenariolistComponent implements OnInit {
      * @param scenario which contains the name of the scenario that the user chose.
      */
   onScenarioSelect(scenario: string): void {
-      this.gameService.setGame(new Game(this.company, this.playerName, this.startingDate, this.loadScenario(scenario), this.difficultyLevel,));
+      this.gameService.setGame(new Game(this.company, this.playerName, new Date(this.startingDate), this.loadScenario(scenario), this.difficultyLevel
+        , 200000.0, 90, [], [], [], [], []));
       // Add the message.
       this.gameService.getGame().addMessage("New Managing Director Announced",
             "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"

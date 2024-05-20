@@ -15,7 +15,7 @@ export class VehicleshowroomComponent {
   models: VehicleModel[];
   currentDisplay: number;
   gameService: GameService
-  currentDate: Date
+  deliveryDate: Date
   quantity: number;
 
   /**
@@ -32,8 +32,8 @@ export class VehicleshowroomComponent {
         new VehicleModel('MyTram Tram 1', 'Tram',104, 83, 280000, 'assets/tram-pixabay.png')];
     this.currentDisplay = 0;
     this.quantity = 1;
-    this.currentDate = new Date();
-    this.currentDate.setDate(this.currentDate.getDate() + 5);
+    this.deliveryDate = this.gameService.getGame().currentDateTime;
+    this.deliveryDate.setDate(this.deliveryDate.getDate() + 5);
   }
 
   getVehiclePicture(): string {
@@ -53,7 +53,7 @@ export class VehicleshowroomComponent {
   }
 
   getVehicleDeliveryDate(): string {
-    return this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+    return this.datePipe.transform(this.deliveryDate, 'yyyy-MM-dd');
   }
 
   getVehiclePurchasePrice(): number {

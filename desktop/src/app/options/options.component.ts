@@ -17,7 +17,11 @@ export class OptionsComponent {
    * @param router a router service provided by Angular
    */
   constructor(private gameService: GameService, private router:Router) {
-    this.level = gameService.getGame().difficultyLevel.toLowerCase();
+    if ( this.gameService.getGame() ) {
+      this.level = this.gameService.getGame().difficultyLevel.toLowerCase();
+    } else {
+      this.level = "easy";
+    }
   }
 
   backToManagementScreen(): void {

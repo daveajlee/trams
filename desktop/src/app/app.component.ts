@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Router} from '@angular/router';
 import {DatePipe} from '@angular/common';
+import {LoadService} from "./shared/load.service";
 
 @Component({
   selector: 'app-root',
@@ -17,16 +18,32 @@ export class AppComponent {
   difficultyLevel: string;
   startingDate: string;
   showOutlet: boolean;
-  currentDate = new Date();
 
-  constructor(public router: Router, private datePipe: DatePipe) {
+  loadService: LoadService;
+
+  constructor(public router: Router, private datePipe: DatePipe, private loadService2: LoadService) {
     this.difficultyLevel = 'Easy';
-    this.startingDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+    this.startingDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.loadService = loadService2;
   }
 
-  onFileInput(files: FileList | null): void {
+  /**
+   * Load the first of the selected files into the game memory.
+   * @param files the selected files
+   */
+  async onFileInput(files: FileList | null): Promise<void> {
     if (files) {
-      this.file = files.item(0);
+      // Currently we only support tcs files.
+      if ( files.item(0).name.endsWith(".tcs") ) {
+        console.log('We process this in the tcs file');
+        await this.loadService.onLoadTcsFile(files.item(0));
+        await this.router.navigate(['management']);
+      } else if ( files.item(0).name.endsWith(".json") ) {
+        await this.loadService.onLoadJSONFile(files.item(0));
+        await this.router.navigate(['management']);
+      } else {
+        alert('This file type is not supported. Please choose another file.');
+      }
     }
   }
   onActivate(event: any): void {
@@ -38,46 +55,10 @@ export class AppComponent {
   }
 
   /**
-   * On submission of the start game form, we create a game.
+   * Clicking on the new game button redirects to the new game screen.
    */
-  onStartSubmit(): void {
-    this.router.navigate(['scenariolist'], { queryParams: { company: this.companyName,
-        playerName: this.playerName, startingDate: this.startingDate, difficultyLevel: this.difficultyLevel } });
-  }
-
-  /**
-   * On submission of the load game form, we load the game.
-   */
-  async onLoadSubmit(): Promise<void> {
-    var fileContent = await this.readFileContent(this.file);
-    var xmlDoc;
-    if (window.DOMParser) {
-      let parser = new DOMParser();
-      xmlDoc = parser.parseFromString(fileContent, "text/xml");
-      console.log(xmlDoc);
-    }
-    this.router.navigate(['management']);
-  }
-
-  /**
-   * Read the contents of the file.
-   */
-  readFileContent(file: File): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      if (!file) {
-        resolve('');
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const text = reader.result.toString();
-        resolve(text);
-
-      };
-
-      reader.readAsText(file);
-    });
+  onNewGameClick(): void {
+    this.router.navigate(['newgame']);
   }
 
 }

@@ -35,6 +35,13 @@ import { DrivercreatorComponent } from './drivercreator/drivercreator.component'
 import { VehicleshowroomComponent } from './vehicleshowroom/vehicleshowroom.component';
 import { AllocationsComponent } from './allocations/allocations.component';
 import { AllocationslistComponent } from './allocationslist/allocationslist.component';
+import { LivesituationComponent } from './livesituation/livesituation.component';
+import { ScheduleInformationComponent } from './schedule-information/schedule-information.component';
+import { NewgameComponent } from './newgame/newgame.component';
+import {LoadService} from "./shared/load.service";
+import {SaveService} from "./shared/save.service";
+import { SwitchlocalComponent } from './switchlocal/switchlocal.component';
+import { RouteeditorComponent } from './routeeditor/routeeditor.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +68,12 @@ import { AllocationslistComponent } from './allocationslist/allocationslist.comp
     DrivercreatorComponent,
     VehicleshowroomComponent,
     AllocationsComponent,
-    AllocationslistComponent
+    AllocationslistComponent,
+    LivesituationComponent,
+    ScheduleInformationComponent,
+    NewgameComponent,
+    SwitchlocalComponent,
+    RouteeditorComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +85,7 @@ import { AllocationslistComponent } from './allocationslist/allocationslist.comp
     MatProgressBarModule,
     ReactiveFormsModule
   ],
-  providers: [StopsService, RoutesService, VehiclesService, GameService],
+  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

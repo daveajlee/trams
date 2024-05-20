@@ -15,7 +15,6 @@ export class DrivercreatorComponent {
   contractedHours: number;
   startingDate: string;
   gameService: GameService
-  currentDate = new Date();
 
   /**
    * Construct a new Driver Creator component
@@ -26,7 +25,7 @@ export class DrivercreatorComponent {
   constructor(private gameService2: GameService, public router: Router, private datePipe: DatePipe) {
     this.gameService = gameService2;
     this.contractedHours = 40;
-    this.startingDate = this.datePipe.transform(this.currentDate, 'yyyy-MM-dd');
+    this.startingDate = this.datePipe.transform(this.gameService.getGame().currentDateTime, 'yyyy-MM-dd');
   }
 
   /**

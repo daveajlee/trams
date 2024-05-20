@@ -1,13 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Router} from '@angular/router';
+import {GameService} from "../shared/game.service";
 
 @Injectable({ providedIn: 'root' })
 /**
  * This class provides the html connection for uploading the file to the server.
  */
 export class UploadService {
-  constructor(public router: Router, private http: HttpClient) {}
+  constructor(public router: Router, private gameService: GameService, private http: HttpClient) {}
 
   /**
    * Upload the specified file with the route numbers that should be imported to the server.
@@ -25,7 +26,7 @@ export class UploadService {
     data.append('validFromDate', validFromDate);
     data.append('validToDate', validToDate);
     this.http
-      .post('http://localhost:8084/api/upload/', data)
+      .post(this.gameService.getServerUrl() + '/upload/', data)
         .subscribe(
             () => {
               this.router.navigate(['routes']);
