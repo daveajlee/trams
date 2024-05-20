@@ -1,15 +1,20 @@
 {
   "name": "trams-frontend",
   "version": "0.5.0",
+  "main": "src/electron/main-forge.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "serve": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build-electron": "ng build --base-href . && cp src/electron/* dist/",
-    "electron": "npm run build-electron && ./node_modules/.bin/electron dist/"
+    "electron": "npm run build-electron && ./node_modules/.bin/electron dist/",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make --platform darwin & electron-forge make --platform linux & electron-forge make --platform win32",
+    "publish": "electron-forge publish"
   },
   "private": true,
   "dependencies": {
@@ -38,6 +43,10 @@
   "devDependencies": {
     "@angular/cli": "^16.1.6",
     "@angular/compiler-cli": "~16.1.7",
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
     "@types/jasmine": "~4.3.5",
     "@types/node": "^20.4.5",
     "@types/wicg-file-system-access": "^2023.10.5",
@@ -61,5 +70,15 @@
     "path": false,
     "os": false,
     "timers": false
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-zip"
+        }
+      ]
+    }
   }
 }
