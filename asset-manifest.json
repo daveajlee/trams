@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/trams/static/css/main.e6dc6422.css",
-    "main.js": "/trams/static/js/main.9723cb06.js",
+    "main.js": "/trams/static/js/main.81a48b96.js",
     "static/js/685.7bc8b67f.chunk.js": "/trams/static/js/685.7bc8b67f.chunk.js",
     "static/media/douglas-lopes-ehyV_XOZ4iA-unsplash.jpg": "/trams/static/media/douglas-lopes-ehyV_XOZ4iA-unsplash.0e2a85740846a7afab97.jpg",
     "static/media/joshua-earle-Dwheufds6kQ-unsplash.jpg": "/trams/static/media/joshua-earle-Dwheufds6kQ-unsplash.be55339bb11e89ccbc40.jpg",
@@ -16,6 +16,6 @@
   },
   "entrypoints": [
     "static/css/main.e6dc6422.css",
-    "static/js/main.9723cb06.js"
+    "static/js/main.81a48b96.js"
   ]
 }
