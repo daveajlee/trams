@@ -35,10 +35,10 @@ const Architecture = () => (
                         <Accordion.Body>
                             The current architecture of TraMS allows multiple clients to be built - each client
                             simply has to implement the API provided by the server. Currently there is only one client
-                            which is available for download: the TraMS Desktop Java Client which contains an integrated
-                            version of the TraMS server. This client is typically restricted to Desktop or Laptop systems. A responsive
-                            browser-based client or a mobile app is possible in the current architecture and is part of
-                            the roadmap of TraMS development.
+                            which is available for download: the TraMS Frontend Client which runs in Electron and
+                            supports both an online mode (with server) and offline mode (without server). This client is
+                            typically restricted to Desktop or Laptop systems. A mobile app is possible in the current
+                            architecture and is part of the roadmap of TraMS development.
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="1">

@@ -21,23 +21,6 @@ const Roadmap = () => (
         <Row>
             <Col>
                 <Accordion defaultActiveKey="0">
-                    <Accordion.Item eventKey="0">
-                        <Accordion.Header>Browser-based Game</Accordion.Header>
-                        <Accordion.Body>
-                            In order to make TraMS even easier to use, it would be better to have a web-based
-                            interface for the game. Currently additional software must be installed on the user's
-                            computer. A browser-based system could then be used in Google Chrome, Firefox or Safari without
-                            the installation of additional software.
-                        </Accordion.Body>
-                    </Accordion.Item>
-                    <Accordion.Item eventKey="1">
-                        <Accordion.Header>Backup Games</Accordion.Header>
-                        <Accordion.Body>
-                            In order to make TraMS more reliable, it should be possible to export and import
-                            all company and game data. This would also make it possible for players to
-                            backup the data to prevent data loss.
-                        </Accordion.Body>
-                    </Accordion.Item>
                     <Accordion.Item eventKey="2">
                         <Accordion.Header>Create your own Scenario</Accordion.Header>
                         <Accordion.Body>

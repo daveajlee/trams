@@ -27,11 +27,11 @@ const Download = () => (
                     <Card.Body>
                         <Card.Title>Desktop Client</Card.Title>
                         <Card.Text>
-                            There is currently only a desktop client for TraMS which requires Java 8 or above. It has an integrated server so none of the
-                            server services are required. The feature set of this client is therefore limited! A new
-                            client which uses the Server APIs is planned.
+                            The desktop client for TraMS is implemented via Angular and Electron. It supports
+                            an offline mode which does not require the Server APIs. An online mode using the Server APIs
+                            is planned.
                         </Card.Text>
-                        <Button variant="primary" href="https://github.com/daveajlee/trams-game/releases/download/v0.4.0/trams-0.4.0.zip">ZIP file</Button>
+                        <Button variant="primary" href="https://github.com/daveajlee/trams/releases">Download Client</Button>
                     </Card.Body>
                 </Card>
             </CardGroup>

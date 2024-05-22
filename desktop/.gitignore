@@ -16,3 +16,6 @@ dist/
 
 #Angular build files
 .angular/
+
+#Electron release files
+out/
