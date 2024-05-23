@@ -59,7 +59,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       // Determine current date & time
-      const time = new Date(Date.now());
+      const time = this.gameService.getGame().currentDateTime;
       const month = time.getMonth() + 1;
       let monthStr = String(month);
       if ( month < 10 ) { monthStr = '0' + month; }

@@ -18,6 +18,7 @@ import {Router} from "@angular/router";
 export class StopsComponent implements OnInit, OnDestroy {
 
   stops: Stop[];
+  routeStops: Stop[];
   subscription: Subscription;
 
   /**
@@ -33,6 +34,7 @@ export class StopsComponent implements OnInit, OnDestroy {
    * Initialise a new stops component which maintains a list of stops that can be updated and set from the server calls.
    */
   ngOnInit(): void {
+    console.log(this.routeStops);
     if ( this.gameService.getGame().scenario.stopDistances ) {
       this.stops = [];
       var allStops =  this.gameService.getGame().scenario.stopDistances;
