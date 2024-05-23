@@ -74,6 +74,17 @@ export class RoutesComponent implements OnInit, OnDestroy {
     this.router.navigate(['routeeditor', routeNumber]);
   }
 
+  /**
+   * This method opens the timetable viewer with the supplied route number.
+   * @param routeNumber the route number to view the timetable of.
+   */
+  viewTimetable(routeNumber: string) {
+    this.router.navigate(['timetableviewer', routeNumber]);
+  }
+
+  /**
+   * This method returns to the management screen.
+   */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }

@@ -27,6 +27,7 @@
       <td>{{routeEl.endStop}}</td>
       <td>{{routeEl.company}}</td>
         <td>
+            <button class="btn btn-info" style="margin: 3px;" type="submit" (click)="viewTimetable(routeEl.routeNumber)">View Timetable</button>
             <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.routeNumber)">Edit</button>
             <button class="btn btn-danger" style="margin: 3px;" type="submit" (click)="deleteRoute(routeEl.routeNumber)">Delete</button>
         </td>

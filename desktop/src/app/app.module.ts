@@ -42,6 +42,7 @@ import {LoadService} from "./shared/load.service";
 import {SaveService} from "./shared/save.service";
 import { SwitchlocalComponent } from './switchlocal/switchlocal.component';
 import { RouteeditorComponent } from './routeeditor/routeeditor.component';
+import { TimetableviewerComponent } from './timetableviewer/timetableviewer.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { RouteeditorComponent } from './routeeditor/routeeditor.component';
     ScheduleInformationComponent,
     NewgameComponent,
     SwitchlocalComponent,
-    RouteeditorComponent
+    RouteeditorComponent,
+    TimetableviewerComponent
   ],
   imports: [
     BrowserModule,
