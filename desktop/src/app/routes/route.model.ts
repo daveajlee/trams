@@ -14,6 +14,7 @@ export class Route {
   public stops: string[];
   public timetables: Timetable[];
   public schedules: ScheduleModel[];
+  public nightRoute: boolean;
 
   addTimetable ( timetable: Timetable ) {
     if ( !this.timetables ) {

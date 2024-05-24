@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 @Component({
   selector: 'app-routes',
   templateUrl: './routes.component.html',
-  styleUrls: ['./routes.component.css']
+  styleUrls: ['./routes.component.css','./icofont.min.css']
 })
 /**
  * This class implements the functionality for the routes component which retrieves route data from the server and sends it to the
@@ -37,6 +37,9 @@ export class RoutesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if ( this.gameService.isOfflineVersion() ) {
       this.routes = this.gameService.getGame().routes;
+      for ( let i = 0; i < this.gameService.getGame().routes.length; i++ ) {
+        console.log(this.gameService.getGame().routes[i].routeNumber + ' is ' + this.gameService.getGame().routes[i].nightRoute);
+      }
     } else {
       console.log('Doing subscription anyway');
       this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {

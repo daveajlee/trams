@@ -15,6 +15,7 @@ export class RoutecreatorComponent implements OnInit {
   endStop: string;
   stops: string[];
   gameService: GameService;
+  nightRoute: boolean;
 
   /**
    * Construct a new Route Creator component
@@ -26,6 +27,7 @@ export class RoutecreatorComponent implements OnInit {
     this.startStop = this.getScenarioStops()[0].split(":")[0];
     this.endStop = this.getScenarioStops()[1].split(":")[0];
     this.stops = [];
+    this.nightRoute = false;
   }
 
   /**
@@ -69,6 +71,9 @@ export class RoutecreatorComponent implements OnInit {
     route.endStop = this.endStop;
     route.stops = this.stops;
     route.company = this.gameService.getGame().companyName;
+    if ( (document.getElementById('checkbox-night') as HTMLInputElement).checked ) {
+      route.nightRoute = true;
+    }
     this.gameService.getGame().addRoute(route);
     this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
   }

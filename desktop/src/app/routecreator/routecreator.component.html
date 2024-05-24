@@ -12,6 +12,11 @@
     <input class="form-control" [(ngModel)]="routeNumber" type="text" id="routeNumber"/>
 </div>
 
+<!-- Show a checkbox to indicate if route is night route or not -->
+<div class="form-group top-space m-5">
+    <input class="checkbox" type="checkbox" [id]="'checkbox-night'" [checked]="nightRoute"> Night Route
+</div>
+
 <!-- Show an input box where the user can choose the start stop -->
 <div class="form-group top-space m-5">
     <label for="startStop" style="font-weight: bold;">Start Stop:</label>

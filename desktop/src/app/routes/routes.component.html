@@ -13,19 +13,24 @@
 <table class="table">
   <thead class="thead-light">
     <tr>
-      <th scope="col">Route Number</th>
-      <th scope="col">From</th>
-      <th scope="col">To</th>
-      <th scope="col">Operator</th>
+        <th scope="col"></th>
+        <th scope="col">Route Number</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Operator</th>
         <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let routeEl of routes, let i = index">
-      <th scope="row">{{routeEl.routeNumber}}</th>
-      <td>{{routeEl.startStop}}</td>
-      <td>{{routeEl.endStop}}</td>
-      <td>{{routeEl.company}}</td>
+        <td>
+            <i *ngIf="routeEl.nightRoute" class="icofont-night"></i>
+            <i *ngIf="!routeEl.nightRoute" class="icofont-sun-alt"></i>
+        </td>
+        <td>{{routeEl.routeNumber}}</td>
+        <td>{{routeEl.startStop}}</td>
+        <td>{{routeEl.endStop}}</td>
+        <td>{{routeEl.company}}</td>
         <td>
             <button class="btn btn-info" style="margin: 3px;" type="submit" (click)="viewTimetable(routeEl.routeNumber)">View Timetable</button>
             <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.routeNumber)">Edit</button>
