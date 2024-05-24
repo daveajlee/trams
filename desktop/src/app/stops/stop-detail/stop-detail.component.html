@@ -76,3 +76,30 @@
   </tbody>
 </table>
 
+<!-- Show a heading with departures for a specific date -->
+<h3 class="text-center m-5">Departures for a specific date</h3>
+
+<!-- Component to choose date -->
+<div class="form-group top-space m-2">
+    <label for="selectedDate" style="font-weight: bold;">Date:</label>
+    <input class="form-control" [(ngModel)]="selectedDate" type="date" id="selectedDate"/>
+</div>
+
+<!-- Show a table with all departures for this date with time, route and destination -->
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Route</th>
+        <th scope="col">Destination</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let specificDeparturesEl of getDeparturesForSpecificDate(), let i = index">
+        <td>{{specificDeparturesEl.departureTime}}</td>
+        <td>{{specificDeparturesEl.routeNumber}}</td>
+        <td>{{specificDeparturesEl.destination}}</td>
+    </tr>
+    </tbody>
+</table>
+

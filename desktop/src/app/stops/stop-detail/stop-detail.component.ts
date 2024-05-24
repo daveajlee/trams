@@ -40,6 +40,8 @@ export class StopDetailComponent implements OnInit, OnDestroy {
   arrivalsSubscription: Subscription;
   todaysDeparturesSubscription: Subscription;
 
+  selectedDate: string;
+
   /**
    * Construct a new stop-detail component based on the supplied information.
    * @param http a http client which can retrieve data via http calls from the server.
@@ -50,7 +52,12 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * @param dom a variable which ensures that security settings allow iframes.
    */
   constructor(private http: HttpClient, private stopsService: StopsService, private route: ActivatedRoute,
-              private gameService: GameService, private router: Router, private dom: DomSanitizer) { }
+              private gameService: GameService, private router: Router, private dom: DomSanitizer) {
+    this.selectedDate = this.gameService.getGame().currentDateTime.getFullYear() + "-" + (this.gameService.getGame().currentDateTime.getMonth() < 10 ? "0"
+            + this.gameService.getGame().currentDateTime.getMonth() : this.gameService.getGame().currentDateTime.getMonth() )  + "-" +
+        (this.gameService.getGame().currentDateTime.getDate() < 10 ? "0"
+            + this.gameService.getGame().currentDateTime.getDate() : this.gameService.getGame().currentDateTime.getDate() );
+  }
 
   /**
    * Initialise the stop information during construction and ensure all variables are set to the correct data.
@@ -70,31 +77,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       if ( this.gameService.isOfflineVersion() ) {
         this.stop = new Stop('' + this.id, this.gameService.getGame().scenario.stopDistances[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.name);
-        this.todayDepartures = [];
-        // Go through the routes,
-        let routes = this.gameService.getGame().routes;
-        for ( let a = 0; a < routes.length; a++ ) {
-          let schedules = routes[a].schedules;
-          if ( routes[a].schedules ) {
-            for ( let b = 0; b < schedules.length; b++ ) {
-              let services = schedules[b].services;
-              for ( let c = 0; c < services.length; c++ ) {
-                let stops = services[c].stopList;
-                for ( let d = 0; d < stops.length; d++ ) {
-                  if ( this.stop.name === stops[d].stop ) {
-                    // Exclude those stops which end here as they are not departures,
-                    if ( stops[d].stop != stops[stops.length-1].stop ) {
-                      // This service stops here so now create the real time model and add it to today departures.
-                      this.todayDepartures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        // Sort departures.
-        this.todayDepartures.sort(this.sortDepartures);
+        this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().currentDateTime);
         // Save the next 5 departures into the departures array and save the next 5 arrivals into the arrivals array.
         let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame().currentDateTime);
         this.departures = []; this.arrivals = [];
@@ -126,6 +109,50 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  /**
+   * Helper method to determine departures for a specific date.
+   * @param date the date to retrieve departures for.
+   */
+  retrieveDeparturesForDate(date: Date): RealTimeInfo[] {
+    console.log('I want to retrieve departures for ' + date);
+    let departures = [];
+    // Go through the routes,
+    let routes = this.gameService.getGame().routes;
+    for ( let a = 0; a < routes.length; a++ ) {
+      let schedules = routes[a].schedules;
+      if ( routes[a].schedules ) {
+        for ( let b = 0; b < schedules.length; b++ ) {
+          let services = schedules[b].services;
+          for ( let c = 0; c < services.length; c++ ) {
+            let stops = services[c].stopList;
+            for ( let d = 0; d < stops.length; d++ ) {
+              if ( this.stop.name === stops[d].stop ) {
+                // Exclude those stops which end here as they are not departures,
+                if ( stops[d].stop != stops[stops.length-1].stop ) {
+                  // This service stops here so now create the real time model and add it to today departures.
+                  departures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    // Sort departures.
+    departures.sort(this.sortDepartures);
+    return departures;
+  }
+
+  /**
+   * Retrieve the departures for the currently selected date.
+   */
+  getDeparturesForSpecificDate(): RealTimeInfo[] {
+    var fullYear = this.selectedDate.split("-")[0];
+    var month = this.selectedDate.split("-")[1];
+    var date = this.selectedDate.split("-")[2];
+    return this.retrieveDeparturesForDate(new Date(parseInt(fullYear), parseInt(month), parseInt(date), 0, 0, 0));
   }
 
   /**
