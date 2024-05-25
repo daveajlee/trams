@@ -109,9 +109,18 @@ export class Game {
      * @param subject the subject of the message to add.
      * @param content the content of the message to add.
      * @param folder the folder of the message to add.
+     * @param date the date of the message to add.
+     * @param isSender a boolean which is true iff it is the sender of the message in the name field.
+     * @param name the name of the sender or recipient depending on the boolean variable above.
      */
-    addMessage(subject: string, content: string, folder: string ): void {
-        this.messages.push(new Message(subject, content, folder));
+    addMessage(subject: string, content: string, folder: string, date: Date, isSender: boolean, name: string ): void {
+        let message = new Message(subject, content, folder, date);
+        if ( isSender ) {
+            message.sender = name;
+        } else {
+            message.recipient = name;
+        }
+        this.messages.push(message);
     }
 
     /**

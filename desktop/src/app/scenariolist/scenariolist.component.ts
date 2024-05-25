@@ -66,7 +66,7 @@ export class ScenariolistComponent implements OnInit {
             +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).targets)
             + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
             + "\n\nGood luck!",
-            "INBOX");
+            "INBOX", this.gameService.getGame().currentDateTime, true, scenario + " Council");
       // Add the supplied vehicles.
       var mySuppliedVehicles = this.loadScenario(scenario).suppliedVehicles;
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {

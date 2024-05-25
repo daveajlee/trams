@@ -31,6 +31,9 @@
         </div>
         <div *ngFor="let message of displayMessages, let i = index">
             <h2>{{message.subject}}</h2>
+            <h6 *ngIf="message.sender">From: {{message.sender}}</h6>
+            <h6 *ngIf="message.recipient">To: {{message.recipient}}</h6>
+            <h6>On: {{message.getDisplayDate()}}</h6>
             <p style="white-space: pre-wrap">{{message.content}}</p>
         </div>
     </div>
