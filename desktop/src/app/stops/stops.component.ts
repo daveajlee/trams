@@ -18,8 +18,8 @@ import {Router} from "@angular/router";
 export class StopsComponent implements OnInit, OnDestroy {
 
   stops: Stop[];
-  routeStops: Stop[];
   subscription: Subscription;
+  alphabet: String[];
 
   /**
    * Create a new stops component which constructs a data service and a stop service to retreive data from the server.
@@ -34,19 +34,8 @@ export class StopsComponent implements OnInit, OnDestroy {
    * Initialise a new stops component which maintains a list of stops that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    console.log(this.routeStops);
-    if ( this.gameService.getGame().scenario.stopDistances ) {
-      this.stops = [];
-      var allStops =  this.gameService.getGame().scenario.stopDistances;
-      for ( var i = 0; i < allStops.length; i++ ) {
-        this.stops.push(new Stop('' + i, allStops[i].split(":")[0], 0, 0));
-      }
-    } else {
-      this.subscription = this.stopsService.stopsChanged.subscribe((stops: Stop[]) => {
-        this.stops = stops;
-      });
-      this.stops = this.stopsService.getStops();
-    }
+    this.alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+    this.stops = this.retrieveAllStops();
   }
 
   /**
@@ -56,6 +45,35 @@ export class StopsComponent implements OnInit, OnDestroy {
     if ( this.subscription ) {
       this.subscription.unsubscribe();
     }
+  }
+
+  /**
+   * Helper method to retrieve all stops.
+   */
+  retrieveAllStops(): Stop[] {
+    if ( this.gameService.getGame().scenario.stopDistances ) {
+      let stops = [];
+      var allStops =  this.gameService.getGame().scenario.stopDistances;
+      for ( var i = 0; i < allStops.length; i++ ) {
+        stops.push(new Stop('' + i, allStops[i].split(":")[0], 0, 0));
+      }
+      return stops;
+    } else {
+      this.subscription = this.stopsService.stopsChanged.subscribe((stops: Stop[]) => {
+        this.stops = stops;
+      });
+      return this.stopsService.getStops();
+    }
+  }
+
+  /**
+   * Filter the stops based on the supplied letter.
+   * @param letter the letter to filter the results for.
+   */
+  filterByLetter(letter: string): void {
+    let stops = this.retrieveAllStops();
+    this.stops = stops.filter((stop: Stop) =>
+      stop.name.toLowerCase().startsWith(letter));
   }
 
   backToManagementScreen(): void {
