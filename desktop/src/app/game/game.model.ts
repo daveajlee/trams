@@ -11,7 +11,7 @@ import {Allocation} from "../allocations/allocation.model";
 export class Game {
 
     public companyName: string;
-    public balance: number;
+    private balance: number;
     public playerName: string;
     public currentDateTime: Date;
     public scenario: Scenario;
@@ -135,6 +135,41 @@ export class Game {
             }
         }
         return null;
+    }
+
+    /**
+     * Retrieve the current balance.
+     * This method ensures that no method can manipulate the balance without permission.
+     * @return the current balance as a number,
+     */
+    getBalance(): number {
+        return this.balance;
+    }
+
+    /**
+     * Withdraw the supplied number from the balance.
+     * A negative number will be ignored.
+     * @param amount the amount to withdraw from the balance.
+     */
+    withdrawBalance(amount: number) {
+        if ( amount > 0 && amount < this.balance ) {
+            this.balance -= amount;
+        } else if ( amount >= this.balance ) {
+            this.balance = 0;
+        } else {
+            console.log('Attempted to withdraw a negative number from the balance: ' + amount);
+        }
+    }
+
+    /**
+     * Credit the balance with the supplied amount.
+     * A negative number will be ignored.
+     * @param amount the amount to credit to the balance.
+     */
+    creditBalance(amount: number) {
+        if ( amount > 0 ) {
+            this.balance += amount;
+        }
     }
 
 }

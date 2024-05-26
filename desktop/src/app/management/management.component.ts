@@ -20,7 +20,7 @@ export class ManagementComponent implements OnInit {
   }
 
   getBalance(): string {
-    return '' + this.gameService.getGame().balance;
+    return '' + this.gameService.getGame().getBalance();
   }
 
   getPassengerSatisfaction(): number {

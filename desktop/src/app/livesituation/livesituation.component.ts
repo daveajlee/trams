@@ -33,7 +33,7 @@ export class LivesituationComponent implements OnInit {
   }
 
   getBalance(): string {
-    return '' + this.gameService.getGame().balance;
+    return '' + this.gameService.getGame().getBalance();
   }
 
   getPassengerSatisfaction(): number {

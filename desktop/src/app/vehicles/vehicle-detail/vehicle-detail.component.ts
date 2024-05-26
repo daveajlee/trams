@@ -71,7 +71,7 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
     var allVehicles = this.gameService.getGame().vehicles;
     for ( var i = 0; i < allVehicles.length; i++ ) {
       if ( this.gameService.getGame().vehicles[i].fleetNumber.valueOf() === vehicle.fleetNumber.valueOf() ) {
-        this.gameService.getGame().balance += parseFloat(this.gameService.getGame().vehicles[i].additionalTypeInformationMap.get('Value'));
+        this.gameService.getGame().creditBalance(parseFloat(this.gameService.getGame().vehicles[i].additionalTypeInformationMap.get('Value')));
         this.gameService.getGame().vehicles.splice(i, 1);
       }
     }
