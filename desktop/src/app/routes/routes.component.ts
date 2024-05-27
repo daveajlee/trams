@@ -19,6 +19,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
 
   routes: Route[];
   subscription: Subscription;
+  filteredRouteNumber: string;
 
   /**
    * Create a new routes component which constructs a data service and a route service to retreive data from the server.
@@ -73,6 +74,19 @@ export class RoutesComponent implements OnInit, OnDestroy {
     } else {
       this.routes = routes.filter((route: Route) =>
           route.nightRoute === true)
+    }
+  }
+
+  /**
+   * Filter the route number.
+   */
+  filterRouteNumber(): void {
+    let routes = this.retrieveAllRoutes();
+    if ( this.filteredRouteNumber != "" ) {
+      this.routes = routes.filter((route: Route) =>
+          route.routeNumber.startsWith(this.filteredRouteNumber));
+    } else {
+      this.routes = routes;
     }
   }
 

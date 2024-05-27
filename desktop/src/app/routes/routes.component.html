@@ -15,6 +15,12 @@
     <button class="btn btn-primary m-2" type="submit" (click)="filterRoutes(false)">Night Routes</button>
 </div>
 
+<!-- Display the filter text option -->
+<div class="form-group top-space m-5">
+    <label for="filteredRouteNumber" style="font-weight: bold;">Filter by Route Number:</label>
+    <input class="form-control" [(ngModel)]="filteredRouteNumber" type="text" id="filteredRouteNumber" (change)="filterRouteNumber()"/>
+</div>
+
 <!-- Display a table of all route numbers and the agency running the routes which are stored in TraMS -->
 <table class="table">
   <thead class="thead-light">
