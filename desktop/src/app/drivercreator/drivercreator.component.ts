@@ -37,7 +37,11 @@ export class DrivercreatorComponent {
 
   onSubmitDriver(): void {
     var driver = new Driver(this.name, this.contractedHours, this.startingDate);
+    // Add the driver.
     this.gameService.getGame().addDriver(driver);
+    // Deduct the hiring costs of 500.
+    this.gameService.getGame().withdrawBalance(500);
+    // Redirect to management.
     this.router.navigate(['management']);
   }
 

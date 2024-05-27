@@ -108,8 +108,13 @@ export class LivesituationComponent implements OnInit {
     this.simulationRunning = value;
     if ( value === true ) {
       this.interval = setInterval(() => {
-        // Increase the time by 15 minutes,
+        // Increase the time by the simulation interval of minutes,
         this.gameService.getGame().currentDateTime = new Date(this.gameService.getGame().currentDateTime.getTime() + this.gameService.getGame().getSimulationInterval() *60000);
+        // Check if we went past midnight. If so, then we need to pay drivers again.
+        if ( ((this.gameService.getGame().currentDateTime.getHours() * 60) + this.gameService.getGame().currentDateTime.getMinutes()) <= this.gameService.getGame().getSimulationInterval() ) {
+          // Now we need to pay drivers.
+          this.gameService.getGame().withdrawBalance(this.gameService.getGame().drivers.length * 90);
+        }
         // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
         var randomDiff = Math.random() * (4);
         this.gameService.getGame().passengerSatisfaction = Math.round(this.gameService.getGame().passengerSatisfaction + (randomDiff-2));
