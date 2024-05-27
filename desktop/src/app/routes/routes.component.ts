@@ -35,18 +35,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Initialise a new routes component which maintains a list of routes that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    if ( this.gameService.isOfflineVersion() ) {
-      this.routes = this.gameService.getGame().routes;
-      for ( let i = 0; i < this.gameService.getGame().routes.length; i++ ) {
-        console.log(this.gameService.getGame().routes[i].routeNumber + ' is ' + this.gameService.getGame().routes[i].nightRoute);
-      }
-    } else {
-      console.log('Doing subscription anyway');
-      this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
-        this.routes = routes;
-      });
-      this.routes = this.routesService.getRoutes();
-    }
+    this.routes = this.retrieveAllRoutes();
   }
 
   /**
@@ -55,6 +44,35 @@ export class RoutesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if ( !this.gameService.isOfflineVersion() ) {
       this.subscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Helper method to retrieve all stops.
+   */
+  retrieveAllRoutes(): Route[] {
+    if ( this.gameService.isOfflineVersion() ) {
+      return this.gameService.getGame().routes;
+    } else {
+      this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
+        this.routes = routes;
+      });
+      return this.routesService.getRoutes();
+    }
+  }
+
+  /**
+   * Filter the routes based on day or night.
+   * @param dayRoutes true iff day routes should be shown or false if only night routes should be shown.
+   */
+  filterRoutes(dayRoutes: boolean): void {
+    let routes = this.retrieveAllRoutes();
+    if ( dayRoutes ) {
+      this.routes = routes.filter((route: Route) =>
+          !route.nightRoute)
+    } else {
+      this.routes = routes.filter((route: Route) =>
+          route.nightRoute === true)
     }
   }
 

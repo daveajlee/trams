@@ -9,6 +9,12 @@
   <hr class="my-4">
 </div>
 
+<!-- Display the filter options -->
+<div>
+    <button class="btn btn-primary m-2" type="submit" (click)="filterRoutes(true)">Day Routes</button>
+    <button class="btn btn-primary m-2" type="submit" (click)="filterRoutes(false)">Night Routes</button>
+</div>
+
 <!-- Display a table of all route numbers and the agency running the routes which are stored in TraMS -->
 <table class="table">
   <thead class="thead-light">
