@@ -10,6 +10,7 @@ import {GameService} from "../shared/game.service";
 export class OptionsComponent {
 
   level: string;
+  simulationInterval: number;
 
   /**
    * Create a new options component.
@@ -19,6 +20,7 @@ export class OptionsComponent {
   constructor(private gameService: GameService, private router:Router) {
     if ( this.gameService.getGame() ) {
       this.level = this.gameService.getGame().difficultyLevel.toLowerCase();
+      this.simulationInterval = this.gameService.getGame().getSimulationInterval();
     } else {
       this.level = "easy";
     }
@@ -30,6 +32,10 @@ export class OptionsComponent {
 
   changeLevel(e): void {
     this.gameService.getGame().difficultyLevel = e.target.value;
+  }
+
+  changeSimulationInterval(): void {
+    this.gameService.getGame().setSimulationInterval(this.simulationInterval);
   }
 
 }

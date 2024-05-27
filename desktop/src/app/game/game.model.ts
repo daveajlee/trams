@@ -22,6 +22,7 @@ export class Game {
     public vehicles: Vehicle[];
     public drivers: Driver[];
     public allocations: Allocation[];
+    private simulationInterval: number;
 
     /**
      * Construct a new game which contains the supplied data.
@@ -54,6 +55,7 @@ export class Game {
         this.vehicles = vehicles;
         this.drivers = drivers;
         this.allocations = allocations;
+        this.simulationInterval = 100;
     }
 
     /**
@@ -170,6 +172,27 @@ export class Game {
         if ( amount > 0 ) {
             this.balance += amount;
         }
+    }
+
+    /**
+     * Get the simulation interval.
+     * @return the simulation interval in minutes.
+     */
+    getSimulationInterval(): number {
+        return this.simulationInterval;
+    }
+
+    /**
+     * Set the simulation interval which should be higher than 0 and less than 120 (i.e. between 1 minute and 2 hours),
+     * @param simulationInterval the simulation interval in minutes.
+     * @return a boolean which is true iff the simulation interval was set successfully.
+     */
+    setSimulationInterval(simulationInterval: number): boolean {
+        if ( simulationInterval > 0 && simulationInterval < 121 ) {
+            this.simulationInterval = simulationInterval;
+            return true;
+        }
+        return false;
     }
 
 }

@@ -36,7 +36,12 @@
             </tbody>
         </table>
     </div>
+</div>
 
+<!-- Show an input box where the user can enter the simulation interval. -->
+<div class="form-group top-space m-5">
+    <label for="simulationInterval" style="font-weight: bold;">Simulation Interval (in minutes):</label>
+    <input class="form-control" [(ngModel)]="simulationInterval" type="number" min="1" max="120" step="1" id="simulationInterval" (change)="changeSimulationInterval()"/>
 </div>
 
 <div class="col text-center">
