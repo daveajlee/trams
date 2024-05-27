@@ -50,10 +50,14 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   searchByFleetNumber(searchValue: string): void {
     if ( this.gameService.getGame().vehicles.length > 0 ) {
       var allVehicles =  this.gameService.getGame().vehicles;
-      for ( var i = 0; i < allVehicles.length; i++ ) {
-        if ( allVehicles[i].fleetNumber.valueOf() === searchValue ) {
-          this.vehicles = new Array(allVehicles[i]);
+      if ( searchValue != '' ) {
+        for (var i = 0; i < allVehicles.length; i++) {
+          if (allVehicles[i].fleetNumber.valueOf() === searchValue) {
+            this.vehicles = new Array(allVehicles[i]);
+          }
         }
+      } else {
+        this.vehicles = allVehicles;
       }
     } else {
       this.searchSubscription = this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/' +
