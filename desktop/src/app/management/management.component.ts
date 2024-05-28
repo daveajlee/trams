@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {GameService} from '../shared/game.service';
 import {Router} from '@angular/router';
+import {TipService} from "../shared/tip.service";
 
 @Component({
   selector: 'app-management',
@@ -11,7 +12,7 @@ export class ManagementComponent implements OnInit {
 
   gameService: GameService;
 
-  constructor(private gameService2: GameService, public router: Router) {
+  constructor(private gameService2: GameService, public router: Router, private tipService: TipService) {
     this.gameService = gameService2;
   }
 
@@ -80,6 +81,10 @@ export class ManagementComponent implements OnInit {
   noAllocationsExist(): boolean {
     return this.gameService.getGame().routes.length != 0 && this.gameService.getGame().vehicles.length != 0
         && this.gameService.getGame().allocations.length === 0;
+  }
+
+  showRandomTip(): string {
+    return this.tipService.getRandomTip();
   }
 
 }

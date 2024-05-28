@@ -12,21 +12,31 @@
 </div>
 
 <div class="container-fluid top-space">
+    <!-- Show a warning if no routes are defined -->
     <div class="row" *ngIf="noRoutesExist()">
         <div class="alert alert-danger w-100 text-center" role="alert">
             Warning: No routes have been defined yet. Click "Create Route" to define a route.
         </div>
     </div>
+    <!-- Show a warning if no vehicles are defined -->
     <div class="row" *ngIf="noVehiclesExist()">
         <div class="alert alert-danger w-100 text-center" role="alert">
             Warning: No vehicles have been purchased yet. Click "Purchase Vehicle" to purchase a vehicle.
         </div>
     </div>
+    <!-- Show a warning if no allocations have been performed -->
     <div class="row" *ngIf="noAllocationsExist()">
         <div class="alert alert-danger w-100 text-center" role="alert">
             Warning: No vehicles have been assigned to routes yet. Click "Change" in the Allocations Section to assign vehicles to routes.
         </div>
     </div>
+    <!-- If there are no warnings, then we can show a random tip -->
+    <div class="row" *ngIf="!noRoutesExist() && !noVehiclesExist() && !noAllocationsExist()">
+        <div class="alert alert-info  w-100 text-center" role="alert">
+            {{showRandomTip()}}
+        </div>
+    </div>
+
     <div class="row">
         <div class="card-group">
             <div class="card">
