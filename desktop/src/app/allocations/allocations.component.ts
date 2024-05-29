@@ -11,10 +11,10 @@ import {Allocation} from "./allocation.model";
 })
 export class AllocationsComponent {
 
-  gameService: GameService;
-  selectedRouteNumber: string;
-  selectedFleetNumber: string;
-  selectedTourNumber: string;
+  private gameService: GameService;
+  public selectedRouteNumber: string;
+  public selectedFleetNumber: string;
+  public selectedTourNumber: string;
 
   /**
    * Construct a new Allocations component
@@ -73,6 +73,7 @@ export class AllocationsComponent {
           for (var k = 0; k < selectedRouteObject.timetables[0].frequencyPatterns[0].numTours; k++) {
             tours.push((k + 1));
           }
+          this.selectedTourNumber = tours[0];
           return tours;
         }
         return [];
@@ -84,14 +85,44 @@ export class AllocationsComponent {
     }
   }
 
+  /**
+   * When we click on the save allocations button, we should assign the tour to the vehicle and return to management screen.
+   */
   onSaveAllocation(): void {
     this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
     this.gameService.getGame().retrieveVehicleByFleetNumber(this.selectedFleetNumber).allocatedTour = this.selectedRouteNumber + "/" + this.selectedTourNumber;
     this.router.navigate(['management']);
   }
 
+  /**
+   * When we click the back button, we should return to the management screen.
+   */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
+  }
+
+  /**
+   * Retrieve the route number which is currently selected.
+   * @return the route number that is selected.
+   */
+  getSelectedRouteNumber(): string {
+    return this.selectedRouteNumber;
+  }
+
+  /**
+   * Retrieve the fleet number which is currently selected.
+   * @return the fleet number that is selected.
+   */
+  getSelectedFleetNumber(): string {
+    return this.selectedFleetNumber;
+  }
+
+  /**
+   * Retrieve the tour number which is currently selected.
+   * @return the tour number that is selected.
+   */
+  getSelectedTourNumber(): string {
+    return this.selectedTourNumber;
   }
 
 }

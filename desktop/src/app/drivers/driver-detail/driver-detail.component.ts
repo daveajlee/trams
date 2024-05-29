@@ -15,9 +15,9 @@ import {Subscription} from "rxjs";
  */
 export class DriverDetailComponent implements OnInit, OnDestroy {
 
-  driver: Driver;
-  id: number;
-  idSubscription: Subscription;
+  private driver: Driver;
+  private id: number;
+  private idSubscription: Subscription;
 
   /**
    * Construct a new driver-detail component based on the supplied information.
@@ -42,10 +42,37 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  sackDriver(driver: Driver): void {
-    var allDrivers = this.gameService.getGame().drivers;
-    for ( var i = 0; i < allDrivers.length; i++ ) {
-      if ( this.gameService.getGame().drivers[i].name.valueOf() === driver.name.valueOf() ) {
+  /**
+   * Retrieve the name of this driver.
+   * @return the name of the driver as a String.
+   */
+  getName(): string {
+    return this.driver.getName();
+  }
+
+  /**
+   * Retrieve the contracted hours of this driver.
+   * @return the contracted hours of this driver as a number,
+   */
+  getContractedHours(): number {
+    return this.driver.getContractedHours();
+  }
+
+  /**
+   * Retrieve the start date of this driver.
+   * @return the start date of this driver as a string.
+   */
+  getStartDate(): string {
+    return this.driver.getStartDate();
+  }
+
+  /**
+   * Sack the specified driver by removing the driver from the driver array.
+   * This does not cost any money currently.
+   */
+  sackDriver(): void {
+    for ( var i = 0; i < this.gameService.getGame().drivers.length; i++ ) {
+      if ( this.gameService.getGame().drivers[i].getName().valueOf() === this.driver.getName().valueOf() ) {
         this.gameService.getGame().drivers.splice(i, 1);
       }
     }
