@@ -195,4 +195,32 @@ export class Game {
         return false;
     }
 
+    /**
+     * Retrieve a particular vehicle based on the fleet number.
+     * @param fleetNumber the fleet number to retrieve the vehicle for.
+     * @return the vehicle information for the fleet number or null if the fleet number does not exist.
+     */
+    retrieveVehicleByFleetNumber(fleetNumber: string): Vehicle {
+        for ( var i = 0; i < this.vehicles.length; i++ ) {
+            if ( this.vehicles[i].fleetNumber.valueOf() === fleetNumber ) {
+                return this.vehicles[i];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieve the delay of a particular vehicle according to the assigned tour.
+     * @param assignedTour the assigned tour to retrieve the vehicle for.
+     * @return the delay of the vehicle running the assigned tour or -1 if the tour is not assigned.
+     */
+    retrieveDelayForAssignedTour(assignedTour: string): number {
+        for ( var i = 0; i < this.vehicles.length; i++ ) {
+            if ( this.vehicles[i].allocatedTour === assignedTour ) {
+                return this.vehicles[i].delay;
+            }
+        }
+        return -1;
+    }
+
 }

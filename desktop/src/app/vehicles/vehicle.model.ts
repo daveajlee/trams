@@ -10,6 +10,7 @@ export class Vehicle {
     public inspectionStatus: string;
     public nextInspectionDueInDays: number;
     public additionalTypeInformationMap: Map<string, string>;
+    public delay: number;
 
     /**
      * Construct a new model for Vehicles which contains the supplied data.
@@ -30,6 +31,7 @@ export class Vehicle {
         this.inspectionStatus = inspectionStatus;
         this.nextInspectionDueInDays = nextInspectionDueInDays;
         this.additionalTypeInformationMap = additionalTypeInformationMap;
+        this.delay = 0;
     }
 
 }

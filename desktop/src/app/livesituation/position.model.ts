@@ -4,9 +4,12 @@ export class PositionModel {
 
     destination: string;
 
-    constructor(stop: string, destination: string ) {
+    delay: number;
+
+    constructor(stop: string, destination: string, delay: number ) {
         this.stop = stop;
         this.destination = destination;
+        this.delay = delay;
     }
 
 }

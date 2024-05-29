@@ -65,6 +65,10 @@ export class LivesituationComponent implements OnInit {
   }
 
   getCurrentPosition(schedule: ScheduleModel): string {
+    // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
+    if ( this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId) === -1 ) {
+      return "Depot";
+    }
     var currentDateTime = this.gameService.getGame().currentDateTime;
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
     for ( let i = 0; i < schedule.services.length; i++ ) {

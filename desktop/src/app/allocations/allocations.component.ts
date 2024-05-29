@@ -86,6 +86,7 @@ export class AllocationsComponent {
 
   onSaveAllocation(): void {
     this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
+    this.gameService.getGame().retrieveVehicleByFleetNumber(this.selectedFleetNumber).allocatedTour = this.selectedRouteNumber + "/" + this.selectedTourNumber;
     this.router.navigate(['management']);
   }
 

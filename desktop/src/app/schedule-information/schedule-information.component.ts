@@ -21,6 +21,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   vehicleId: string;
   stop: string;
   destination: string;
+  delay: number;
 
   gameService: GameService;
 
@@ -47,13 +48,14 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
           let positionModel = this.getCurrentPosition(schedules[i]);
           this.stop = positionModel.stop;
           this.destination = positionModel.destination;
+          this.delay = positionModel.delay;
         }
       }
 
       // Retrieve the vehicle assigned to this schedule id.
       let vehicles = this.gameService.getGame().vehicles;
       for ( let i = 0; i < vehicles.length; i++ ) {
-        if ( vehicles[i].allocatedTour === this.scheduleId ) {
+        if ( vehicles[i].allocatedTour === (this.selectedRoute + "/" + this.scheduleId ) ) {
           this.vehicleId = vehicles[i].fleetNumber;
         }
       }
@@ -63,25 +65,30 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   }
 
   getCurrentPosition(schedule: ScheduleModel): PositionModel {
+    // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
+    if ( this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId) === -1 ) {
+      return new PositionModel("Depot", "", 0);
+    }
+    // Otherwise get position based on time.
     var currentDateTime = this.gameService.getGame().currentDateTime;
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
     for ( let i = 0; i < schedule.services.length; i++ ) {
       for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
         // If we exactly match the departure time then this is where we are.
         if ( schedule.services[i].stopList[j].departureTime === currentTime ) {
-          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop, this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId));
         }
         // If we are before departure time but after arrival time then we are also here.
         else if ( schedule.services[i].stopList[j].departureTime > currentTime
             && schedule.services[i].stopList[j].arrivalTime <= currentTime) {
-          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+          return new PositionModel(schedule.services[i].stopList[j].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop, this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId));
         }
         // If we are before both departure time and arrival time then we are at the previous stop if there was one.
         else if ( schedule.services[i].stopList[j].departureTime > currentTime
             && schedule.services[i].stopList[j].arrivalTime > currentTime
             && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
             && j != 0 ) {
-          return new PositionModel(schedule.services[i].stopList[j-1].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop);
+          return new PositionModel(schedule.services[i].stopList[j-1].stop, schedule.services[i].stopList[schedule.services[i].stopList.length-1].stop, this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId));
         }
         // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
         else if ( schedule.services[i].stopList[j].departureTime > currentTime
@@ -89,13 +96,13 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
             && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
             && j === 0
             && i != 0 ) {
-          return new PositionModel(schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop, schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop);
+          return new PositionModel(schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop, schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop, this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId));
         }
 
       }
     }
     // If we still did not match, then we must be at the depot.
-    return new PositionModel("Depot", "");
+    return new PositionModel("Depot", "", 0);
   }
 
   /**
