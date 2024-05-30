@@ -38,8 +38,8 @@ export class VehiclesComponent implements OnInit, OnDestroy {
    * Initialise a new vehicles component which maintains a list of vehicles that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    if ( this.gameService.getGame().vehicles.length > 0 ) {
-      this.vehicles = this.gameService.getGame().vehicles;
+    if ( this.gameService.getGame().doVehiclesExist() ) {
+      this.vehicles = this.gameService.getGame().getVehicles();
     } else {
       this.subscription = this.vehiclesService.vehiclesChanged.subscribe((vehicles: Vehicle[]) => {
         this.vehicles = vehicles;
@@ -48,16 +48,12 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   searchByFleetNumber(searchValue: string): void {
-    if ( this.gameService.getGame().vehicles.length > 0 ) {
-      var allVehicles =  this.gameService.getGame().vehicles;
-      if ( searchValue != '' ) {
-        for (var i = 0; i < allVehicles.length; i++) {
-          if (allVehicles[i].fleetNumber.valueOf() === searchValue) {
-            this.vehicles = new Array(allVehicles[i]);
-          }
-        }
+    if ( this.gameService.getGame().doVehiclesExist() ) {
+      var foundVehicle = this.gameService.getGame().getVehicleByFleetNumber(searchValue);
+      if ( foundVehicle ) {
+        this.vehicles = new Array(foundVehicle);
       } else {
-        this.vehicles = allVehicles;
+        this.vehicles = this.gameService.getGame().getVehicles();
       }
     } else {
       this.searchSubscription = this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/' +
@@ -71,7 +67,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    if ( this.gameService.getGame().vehicles.length === 0 ) {
+    if ( !this.gameService.getGame().doVehiclesExist() ) {
       this.subscription.unsubscribe();
       this.searchSubscription.unsubscribe();
     }

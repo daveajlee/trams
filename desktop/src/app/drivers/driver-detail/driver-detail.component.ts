@@ -32,7 +32,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      this.driver = this.gameService.getGame().drivers[this.id];
+      this.driver = this.gameService.getGame().getDriverByPosition(this.id);
     });
   }
 
@@ -71,12 +71,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * This does not cost any money currently.
    */
   sackDriver(): void {
-    for ( var i = 0; i < this.gameService.getGame().drivers.length; i++ ) {
-      if ( this.gameService.getGame().drivers[i].getName().valueOf() === this.driver.getName().valueOf() ) {
-        this.gameService.getGame().drivers.splice(i, 1);
-      }
-    }
-    console.log('Currently the length of drivers is: ' + this.gameService.getGame().drivers.length )
+    this.gameService.getGame().deleteDriverByName(this.driver.getName());
   }
 
 }

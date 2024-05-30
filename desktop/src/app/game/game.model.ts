@@ -10,18 +10,18 @@ import {Allocation} from "../allocations/allocation.model";
  */
 export class Game {
 
-    public companyName: string;
+    private companyName: string;
     private balance: number;
-    public playerName: string;
-    public currentDateTime: Date;
-    public scenario: Scenario;
-    public difficultyLevel: string;
-    public passengerSatisfaction: number;
-    public routes: Route[];
-    public messages: Message[];
-    public vehicles: Vehicle[];
-    public drivers: Driver[];
-    public allocations: Allocation[];
+    private playerName: string;
+    private currentDateTime: Date;
+    private scenario: Scenario;
+    private difficultyLevel: string;
+    private passengerSatisfaction: number;
+    private routes: Route[];
+    private messages: Message[];
+    private vehicles: Vehicle[];
+    private drivers: Driver[];
+    private allocations: Allocation[];
     private simulationInterval: number;
 
     /**
@@ -99,11 +99,68 @@ export class Game {
     }
 
     /**
+     * This method should retrieve the information for a particular driver.
+     * @param position the position in the drivers array which should be returned.
+     */
+    getDriverByPosition(position:number) {
+        return this.drivers[position];
+    }
+
+    /**
+     * This method retrieves all of the drivers currently in TraMS.
+     * @return the list of drivers.
+     */
+    getDrivers(): Driver[] {
+        return this.drivers;
+    }
+
+    /**
+     * Delete a driver from the list.
+     * @param name the name of the driver who should be removed.
+     */
+    deleteDriverByName(name: string) {
+        for ( var i = 0; i < this.drivers.length; i++ ) {
+            if ( this.drivers[i].getName().valueOf() === name.valueOf() ) {
+                this.drivers.splice(i, 1);
+            }
+        }
+        console.log('Currently the length of drivers is: ' + this.drivers.length )
+    }
+
+    /**
      * This method adds an allocation to the allocations array if we are currently saving allocations locally.
      * @param allocation a allocation object with the allocation information to add to the allocations array.
      */
     addAllocation(allocation: Allocation): void {
         this.allocations.push(allocation);
+    }
+
+    /**
+     * This method retrieves all of the allocations currently assigned in TraMS.
+     * @return the list of allocations.
+     */
+    getAllocations(): Allocation[] {
+        return this.allocations;
+    }
+
+    /**
+     * This method deletes the specified allocation.
+     * @param fleetNumber the fleet number of the allocation which should be removed.
+     * @param routeNumber the route number of the allocation which should be removed.
+     * @param tourNumber the tour number of the allocation which should be removed.
+     * @return a boolean which is true iff the allocation was deleted successfully.
+     */
+    deleteAllocation(fleetNumber: string, routeNumber: string, tourNumber: string): boolean {
+        for ( let i = 0; i < this.allocations.length; i++ ) {
+            if (this.allocations[i].getFleetNumber().valueOf() === fleetNumber.valueOf() &&
+                this.allocations[i].getRouteNumber().valueOf() === routeNumber.valueOf() &&
+                this.allocations[i].getTourNumber().valueOf() === tourNumber.valueOf()
+            ) {
+                this.allocations.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -200,7 +257,7 @@ export class Game {
      * @param fleetNumber the fleet number to retrieve the vehicle for.
      * @return the vehicle information for the fleet number or null if the fleet number does not exist.
      */
-    retrieveVehicleByFleetNumber(fleetNumber: string): Vehicle {
+    getVehicleByFleetNumber(fleetNumber: string): Vehicle {
         for ( var i = 0; i < this.vehicles.length; i++ ) {
             if ( this.vehicles[i].fleetNumber.valueOf() === fleetNumber ) {
                 return this.vehicles[i];
@@ -222,5 +279,224 @@ export class Game {
         }
         return -1;
     }
+
+    /**
+     * Check if any routes exist.
+     * @return a boolean which is true iff at least one route exists.
+     */
+    doRoutesExist(): boolean {
+        return this.routes.length > 0;
+    }
+
+    /**
+     * Retrieve the first route number in the routes list.
+     * @return the route number of the first route in the list as a string.
+     */
+    getFirstRouteNumber(): string {
+        return this.routes[0].routeNumber;
+    }
+
+    /**
+     * Retrieve all of the route numbers in the routes list.
+     * @return a string array of all route numbers in the routes list.
+     */
+    getRouteNumbers(): string[] {
+        var routeNumbers = [];
+        for ( var i = 0; i < this.routes.length; i++ ) {
+            routeNumbers[i] = this.routes[i].routeNumber;
+        }
+        return routeNumbers;
+    }
+
+    /**
+     * Retrieve all of the routes in the routes list.
+     * @return a route array of all routes in the routes list.
+     */
+    getRoutes(): Route[] {
+        return this.routes;
+    }
+
+    /**
+     * Retrieve all of the fleet numbers in the vehicles list.
+     * @return a string array of all fleet numbers in the vehicles list.
+     */
+    getFleetNumbers(): string[] {
+        var fleetNumbers = [];
+        for ( var i = 0; i < this.vehicles.length; i++ ) {
+            fleetNumbers[i] = this.vehicles[i].fleetNumber;
+        }
+        return fleetNumbers;
+    }
+
+    /**
+     * Check if any vehicles exist.
+     * @return a boolean which is true iff at least one vehicle exists.
+     */
+    doVehiclesExist(): boolean {
+        return this.vehicles.length > 0;
+    }
+
+    /**
+     * Retrieve the first fleet number in the vehicles list.
+     * @return the fleet number of the first vehicle in the list as a string.
+     */
+    getFirstFleetNumber(): string {
+        return this.vehicles[0].fleetNumber;
+    }
+
+    /**
+     * Check if any allocations exist.
+     * @return a boolean which is true iff at least one allocation exists.
+     */
+    doAllocationsExist(): boolean {
+        return this.allocations.length > 0;
+    }
+
+    /**
+     * Get the current date and time.
+     * @return the current date and time as a Date object.
+     */
+    getCurrentDateTime(): Date {
+        return this.currentDateTime;
+    }
+
+    /**
+     * Get the current passenger satisfaction.
+     * @return the current passenger satisfaction as a number.
+     */
+    getPassengerSatisfaction(): number {
+        return this.passengerSatisfaction;
+    }
+
+    /**
+     * Get the company name.
+     * @return the company name as a string.
+     */
+    getCompanyName(): string {
+        return this.companyName;
+    }
+
+    /**
+     * This method updates the game model for a simulation step i.e. an increment of minutes.
+     * Currently it updates time and calculates a new version for the passenger satisfaction.
+     */
+    updateSimulationStep(): void {
+        // Increase the time by the simulation interval of minutes,
+        this.currentDateTime = new Date(this.currentDateTime.getTime() + this.getSimulationInterval() *60000);
+        // Check if we went past midnight. If so, then we need to pay drivers again.
+        if ( ((this.currentDateTime.getHours() * 60) + this.currentDateTime.getMinutes()) <= this.getSimulationInterval() ) {
+            // Now we need to pay drivers.
+            this.withdrawBalance(this.drivers.length * 90);
+        }
+        // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
+        var randomDiff = Math.random() * (4);
+        this.passengerSatisfaction = Math.round(this.passengerSatisfaction + (randomDiff-2));
+        // Ensure that passenger satisfaction is between 0 and 100.
+        if ( this.passengerSatisfaction < 0 ) {
+            this.passengerSatisfaction = 0;
+        } else if ( this.passengerSatisfaction > 100 ) {
+            this.passengerSatisfaction = 100;
+        }
+    }
+
+    /**
+     * Filter the messages for a particular folder.
+     * @param folder the name of the folder to filter for as a string.
+     * @return the messages array with the filtered messages.
+     */
+    filterMessagesByFolder(folder: string) {
+        return this.messages.filter((message: Message) =>
+            message.folder.valueOf() === folder);
+    }
+
+    /**
+     * Get the difficulty level.
+     * @return the difficulty level as string.
+     */
+    getDifficultyLevel(): string {
+        return this.difficultyLevel;
+    }
+
+    /**
+     * Set the difficulty level.
+     * @param level the difficulty level to set as a string.
+     */
+    setDifficultyLevel(level: string): void {
+        this.difficultyLevel = level;
+    }
+
+    /**
+     * Retrieve the scenario that this game is running.
+     * @return the scenario object that is being run in this game.
+     */
+    getScenario(): Scenario {
+        return this.scenario;
+    }
+
+    /**
+     * Get the name of the player currently playing the game.
+     * @return the name of the player as a string.
+     */
+    getPlayerName(): string {
+        return this.playerName;
+    }
+
+    /**
+     * Get the fleet number that is running the specified schedule.
+     * @param schedule the route number / schedule id that we want to find the vehicle for.
+     * @return the fleet number as a number.
+     */
+    getAssignedVehicle(schedule: string): string {
+        for ( let i = 0; i < this.vehicles.length; i++ ) {
+            if ( this.vehicles[i].allocatedTour === (schedule) ) {
+                return this.vehicles[i].fleetNumber;
+            }
+        }
+    }
+
+    /**
+     * This method should retrieve the information for a particular vehicle.
+     * @param position the position in the vehicles array which should be returned.
+     */
+    getVehicleByPosition(position:number) {
+        return this.vehicles[position];
+    }
+
+    /**
+     * Sell the specified vehicle by deleting it from the vehicles list.
+     * @param fleetNumber the vehicle that should be deleted.
+     */
+    deleteVehicleByFleetNumber(fleetNumber: string): void {
+        for ( var i = 0; i < this.vehicles.length; i++ ) {
+            if ( this.vehicles[i].fleetNumber.valueOf() === fleetNumber.valueOf() ) {
+                this.creditBalance(parseFloat(this.vehicles[i].additionalTypeInformationMap.get('Value')));
+                this.vehicles.splice(i, 1);
+            }
+        }
+        console.log('Currently the length of vehicles is: ' + this.vehicles.length )
+    }
+
+    /**
+     * Get a list of all vehicles in the game to display to the user.
+     * @return the list of vehicles currently being used in the game.
+     */
+    getVehicles(): Vehicle[] {
+        return this.vehicles;
+    }
+
+    /**
+     * Get the highest fleet number used so far.
+     * @return the highest fleet number used so far as a number.
+     */
+    getHighestFleetNumber(): number {
+        let highestFleetNumberSoFar = 0;
+        for ( var i = 0; i < this.vehicles.length; i++ ) {
+            if ( parseInt(this.vehicles[i].fleetNumber) > highestFleetNumberSoFar ) {
+                highestFleetNumberSoFar = parseInt(this.vehicles[i].fleetNumber);
+            }
+        }
+        return  highestFleetNumberSoFar;
+    }
+
 
 }

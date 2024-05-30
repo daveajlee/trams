@@ -23,7 +23,7 @@ export class DriversComponent implements OnInit, OnDestroy {
    * Initialise a new drivers component which maintains a list of drivers.
    */
   ngOnInit(): void {
-    this.drivers = this.gameService.getGame().drivers;
+    this.drivers = this.gameService.getGame().getDrivers();
   }
 
   /**

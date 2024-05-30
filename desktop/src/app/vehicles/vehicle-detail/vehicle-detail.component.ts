@@ -35,8 +35,8 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      if ( this.gameService.getGame().vehicles.length > 0 ) {
-        this.vehicle = this.gameService.getGame().vehicles[this.id];
+      if ( this.gameService.getGame().doVehiclesExist() ) {
+        this.vehicle = this.gameService.getGame().getVehicleByPosition(this.id);
       } else {
         this.vehicle = this.vehiclesService.getVehicle(this.id);
       }
@@ -68,19 +68,7 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    var allVehicles = this.gameService.getGame().vehicles;
-    for ( var i = 0; i < allVehicles.length; i++ ) {
-      if ( this.gameService.getGame().vehicles[i].fleetNumber.valueOf() === vehicle.fleetNumber.valueOf() ) {
-        this.gameService.getGame().creditBalance(parseFloat(this.gameService.getGame().vehicles[i].additionalTypeInformationMap.get('Value')));
-        this.gameService.getGame().vehicles.splice(i, 1);
-      }
-    }
-    console.log('Currently the length of vehicles is: ' + this.gameService.getGame().vehicles.length )
+    this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.fleetNumber);
   }
-  /*verifyMap(): void {
-    this.vehicle.additionalTypeInformationMap.forEach().forEach((key: string, value: string) => {
-      console.log(key, value);
-    });
-  }*/
 
 }

@@ -33,9 +33,9 @@ export class TimetablecreatorComponent {
               public router: Router, private datePipe: DatePipe) {
     this.gameService = gameService2;
     // Valid from date is current date.
-    this.validFromDate = this.datePipe.transform(this.gameService.getGame().currentDateTime, 'yyyy-MM-dd');
+    this.validFromDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
     // Valid to date is current date + 1 year.
-    let oneFromYearNow = new Date(this.gameService.getGame().currentDateTime);
+    let oneFromYearNow = new Date(this.gameService.getGame().getCurrentDateTime());
     oneFromYearNow.setFullYear(oneFromYearNow.getFullYear() + 1)
     this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
     // Set start time to 06:00
@@ -117,7 +117,7 @@ export class TimetablecreatorComponent {
   }
 
   getDistanceBetweenStop (stop1, stop2): number {
-    var stopDistances = this.gameService.getGame().scenario.stopDistances;
+    var stopDistances = this.gameService.getGame().getScenario().stopDistances;
     var stop1Pos: number; var stop2Pos: number;
     for ( var i = 0; i < stopDistances.length; i++ ) {
       if ( stopDistances[i].split(":")[0] == stop1 ) {
@@ -186,7 +186,7 @@ export class TimetablecreatorComponent {
     // Add it to the route.
     this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
     // This is where we should now generate the schedules for the relevant timetable.
-    if ( timetable.validFromDate <= this.gameService.getGame().currentDateTime && timetable.validToDate >= this.gameService.getGame().currentDateTime ) {
+    if ( timetable.validFromDate <= this.gameService.getGame().getCurrentDateTime() && timetable.validToDate >= this.gameService.getGame().getCurrentDateTime() ) {
       // Timetable is relevant so get frequency pattern.
       for ( let i = 0; i < timetable.frequencyPatterns.length; i++ ) {
           // Now we go through the tours which are the schedules.

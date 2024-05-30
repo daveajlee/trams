@@ -19,7 +19,7 @@ export class OptionsComponent {
    */
   constructor(private gameService: GameService, private router:Router) {
     if ( this.gameService.getGame() ) {
-      this.level = this.gameService.getGame().difficultyLevel.toLowerCase();
+      this.level = this.gameService.getGame().getDifficultyLevel().toLowerCase();
       this.simulationInterval = this.gameService.getGame().getSimulationInterval();
     } else {
       this.level = "easy";
@@ -31,7 +31,7 @@ export class OptionsComponent {
   }
 
   changeLevel(e): void {
-    this.gameService.getGame().difficultyLevel = e.target.value;
+    this.gameService.getGame().setDifficultyLevel(e.target.value);
   }
 
   changeSimulationInterval(): void {

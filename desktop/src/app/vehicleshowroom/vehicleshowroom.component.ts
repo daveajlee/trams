@@ -32,7 +32,7 @@ export class VehicleshowroomComponent {
         new VehicleModel('MyTram Tram 1', 'Tram',104, 83, 280000, 'assets/tram-pixabay.png')];
     this.currentDisplay = 0;
     this.quantity = 1;
-    this.deliveryDate = this.gameService.getGame().currentDateTime;
+    this.deliveryDate = this.gameService.getGame().getCurrentDateTime();
     this.deliveryDate.setDate(this.deliveryDate.getDate() + 5);
   }
 
@@ -70,13 +70,7 @@ export class VehicleshowroomComponent {
 
   onPurchaseVehicle(): void {
     // First we determine the next fleet number,
-    var vehicles = this.gameService.getGame().vehicles;
-    var highestFleetNumberSoFar = 0;
-    for ( var i = 0; i < vehicles.length; i++ ) {
-      if ( parseInt(vehicles[i].fleetNumber) > highestFleetNumberSoFar ) {
-        highestFleetNumberSoFar = parseInt(vehicles[i].fleetNumber);
-      }
-    }
+    let highestFleetNumberSoFar = this.gameService.getGame().getHighestFleetNumber();
     const additionalProps = new Map<string, string>();
     additionalProps.set('Model', this.getVehicleType());
     additionalProps.set('Age', '0 months');

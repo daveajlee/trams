@@ -53,10 +53,11 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    */
   constructor(private http: HttpClient, private stopsService: StopsService, private route: ActivatedRoute,
               private gameService: GameService, private router: Router, private dom: DomSanitizer) {
-    this.selectedDate = this.gameService.getGame().currentDateTime.getFullYear() + "-" + (this.gameService.getGame().currentDateTime.getMonth() < 10 ? "0"
-            + this.gameService.getGame().currentDateTime.getMonth() : this.gameService.getGame().currentDateTime.getMonth() )  + "-" +
-        (this.gameService.getGame().currentDateTime.getDate() < 10 ? "0"
-            + this.gameService.getGame().currentDateTime.getDate() : this.gameService.getGame().currentDateTime.getDate() );
+    let currentDateTime = this.gameService.getGame().getCurrentDateTime();
+    this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
+            + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
+        (currentDateTime.getDate() < 10 ? "0"
+            + currentDateTime.getDate() : currentDateTime.getDate() );
   }
 
   /**
@@ -66,7 +67,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       // Determine current date & time
-      const time = this.gameService.getGame().currentDateTime;
+      const time = this.gameService.getGame().getCurrentDateTime();
       const month = time.getMonth() + 1;
       let monthStr = String(month);
       if ( month < 10 ) { monthStr = '0' + month; }
@@ -75,11 +76,11 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       this.hours = this.leftPadZero(time.getHours());
       this.minutes = this.leftPadZero(time.getMinutes());
       if ( this.gameService.isOfflineVersion() ) {
-        this.stop = new Stop('' + this.id, this.gameService.getGame().scenario.stopDistances[this.id].split(":")[0], 0, 0)
+        this.stop = new Stop('' + this.id, this.gameService.getGame().getScenario().stopDistances[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.name);
-        this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().currentDateTime);
+        this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().getCurrentDateTime());
         // Save the next 5 departures into the departures array and save the next 5 arrivals into the arrivals array.
-        let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame().currentDateTime);
+        let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame().getCurrentDateTime());
         this.departures = []; this.arrivals = [];
         for ( let a = 0; a < this.todayDepartures.length; a++ ) {
           if ( this.todayDepartures[a].departureTime >= currentTime && this.departures.length < 5 ) {
@@ -119,7 +120,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     console.log('I want to retrieve departures for ' + date);
     let departures = [];
     // Go through the routes,
-    let routes = this.gameService.getGame().routes;
+    let routes = this.gameService.getGame().getRoutes();
     for ( let a = 0; a < routes.length; a++ ) {
       let schedules = routes[a].schedules;
       if ( routes[a].schedules ) {

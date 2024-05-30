@@ -53,7 +53,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   retrieveAllRoutes(): Route[] {
     if ( this.gameService.isOfflineVersion() ) {
-      return this.gameService.getGame().routes;
+      return this.gameService.getGame().getRoutes();
     } else {
       this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
         this.routes = routes;

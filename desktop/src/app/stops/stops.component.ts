@@ -51,9 +51,9 @@ export class StopsComponent implements OnInit, OnDestroy {
    * Helper method to retrieve all stops.
    */
   retrieveAllStops(): Stop[] {
-    if ( this.gameService.getGame().scenario.stopDistances ) {
+    if ( this.gameService.getGame().getScenario().stopDistances ) {
       let stops = [];
-      var allStops =  this.gameService.getGame().scenario.stopDistances;
+      var allStops =  this.gameService.getGame().getScenario().stopDistances;
       for ( var i = 0; i < allStops.length; i++ ) {
         stops.push(new Stop('' + i, allStops[i].split(":")[0], 0, 0));
       }

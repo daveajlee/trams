@@ -11,23 +11,21 @@ import {Allocation} from "./allocation.model";
 })
 export class AllocationsComponent {
 
-  private gameService: GameService;
   public selectedRouteNumber: string;
   public selectedFleetNumber: string;
   public selectedTourNumber: string;
 
   /**
    * Construct a new Allocations component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router for navigating to other pages.
    */
-  constructor(private gameService2: GameService, public router: Router) {
-    this.gameService = gameService2;
-    if ( this.gameService.getGame().routes.length > 0 ) {
-        this.selectedRouteNumber = this.gameService.getGame().routes[0].routeNumber;
+  constructor(private gameService: GameService, public router: Router) {
+    if ( this.gameService.getGame().doRoutesExist()) {
+        this.selectedRouteNumber = this.gameService.getGame().getFirstRouteNumber();
     }
-    if ( this.gameService.getGame().vehicles.length > 0 ) {
-      this.selectedFleetNumber = this.gameService.getGame().vehicles[0].fleetNumber;
+    if ( this.gameService.getGame().doVehiclesExist() ) {
+      this.selectedFleetNumber = this.gameService.getGame().getFirstFleetNumber();
     }
     this.selectedTourNumber = "1";
   }
@@ -36,22 +34,14 @@ export class AllocationsComponent {
    * Retrieve the list of defined route numbers.
    */
   getDefinedRouteNumbers(): string[] {
-    var routeNumbers = [];
-    for ( var i = 0; i < this.gameService.getGame().routes.length; i++ ) {
-      routeNumbers[i] = this.gameService.getGame().routes[i].routeNumber;
-    }
-    return routeNumbers;
+    return this.gameService.getGame().getRouteNumbers();
   }
 
   /**
    * Retrieve the list of defined fleet numbers.
    */
   getDefinedFleetNumbers(): string[] {
-    var fleetNumbers = [];
-    for ( var i = 0; i < this.gameService.getGame().vehicles.length; i++ ) {
-      fleetNumbers[i] = this.gameService.getGame().vehicles[i].fleetNumber;
-    }
-    return fleetNumbers;
+    return this.gameService.getGame().getFleetNumbers();
   }
 
   /**
@@ -59,13 +49,7 @@ export class AllocationsComponent {
    */
   getDefinedTourNumbers(): string[] {
     if ( this.selectedRouteNumber ) {
-      var selectedRouteObject: Route;
-      for ( var j = 0; j < this.gameService.getGame().routes.length; j++ ) {
-        if ( this.selectedRouteNumber == this.gameService.getGame().routes[j].routeNumber ) {
-          selectedRouteObject = this.gameService.getGame().routes[j];
-          break;
-        }
-      }
+      var selectedRouteObject: Route = this.gameService.getGame().getRoute(this.selectedRouteNumber);
       if ( selectedRouteObject ) {
         // We take the first timetable at the moment.
         if ( selectedRouteObject.timetables.length > 0 && selectedRouteObject.timetables[0].frequencyPatterns.length > 0 ) {
@@ -90,7 +74,7 @@ export class AllocationsComponent {
    */
   onSaveAllocation(): void {
     this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
-    this.gameService.getGame().retrieveVehicleByFleetNumber(this.selectedFleetNumber).allocatedTour = this.selectedRouteNumber + "/" + this.selectedTourNumber;
+    this.gameService.getGame().getVehicleByFleetNumber(this.selectedFleetNumber).allocatedTour = this.selectedRouteNumber + "/" + this.selectedTourNumber;
     this.router.navigate(['management']);
   }
 
@@ -99,30 +83,6 @@ export class AllocationsComponent {
    */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
-  }
-
-  /**
-   * Retrieve the route number which is currently selected.
-   * @return the route number that is selected.
-   */
-  getSelectedRouteNumber(): string {
-    return this.selectedRouteNumber;
-  }
-
-  /**
-   * Retrieve the fleet number which is currently selected.
-   * @return the fleet number that is selected.
-   */
-  getSelectedFleetNumber(): string {
-    return this.selectedFleetNumber;
-  }
-
-  /**
-   * Retrieve the tour number which is currently selected.
-   * @return the tour number that is selected.
-   */
-  getSelectedTourNumber(): string {
-    return this.selectedTourNumber;
   }
 
 }

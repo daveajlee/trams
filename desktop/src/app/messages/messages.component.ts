@@ -31,26 +31,18 @@ export class MessagesComponent {
   }
 
   onInboxSelect(): void {
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForInbox);
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("INBOX");
     this.selectedFolder = "INBOX";
-  }
-
-  checkForInbox(message) {
-    return message.folder.valueOf() === "INBOX";
   }
 
   onOutboxSelect(): void {
     this.selectedFolder = "OUTBOX";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForOutbox);
-  }
-
-  checkForOutbox(message) {
-    return message.folder.valueOf() === "OUTBOX";
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("OUTBOX");
   }
 
   onSentSelect(): void {
     this.selectedFolder = "SENT ITEMS";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForSentItems);
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
   }
 
   checkForSentItems(message) {
@@ -59,7 +51,7 @@ export class MessagesComponent {
 
   onTrashSelect(): void {
     this.selectedFolder = "TRASH";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForTrash);
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
   }
 
   checkForTrash(message) {

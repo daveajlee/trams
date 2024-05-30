@@ -32,7 +32,7 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the company name
    */
   getCompanyName(): string {
-    return this.gameService.getGame().companyName;
+    return this.gameService.getGame().getCompanyName();
   }
 
   /**
@@ -47,7 +47,7 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the scenario object with all information about the selected scenario
    */
   getScenario(): Scenario {
-    return this.gameService.getGame().scenario;
+    return this.gameService.getGame().getScenario();
   }
 
   /**
@@ -55,7 +55,7 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the player name
    */
   getPlayerName(): string {
-    return this.gameService.getGame().playerName;
+    return this.gameService.getGame().getPlayerName();
   }
 
 }

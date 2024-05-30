@@ -36,7 +36,7 @@ export class ClockComponent implements OnInit, OnDestroy {
    * Private helper method to set the current time in the format HH:mm
    */
   private setCurrentTime(): void {
-    const time = this.gameService.getGame().currentDateTime;
+    const time = this.gameService.getGame().getCurrentDateTime();
     this.hours = this.leftPadZero(time.getHours());
     this.minutes = this.leftPadZero(time.getMinutes());
   }

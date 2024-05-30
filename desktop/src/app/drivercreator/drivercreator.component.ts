@@ -23,7 +23,7 @@ export class DrivercreatorComponent {
    */
   constructor(private gameService: GameService, public router: Router, private datePipe: DatePipe) {
     this.contractedHours = 40;
-    this.startingDate = this.datePipe.transform(this.gameService.getGame().currentDateTime, 'yyyy-MM-dd');
+    this.startingDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
   }
 
   /**

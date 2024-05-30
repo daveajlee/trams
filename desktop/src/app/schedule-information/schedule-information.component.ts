@@ -53,13 +53,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
       }
 
       // Retrieve the vehicle assigned to this schedule id.
-      let vehicles = this.gameService.getGame().vehicles;
-      for ( let i = 0; i < vehicles.length; i++ ) {
-        if ( vehicles[i].allocatedTour === (this.selectedRoute + "/" + this.scheduleId ) ) {
-          this.vehicleId = vehicles[i].fleetNumber;
-        }
-      }
-
+      this.vehicleId = this.gameService.getGame().getAssignedVehicle(this.selectedRoute + "/" + this.scheduleId);
 
     });
   }
@@ -70,7 +64,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
       return new PositionModel("Depot", "", 0);
     }
     // Otherwise get position based on time.
-    var currentDateTime = this.gameService.getGame().currentDateTime;
+    var currentDateTime = this.gameService.getGame().getCurrentDateTime();
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
     for ( let i = 0; i < schedule.services.length; i++ ) {
       for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {

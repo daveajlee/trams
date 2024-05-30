@@ -29,7 +29,7 @@ export class LivesituationComponent implements OnInit {
   }
 
   getCurrentDate(): string {
-    return this.gameService.getGame().currentDateTime.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
   getBalance(): string {
@@ -37,11 +37,11 @@ export class LivesituationComponent implements OnInit {
   }
 
   getPassengerSatisfaction(): number {
-    return this.gameService.getGame().passengerSatisfaction;
+    return this.gameService.getGame().getPassengerSatisfaction();
   }
 
   getRoutes(): Route[] {
-    return this.gameService.getGame().routes;
+    return this.gameService.getGame().getRoutes();
   }
 
   getSelectedRouteStops(): String[] {
@@ -69,7 +69,7 @@ export class LivesituationComponent implements OnInit {
     if ( this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId) === -1 ) {
       return "Depot";
     }
-    var currentDateTime = this.gameService.getGame().currentDateTime;
+    var currentDateTime = this.gameService.getGame().getCurrentDateTime();
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
     for ( let i = 0; i < schedule.services.length; i++ ) {
       for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
@@ -112,22 +112,7 @@ export class LivesituationComponent implements OnInit {
     this.simulationRunning = value;
     if ( value === true ) {
       this.interval = setInterval(() => {
-        // Increase the time by the simulation interval of minutes,
-        this.gameService.getGame().currentDateTime = new Date(this.gameService.getGame().currentDateTime.getTime() + this.gameService.getGame().getSimulationInterval() *60000);
-        // Check if we went past midnight. If so, then we need to pay drivers again.
-        if ( ((this.gameService.getGame().currentDateTime.getHours() * 60) + this.gameService.getGame().currentDateTime.getMinutes()) <= this.gameService.getGame().getSimulationInterval() ) {
-          // Now we need to pay drivers.
-          this.gameService.getGame().withdrawBalance(this.gameService.getGame().drivers.length * 90);
-        }
-        // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
-        var randomDiff = Math.random() * (4);
-        this.gameService.getGame().passengerSatisfaction = Math.round(this.gameService.getGame().passengerSatisfaction + (randomDiff-2));
-        // Ensure that passenger satisfaction is between 0 and 100.
-        if ( this.gameService.getGame().passengerSatisfaction < 0 ) {
-          this.gameService.getGame().passengerSatisfaction = 0;
-        } else if ( this.gameService.getGame().passengerSatisfaction > 100 ) {
-          this.gameService.getGame().passengerSatisfaction = 100;
-        }
+        this.gameService.getGame().updateSimulationStep();
         }, 10000);
     } else {
       if (this.interval) {

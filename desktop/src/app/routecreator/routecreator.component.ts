@@ -40,14 +40,14 @@ export class RoutecreatorComponent implements OnInit {
    * Retrieve the scenario name as a string.
    */
   getScenarioName(): string {
-    return this.gameService.getGame().scenario.scenarioName;
+    return this.gameService.getGame().getScenario().scenarioName;
   }
 
   /**
    * Retrieve the list of stops that this scenario contains.
    */
   getScenarioStops(): string[] {
-    return this.gameService.getGame().scenario.stopDistances;
+    return this.gameService.getGame().getScenario().stopDistances;
   }
 
   /**
@@ -70,7 +70,7 @@ export class RoutecreatorComponent implements OnInit {
     route.startStop = this.startStop;
     route.endStop = this.endStop;
     route.stops = this.stops;
-    route.company = this.gameService.getGame().companyName;
+    route.company = this.gameService.getGame().getCompanyName();
     if ( (document.getElementById('checkbox-night') as HTMLInputElement).checked ) {
       route.nightRoute = true;
     }

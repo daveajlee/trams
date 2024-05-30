@@ -9,10 +9,7 @@ import {Router} from '@angular/router';
 })
 export class ScenariomapComponent implements OnInit {
 
-  gameService: GameService;
-
-  constructor(private gameService2: GameService, public router: Router) { 
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router) {
   }
 
   ngOnInit(): void {
@@ -20,12 +17,12 @@ export class ScenariomapComponent implements OnInit {
   }
 
   getScenarioName(): string {
-    return this.gameService.getGame().scenario.scenarioName;
+    return this.gameService.getGame().getScenario().scenarioName;
   }
 
   getScenarioImage(): string {
-    if ( this.gameService.getGame().scenario.locationMap && this.gameService.getGame().scenario.locationMap != '') {
-      return 'assets/' + this.gameService.getGame().scenario.locationMap;
+    if ( this.gameService.getGame().getScenario().locationMap && this.gameService.getGame().getScenario().locationMap != '') {
+      return 'assets/' + this.gameService.getGame().getScenario().locationMap;
     } else {
       return '';
     }

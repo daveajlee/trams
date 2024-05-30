@@ -13,7 +13,6 @@ import {StopTimeModel} from "../stops/stop-detail/stoptime.model";
 export class TimetableviewerComponent {
 
   routeNumber: string;
-  gameService: GameService;
   paramsSubscription: Subscription;
   route: Route;
   selectedSchedule: string;
@@ -21,20 +20,20 @@ export class TimetableviewerComponent {
 
   /**
    * Construct a new Timetable Viewer component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router to navigate to other pages.
    * @param activatedRoute a variable which contains the current route that the user wants to view timetables for.
    */
-  constructor(private gameService2: GameService, public router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private gameService: GameService, public router: Router, private activatedRoute: ActivatedRoute) {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
-      this.gameService = gameService2;
       this.route = this.gameService.getGame().getRoute(this.routeNumber);
       this.selectedSchedule = this.route.schedules[0].routeNumber + "/" + this.route.schedules[0].scheduleId;
-      this.selectedDate = this.gameService.getGame().currentDateTime.getFullYear() + "-" + (this.gameService.getGame().currentDateTime.getMonth() < 10 ? "0"
-      + this.gameService.getGame().currentDateTime.getMonth() : this.gameService.getGame().currentDateTime.getMonth() )  + "-" +
-          (this.gameService.getGame().currentDateTime.getDate() < 10 ? "0"
-              + this.gameService.getGame().currentDateTime.getDate() : this.gameService.getGame().currentDateTime.getDate() );
+      let currentDateTime = this.gameService.getGame().getCurrentDateTime();
+      this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
+      + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
+          (currentDateTime.getDate() < 10 ? "0"
+              + currentDateTime.getDate() : currentDateTime.getDate() );
     });
   }
 
