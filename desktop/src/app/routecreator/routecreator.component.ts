@@ -13,17 +13,15 @@ export class RoutecreatorComponent implements OnInit {
   routeNumber: string;
   startStop: string;
   endStop: string;
-  stops: string[];
-  gameService: GameService;
+  private stops: string[];
   nightRoute: boolean;
 
   /**
    * Construct a new Route Creator component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router for navigating to other pages.
    */
-  constructor(private gameService2: GameService, public router: Router) {
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router) {
     this.startStop = this.getScenarioStops()[0].split(":")[0];
     this.endStop = this.getScenarioStops()[1].split(":")[0];
     this.stops = [];
@@ -65,14 +63,10 @@ export class RoutecreatorComponent implements OnInit {
         this.stops.push(scenarioStops[i].split(":")[0]);
       }
     }
-    var route = new Route();
-    route.routeNumber = this.routeNumber;
-    route.startStop = this.startStop;
-    route.endStop = this.endStop;
-    route.stops = this.stops;
-    route.company = this.gameService.getGame().getCompanyName();
+    var route = new Route(this.routeNumber, this.startStop, this.endStop, this.stops,
+        this.gameService.getGame().getCompanyName());
     if ( (document.getElementById('checkbox-night') as HTMLInputElement).checked ) {
-      route.nightRoute = true;
+      route.setNightRoute(true);
     }
     this.gameService.getGame().addRoute(route);
     this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });

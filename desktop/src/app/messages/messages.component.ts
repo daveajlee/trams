@@ -17,14 +17,12 @@ export class MessagesComponent {
   faEnvelopeCircleCheck = faEnvelopeCircleCheck;
   faSnareFromSquare = faShareFromSquare;
   faTrash = faTrash;
-  displayMessages: Message[];
-  gameService: GameService;
+  private displayMessages: Message[];
 
-  selectedFolder: string;
+  private selectedFolder: string;
 
-  constructor(private gameService2: GameService, public router: Router) {
+  constructor(private gameService: GameService, public router: Router) {
     this.displayMessages = [];
-    this.gameService = gameService2;
     this.onInboxSelect();
     this.selectedFolder = "INBOX";
     console.log(this.selectedFolder);
@@ -45,20 +43,29 @@ export class MessagesComponent {
     this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
   }
 
-  checkForSentItems(message) {
-    return message.folder.valueOf() === "SENT ITEMS";
-  }
-
   onTrashSelect(): void {
     this.selectedFolder = "TRASH";
     this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
   }
 
-  checkForTrash(message) {
-    return message.folder.valueOf() === "TRASH";
-  }
-
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }
+
+  /**
+   * Get the folder that is currently selected.
+   * @return the folder that is currently selected as a String.
+   */
+  getSelectedFolder(): string {
+    return this.selectedFolder;
+  }
+
+  /**
+   * Get the messages that should be displayed based on the selected folder.
+   * @return the messages as an Array of Messages.
+   */
+  getDisplayMessages(): Message[] {
+    return this.displayMessages;
+  }
+
 }

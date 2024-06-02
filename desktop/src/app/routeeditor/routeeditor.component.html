@@ -3,14 +3,14 @@
 
 <!-- Jumbotron with page title -->
 <div class="jumbotron">
-    <h1 class="display-4 text-center">Route {{routeNumber}}: {{startStop}} <> {{endStop}}</h1>
+    <h1 class="display-4 text-center">Route {{getRouteNumber()}}: {{getStartStop()}} <> {{getEndStop()}}</h1>
 </div>
 
 <!-- Show the list of stops that are served -->
 <div class="top-space m-5">
     <p class="h2 text-center">Intermediate Stops</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let stop of stops">
+        <li class="list-group-item" *ngFor="let stop of getStops()">
             <p class="lead text-center">{{stop}}</p>
         </li>
     </ul>
@@ -20,7 +20,7 @@
 <div class="top-space m-5">
     <p class="h2 text-center">Timetables</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let timetable of timetables">
+        <li class="list-group-item" *ngFor="let timetable of getTimetables()">
             <p class="lead text-center">{{timetable.name}} <button type="button" class="btn btn-danger ms-5" (click)="onDeleteTimetable(timetable.name)">Delete</button></p>
         </li>
     </ul>

@@ -14,22 +14,14 @@ import {SaveService} from "../shared/save.service";
  */
 export class HeaderComponent implements OnInit {
 
-  public version: string = packageJson.version;
+  private version: string = packageJson.version;
 
   selectedHelpTopic: string;
-
-  collapsed = true;
-
-  loadService: LoadService;
-
-  saveService: SaveService;
 
   /**
    * Construct a new HeaderComponent and do nothing.
    */
-  constructor(public router: Router, private loadService2: LoadService, private saveService2: SaveService) {
-      this.loadService = loadService2;
-      this.saveService = saveService2;
+  constructor(public router: Router, private loadService: LoadService, private saveService: SaveService) {
   }
 
   /**
@@ -63,6 +55,14 @@ export class HeaderComponent implements OnInit {
    */
   onNewGameClick(): void {
       this.router.navigate(['newgame']);
+  }
+
+  /**
+   * Get the version that we are currently running.
+   * @return the version as a String.
+   */
+  getVersion(): string {
+      return this.version;
   }
 
   /**

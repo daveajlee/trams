@@ -122,8 +122,8 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     // Go through the routes,
     let routes = this.gameService.getGame().getRoutes();
     for ( let a = 0; a < routes.length; a++ ) {
-      let schedules = routes[a].schedules;
-      if ( routes[a].schedules ) {
+      let schedules = routes[a].getSchedules();
+      if ( schedules ) {
         for ( let b = 0; b < schedules.length; b++ ) {
           let services = schedules[b].services;
           for ( let c = 0; c < services.length; c++ ) {
@@ -133,7 +133,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
                 // Exclude those stops which end here as they are not departures,
                 if ( stops[d].stop != stops[stops.length-1].stop ) {
                   // This service stops here so now create the real time model and add it to today departures.
-                  departures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].routeNumber, stops[stops.length-1].stop));
+                  departures.push(new RealTimeInfo(stops[d].departureTime, stops[d].arrivalTime, routes[a].getRouteNumber(), stops[stops.length-1].stop));
                 }
               }
             }

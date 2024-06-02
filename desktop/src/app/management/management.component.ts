@@ -10,10 +10,7 @@ import {TipService} from "../shared/tip.service";
 })
 export class ManagementComponent implements OnInit {
 
-  gameService: GameService;
-
-  constructor(private gameService2: GameService, public router: Router, private tipService: TipService) {
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router, private tipService: TipService) {
   }
 
   getCurrentDate(): string {

@@ -73,7 +73,7 @@ export class Game {
     deleteRoute(routeNumber: string): boolean {
         let counter = 0;
         this.routes.forEach((element) => {
-            if ( element.routeNumber == routeNumber ) {
+            if ( element.getRouteNumber() == routeNumber ) {
                 this.routes.splice(counter, 1);
                 return true;
             }
@@ -175,9 +175,9 @@ export class Game {
     addMessage(subject: string, content: string, folder: string, date: Date, isSender: boolean, name: string ): void {
         let message = new Message(subject, content, folder, date);
         if ( isSender ) {
-            message.sender = name;
+            message.setSender(name);
         } else {
-            message.recipient = name;
+            message.setRecipient(name);
         }
         this.messages.push(message);
     }
@@ -189,7 +189,7 @@ export class Game {
      */
     getRoute( routeNumber: string ): Route {
         for ( var i = 0; i < this.routes.length; i++ ) {
-            if ( this.routes[i].routeNumber === routeNumber ) {
+            if ( this.routes[i].getRouteNumber() === routeNumber ) {
                 return this.routes[i];
             }
         }
@@ -293,7 +293,7 @@ export class Game {
      * @return the route number of the first route in the list as a string.
      */
     getFirstRouteNumber(): string {
-        return this.routes[0].routeNumber;
+        return this.routes[0].getRouteNumber();
     }
 
     /**
@@ -303,7 +303,7 @@ export class Game {
     getRouteNumbers(): string[] {
         var routeNumbers = [];
         for ( var i = 0; i < this.routes.length; i++ ) {
-            routeNumbers[i] = this.routes[i].routeNumber;
+            routeNumbers[i] = this.routes[i].getRouteNumber();
         }
         return routeNumbers;
     }
@@ -406,7 +406,7 @@ export class Game {
      */
     filterMessagesByFolder(folder: string) {
         return this.messages.filter((message: Message) =>
-            message.folder.valueOf() === folder);
+            message.getFolder().valueOf() === folder);
     }
 
     /**

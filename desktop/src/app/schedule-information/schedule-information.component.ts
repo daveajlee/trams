@@ -41,14 +41,14 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
 
       // Get the route and schedule objects.
       let route = this.gameService.getGame().getRoute(this.selectedRoute);
-      let schedules = route.schedules;
+      let schedules = route.getSchedules();
       for ( let i = 0; i < schedules.length; i++ ) {
         if ( schedules[i].scheduleId === this.scheduleId ) {
           // Retrieve the stop and the destination.
           let positionModel = this.getCurrentPosition(schedules[i]);
-          this.stop = positionModel.stop;
-          this.destination = positionModel.destination;
-          this.delay = positionModel.delay;
+          this.stop = positionModel.getStop();
+          this.destination = positionModel.getDestination();
+          this.delay = positionModel.getDelay();
         }
       }
 

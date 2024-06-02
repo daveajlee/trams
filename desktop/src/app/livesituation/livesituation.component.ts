@@ -12,16 +12,12 @@ import {TimeHelper} from "../shared/time.helper";
 })
 export class LivesituationComponent implements OnInit {
 
-  gameService: GameService;
   selectedRoute: String;
-  simulationRunning: boolean;
-  interval: any;
+  private simulationRunning: boolean;
+  private interval: any;
 
-  display = "none";
-
-  constructor(private gameService2: GameService, public router: Router) {
-    this.gameService = gameService2;
-    this.selectedRoute = this.getRoutes()[0].routeNumber;
+  constructor(private gameService: GameService, public router: Router) {
+    this.selectedRoute = this.getRoutes()[0].getRouteNumber();
     this.simulationRunning = false;
   }
 
@@ -46,11 +42,11 @@ export class LivesituationComponent implements OnInit {
 
   getSelectedRouteStops(): String[] {
     for ( let i = 0; i < this.getRoutes().length; i++ ) {
-      if ( this.selectedRoute == this.getRoutes()[i].routeNumber ) {
+      if ( this.selectedRoute == this.getRoutes()[i].getRouteNumber() ) {
         var stops = [];
-        stops.push(this.getRoutes()[i].startStop);
-        stops = stops.concat(this.getRoutes()[i].stops)
-        stops.push(this.getRoutes()[i].endStop);
+        stops.push(this.getRoutes()[i].getStartStop());
+        stops = stops.concat(this.getRoutes()[i].getStops())
+        stops.push(this.getRoutes()[i].getEndStop());
         return stops;
       }
     }
@@ -58,8 +54,8 @@ export class LivesituationComponent implements OnInit {
 
   getRouteScheds(): ScheduleModel[] {
     for ( let i = 0; i < this.getRoutes().length; i++ ) {
-      if ( this.selectedRoute == this.getRoutes()[i].routeNumber ) {
-        return this.getRoutes()[i].schedules;
+      if ( this.selectedRoute == this.getRoutes()[i].getRouteNumber() ) {
+        return this.getRoutes()[i].getSchedules();
       }
     }
   }

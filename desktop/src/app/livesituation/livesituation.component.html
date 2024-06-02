@@ -16,7 +16,7 @@
     <div class="form-group top-space m-5">
         <label for="route" style="font-weight: bold;">Route:</label>
         <select class="form-control" [(ngModel)]="selectedRoute" id="route">
-            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.routeNumber">{{ item.routeNumber + ": " + item.startStop + " <> " + item.endStop }}</option>
+            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.getRouteNumber()">{{ item.getRouteNumber() + ": " + item.getStartStop() + " <> " + item.getEndStop() }}</option>
         </select>
         <table class="mt-5">
             <tr>

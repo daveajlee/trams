@@ -52,9 +52,9 @@ export class AllocationsComponent {
       var selectedRouteObject: Route = this.gameService.getGame().getRoute(this.selectedRouteNumber);
       if ( selectedRouteObject ) {
         // We take the first timetable at the moment.
-        if ( selectedRouteObject.timetables.length > 0 && selectedRouteObject.timetables[0].frequencyPatterns.length > 0 ) {
+        if ( selectedRouteObject.doTimetablesExist() && selectedRouteObject.doFrequencyPatternsExist(0) ) {
           var tours = [];
-          for (var k = 0; k < selectedRouteObject.timetables[0].frequencyPatterns[0].numTours; k++) {
+          for (var k = 0; k < selectedRouteObject.getNumberTours(0, 0); k++) {
             tours.push((k + 1));
           }
           this.selectedTourNumber = tours[0];

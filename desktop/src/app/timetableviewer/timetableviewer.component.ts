@@ -28,7 +28,7 @@ export class TimetableviewerComponent {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
       this.route = this.gameService.getGame().getRoute(this.routeNumber);
-      this.selectedSchedule = this.route.schedules[0].routeNumber + "/" + this.route.schedules[0].scheduleId;
+      this.selectedSchedule = this.route.getSchedules()[0].routeNumber + "/" + this.route.getSchedules()[0].scheduleId;
       let currentDateTime = this.gameService.getGame().getCurrentDateTime();
       this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
       + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
@@ -49,7 +49,7 @@ export class TimetableviewerComponent {
    */
   getSchedules(): string[] {
     let schedules = [];
-    this.route.schedules.forEach((element) => {
+    this.route.getSchedules().forEach((element) => {
       schedules.push(element.routeNumber + "/" + element.scheduleId);
     } );
     return schedules;
@@ -60,10 +60,10 @@ export class TimetableviewerComponent {
    */
   getStopTimes(): StopTimeModel[] {
     let stopTimeModels = [];
-    for ( let i = 0; i < this.route.schedules.length; i++ ) {
-      if ( (this.route.schedules[i].routeNumber + "/" + this.route.schedules[i].scheduleId) == this.selectedSchedule ){
-        for ( let j = 0; j < this.route.schedules[i].services.length; j++ ) {
-          stopTimeModels = stopTimeModels.concat(this.route.schedules[i].services[j].stopList);
+    for ( let i = 0; i < this.route.getSchedules().length; i++ ) {
+      if ( (this.route.getSchedules()[i].routeNumber + "/" + this.route.getSchedules()[i].scheduleId) == this.selectedSchedule ){
+        for ( let j = 0; j < this.route.getSchedules()[i].services.length; j++ ) {
+          stopTimeModels = stopTimeModels.concat(this.route.getSchedules()[i].services[j].stopList);
         }
       }
     }

@@ -34,19 +34,19 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let routeEl of routes, let i = index">
+    <tr *ngFor="let routeEl of retrieveAllRoutes(), let i = index">
         <td>
-            <i *ngIf="routeEl.nightRoute" class="icofont-night"></i>
-            <i *ngIf="!routeEl.nightRoute" class="icofont-sun-alt"></i>
+            <i *ngIf="routeEl.isNightRoute()" class="icofont-night"></i>
+            <i *ngIf="!routeEl.isNightRoute()" class="icofont-sun-alt"></i>
         </td>
-        <td>{{routeEl.routeNumber}}</td>
-        <td>{{routeEl.startStop}}</td>
-        <td>{{routeEl.endStop}}</td>
-        <td>{{routeEl.company}}</td>
+        <td>{{routeEl.getRouteNumber()}}</td>
+        <td>{{routeEl.getStartStop()}}</td>
+        <td>{{routeEl.getEndStop()}}</td>
+        <td>{{routeEl.getCompany()}}</td>
         <td>
-            <button class="btn btn-info" style="margin: 3px;" type="submit" (click)="viewTimetable(routeEl.routeNumber)">View Timetable</button>
-            <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.routeNumber)">Edit</button>
-            <button class="btn btn-danger" style="margin: 3px;" type="submit" (click)="deleteRoute(routeEl.routeNumber)">Delete</button>
+            <button class="btn btn-info" style="margin: 3px;" type="submit" (click)="viewTimetable(routeEl.getRouteNumber())">View Timetable</button>
+            <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.getRouteNumber())">Edit</button>
+            <button class="btn btn-danger" style="margin: 3px;" type="submit" (click)="deleteRoute(routeEl.getRouteNumber())">Delete</button>
         </td>
     </tr>
   </tbody>

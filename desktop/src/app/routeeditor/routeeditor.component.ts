@@ -11,30 +11,28 @@ import {Timetable} from "../shared/timetable.model";
 })
 export class RouteeditorComponent {
 
-  routeNumber: string;
-  startStop: string;
-  endStop: string;
-  stops: string[];
-  timetables: Timetable[];
-  gameService: GameService;
+  private routeNumber: string;
+  private startStop: string;
+  private endStop: string;
+  private stops: string[];
+  private timetables: Timetable[];
 
-  idSubscription: Subscription;
+  private idSubscription: Subscription;
 
   /**
    * Construct a new Route Editor component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router to navigate to other pages.
    * @param route a variable which contains the current stop that the user clicked on.
    */
-  constructor(private gameService2: GameService, public router: Router, private route: ActivatedRoute) {
+  constructor(private gameService: GameService, public router: Router, private route: ActivatedRoute) {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
-      this.gameService = gameService2;
       let route = this.gameService.getGame().getRoute(this.routeNumber);
-      this.startStop = route.startStop;
-      this.endStop = route.endStop;
-      this.stops = route.stops;
-      this.timetables = route.timetables;
+      this.startStop = route.getStartStop();
+      this.endStop = route.getEndStop();
+      this.stops = route.getStops();
+      this.timetables = route.getTimetables();
     });
   }
 
@@ -54,6 +52,44 @@ export class RouteeditorComponent {
     }
   }
 
+  /**
+   * Get the route number.
+   * @return the route number as a String.
+   */
+  getRouteNumber(): string {
+    return this.routeNumber;
+  }
 
+  /**
+   * Get the start stop for this route.
+   * @return the start stop as a String.
+   */
+  getStartStop(): string {
+    return this.startStop;
+  }
+
+  /**
+   * Get the end stop for this route.
+   * @return the end stop as a String.
+   */
+  getEndStop(): string {
+    return this.endStop;
+  }
+
+  /**
+   * Get the list of stops served by this route.
+   * @return the array of stops served.
+   */
+  getStops(): string[] {
+    return this.stops;
+  }
+
+  /**
+   * Get the timetables that exist for this route.
+   * @return the timetables as an array of Timetable objects.
+   */
+  getTimetables(): Timetable[] {
+    return this.timetables;
+  }
 
 }

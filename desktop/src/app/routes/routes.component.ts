@@ -17,8 +17,8 @@ import {Router} from "@angular/router";
  */
 export class RoutesComponent implements OnInit, OnDestroy {
 
-  routes: Route[];
-  subscription: Subscription;
+  private routes: Route[];
+  private subscription: Subscription;
   filteredRouteNumber: string;
 
   /**
@@ -55,7 +55,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
     if ( this.gameService.isOfflineVersion() ) {
       return this.gameService.getGame().getRoutes();
     } else {
-      this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
+      this.subscription = this.routesService.getRoutesChanged().subscribe((routes: Route[]) => {
         this.routes = routes;
       });
       return this.routesService.getRoutes();
@@ -70,10 +70,10 @@ export class RoutesComponent implements OnInit, OnDestroy {
     let routes = this.retrieveAllRoutes();
     if ( dayRoutes ) {
       this.routes = routes.filter((route: Route) =>
-          !route.nightRoute)
+          !route.isNightRoute())
     } else {
       this.routes = routes.filter((route: Route) =>
-          route.nightRoute === true)
+          route.isNightRoute() === true)
     }
   }
 
@@ -84,7 +84,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
     let routes = this.retrieveAllRoutes();
     if ( this.filteredRouteNumber != "" ) {
       this.routes = routes.filter((route: Route) =>
-          route.routeNumber.startsWith(this.filteredRouteNumber));
+          route.getRouteNumber().startsWith(this.filteredRouteNumber));
     } else {
       this.routes = routes;
     }
