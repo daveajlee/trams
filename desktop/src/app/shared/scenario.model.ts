@@ -5,14 +5,14 @@ import {SuppliedVehicles} from "../vehicles/suppliedvehicle.model";
  */
 export class Scenario {
 
-    public locationMap: string;
-    public scenarioName: string;
-    public description: string;
-    public targets: string[];
-    public minimumSatisfaction: number;
-    public suppliedVehicles: SuppliedVehicles[];
-    public suppliedDrivers: string[];
-    public stopDistances: string[];
+    private locationMap: string;
+    private scenarioName: string;
+    private description: string;
+    private targets: string[];
+    private minimumSatisfaction: number;
+    private suppliedVehicles: SuppliedVehicles[];
+    private suppliedDrivers: string[];
+    private stopDistances: string[];
 
     /**
      * Construct a new scenario which contains the supplied data.
@@ -39,8 +39,60 @@ export class Scenario {
         this.stopDistances = stopDistances;
     }
 
+    /**
+     * Get the path to the location map image.
+     * @return the path as a String.
+     */
     getImagePath(): string {
         return "assets/" + this.locationMap;
+    }
+
+    /**
+     * Get the name of the scenario.
+     * @return the name as a String.
+     */
+    getScenarioName(): string {
+        return this.scenarioName;
+    }
+
+    /**
+     * Get the distances between stops for this scenario.
+     * @return the stop distances as a string array.
+     */
+    getStopDistances(): string[] {
+        return this.stopDistances;
+    }
+
+    /**
+     * Get the description for this scenario.
+     * @return the description as a String.
+     */
+    getDescription(): string {
+        return this.description;
+    }
+
+    /**
+     * Get the targets for this scenario.
+     * @return the targets as a String array.
+     */
+    getTargets(): string[] {
+        return this.targets;
+    }
+
+    /**
+     * Get the supplied vehicles for this scenario.
+     * @return the supplied vehicles as an array of SuppliedVehicle objects.
+     */
+    getSuppliedVehicles(): SuppliedVehicles[] {
+        return this.suppliedVehicles;
+    }
+
+    /**
+     * Get the supplied drivers for this scenario.
+     * @return the supplied driver names as an array of Strings.
+     */
+    getSuppliedDrivers(): string[] {
+        return this.suppliedDrivers;
     }
 
 }

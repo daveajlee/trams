@@ -12,9 +12,9 @@ import {StopTimeModel} from "../stops/stop-detail/stoptime.model";
 })
 export class TimetableviewerComponent {
 
-  routeNumber: string;
-  paramsSubscription: Subscription;
-  route: Route;
+  private routeNumber: string;
+  private paramsSubscription: Subscription;
+  private route: Route;
   selectedSchedule: string;
   selectedDate: string;
 
@@ -28,7 +28,7 @@ export class TimetableviewerComponent {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
       this.route = this.gameService.getGame().getRoute(this.routeNumber);
-      this.selectedSchedule = this.route.getSchedules()[0].routeNumber + "/" + this.route.getSchedules()[0].scheduleId;
+      this.selectedSchedule = this.route.getSchedules()[0].getRouteNumberAndScheduleId();
       let currentDateTime = this.gameService.getGame().getCurrentDateTime();
       this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
       + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
@@ -50,7 +50,7 @@ export class TimetableviewerComponent {
   getSchedules(): string[] {
     let schedules = [];
     this.route.getSchedules().forEach((element) => {
-      schedules.push(element.routeNumber + "/" + element.scheduleId);
+      schedules.push(element.getRouteNumberAndScheduleId());
     } );
     return schedules;
   }
@@ -61,9 +61,9 @@ export class TimetableviewerComponent {
   getStopTimes(): StopTimeModel[] {
     let stopTimeModels = [];
     for ( let i = 0; i < this.route.getSchedules().length; i++ ) {
-      if ( (this.route.getSchedules()[i].routeNumber + "/" + this.route.getSchedules()[i].scheduleId) == this.selectedSchedule ){
-        for ( let j = 0; j < this.route.getSchedules()[i].services.length; j++ ) {
-          stopTimeModels = stopTimeModels.concat(this.route.getSchedules()[i].services[j].stopList);
+      if ( (this.route.getSchedules()[i].getRouteNumberAndScheduleId()) == this.selectedSchedule ){
+        for ( let j = 0; j < this.route.getSchedules()[i].getServices().length; j++ ) {
+          stopTimeModels = stopTimeModels.concat(this.route.getSchedules()[i].getServices()[j].getStopList());
         }
       }
     }

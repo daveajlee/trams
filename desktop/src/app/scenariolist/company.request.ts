@@ -3,12 +3,12 @@
  */
 export class CompanyRequest {
 
-    public name: string;
-    public startingBalance: number;
-    public playerName: string;
-    public startingTime: string;
-    public scenarioName: string;
-    public difficultyLevel: string;
+    private name: string;
+    private startingBalance: number;
+    private playerName: string;
+    private startingTime: string;
+    private scenarioName: string;
+    private difficultyLevel: string;
 
     /**
      * Construct a new company request which contains the supplied data.
@@ -20,7 +20,7 @@ export class CompanyRequest {
      * @param difficultyLevel the level of difficulty that the player wants to play
      */
 
-constructor( name: string, startingBalance: number, playerName: string, startingTime: string, scenarioName: string,
+    constructor( name: string, startingBalance: number, playerName: string, startingTime: string, scenarioName: string,
              difficultyLevel: string ) {
         this.name = name;
         this.startingBalance = startingBalance;

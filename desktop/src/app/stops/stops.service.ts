@@ -10,16 +10,16 @@ import {StopsResponse} from './stops-response.model';
  */
 export class StopsService {
 
-  stopsChanged = new Subject<Stop[]>();
+  private stopsChanged = new Subject<Stop[]>();
 
   private stops: Stop[] = [];
 
   /**
    * Set the list of stops to new stops supplied from the server.
-   * @param stopsResponse the response sent from the server with matching routes.
+   * @param stops the response sent from the server with matching routes.
    */
   setStops(stops: StopsResponse): void {
-    this.stops = stops.stopResponses;
+    this.stops = stops.getStopResponses();
     this.stopsChanged.next(this.stops.slice());
   }
 
@@ -36,6 +36,14 @@ export class StopsService {
    */
   getStop(index: number): Stop {
     return this.stops.slice()[index];
+  }
+
+  /**
+   * Retrieve the stops that changed.
+   * @return an array of stops that changed as Subject objects.
+   */
+  getStopsChanged(): Subject<Stop[]> {
+    return this.stopsChanged;
   }
 
 

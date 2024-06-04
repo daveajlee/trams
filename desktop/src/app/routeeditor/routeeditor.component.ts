@@ -46,7 +46,7 @@ export class RouteeditorComponent {
 
   onDeleteTimetable(timetableName: string): void {
     for ( let i = 0; i < this.timetables.length; i++ ) {
-      if ( this.timetables[i].name === timetableName ) {
+      if ( this.timetables[i].getName() === timetableName ) {
         this.timetables.splice(i, 1);
       }
     }

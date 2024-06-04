@@ -1,7 +1,7 @@
 <div class="modal-body">
-    <p>Timetable Id: {{selectedRoute + "/" + scheduleId}}</p>
-    <p>Fleet Number: {{ vehicleId }}</p>
-    <p>Location: {{ stop }}</p>
-    <p>Destination: {{ destination }} </p>
-    <p>Delay: {{ delay }} mins </p>
+    <p>Timetable Id: {{getSelectedRoute() + "/" + getScheduleId()}}</p>
+    <p>Fleet Number: {{ getFleetNumber() }}</p>
+    <p>Location: {{ getStop() }}</p>
+    <p>Destination: {{ getDestination() }} </p>
+    <p>Delay: {{ getDelay() }} mins </p>
 </div>

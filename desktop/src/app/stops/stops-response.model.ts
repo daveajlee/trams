@@ -5,7 +5,15 @@ import {Stop} from './stop.model';
 
 export class StopsResponse {
 
-    public count: number;
-    public stopResponses: Stop[];
+    private count: number;
+    private stopResponses: Stop[];
+
+    /**
+     * Get the stops that were included in the response.
+     * @return the stops as an array of Stoo objects.
+     */
+    getStopResponses(): Stop[] {
+        return this.stopResponses;
+    }
 
 }

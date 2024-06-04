@@ -130,7 +130,7 @@ export class Route {
    * @param timetableIndex the index in the timetable array that should be checked for frequency patterns.
    */
   doFrequencyPatternsExist(timetableIndex: number) {
-    return this.timetables[timetableIndex].frequencyPatterns.length > 0;
+    return this.timetables[timetableIndex].getFrequencyPatterns().length > 0;
   }
 
   /**
@@ -139,7 +139,7 @@ export class Route {
    * @param frequencyPatternIndex the index in the frequency pattern array to retrieve.
    */
   getNumberTours(timetableIndex: number, frequencyPatternIndex: number) {
-    return this.timetables[timetableIndex].frequencyPatterns[frequencyPatternIndex].numTours;
+    return this.timetables[timetableIndex].getFrequencyPatterns()[frequencyPatternIndex].getNumTours();
   }
 
   /**

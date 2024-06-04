@@ -17,9 +17,9 @@ import {Router} from "@angular/router";
  */
 export class StopsComponent implements OnInit, OnDestroy {
 
-  stops: Stop[];
-  subscription: Subscription;
-  alphabet: String[];
+  private stops: Stop[];
+  private subscription: Subscription;
+  private alphabet: string[];
 
   /**
    * Create a new stops component which constructs a data service and a stop service to retreive data from the server.
@@ -48,18 +48,34 @@ export class StopsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Retrieve the alphabet as a list.
+   * @return the
+   */
+  getAlphabet(): string[] {
+    return this.alphabet;
+  }
+
+  /**
+   * Retrieve the current list of stops (which may be all or filtered).
+   * @return the list of stops as an array of Stops objects.
+   */
+  getStops(): Stop[] {
+    return this.stops;
+  }
+
+  /**
    * Helper method to retrieve all stops.
    */
   retrieveAllStops(): Stop[] {
-    if ( this.gameService.getGame().getScenario().stopDistances ) {
+    if ( this.gameService.getGame().getScenario().getStopDistances() ) {
       let stops = [];
-      var allStops =  this.gameService.getGame().getScenario().stopDistances;
+      var allStops =  this.gameService.getGame().getScenario().getStopDistances();
       for ( var i = 0; i < allStops.length; i++ ) {
         stops.push(new Stop('' + i, allStops[i].split(":")[0], 0, 0));
       }
       return stops;
     } else {
-      this.subscription = this.stopsService.stopsChanged.subscribe((stops: Stop[]) => {
+      this.subscription = this.stopsService.getStopsChanged().subscribe((stops: Stop[]) => {
         this.stops = stops;
       });
       return this.stopsService.getStops();
@@ -73,7 +89,7 @@ export class StopsComponent implements OnInit, OnDestroy {
   filterByLetter(letter: string): void {
     let stops = this.retrieveAllStops();
     this.stops = stops.filter((stop: Stop) =>
-      stop.name.toLowerCase().startsWith(letter));
+      stop.getName().toLowerCase().startsWith(letter));
   }
 
   backToManagementScreen(): void {

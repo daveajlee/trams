@@ -31,9 +31,9 @@
     </thead>
     <tbody>
     <tr *ngFor="let stopTimesEl of getStopTimes()">
-        <td>{{stopTimesEl.departureTime}}</td>
-        <td>{{stopTimesEl.arrivalTime}}</td>
-        <td>{{stopTimesEl.stop}}</td>
+        <td>{{stopTimesEl.getDepartureTime()}}</td>
+        <td>{{stopTimesEl.getArrivalTime()}}</td>
+        <td>{{stopTimesEl.getStop()}}</td>
     </tr>
     </tbody>
 </table>

@@ -62,36 +62,37 @@ export class LivesituationComponent implements OnInit {
 
   getCurrentPosition(schedule: ScheduleModel): string {
     // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
-    if ( this.gameService.getGame().retrieveDelayForAssignedTour(schedule.routeNumber + "/" + schedule.scheduleId) === -1 ) {
+    if ( this.gameService.getGame().retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()) === -1 ) {
       return "Depot";
     }
     var currentDateTime = this.gameService.getGame().getCurrentDateTime();
     var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
-    for ( let i = 0; i < schedule.services.length; i++ ) {
-      for ( let j = 0; j < schedule.services[i].stopList.length; j++ ) {
+    let services = schedule.getServices();
+    for ( let i = 0; i < services.length; i++ ) {
+      for ( let j = 0; j < services[i].getStopList().length; j++ ) {
         // If we exactly match the departure time then this is where we are.
-        if ( schedule.services[i].stopList[j].departureTime === currentTime ) {
-          return schedule.services[i].stopList[j].stop;
+        if ( services[i].getStopList()[j].getDepartureTime() === currentTime ) {
+          return services[i].getStopList()[j].getStop();
         }
         // If we are before departure time but after arrival time then we are also here.
-        else if ( schedule.services[i].stopList[j].departureTime > currentTime
-            && schedule.services[i].stopList[j].arrivalTime <= currentTime) {
-          return schedule.services[i].stopList[j].stop;
+        else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
+            && services[i].getStopList()[j].getArrivalTime() <= currentTime) {
+          return services[i].getStopList()[j].getStop();
         }
         // If we are before both departure time and arrival time then we are at the previous stop if there was one.
-        else if ( schedule.services[i].stopList[j].departureTime > currentTime
-            && schedule.services[i].stopList[j].arrivalTime > currentTime
-            && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
+        else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
+            && services[i].getStopList()[j].getArrivalTime() > currentTime
+            && services[0].getStopList()[0].getArrivalTime() < currentTime // Ensure service has started
             && j != 0 ) {
-          return schedule.services[i].stopList[j-1].stop;
+          return services[i].getStopList()[j-1].getStop();
         }
         // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
-        else if ( schedule.services[i].stopList[j].departureTime > currentTime
-            && schedule.services[i].stopList[j].arrivalTime > currentTime
-            && schedule.services[0].stopList[0].arrivalTime < currentTime // Ensure service has started
+        else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
+            && services[i].getStopList()[j].getArrivalTime() > currentTime
+            && services[0].getStopList()[0].getArrivalTime() < currentTime // Ensure service has started
             && j === 0
             && i != 0 ) {
-          return schedule.services[i-1].stopList[schedule.services[i-1].stopList.length-1].stop;
+          return services[i-1].getStopList()[services[i-1].getStopList().length-1].getStop();
         }
 
       }

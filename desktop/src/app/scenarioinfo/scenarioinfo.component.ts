@@ -13,15 +13,12 @@ import { Scenario } from '../shared/scenario.model';
  */
 export class ScenarioinfoComponent implements OnInit {
 
-  gameService: GameService;
-
   /**
    * Constructor to create the screen
-   * @param gameService2 the game service
+   * @param gameService the game service
    * @param router router to enable us to move other screens
    */
-  constructor(private gameService2: GameService, public router: Router ) { 
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router ) {
   }
 
   ngOnInit(): void {

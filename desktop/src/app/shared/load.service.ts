@@ -20,10 +20,7 @@ import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
  */
 export class LoadService {
 
-    gameService: GameService;
-
-    constructor(private gameService2: GameService) {
-        this.gameService = gameService2;
+    constructor(private gameService: GameService) {
     }
 
     /**
@@ -231,7 +228,7 @@ export class LoadService {
                     this.gameService.setGame(new Game(operatorName, "", new Date(), customScenario, "Easy",
                         200000.0, 90, [], [], [], [], []));
                     // Add the supplied vehicles.
-                    var mySuppliedVehicles = customScenario.suppliedVehicles;
+                    var mySuppliedVehicles = customScenario.getSuppliedVehicles();
                     for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
                         for ( let j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
                             const additionalProps = new Map<string, string>();
@@ -279,11 +276,11 @@ export class LoadService {
      * @returns the scenario object corresponding to the supplied name.
      */
     loadScenario(scenario: string): Scenario {
-        if ( scenario === SCENARIO_LANDUFF.scenarioName ) {
+        if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
             return SCENARIO_LANDUFF;
-        } else if ( scenario === SCENARIO_LONGTS.scenarioName) {
+        } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
             return SCENARIO_LONGTS;
-        } else if ( scenario === SCENARIO_MDORF.scenarioName ) {
+        } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
             return SCENARIO_MDORF;
         } else {
             return null;

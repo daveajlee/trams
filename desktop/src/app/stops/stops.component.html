@@ -12,7 +12,7 @@
 
 <!-- Display the filter options -->
 <div>
-    <button class="btn btn-primary m-2" type="submit" *ngFor="let letter of alphabet" (click)="filterByLetter(letter)">{{ letter }}</button>
+    <button class="btn btn-primary m-2" type="submit" *ngFor="let letter of getAlphabet()" (click)="filterByLetter(letter)">{{ letter }}</button>
 </div>
 
 <!-- Display a table with a list of stop names that are currently available in TraMS. Clicking on the stop name
@@ -26,8 +26,8 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let stopEl of stops, let i = index">
-        <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{stopEl.name}}</a></td>
+      <tr *ngFor="let stopEl of getStops(), let i = index">
+        <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{stopEl.getName()}}</a></td>
       </tr>
       </tbody>
     </table>

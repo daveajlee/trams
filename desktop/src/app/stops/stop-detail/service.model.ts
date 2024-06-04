@@ -5,8 +5,8 @@ import {StopTimeModel} from "./stoptime.model";
  */
 export class ServiceModel {
 
-    public serviceId: string;
-    public stopList: StopTimeModel[];
+    private serviceId: string;
+    private stopList: StopTimeModel[];
 
     /**
      * Construct a new ServiceModel object based on the supplied information
@@ -25,6 +25,14 @@ export class ServiceModel {
      */
     addStop(departureTime: string, arrivalTime: string, stop: string) {
         this.stopList.push(new StopTimeModel(departureTime, arrivalTime, stop));
+    }
+
+    /**
+     * Retrieve the list of stops served by this service.
+     * @return the list of stops as an array of StopTimeModel objects.
+     */
+    getStopList(): StopTimeModel[] {
+        return this.stopList;
     }
 
 }

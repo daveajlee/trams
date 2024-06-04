@@ -17,12 +17,12 @@ export class ScenariomapComponent implements OnInit {
   }
 
   getScenarioName(): string {
-    return this.gameService.getGame().getScenario().scenarioName;
+    return this.gameService.getGame().getScenario().getScenarioName();
   }
 
   getScenarioImage(): string {
-    if ( this.gameService.getGame().getScenario().locationMap && this.gameService.getGame().getScenario().locationMap != '') {
-      return 'assets/' + this.gameService.getGame().getScenario().locationMap;
+    if ( this.gameService.getGame().getScenario().getImagePath() && this.gameService.getGame().getScenario().getImagePath() != 'assets/') {
+      return this.gameService.getGame().getScenario().getImagePath();
     } else {
       return '';
     }

@@ -4,9 +4,9 @@
  */
 export class StopTimeModel {
 
-    public departureTime: string;
-    public arrivalTime: string;
-    public stop: string;
+    private departureTime: string;
+    private arrivalTime: string;
+    private stop: string;
 
     /**
      * Construct a new StopTimeModel object based on the supplied information
@@ -18,6 +18,30 @@ export class StopTimeModel {
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.stop = stop;
+    }
+
+    /**
+     * Retrieve the departure time for this stop.
+     * @return the departure time in format HH:mm as a string.
+     */
+    getDepartureTime(): string {
+        return this.departureTime;
+    }
+
+    /**
+     * Retrieve the arrival time for this stop.
+     * @return the arrival time in format HH:mm as a string.
+     */
+    getArrivalTime(): string {
+        return this.arrivalTime;
+    }
+
+    /**
+     * Retrieve the name of this stop.
+     * @return the name of this stop as a String.
+     */
+    getStop(): string {
+        return this.stop;
     }
 
 }

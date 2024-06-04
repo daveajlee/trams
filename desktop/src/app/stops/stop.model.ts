@@ -3,10 +3,10 @@
  */
 export class Stop {
 
-  public id: string;
-  public name: string;
-  public latitude: number;
-  public longitude: number;
+  private id: string;
+  private name: string;
+  private latitude: number;
+  private longitude: number;
 
   /**
    * Construct a new model for Stops which contains the supplied data.
@@ -20,6 +20,30 @@ export class Stop {
     this.name = name;
     this.latitude = latitude;
     this.longitude = longitude;
+  }
+
+  /**
+   * Retrieve the name of the stop.
+   * @return the name of the stop as a String.
+   */
+  getName(): string {
+    return this.name;
+  }
+
+  /**
+   * Retrieve the latitude of the stop.
+   * @return the latitude of the stop as a number.
+   */
+  getLatitude(): number {
+    return this.latitude;
+  }
+
+  /**
+   * Retrieve the longitude of the stop.
+   * @return the longitude of the stop as a number.
+   */
+  getLongitude(): number {
+    return this.longitude;
   }
 
 }

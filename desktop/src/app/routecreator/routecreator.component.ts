@@ -38,14 +38,14 @@ export class RoutecreatorComponent implements OnInit {
    * Retrieve the scenario name as a string.
    */
   getScenarioName(): string {
-    return this.gameService.getGame().getScenario().scenarioName;
+    return this.gameService.getGame().getScenario().getScenarioName();
   }
 
   /**
    * Retrieve the list of stops that this scenario contains.
    */
   getScenarioStops(): string[] {
-    return this.gameService.getGame().getScenario().stopDistances;
+    return this.gameService.getGame().getScenario().getStopDistances();
   }
 
   /**

@@ -27,7 +27,6 @@ export class AllocationsComponent {
     if ( this.gameService.getGame().doVehiclesExist() ) {
       this.selectedFleetNumber = this.gameService.getGame().getFirstFleetNumber();
     }
-    this.selectedTourNumber = "1";
   }
 
   /**
@@ -57,7 +56,6 @@ export class AllocationsComponent {
           for (var k = 0; k < selectedRouteObject.getNumberTours(0, 0); k++) {
             tours.push((k + 1));
           }
-          this.selectedTourNumber = tours[0];
           return tours;
         }
         return [];
@@ -73,6 +71,7 @@ export class AllocationsComponent {
    * When we click on the save allocations button, we should assign the tour to the vehicle and return to management screen.
    */
   onSaveAllocation(): void {
+    console.log('I want to allocate ' + this.selectedRouteNumber + '/' + this.selectedTourNumber + " to " + this.selectedFleetNumber);
     this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
     this.gameService.getGame().getVehicleByFleetNumber(this.selectedFleetNumber).allocatedTour = this.selectedRouteNumber + "/" + this.selectedTourNumber;
     this.router.navigate(['management']);
