@@ -17,9 +17,9 @@ import {GameService} from "../../shared/game.service";
  */
 export class VehicleDetailComponent implements OnInit, OnDestroy {
 
-  vehicle: Vehicle;
-  id: number;
-  idSubscription: Subscription;
+  private vehicle: Vehicle;
+  private id: number;
+  private idSubscription: Subscription;
 
   /**
    * Construct a new vehicle-detail component based on the supplied information.
@@ -51,24 +51,32 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   getVehiclePictureLink(): string {
-    if ( this.vehicle.vehicleType === 'Single Decker Bus') {
+    if ( this.vehicle.getVehicleType() === 'Single Decker Bus') {
       return 'assets/singledecker-bus-pixabay.png';
-    } else if ( this.vehicle.vehicleType === 'Double Decker Bus') {
+    } else if ( this.vehicle.getVehicleType() === 'Double Decker Bus') {
       return 'assets/doubledecker-bus-pixabay.png';
-    } else if ( this.vehicle.vehicleType === 'Bendy Bus') {
+    } else if ( this.vehicle.getVehicleType() === 'Bendy Bus') {
       return 'assets/bendybus-albertstoynov-unsplash.jpg';
-    } else if ( this.vehicle.vehicleType === 'Tram') {
+    } else if ( this.vehicle.getVehicleType() === 'Tram') {
       return 'assets/tram-pixabay.png';
     }
-    else if ( this.vehicle.vehicleType === 'Train') {
-      return 'assets/' + this.vehicle.vehicleType + '-' + this.vehicle.additionalTypeInformationMap['Power Mode'] + '.jpg';
+    else if ( this.vehicle.getVehicleType() === 'Train') {
+      return 'assets/' + this.vehicle.getVehicleType()+ '-' + this.vehicle.getPowerMode() + '.jpg';
     } else {
-      return 'assets/' + this.vehicle.vehicleType + '.jpg';
+      return 'assets/' + this.vehicle.getVehicleType() + '.jpg';
     }
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.fleetNumber);
+    this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.getFleetNumber());
+  }
+
+  /**
+   * Get the vehicle that we are currently displaying.
+   * @return the vehicle information as a Vehicle object.
+   */
+  getVehicle(): Vehicle {
+    return this.vehicle;
   }
 
 }

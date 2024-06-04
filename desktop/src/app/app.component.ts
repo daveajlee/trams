@@ -11,20 +11,10 @@ import {LoadService} from "./shared/load.service";
 })
 export class AppComponent {
 
-  file: File | null = null;
-  title = 'trams-frontend';
-  companyName: string;
-  playerName: string;
-  difficultyLevel: string;
-  startingDate: string;
-  showOutlet: boolean;
+  private file: File | null = null;
+  private showOutlet: boolean;
 
-  loadService: LoadService;
-
-  constructor(public router: Router, private datePipe: DatePipe, private loadService2: LoadService) {
-    this.difficultyLevel = 'Easy';
-    this.startingDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-    this.loadService = loadService2;
+  constructor(public router: Router, private datePipe: DatePipe, private loadService: LoadService) {
   }
 
   /**
@@ -52,6 +42,10 @@ export class AppComponent {
 
   onDeactivate(event: any): void {
     this.showOutlet = false;
+  }
+
+  isShowOutlet(): boolean {
+    return this.showOutlet;
   }
 
   /**

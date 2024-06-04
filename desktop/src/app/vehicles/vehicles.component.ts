@@ -19,9 +19,9 @@ import {Router} from "@angular/router";
  */
 export class VehiclesComponent implements OnInit, OnDestroy {
 
-  vehicles: Vehicle[];
-  subscription: Subscription;
-  searchSubscription: Subscription;
+  private vehicles: Vehicle[];
+  private subscription: Subscription;
+  private searchSubscription: Subscription;
 
   /**
    * Create a new vehicles component which constructs a data service and a vehicle service to retrieve data from the server.
@@ -41,12 +41,24 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     if ( this.gameService.getGame().doVehiclesExist() ) {
       this.vehicles = this.gameService.getGame().getVehicles();
     } else {
-      this.subscription = this.vehiclesService.vehiclesChanged.subscribe((vehicles: Vehicle[]) => {
+      this.subscription = this.vehiclesService.getVehiclesChanged().subscribe((vehicles: Vehicle[]) => {
         this.vehicles = vehicles;
       });
     }
   }
 
+  /**
+   * Retrieve the vehicles currently loaded.
+   * @return the list of vehicles as an array of Vehicle objects.
+   */
+  getVehicles(): Vehicle[] {
+    return this.vehicles;
+  }
+
+  /**
+   * Search for the specified value as a fleet number.
+   * @param searchValue the value to search for.
+   */
   searchByFleetNumber(searchValue: string): void {
     if ( this.gameService.getGame().doVehiclesExist() ) {
       var foundVehicle = this.gameService.getGame().getVehicleByFleetNumber(searchValue);
@@ -58,7 +70,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     } else {
       this.searchSubscription = this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/' +
           'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
-        this.vehicles = vehicleInfos.vehicleResponses;
+        this.vehicles = vehicleInfos.getVehicleResponses();
       });
     }
   }
@@ -73,6 +85,9 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * When the user clicks on the back button, return to management screen.
+   */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }

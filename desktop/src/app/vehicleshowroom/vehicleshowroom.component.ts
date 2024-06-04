@@ -12,20 +12,18 @@ import {Vehicle} from "../vehicles/vehicle.model";
 })
 export class VehicleshowroomComponent {
 
-  models: VehicleModel[];
-  currentDisplay: number;
-  gameService: GameService
-  deliveryDate: Date
+  private models: VehicleModel[];
+  private currentDisplay: number;
+  private deliveryDate: Date
   quantity: number;
 
   /**
    * Construct a new Vehicle Showroom component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router for navigating to other pages.
    * @param datePipe a date pipe object for transforming dates in Angular.
    */
-  constructor(private gameService2: GameService, public router: Router, private datePipe: DatePipe) {
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router, private datePipe: DatePipe) {
     this.models = [new VehicleModel('MyBus Single Decker', 'Single Decker Bus', 44, 36, 85000.0, 'assets/singledecker-bus-pixabay.png'),
         new VehicleModel('MyBus Double Decker', 'Double Decker Bus', 78, 25,160000, 'assets/doubledecker-bus-pixabay.png' ),
         new VehicleModel('MyBus Bendy', 'Bendy Bus', 48, 97, 190000, 'assets/bendybus-albertstoynov-unsplash.jpg'),
@@ -37,19 +35,19 @@ export class VehicleshowroomComponent {
   }
 
   getVehiclePicture(): string {
-    return this.models[this.currentDisplay].picture;
+    return this.models[this.currentDisplay].getPicture();
   }
 
   getVehicleType(): string {
-    return this.models[this.currentDisplay].modelName;
+    return this.models[this.currentDisplay].getModelName();
   }
 
   getVehicleSeatingCapacity(): number {
-    return this.models[this.currentDisplay].seatingCapacity;
+    return this.models[this.currentDisplay].getSeatingCapacity();
   }
 
   getVehicleStandingCapacity(): number {
-    return this.models[this.currentDisplay].standingCapacity;
+    return this.models[this.currentDisplay].getStandingCapacity();
   }
 
   getVehicleDeliveryDate(): string {
@@ -57,7 +55,7 @@ export class VehicleshowroomComponent {
   }
 
   getVehiclePurchasePrice(): number {
-    return this.models[this.currentDisplay].value;
+    return this.models[this.currentDisplay].getValue();
   }
 
   getPossibleQuantities(): number[] {
@@ -65,7 +63,7 @@ export class VehicleshowroomComponent {
   }
 
   getTotalPrice(): number {
-    return this.models[this.currentDisplay].value * this.quantity;
+    return this.models[this.currentDisplay].getValue() * this.quantity;
   }
 
   onPurchaseVehicle(): void {
@@ -80,7 +78,7 @@ export class VehicleshowroomComponent {
     if ( this.getVehiclePurchasePrice() > this.gameService.getGame().getBalance() ) {
       alert('You need to earn more money before you can buy new vehicles!');
     } else {
-      this.gameService.getGame().addVehicle(new Vehicle('' + (highestFleetNumberSoFar + 1), this.models[this.currentDisplay].modelType, '',
+      this.gameService.getGame().addVehicle(new Vehicle('' + (highestFleetNumberSoFar + 1), this.models[this.currentDisplay].getModelType(), '',
           '', '', 0, additionalProps));
       this.gameService.getGame().withdrawBalance(this.getVehiclePurchasePrice());
     }

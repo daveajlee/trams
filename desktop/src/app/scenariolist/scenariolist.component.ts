@@ -68,14 +68,14 @@ export class ScenariolistComponent implements OnInit {
       // Add the supplied vehicles.
       var mySuppliedVehicles = this.loadScenario(scenario).getSuppliedVehicles();
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
-          for ( var j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+          for ( var j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
               const additionalProps = new Map<string, string>();
-              additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
+              additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
               additionalProps.set('Age', '0 months');
-              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
-              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
-              additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
-              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].model.modelType, '',
+              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+              additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
+              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
                   '', '', 0, additionalProps));
           }
       }

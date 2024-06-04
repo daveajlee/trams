@@ -259,7 +259,7 @@ export class Game {
      */
     getVehicleByFleetNumber(fleetNumber: string): Vehicle {
         for ( var i = 0; i < this.vehicles.length; i++ ) {
-            if ( this.vehicles[i].fleetNumber.valueOf() === fleetNumber ) {
+            if ( this.vehicles[i].getFleetNumber().valueOf() === fleetNumber ) {
                 return this.vehicles[i];
             }
         }
@@ -273,8 +273,8 @@ export class Game {
      */
     retrieveDelayForAssignedTour(assignedTour: string): number {
         for ( var i = 0; i < this.vehicles.length; i++ ) {
-            if ( this.vehicles[i].allocatedTour === assignedTour ) {
-                return this.vehicles[i].delay;
+            if ( this.vehicles[i].getAllocatedTour() === assignedTour ) {
+                return this.vehicles[i].getDelay();
             }
         }
         return -1;
@@ -323,7 +323,7 @@ export class Game {
     getFleetNumbers(): string[] {
         var fleetNumbers = [];
         for ( var i = 0; i < this.vehicles.length; i++ ) {
-            fleetNumbers[i] = this.vehicles[i].fleetNumber;
+            fleetNumbers[i] = this.vehicles[i].getFleetNumber();
         }
         return fleetNumbers;
     }
@@ -341,7 +341,7 @@ export class Game {
      * @return the fleet number of the first vehicle in the list as a string.
      */
     getFirstFleetNumber(): string {
-        return this.vehicles[0].fleetNumber;
+        return this.vehicles[0].getFleetNumber();
     }
 
     /**
@@ -448,8 +448,8 @@ export class Game {
      */
     getAssignedVehicle(schedule: string): string {
         for ( let i = 0; i < this.vehicles.length; i++ ) {
-            if ( this.vehicles[i].allocatedTour === (schedule) ) {
-                return this.vehicles[i].fleetNumber;
+            if ( this.vehicles[i].getAllocatedTour() === (schedule) ) {
+                return this.vehicles[i].getFleetNumber();
             }
         }
     }
@@ -468,8 +468,8 @@ export class Game {
      */
     deleteVehicleByFleetNumber(fleetNumber: string): void {
         for ( var i = 0; i < this.vehicles.length; i++ ) {
-            if ( this.vehicles[i].fleetNumber.valueOf() === fleetNumber.valueOf() ) {
-                this.creditBalance(parseFloat(this.vehicles[i].additionalTypeInformationMap.get('Value')));
+            if ( this.vehicles[i].getFleetNumber().valueOf() === fleetNumber.valueOf() ) {
+                this.creditBalance(this.vehicles[i].getValue());
                 this.vehicles.splice(i, 1);
             }
         }
@@ -491,8 +491,8 @@ export class Game {
     getHighestFleetNumber(): number {
         let highestFleetNumberSoFar = 0;
         for ( var i = 0; i < this.vehicles.length; i++ ) {
-            if ( parseInt(this.vehicles[i].fleetNumber) > highestFleetNumberSoFar ) {
-                highestFleetNumberSoFar = parseInt(this.vehicles[i].fleetNumber);
+            if ( parseInt(this.vehicles[i].getFleetNumber()) > highestFleetNumberSoFar ) {
+                highestFleetNumberSoFar = parseInt(this.vehicles[i].getFleetNumber());
             }
         }
         return  highestFleetNumberSoFar;

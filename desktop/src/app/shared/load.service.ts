@@ -230,15 +230,15 @@ export class LoadService {
                     // Add the supplied vehicles.
                     var mySuppliedVehicles = customScenario.getSuppliedVehicles();
                     for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
-                        for ( let j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+                        for ( let j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
                             const additionalProps = new Map<string, string>();
-                            additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
-                            additionalProps.set('Age', ((mySuppliedVehicles[i].model.modelName === "Single") ? (200000 / mySuppliedVehicles[i].model.value) * 12 : (400000 / mySuppliedVehicles[i].model.value) * 12) + " months" );
-                            additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
-                            additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
-                            additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
-                            this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].model.modelName === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
-                                mySuppliedVehicles[i].model.modelType, '', 0, additionalProps));
+                            additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
+                            additionalProps.set('Age', ((mySuppliedVehicles[i].getModel().getModelName() === "Single") ? (200000 / mySuppliedVehicles[i].getModel().getValue()) * 12 : (400000 / mySuppliedVehicles[i].getModel().getValue()) * 12) + " months" );
+                            additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+                            additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+                            additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
+                            this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].getModel().getModelName() === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
+                                mySuppliedVehicles[i].getModel().getModelType(), '', 0, additionalProps));
                         }
                     }
                     // Add the routes.
@@ -246,8 +246,8 @@ export class LoadService {
                         this.gameService.getGame().addRoute(routes[t]);
                         // Add the allocations.
                         for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
-                            for (let j = 0; j < mySuppliedVehicles[i].quantity; j++) {
-                                this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].model.modelType ));
+                            for (let j = 0; j < mySuppliedVehicles[i].getQuantity(); j++) {
+                                this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType() ));
                             }
                         }
                     }
