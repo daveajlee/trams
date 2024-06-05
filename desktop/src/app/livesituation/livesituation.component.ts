@@ -66,7 +66,12 @@ export class LivesituationComponent implements OnInit {
       return "Depot";
     }
     var currentDateTime = this.gameService.getGame().getCurrentDateTime();
-    var currentTime = TimeHelper.formatTimeAsString(currentDateTime);
+    let currentTime = TimeHelper.formatTimeAsString(currentDateTime);
+    let assignedFleetId = this.gameService.getGame().getAssignedVehicle(schedule.getRouteNumberAndScheduleId());
+    let delay = this.gameService.getGame().getVehicleByFleetNumber(assignedFleetId).getDelay();
+    // Decrease time.
+    currentTime = TimeHelper.subtractTime(currentTime, delay);
+    // Now find relevant service and position.
     let services = schedule.getServices();
     for ( let i = 0; i < services.length; i++ ) {
       for ( let j = 0; j < services[i].getStopList().length; j++ ) {

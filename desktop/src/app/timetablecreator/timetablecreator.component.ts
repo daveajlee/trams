@@ -6,6 +6,7 @@ import {FrequencyPattern} from "../shared/frequencypattern.model";
 import {Timetable} from "../shared/timetable.model";
 import {ScheduleModel} from "../stops/stop-detail/schedule.model";
 import {ServiceModel} from "../stops/stop-detail/service.model";
+import {TimeHelper} from "../shared/time.helper";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -212,13 +213,13 @@ export class TimetablecreatorComponent {
               // Add an outgoing service.
               routeSchedule.addService(this.generateService(timetable.getFrequencyPatterns()[i], loopTime, serviceCounter, j, true));
               // Add half of duration to cover outgoing service.
-              loopTime = this.addTime(loopTime, (duration/2));
+              loopTime = TimeHelper.addTime(loopTime, (duration/2));
               // Increase service counter
               serviceCounter++;
               // Add return service.
               routeSchedule.addService(this.generateService(timetable.getFrequencyPatterns()[i], loopTime, serviceCounter, j, false));
               // Add half of duration to cover return service.
-              loopTime = this.addTime(loopTime, (duration/2));
+              loopTime = TimeHelper.addTime(loopTime, (duration/2));
               // Increase service counter
               serviceCounter++;
             }
@@ -238,7 +239,7 @@ export class TimetablecreatorComponent {
     // Now we start generating the services.
     let service = new ServiceModel("" + serviceNumber);
     // Add the start stop.
-    service.addStop(this.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), this.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), outgoing ? frequencyPattern.getStartStop() : frequencyPattern.getEndStop());
+    service.addStop(TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), outgoing ? frequencyPattern.getStartStop() : frequencyPattern.getEndStop());
     // Go through remaining stops for the route.
     let distance = 0;
     if ( outgoing ) {
@@ -246,7 +247,7 @@ export class TimetablecreatorComponent {
         // Get the distance between this stop and the last stop.
         distance += (k == 0 ) ? this.getDistanceBetweenStop(frequencyPattern.getStartStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k])
             : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[k-1], this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
-        service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
       }
     } else {
       for ( let m = this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1; m >= 0; m-- ) {
@@ -254,35 +255,13 @@ export class TimetablecreatorComponent {
         distance += ( m == this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1 ) ? this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], frequencyPattern.getEndStop())
             : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], this.gameService.getGame().getRoute(this.routeNumber).getStops()[m+1]);
         console.log('Distance is ' + distance);
-        service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[m]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[m]);
       }
     }
     // Now we need to do the end stop.
     distance += this.getDistanceBetweenStop(frequencyPattern.getEndStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[this.gameService.getGame().getRoute(this.routeNumber).getStops().length-1]);
-    service.addStop(this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop());
+    service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop());
     return service;
-  }
-
-  /**
-   * This is a helper method which adds a number of minutes to the time.
-   */
-  addTime(time: string, addMinutes: number): string {
-      // Extract the time from the string.
-      var hours = parseInt(time.split(":")[0]);
-      var minutes = parseInt(time.split(":")[1]);
-      // Add the minutes to the current time.
-      minutes += addMinutes;
-      // Adjust the minutes if it is now higher than 59.
-      while ( minutes > 59 ) {
-        hours++;
-        minutes -= 60;
-      }
-      // Adjust the hours if it is now higher than 23.
-      while ( hours > 23 ) {
-        hours -= 24;
-      }
-      // Return the time in format HH:mm
-      return (hours < 10 ? "0" + hours : hours ) + ":" + (minutes < 10 ? "0" + minutes : minutes )
   }
 
   /**
