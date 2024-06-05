@@ -37,6 +37,14 @@ export class ScheduleModel {
     }
 
     /**
+     * Retrieve the route number and schedule id for this schedule.
+     * @return the route number and scheudule id with a colon between as a String.
+     */
+    getRouteNumberAndScheduleIdWithColon(): string {
+        return this.routeNumber + ":" + this.scheduleId;
+    }
+
+    /**
      * Get the list of services that the schedule has.
      * @return the list of services as an array of ServiceModel objects.
      */

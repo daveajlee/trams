@@ -24,7 +24,7 @@
             </tr>
             <tr *ngFor="let sched of this.getRouteScheds()">
                 <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">
-                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" [routerLink]="[selectedRoute + ':' + sched.scheduleId]" routerLinkActive="active">{{selectedRoute + "/" + sched.scheduleId}}</button></span>
+                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" [routerLink]="[sched.getRouteNumberAndScheduleIdWithColon()]" routerLinkActive="active">{{sched.getRouteNumberAndScheduleId()}}</button></span>
                     <ng-template #position_white><span style="background-color: white; color: white; padding: 3px;">{{stop}}</span></ng-template>
                 </td>
             </tr>

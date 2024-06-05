@@ -388,6 +388,22 @@ export class Game {
             // Now we need to pay drivers.
             this.withdrawBalance(this.drivers.length * 90);
         }
+        // Generate a random delay for each vehicle that is running a schedule.
+        for ( let i = 0; i < this.vehicles.length; i++ ) {
+            if ( this.vehicles[i].getAllocatedTour() && this.vehicles[i].getAllocatedTour() != "") {
+                // With probability 40% decrease delay, 40% increase delay and 20% no change to delay.
+                let randomVal = Math.random() * (100);
+                if ( randomVal < 40 ) {
+                    //Decrease delay.
+                    this.vehicles[i].adjustDelay(Math.round(-Math.random() * 5));
+                } else if ( randomVal < 80 ) {
+                    // Increase delay.
+                    this.vehicles[i].adjustDelay(Math.round(Math.random() * 5));
+                } else {
+                    // Do nothing as delay stays the same.
+                }
+            }
+        }
         // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
         var randomDiff = Math.random() * (4);
         this.passengerSatisfaction = Math.round(this.passengerSatisfaction + (randomDiff-2));

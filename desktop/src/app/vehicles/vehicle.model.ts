@@ -67,6 +67,19 @@ export class Vehicle {
     }
 
     /**
+     * Adjust the delay of this vehicle. Minus reduces delay, plus increases delay.
+     * @param adjustment the number of minutes to increase (positive) or decrease (negative)
+     */
+    adjustDelay(adjustment: number): void {
+        // Adjust the delay - adding a minus number subtracts.
+        this.delay += adjustment;
+        // If delay is below 0, then set to 0.
+        if ( this.delay < 0 ) {
+            this.delay = 0;
+        }
+    }
+
+    /**
      * Retrieve the value of this vehicle if specified.
      * @return the value of this vehicle if specified as a number.
      */
