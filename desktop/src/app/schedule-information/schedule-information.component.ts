@@ -23,6 +23,8 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   private destination: string;
   private delay: number;
 
+  private messages: string[];
+
   constructor(private gameService: GameService, private route: ActivatedRoute ) {
   }
 
@@ -52,6 +54,8 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
       // Retrieve the vehicle assigned to this schedule id.
       this.fleetNumber = this.gameService.getGame().getAssignedVehicle(this.selectedRoute + "/" + this.scheduleId);
 
+      // Set messages to an empty array.
+      this.messages = [];
     });
   }
 
@@ -147,6 +151,22 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    */
   getDelay(): number {
     return this.delay;
+  }
+
+  /**
+   * Clicking on contact vehicle should display a text.
+   */
+  contactVehicle(): void {
+    this.messages.push("Control: Vehicle " + this.fleetNumber + ", please state your current position. Over!");
+    this.messages.push("Response: Vehicle " + this.fleetNumber + " At: " + this.stop + " heading towards " + this.destination + " with delay of " + this.delay + " mins. Over!")
+  }
+
+  /**
+   * Get messages exchanged between control and vehicle.
+   * @return an array with the list of messages exchanged as a String array.
+   */
+  getMessages() {
+    return this.messages;
   }
 
   /**

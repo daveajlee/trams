@@ -4,4 +4,12 @@
     <p>Location: {{ getStop() }}</p>
     <p>Destination: {{ getDestination() }} </p>
     <p>Delay: {{ getDelay() }} mins </p>
+
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="contactVehicle()">Contact Vehicle</button>
+    </div>
+
+    <div *ngFor="let message of getMessages(), let i = index">
+        <p>{{message}}</p>
+    </div>
 </div>
