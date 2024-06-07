@@ -100,45 +100,14 @@ export class TimetablecreatorComponent {
 
   getNumberVehicles() : number {
     // Calculate the duration.
-    var duration = 0;
     let route = this.gameService.getGame().getRoute(this.routeNumber);
-    let stops = route.getStops();
-    if ( stops.length > 0 ) {
-      duration += this.getDistanceBetweenStop(route.getStartStop(), route.getStops()[0]);
-      if ( stops.length > 1 ) {
-        for ( var i = 0; i < stops.length-1; i++ ) {
-          duration += this.getDistanceBetweenStop(stops[i], stops[i+1]);
-        }
-        duration += this.getDistanceBetweenStop(stops[stops.length-1], route.getEndStop());
-      } else {
-        duration += this.getDistanceBetweenStop(stops[0], route.getEndStop());
-      }
-    } else {
-      duration += this.getDistanceBetweenStop(route.getStartStop(), route.getEndStop());
-    }
+    let duration = route.getDuration(this.gameService.getGame().getScenario());
     // Check that duration is greater than 0.
     if ( duration > 0 ) {
-      // The duration is one-way so double it for both directions.
-      duration *= 2;
       // Now calculate vehicles by dividing duration through frequency.
       return Math.ceil(duration/this.frequencyPatternFrequency);
     }
     return 0;
-  }
-
-  getDistanceBetweenStop (stop1, stop2): number {
-    var stopDistances = this.gameService.getGame().getScenario().getStopDistances();
-    var stop1Pos: number; var stop2Pos: number;
-    for ( var i = 0; i < stopDistances.length; i++ ) {
-      if ( stopDistances[i].split(":")[0] == stop1 ) {
-        stop1Pos = i;
-      } else if ( stopDistances[i].split(":")[0] == stop2 ) {
-        stop2Pos = i;
-      }
-    }
-    if ( stop1Pos >= 0 && stop2Pos >= 0 ) {
-      return parseInt(stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
-    }
   }
 
   getFrequencyPatternFrequency() {
@@ -245,21 +214,21 @@ export class TimetablecreatorComponent {
     if ( outgoing ) {
       for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).getStops().length; k++ ) {
         // Get the distance between this stop and the last stop.
-        distance += (k == 0 ) ? this.getDistanceBetweenStop(frequencyPattern.getStartStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k])
-            : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[k-1], this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
+        distance += (k == 0 ) ? this.gameService.getGame().getScenario().getDistanceBetweenStop(frequencyPattern.getStartStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k])
+            : this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[k-1], this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
         service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
       }
     } else {
       for ( let m = this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1; m >= 0; m-- ) {
         // Get the distance between this stop and the last stop.
-        distance += ( m == this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1 ) ? this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], frequencyPattern.getEndStop())
-            : this.getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], this.gameService.getGame().getRoute(this.routeNumber).getStops()[m+1]);
+        distance += ( m == this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1 ) ? this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], frequencyPattern.getEndStop())
+            : this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], this.gameService.getGame().getRoute(this.routeNumber).getStops()[m+1]);
         console.log('Distance is ' + distance);
         service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[m]);
       }
     }
     // Now we need to do the end stop.
-    distance += this.getDistanceBetweenStop(frequencyPattern.getEndStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[this.gameService.getGame().getRoute(this.routeNumber).getStops().length-1]);
+    distance += this.gameService.getGame().getScenario().getDistanceBetweenStop(frequencyPattern.getEndStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[this.gameService.getGame().getRoute(this.routeNumber).getStops().length-1]);
     service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop());
     return service;
   }

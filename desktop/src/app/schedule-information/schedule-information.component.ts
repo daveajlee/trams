@@ -157,8 +157,41 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    * Clicking on contact vehicle should display a text.
    */
   contactVehicle(): void {
+    // Print messages where the vehicle currently is.
     this.messages.push("Control: Vehicle " + this.fleetNumber + ", please state your current position. Over!");
     this.messages.push("Response: Vehicle " + this.fleetNumber + " At: " + this.stop + " heading towards " + this.destination + " with delay of " + this.delay + " mins. Over!")
+  }
+
+  /**
+   * Clicking on shorten schedule should shorten the schedule so that the vehicle terminates
+   * at the current stop. It then proceeds back at the appropriate time. Delay should be reduced
+   * and the current and next service updated to reflect change.
+   */
+  shortenService(): void {
+    // This is where we actually shorten the service.
+    console.log('We still need to shorten the service in the simulation');
+    // Decrease the passenger satisfaction by 5%.
+    this.gameService.getGame().adjustPassengerSatisfaction(-5);
+    // Now we print messages saving that the vehicle schedule is being shortened.
+    this.messages.push("Vehicle " + this.fleetNumber + ", please terminate at " + this.stop + " and proceed in service in the reverse direction. Over!");
+    this.messages.push("Response: Vehicle " + this.fleetNumber + ": Message acknowledged. Thanks! Over!");
+  }
+
+  /**
+   * Clicking on out of service should put the vehicle out of service for the rest of this service.
+   * With the start of the next service, the vehicle is back in service. Delay should be reduced and the
+   * current service updated to reflect change.
+   */
+  outOfService(): void {
+    // This is where we actually put the vehicle out of service.
+    console.log('We still need to put the vehicle out of service in the simulation');
+    // Reduce the delay by 10% of the duration.
+    this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.gameService.getGame().getRoute(this.selectedRoute).getDuration(this.gameService.getGame().getScenario())));
+    // Decrease the passenger satisfaction by 3%.
+    this.gameService.getGame().adjustPassengerSatisfaction(-3);
+    // Now we print messages saying that the vehicle is being put out of service.
+    this.messages.push("Control: Vehicle " + this.fleetNumber + ", please go out of service until " + this.destination + ". Over!")
+    this.messages.push("Vehicle " + this.fleetNumber + ": Message acknowledged. Thanks! Over!")
   }
 
   /**

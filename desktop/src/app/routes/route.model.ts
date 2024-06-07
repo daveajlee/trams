@@ -1,5 +1,6 @@
 import {Timetable} from "../shared/timetable.model";
 import {ScheduleModel} from "../stops/stop-detail/schedule.model";
+import {Scenario} from "../shared/scenario.model";
 
 /**
  * This class defines a model for Routes in TraMS which consist of an id, routeNumber and agency.
@@ -149,5 +150,35 @@ export class Route {
   getCompany(): string {
     return this.company;
   }
+
+  /**
+   * Get the duration of this route,
+   * @param scenario the scenario object containing the stop distances.
+   * @return the duration in minutes as a number.
+   */
+  getDuration(scenario: Scenario): number {
+    // Calculate the duration.
+    let duration = 0;
+    if ( this.stops.length > 0 ) {
+      duration += scenario.getDistanceBetweenStop(this.startStop, this.stops[0]);
+      if ( this.stops.length > 1 ) {
+        for ( var i = 0; i < this.stops.length-1; i++ ) {
+          duration += scenario.getDistanceBetweenStop(this.stops[i], this.stops[i+1]);
+        }
+        duration += scenario.getDistanceBetweenStop(this.stops[this.stops.length-1], this.endStop);
+      } else {
+        duration += scenario.getDistanceBetweenStop(this.stops[0], this.endStop);
+      }
+    } else {
+      duration += scenario.getDistanceBetweenStop(this.startStop, this.endStop);
+    }
+    // Check that duration is greater than 0.
+    if ( duration > 0 ) {
+      // The duration is one-way so double it for both directions.
+      duration *= 2;
+    }
+    return duration;
+  }
+
 
 }

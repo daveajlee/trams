@@ -64,6 +64,26 @@ export class Scenario {
     }
 
     /**
+     * Get the distance between two particular stops.
+     * @param stop1 the first stop as a string to measure the distance to the second stop.
+     * @param stop2 the second stop as a string to measure the distance from the first stop.
+     * @return the distance between the stops in minutes as a number.
+     */
+    getDistanceBetweenStop (stop1: string, stop2: string): number {
+        var stop1Pos: number; var stop2Pos: number;
+        for ( var i = 0; i < this.stopDistances.length; i++ ) {
+            if ( this.stopDistances[i].split(":")[0] == stop1 ) {
+                stop1Pos = i;
+            } else if ( this.stopDistances[i].split(":")[0] == stop2 ) {
+                stop2Pos = i;
+            }
+        }
+        if ( stop1Pos >= 0 && stop2Pos >= 0 ) {
+            return parseInt(this.stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
+        }
+    }
+
+    /**
      * Get the description for this scenario.
      * @return the description as a String.
      */

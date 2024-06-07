@@ -405,8 +405,17 @@ export class Game {
             }
         }
         // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
-        var randomDiff = Math.random() * (4);
-        this.passengerSatisfaction = Math.round(this.passengerSatisfaction + (randomDiff-2));
+        let randomDiff = Math.random() * (4);
+        this.adjustPassengerSatisfaction(Math.round((randomDiff-2)));
+    }
+
+    /**
+     * Adjust the passenger satisfaction by a certain amount.
+     * A negative number decreases passenger satisfaction, a positive number increases passenger satisfaction.
+     * @param adjustment the number to increase (positive) or decrease (negative) the passenger satisfaction by.
+     */
+    adjustPassengerSatisfaction(adjustment: number) {
+        this.passengerSatisfaction += adjustment;
         // Ensure that passenger satisfaction is between 0 and 100.
         if ( this.passengerSatisfaction < 0 ) {
             this.passengerSatisfaction = 0;
