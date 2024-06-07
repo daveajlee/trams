@@ -123,7 +123,13 @@ export class LivesituationComponent implements OnInit {
     }
   }
 
+  moveToScheduleScreen(routeScheduleId: string) {
+    this.setSimulationRunning(false);
+    this.router.navigate(['scheduleinfo', routeScheduleId]);
+  }
+
   backToManagementScreen(): void {
+    this.setSimulationRunning(false);
     this.router.navigate(['management']);
   }
 

@@ -35,8 +35,8 @@ const appRoutes: Routes = [
     { path: 'drivers', component: DriversComponent, children: [
         { path: ':id', component: DriverDetailComponent}
     ] },
-    { path: 'livesituation', component: LivesituationComponent,
-        children: [{path: ':routeScheduleId', component: ScheduleInformationComponent}]},
+    { path: 'livesituation', component: LivesituationComponent },
+    { path: 'scheduleinfo/:routeScheduleId', component: ScheduleInformationComponent},
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'newgame', component: NewgameComponent },

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Subscription} from "rxjs";
 import {GameService} from "../shared/game.service";
 import {ScheduleModel} from "../stops/stop-detail/schedule.model";
@@ -25,7 +25,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
 
   private messages: string[];
 
-  constructor(private gameService: GameService, private route: ActivatedRoute ) {
+  constructor(private gameService: GameService, private route: ActivatedRoute, public router: Router ) {
   }
 
   /**
@@ -206,6 +206,10 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    * When destroying this component we should ensure that all subscriptions are cancelled.
    */
   ngOnDestroy(): void {
+  }
+
+  backToSimulationScreen(): void {
+    this.router.navigate(['livesituation']);
   }
 
 }

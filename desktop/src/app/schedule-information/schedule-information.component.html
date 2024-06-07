@@ -1,9 +1,16 @@
-<div class="modal-body">
-    <p>Timetable Id: {{getSelectedRoute() + "/" + getScheduleId()}}</p>
-    <p>Fleet Number: {{ getFleetNumber() }}</p>
-    <p>Location: {{ getStop() }}</p>
-    <p>Destination: {{ getDestination() }} </p>
-    <p>Delay: {{ getDelay() }} mins </p>
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
+<!-- Create a jumbotron component which welcomes the user to TraMS and is only shown as long the user has not clicked on anything -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Timetable Id: {{getSelectedRoute() + "/" + getScheduleId()}}</h1>
+    <h2 class="display-5 text-center">Fleet Number: {{ getFleetNumber() }}</h2>
+    <h2 class="display-5 text-center">Location: {{ getStop() }}</h2>
+    <h2 class="display-5 text-center">Destination: {{ getDestination() }}</h2>
+    <h2 class="display-5 text-center">Delay: {{ getDelay() }} mins</h2>
+</div>
+
+<div class="container-fluid">
 
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="contactVehicle()">Contact Vehicle</button>
@@ -15,5 +22,9 @@
 
     <div *ngFor="let message of getMessages(), let i = index">
         <p>{{message}}</p>
+    </div>
+
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToSimulationScreen()">Back to Simulation Screen</button>
     </div>
 </div>
