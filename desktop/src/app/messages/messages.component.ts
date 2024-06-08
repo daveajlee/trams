@@ -17,56 +17,55 @@ export class MessagesComponent {
   faEnvelopeCircleCheck = faEnvelopeCircleCheck;
   faSnareFromSquare = faShareFromSquare;
   faTrash = faTrash;
-  displayMessages: Message[];
-  gameService: GameService;
+  private displayMessages: Message[];
 
-  selectedFolder: string;
+  private selectedFolder: string;
 
-  constructor(private gameService2: GameService, public router: Router) {
+  constructor(private gameService: GameService, public router: Router) {
     this.displayMessages = [];
-    this.gameService = gameService2;
     this.onInboxSelect();
     this.selectedFolder = "INBOX";
     console.log(this.selectedFolder);
   }
 
   onInboxSelect(): void {
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForInbox);
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("INBOX");
     this.selectedFolder = "INBOX";
-  }
-
-  checkForInbox(message) {
-    return message.folder.valueOf() === "INBOX";
   }
 
   onOutboxSelect(): void {
     this.selectedFolder = "OUTBOX";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForOutbox);
-  }
-
-  checkForOutbox(message) {
-    return message.folder.valueOf() === "OUTBOX";
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("OUTBOX");
   }
 
   onSentSelect(): void {
     this.selectedFolder = "SENT ITEMS";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForSentItems);
-  }
-
-  checkForSentItems(message) {
-    return message.folder.valueOf() === "SENT ITEMS";
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
   }
 
   onTrashSelect(): void {
     this.selectedFolder = "TRASH";
-    this.displayMessages = this.gameService.getGame().messages.filter(this.checkForTrash);
-  }
-
-  checkForTrash(message) {
-    return message.folder.valueOf() === "TRASH";
+    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
   }
 
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }
+
+  /**
+   * Get the folder that is currently selected.
+   * @return the folder that is currently selected as a String.
+   */
+  getSelectedFolder(): string {
+    return this.selectedFolder;
+  }
+
+  /**
+   * Get the messages that should be displayed based on the selected folder.
+   * @return the messages as an Array of Messages.
+   */
+  getDisplayMessages(): Message[] {
+    return this.displayMessages;
+  }
+
 }

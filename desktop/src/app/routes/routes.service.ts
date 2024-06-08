@@ -10,7 +10,7 @@ import {RoutesResponse} from './routes-response.model';
  */
 export class RoutesService {
 
-  routesChanged = new Subject<Route[]>();
+  private routesChanged = new Subject<Route[]>();
 
   private routes: Route[] = [];
 
@@ -19,7 +19,7 @@ export class RoutesService {
    * @param routesResponse the response sent from the server with matching routes.
    */
   setRoutes(routesResponse: RoutesResponse): void {
-    this.routes = routesResponse.routeResponses;
+    this.routes = routesResponse.getRouteResponses();
     this.routesChanged.next(this.routes.slice());
   }
 
@@ -36,6 +36,14 @@ export class RoutesService {
    */
   getRoute( index: number ): Route {
     return this.routes.slice()[index];
+  }
+
+  /**
+   * Get the routes changed subject.
+   * @return the routesChanged subject object.
+   */
+  getRoutesChanged(): Subject<Route[]> {
+    return this.routesChanged;
   }
 
 }

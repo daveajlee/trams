@@ -5,7 +5,14 @@ import {Route} from './route.model';
 
 export class RoutesResponse {
 
-    public count: number;
-    public routeResponses: Route[];
+    private routeResponses: Route[];
+
+    /**
+     * Get the route responses that were retrieved from the server.
+     * @return the route responses as a Route array.
+     */
+    getRouteResponses(): Route[] {
+        return this.routeResponses;
+    }
 
 }

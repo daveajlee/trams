@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {GameService} from '../shared/game.service';
 import {Router} from '@angular/router';
+import {TipService} from "../shared/tip.service";
 
 @Component({
   selector: 'app-management',
@@ -9,22 +10,19 @@ import {Router} from '@angular/router';
 })
 export class ManagementComponent implements OnInit {
 
-  gameService: GameService;
-
-  constructor(private gameService2: GameService, public router: Router) {
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router, private tipService: TipService) {
   }
 
   getCurrentDate(): string {
-    return this.gameService.getGame().currentDateTime.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
   getBalance(): string {
-    return '' + this.gameService.getGame().balance;
+    return '' + this.gameService.getGame().getBalance();
   }
 
   getPassengerSatisfaction(): number {
-    return this.gameService.getGame().passengerSatisfaction;
+    return this.gameService.getGame().getPassengerSatisfaction();
   }
 
   ngOnInit(): void {
@@ -62,7 +60,7 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['allocations']);
   }
   onResign(): void {
-    if(confirm("Are you sure you want to resign from " + this.gameService.getGame().companyName + "? This will end " +
+    if(confirm("Are you sure you want to resign from " + this.gameService.getGame().getCompanyName() + "? This will end " +
         "your game and any changes you have made will not be saved.")) {
       // Currently it is enough to redirect to the homepage since we do not save data in local storage yet.
       this.router.navigate([''])
@@ -70,16 +68,20 @@ export class ManagementComponent implements OnInit {
   }
 
   noRoutesExist(): boolean {
-    return this.gameService.getGame().routes.length === 0;
+    return !this.gameService.getGame().doRoutesExist();
   }
 
   noVehiclesExist(): boolean {
-    return this.gameService.getGame().routes.length != 0 && this.gameService.getGame().vehicles.length === 0;
+    return this.gameService.getGame().doRoutesExist() && !this.gameService.getGame().doVehiclesExist();
   }
 
   noAllocationsExist(): boolean {
-    return this.gameService.getGame().routes.length != 0 && this.gameService.getGame().vehicles.length != 0
-        && this.gameService.getGame().allocations.length === 0;
+    return this.gameService.getGame().doRoutesExist() && this.gameService.getGame().doVehiclesExist()
+        && !this.gameService.getGame().doAllocationsExist();
+  }
+
+  showRandomTip(): string {
+    return this.tipService.getRandomTip();
   }
 
 }

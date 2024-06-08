@@ -4,10 +4,10 @@
  */
 export class RealTimeInfo {
 
-  public departureTime: string;
-  public arrivalTime: string;
-  public routeNumber: string;
-  public destination: string;
+  private departureTime: string;
+  private arrivalTime: string;
+  private routeNumber: string;
+  private destination: string;
 
   /**
    * Construct a new Real Time Info object based on the supplied information
@@ -21,6 +21,38 @@ export class RealTimeInfo {
     this.arrivalTime = arrivalTime;
     this.routeNumber = routeNumber;
     this.destination = destination;
+  }
+
+  /**
+   * Retrieve the departure time for this entry.
+   * @return the departure time as a String in the format HH:mm
+   */
+  getDepartureTime(): string {
+    return this.departureTime;
+  }
+
+  /**
+   * Retrieve the arrival time for this entry.
+   * @return the arrival time as a String in the format HH:mm
+   */
+  getArrivalTime(): string {
+    return this.arrivalTime;
+  }
+
+  /**
+   * Retrieve the route number for this entry.
+   * @return the route number as a String.
+   */
+  getRouteNumber(): string {
+    return this.routeNumber;
+  }
+
+  /**
+   * Retrieve the destination for this entry.
+   * @return the destination as a String.
+   */
+  getDestination(): string {
+    return this.destination;
   }
 
 }

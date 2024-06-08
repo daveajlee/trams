@@ -23,4 +23,54 @@ export class TimeHelper {
         return hour + ":" + minute;
     }
 
+    /**
+     * This is a helper method which adds a number of minutes to the time.
+     * @param time the time as a string in the format HH:mm
+     * @param addMinutes the number of minutes to add to the time.
+     * @return the updated time as a string in the format HH:mm
+     */
+    static addTime(time: string, addMinutes: number): string {
+        // Extract the time from the string.
+        var hours = parseInt(time.split(":")[0]);
+        var minutes = parseInt(time.split(":")[1]);
+        // Add the minutes to the current time.
+        minutes += addMinutes;
+        // Adjust the minutes if it is now higher than 59.
+        while ( minutes > 59 ) {
+            hours++;
+            minutes -= 60;
+        }
+        // Adjust the hours if it is now higher than 23.
+        while ( hours > 23 ) {
+            hours -= 24;
+        }
+        // Return the time in format HH:mm
+        return (hours < 10 ? "0" + hours : hours ) + ":" + (minutes < 10 ? "0" + minutes : minutes )
+    }
+
+    /**
+     * This is a helper method which subtracts a number of minutes to the time.
+     * @param time the time as a string in the format HH:mm
+     * @param subtractMinutes the number of minutes to subtract from the time.
+     * @return the updated time as a string in the format HH:mm
+     */
+    static subtractTime(time: string, subtractMinutes: number): string {
+        // Extract the time from the string.
+        var hours = parseInt(time.split(":")[0]);
+        var minutes = parseInt(time.split(":")[1]);
+        // Add the minutes to the current time.
+        minutes -= subtractMinutes;
+        // Adjust the minutes if it is less than 0.
+        while ( minutes < 0 ) {
+            hours--;
+            minutes += 60;
+        }
+        // Adjust the hours if it is now less than 0.
+        while ( hours < 0 ) {
+            hours += 24;
+        }
+        // Return the time in format HH:mm
+        return (hours < 10 ? "0" + hours : hours ) + ":" + (minutes < 10 ? "0" + minutes : minutes )
+    }
+
 }

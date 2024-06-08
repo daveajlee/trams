@@ -5,7 +5,15 @@ import {RealTimeInfo} from './realtimeinfos.model';
 
 export class StopTimesResponse {
 
-    public count: number;
-    public stopTimeResponses: RealTimeInfo[];
+    private count: number;
+    private stopTimeResponses: RealTimeInfo[];
+
+    /**
+     * Retrieve the real time information from the response.
+     * @return the real time information as an array of RealTimeInfo objects.
+     */
+    getStopTimeResponses(): RealTimeInfo[] {
+        return this.stopTimeResponses;
+    }
 
 }

@@ -4,13 +4,13 @@
 
     <div class="col">
         <!-- Show the name -->
-        <h3 class="text-center">Name: {{driver.name}}</h3>
+        <h3 class="text-center">Name: {{getName()}}</h3>
         <!-- Show the contracted hours -->
-        <h3 class="text-center">Contracted Hours: {{driver.contractedHours}}</h3>
+        <h3 class="text-center">Contracted Hours: {{getContractedHours()}}</h3>
         <!-- Show the start date -->
-        <h3 class="text-center">Start Date: {{driver.startDate}}</h3>
+        <h3 class="text-center">Start Date: {{getStartDate()}}</h3>
     </div>
 </div>
 <div class="col text-center">
-    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="sackDriver(driver)">Sack Driver</button>
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="sackDriver()">Sack Driver</button>
 </div>

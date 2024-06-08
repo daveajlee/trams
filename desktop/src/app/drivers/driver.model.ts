@@ -3,9 +3,9 @@
  */
 export class Driver {
 
-    public name: string;
-    public contractedHours: number;
-    public startDate: string;
+    private name: string;
+    private contractedHours: number;
+    private startDate: string;
 
     /**
      * Construct a new model for Drivers which contains the supplied data.
@@ -17,6 +17,30 @@ export class Driver {
         this.name = name;
         this.contractedHours = contractedHours;
         this.startDate = startDate;
+    }
+
+    /**
+     * Retrieve the name of the driver.
+     * @return the name of the driver as a string.
+     */
+    getName(): string {
+        return this.name;
+    }
+
+    /**
+     * Retrieve the contracted hours of the driver.
+     * @return the contracted hours of the driver as a number.
+     */
+    getContractedHours(): number {
+        return this.contractedHours;
+    }
+
+    /**
+     * Retrieve the start date of the driver.
+     * @return the start date of the driver as a string.
+     */
+    getStartDate(): string {
+        return this.startDate;
     }
 
 }

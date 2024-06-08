@@ -42,6 +42,8 @@ import {LoadService} from "./shared/load.service";
 import {SaveService} from "./shared/save.service";
 import { SwitchlocalComponent } from './switchlocal/switchlocal.component';
 import { RouteeditorComponent } from './routeeditor/routeeditor.component';
+import { TimetableviewerComponent } from './timetableviewer/timetableviewer.component';
+import {TipService} from "./shared/tip.service";
 
 @NgModule({
   declarations: [
@@ -73,7 +75,8 @@ import { RouteeditorComponent } from './routeeditor/routeeditor.component';
     ScheduleInformationComponent,
     NewgameComponent,
     SwitchlocalComponent,
-    RouteeditorComponent
+    RouteeditorComponent,
+    TimetableviewerComponent
   ],
   imports: [
     BrowserModule,
@@ -85,7 +88,7 @@ import { RouteeditorComponent } from './routeeditor/routeeditor.component';
     MatProgressBarModule,
     ReactiveFormsModule
   ],
-  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService],
+  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService, TipService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

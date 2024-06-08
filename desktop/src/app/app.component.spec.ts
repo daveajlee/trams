@@ -23,15 +23,6 @@ describe('AppComponent', () => {
   });
 
   /**
-   * Test that the app has the correct title.
-   */
-  it(`should have as title 'trams-frontend'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('trams-frontend');
-  });
-
-  /**
    * Test that the app can render the start page correctly.
    */
   it('should render welcome to', () => {

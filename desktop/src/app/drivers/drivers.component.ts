@@ -10,7 +10,7 @@ import {Driver} from "./driver.model";
 })
 export class DriversComponent implements OnInit, OnDestroy {
 
-  drivers: Driver[];
+  private drivers: Driver[];
 
   /**
    * Create a new drivers component which currently uses game service since the server does not yet has this functionality.
@@ -23,7 +23,7 @@ export class DriversComponent implements OnInit, OnDestroy {
    * Initialise a new drivers component which maintains a list of drivers.
    */
   ngOnInit(): void {
-    this.drivers = this.gameService.getGame().drivers;
+    this.drivers = this.gameService.getGame().getDrivers();
   }
 
   /**
@@ -32,8 +32,19 @@ export class DriversComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
+  /**
+   * Clicking the back to management screen so take us back to the management screen.
+   */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
+  }
+
+  /**
+   * Retrieve the array of drivers that are stored.
+   * @return the array of drivers.
+   */
+  getDrivers(): Driver[] {
+    return this.drivers;
   }
 
 }

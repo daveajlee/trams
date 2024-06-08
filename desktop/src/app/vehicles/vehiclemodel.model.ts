@@ -4,12 +4,12 @@
  */
 export class VehicleModel {
 
-    public modelName: string;
-    public modelType: string;
-    public seatingCapacity: number;
-    public standingCapacity: number;
-    public value: number;
-    public picture: string;
+    private modelName: string;
+    private modelType: string;
+    private seatingCapacity: number;
+    private standingCapacity: number;
+    private value: number;
+    private picture: string;
 
     /**
      * Construct a new VehicleModel object with the supplied data.
@@ -27,6 +27,54 @@ export class VehicleModel {
         this.standingCapacity = standingCapacity;
         this.value = value;
         this.picture = picture;
+    }
+
+    /**
+     * Retrieve the name of the model.
+     * @return the model name as a string.
+     */
+    getModelName(): string {
+        return this.modelName;
+    }
+
+    /**
+     * Retrieve the standing capacity of this model.
+     * @return the standing capacity as a number.
+     */
+    getStandingCapacity(): number {
+        return this.standingCapacity;
+    }
+
+    /**
+     * Retrieve the seating capacity of this model.
+     * @return the seating capacity as a number.
+     */
+    getSeatingCapacity(): number {
+        return this.seatingCapacity;
+    }
+
+    /**
+     * Get the value (price) of this model.
+     * @return the value as a number.
+     */
+    getValue(): number {
+        return this.value;
+    }
+
+    /**
+     * Get the type of this model.
+     * @return the type of the model as a string.
+     */
+    getModelType(): string {
+        return this.modelType;
+    }
+
+    /**
+     * Retrieve the picture of this model.
+     * @return the picture of this model as a string.
+     */
+    getPicture(): string {
+        return this.picture;
     }
 
 }

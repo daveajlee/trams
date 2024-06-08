@@ -10,23 +10,23 @@
     </div>
     <div class="col">
         <!-- Show the fleet number -->
-        <h3 class="text-center">Fleet Number: {{vehicle.fleetNumber}}</h3>
+        <h3 class="text-center">Fleet Number: {{getVehicle().getFleetNumber()}}</h3>
         <!-- Show the vehicle type -->
-        <h3 class="text-center">Type: {{vehicle.vehicleType}}</h3>
+        <h3 class="text-center">Type: {{getVehicle().getVehicleType()}}</h3>
         <!-- Show the livery -->
-        <h3 class="text-center">Livery: {{vehicle.livery}}</h3>
+        <h3 class="text-center">Livery: {{getVehicle().getLivery()}}</h3>
         <!-- Show the allocation -->
-        <h3 class="text-center">Allocation: {{vehicle.allocatedTour ? vehicle.allocatedTour : 'Not Assigned'}}</h3>
+        <h3 class="text-center">Allocation: {{getVehicle().getAllocatedTour() ? getVehicle().getAllocatedTour() : 'Not Assigned'}}</h3>
         <!-- Show the extra information for this vehicle -->
-        <div *ngFor="let recipient of vehicle.additionalTypeInformationMap | keyvalue" class="row">
+        <div *ngFor="let recipient of getVehicle().getAdditionalInformation() | keyvalue" class="row">
             <h3 class="text-center">{{recipient.key}}: {{recipient.value}}</h3>
         </div>
         <!-- Show the inspection status for this vehicle -->
-        <h3 class="text-center">Inspection Status: {{vehicle.inspectionStatus}}</h3>
+        <h3 class="text-center">Inspection Status: {{getVehicle().getInspectionStatus()}}</h3>
         <!-- Show the days until next inspection for this vehicle -->
-        <h3 class="text-center">Days until next inspection: {{vehicle.nextInspectionDueInDays}}</h3>
+        <h3 class="text-center">Days until next inspection: {{getVehicle().getDaysUntilNextInspection()}}</h3>
     </div>
 </div>
 <div class="col text-center">
-    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="sellVehicle(vehicle)">Sell Vehicle</button>
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="sellVehicle(getVehicle())">Sell Vehicle</button>
 </div>

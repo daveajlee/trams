@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 @Component({
   selector: 'app-routes',
   templateUrl: './routes.component.html',
-  styleUrls: ['./routes.component.css']
+  styleUrls: ['./routes.component.css','./icofont.min.css']
 })
 /**
  * This class implements the functionality for the routes component which retrieves route data from the server and sends it to the
@@ -17,8 +17,9 @@ import {Router} from "@angular/router";
  */
 export class RoutesComponent implements OnInit, OnDestroy {
 
-  routes: Route[];
-  subscription: Subscription;
+  private routes: Route[];
+  private subscription: Subscription;
+  filteredRouteNumber: string;
 
   /**
    * Create a new routes component which constructs a data service and a route service to retreive data from the server.
@@ -35,15 +36,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Initialise a new routes component which maintains a list of routes that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    if ( this.gameService.isOfflineVersion() ) {
-      this.routes = this.gameService.getGame().routes;
-    } else {
-      console.log('Doing subscription anyway');
-      this.subscription = this.routesService.routesChanged.subscribe((routes: Route[]) => {
-        this.routes = routes;
-      });
-      this.routes = this.routesService.getRoutes();
-    }
+    this.routes = this.retrieveAllRoutes();
   }
 
   /**
@@ -52,6 +45,48 @@ export class RoutesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if ( !this.gameService.isOfflineVersion() ) {
       this.subscription.unsubscribe();
+    }
+  }
+
+  /**
+   * Helper method to retrieve all stops.
+   */
+  retrieveAllRoutes(): Route[] {
+    if ( this.gameService.isOfflineVersion() ) {
+      return this.gameService.getGame().getRoutes();
+    } else {
+      this.subscription = this.routesService.getRoutesChanged().subscribe((routes: Route[]) => {
+        this.routes = routes;
+      });
+      return this.routesService.getRoutes();
+    }
+  }
+
+  /**
+   * Filter the routes based on day or night.
+   * @param dayRoutes true iff day routes should be shown or false if only night routes should be shown.
+   */
+  filterRoutes(dayRoutes: boolean): void {
+    let routes = this.retrieveAllRoutes();
+    if ( dayRoutes ) {
+      this.routes = routes.filter((route: Route) =>
+          !route.isNightRoute())
+    } else {
+      this.routes = routes.filter((route: Route) =>
+          route.isNightRoute() === true)
+    }
+  }
+
+  /**
+   * Filter the route number.
+   */
+  filterRouteNumber(): void {
+    let routes = this.retrieveAllRoutes();
+    if ( this.filteredRouteNumber != "" ) {
+      this.routes = routes.filter((route: Route) =>
+          route.getRouteNumber().startsWith(this.filteredRouteNumber));
+    } else {
+      this.routes = routes;
     }
   }
 
@@ -74,6 +109,17 @@ export class RoutesComponent implements OnInit, OnDestroy {
     this.router.navigate(['routeeditor', routeNumber]);
   }
 
+  /**
+   * This method opens the timetable viewer with the supplied route number.
+   * @param routeNumber the route number to view the timetable of.
+   */
+  viewTimetable(routeNumber: string) {
+    this.router.navigate(['timetableviewer', routeNumber]);
+  }
+
+  /**
+   * This method returns to the management screen.
+   */
   backToManagementScreen(): void {
     this.router.navigate(['management']);
   }

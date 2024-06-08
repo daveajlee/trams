@@ -14,7 +14,7 @@
             <h5 class="text-center">Scenario Name:</h5>
         </div>
         <div class="col">
-            <p class="text-center">{{getScenario().scenarioName}}</p>
+            <p class="text-center">{{getScenario().getScenarioName()}}</p>
         </div>
     </div>
     <div class="row">
@@ -22,7 +22,7 @@
             <h5 class="text-center">Scenario Description:</h5>
         </div>
         <div class="col">
-            <p class="text-center">{{getScenario().description}}</p>
+            <p class="text-center">{{getScenario().getDescription()}}</p>
         </div>
     </div>
     <div class="row">
@@ -31,9 +31,9 @@
         </div>
         <div class="col">
             <ol>
-                <li *ngFor="let target of getScenario().targets" class="text-center">{{target}}</li>
+                <li *ngFor="let target of getScenario().getTargets()" class="text-center">{{target}}</li>
             </ol>
-            <p>The contract to run public transport services in {{getScenario().scenarioName}} will be terminated if these targets are not met.</p>
+            <p>The contract to run public transport services in {{getScenario().getScenarioName()}} will be terminated if these targets are not met.</p>
         </div>
     </div>
     <div class="row">

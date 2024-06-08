@@ -16,7 +16,7 @@
     <div class="form-group top-space m-5">
         <label for="route" style="font-weight: bold;">Route:</label>
         <select class="form-control" [(ngModel)]="selectedRoute" id="route">
-            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.routeNumber">{{ item.routeNumber + ": " + item.startStop + " <> " + item.endStop }}</option>
+            <option *ngFor="let item of this.getRoutes()" [ngValue]="item.getRouteNumber()">{{ item.getRouteNumber() + ": " + item.getStartStop() + " <> " + item.getEndStop() }}</option>
         </select>
         <table class="mt-5">
             <tr>
@@ -24,7 +24,7 @@
             </tr>
             <tr *ngFor="let sched of this.getRouteScheds()">
                 <td class="text-center" *ngFor="let stop of this.getSelectedRouteStops()">
-                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" [routerLink]="[selectedRoute + ':' + sched.scheduleId]" routerLinkActive="active">{{selectedRoute + "/" + sched.scheduleId}}</button></span>
+                    <span *ngIf="this.getCurrentPosition(sched) === stop; else position_white"><button type="button" class="btn btn-success btn-lg" (click)="moveToScheduleScreen(sched.getRouteNumberAndScheduleIdWithColon())">{{sched.getRouteNumberAndScheduleId()}}</button></span>
                     <ng-template #position_white><span style="background-color: white; color: white; padding: 3px;">{{stop}}</span></ng-template>
                 </td>
             </tr>

@@ -1,6 +1,6 @@
 {
   "name": "trams-frontend",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "main": "src/electron/main-forge.js",
   "scripts": {
     "ng": "ng",

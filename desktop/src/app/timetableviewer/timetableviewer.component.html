@@ -1,0 +1,45 @@
+<!-- Show the header -->
+<app-header></app-header>
+
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">View Timetable for Route {{getRouteNumber()}}</h1>
+</div>
+
+<!-- Drop down with list of schedules -->
+<div class="form-group top-space m-5">
+    <label for="scheduleList" style="font-weight: bold;">Schedule:</label>
+    <select class="form-control m-2" [(ngModel)]="selectedSchedule" id="scheduleList">
+        <option *ngFor="let item of this.getSchedules()" [ngValue]="item">{{ item }}</option>
+    </select>
+</div>
+
+<!-- Component to choose date -->
+<div class="form-group top-space m-5">
+    <label for="selectedDate" style="font-weight: bold;">Date:</label>
+    <input class="form-control" [(ngModel)]="selectedDate" type="date" id="selectedDate"/>
+</div>
+
+<!-- Component to show the actual timetables. -->
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Departure Time</th>
+        <th scope="col">Arrival Time</th>
+        <th scope="col">Stop</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let stopTimesEl of getStopTimes()">
+        <td>{{stopTimesEl.getDepartureTime()}}</td>
+        <td>{{stopTimesEl.getArrivalTime()}}</td>
+        <td>{{stopTimesEl.getStop()}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Back to management screen button -->
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>
+

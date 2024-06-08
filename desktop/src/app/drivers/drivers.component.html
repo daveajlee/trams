@@ -22,8 +22,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let driverEl of drivers, let i = index">
-                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{driverEl.name}}</a></td>
+            <tr *ngFor="let driverEl of getDrivers(), let i = index">
+                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{driverEl.getName()}}</a></td>
             </tr>
             </tbody>
         </table>

@@ -15,9 +15,9 @@ import {Subscription} from "rxjs";
  */
 export class DriverDetailComponent implements OnInit, OnDestroy {
 
-  driver: Driver;
-  id: number;
-  idSubscription: Subscription;
+  private driver: Driver;
+  private id: number;
+  private idSubscription: Subscription;
 
   /**
    * Construct a new driver-detail component based on the supplied information.
@@ -32,7 +32,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      this.driver = this.gameService.getGame().drivers[this.id];
+      this.driver = this.gameService.getGame().getDriverByPosition(this.id);
     });
   }
 
@@ -42,14 +42,36 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  sackDriver(driver: Driver): void {
-    var allDrivers = this.gameService.getGame().drivers;
-    for ( var i = 0; i < allDrivers.length; i++ ) {
-      if ( this.gameService.getGame().drivers[i].name.valueOf() === driver.name.valueOf() ) {
-        this.gameService.getGame().drivers.splice(i, 1);
-      }
-    }
-    console.log('Currently the length of drivers is: ' + this.gameService.getGame().drivers.length )
+  /**
+   * Retrieve the name of this driver.
+   * @return the name of the driver as a String.
+   */
+  getName(): string {
+    return this.driver.getName();
+  }
+
+  /**
+   * Retrieve the contracted hours of this driver.
+   * @return the contracted hours of this driver as a number,
+   */
+  getContractedHours(): number {
+    return this.driver.getContractedHours();
+  }
+
+  /**
+   * Retrieve the start date of this driver.
+   * @return the start date of this driver as a string.
+   */
+  getStartDate(): string {
+    return this.driver.getStartDate();
+  }
+
+  /**
+   * Sack the specified driver by removing the driver from the driver array.
+   * This does not cost any money currently.
+   */
+  sackDriver(): void {
+    this.gameService.getGame().deleteDriverByName(this.driver.getName());
   }
 
 }

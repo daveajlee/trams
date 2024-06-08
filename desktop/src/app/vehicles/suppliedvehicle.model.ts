@@ -5,9 +5,9 @@ import {VehicleModel} from "./vehiclemodel.model";
  */
 export class SuppliedVehicles {
 
-    public vehicleType: string;
-    public model: VehicleModel;
-    public quantity: number;
+    private vehicleType: string;
+    private model: VehicleModel;
+    private quantity: number;
 
     /**
      * Construct a new model which contains the supplied data.
@@ -19,6 +19,30 @@ export class SuppliedVehicles {
         this.vehicleType = vehicleType;
         this.model = model;
         this.quantity = quantity;
+    }
+
+    /**
+     * Retrieve the type of the vehicle which is usually bus, train or tram.
+     * @return the vehicle type as a string.
+     */
+    getVehicleType(): string {
+        return this.vehicleType;
+    }
+
+    /**
+     * Retrieve the model of the vehicle.
+     * @return the vehicle model as a Vehicle Model object.
+     */
+    getModel(): VehicleModel {
+        return this.model;
+    }
+
+    /**
+     * Retrieve the amount of vehicles that are supplied.
+     * @return the quantity as a number.
+     */
+    getQuantity(): number {
+        return this.quantity;
     }
 
 }

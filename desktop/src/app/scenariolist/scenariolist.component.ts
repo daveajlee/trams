@@ -18,24 +18,22 @@ import {Driver} from "../drivers/driver.model";
 })
 export class ScenariolistComponent implements OnInit {
 
-  company: string;
-  playerName: string;
-  difficultyLevel: string;
-  startingDate: string;
+  private company: string;
+  private playerName: string;
+  private difficultyLevel: string;
+  private startingDate: string;
 
-  scenarios: Scenario[];
-  gameService: GameService;
+  private scenarios: Scenario[];
 
   /**
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
    * @param route which manages the current route in Angular.
+   * @param gameService which manages the creation of games.
    * @param scenarioService which manages the creation of a new company and scenario.
-   * @param gameService2 which manages the game that is currently being played.
    * @param router which manages routing in Angular.
    */
-  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService2: GameService,
+  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService: GameService,
               public router: Router) {
-      this.gameService = gameService2;
   }
 
     /**
@@ -63,26 +61,26 @@ export class ScenariolistComponent implements OnInit {
       // Add the message.
       this.gameService.getGame().addMessage("New Managing Director Announced",
             "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
-            +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).targets)
+            +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).getTargets())
             + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
             + "\n\nGood luck!",
-            "INBOX");
+            "INBOX", this.gameService.getGame().getCurrentDateTime(), true, scenario + " Council");
       // Add the supplied vehicles.
-      var mySuppliedVehicles = this.loadScenario(scenario).suppliedVehicles;
+      var mySuppliedVehicles = this.loadScenario(scenario).getSuppliedVehicles();
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
-          for ( var j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+          for ( var j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
               const additionalProps = new Map<string, string>();
-              additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
+              additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
               additionalProps.set('Age', '0 months');
-              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
-              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
-              additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
-              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].model.modelType, '',
+              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+              additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
+              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
                   '', '', 0, additionalProps));
           }
       }
       // Add the supplied drivers.
-      var mySuppliedDrivers = this.loadScenario(scenario).suppliedDrivers;
+      var mySuppliedDrivers = this.loadScenario(scenario).getSuppliedDrivers();
       for ( i = 0; i < mySuppliedDrivers.length; i++ ) {
           this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
       }
@@ -108,17 +106,39 @@ export class ScenariolistComponent implements OnInit {
      * @returns the scenario object corresponding to the supplied name.
      */
     loadScenario(scenario: string): Scenario {
-        if ( scenario === SCENARIO_LANDUFF.scenarioName ) {
+        if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
             return SCENARIO_LANDUFF;
-        } else if ( scenario === SCENARIO_LONGTS.scenarioName) {
+        } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
             return SCENARIO_LONGTS;
-        } else if ( scenario === SCENARIO_MDORF.scenarioName ) {
+        } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
             return SCENARIO_MDORF;
         } else {
             return null;
         }
     }
 
-  
+    /**
+     * Retrieve the player name.
+     * @return the player name as a String.
+     */
+    getPlayerName(): string {
+        return this.playerName;
+    }
+
+    /**
+     * Retrieve the name of the company.
+     * @return the company name as a String.
+     */
+    getCompany(): string {
+        return this.company;
+    }
+
+    /**
+     * Retrieve the scenarios that the user could choose from.
+     * @return the scenarios as a Scenario array.
+     */
+    getScenarios(): Scenario[] {
+        return this.scenarios;
+    }
 
 }

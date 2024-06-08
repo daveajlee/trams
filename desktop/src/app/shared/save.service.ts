@@ -7,10 +7,7 @@ import {GameService} from "./game.service";
  */
 export class SaveService {
 
-    gameService: GameService;
-
-    constructor(private gameService2: GameService) {
-        this.gameService = gameService2;
+    constructor(private gameService: GameService) {
     }
 
     /**

@@ -11,21 +11,19 @@ import {DatePipe} from "@angular/common";
 })
 export class DrivercreatorComponent {
 
-  name: string;
-  contractedHours: number;
-  startingDate: string;
-  gameService: GameService
+  public name: string;
+  public contractedHours: number;
+  public startingDate: string;
 
   /**
    * Construct a new Driver Creator component
-   * @param gameService2 the game service containing the currently loaded game.
+   * @param gameService the game service containing the currently loaded game.
    * @param router the router for navigating to other pages.
    * @param datePipe a date pipe object for transforming dates in Angular.
    */
-  constructor(private gameService2: GameService, public router: Router, private datePipe: DatePipe) {
-    this.gameService = gameService2;
+  constructor(private gameService: GameService, public router: Router, private datePipe: DatePipe) {
     this.contractedHours = 40;
-    this.startingDate = this.datePipe.transform(this.gameService.getGame().currentDateTime, 'yyyy-MM-dd');
+    this.startingDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
   }
 
   /**
@@ -37,7 +35,11 @@ export class DrivercreatorComponent {
 
   onSubmitDriver(): void {
     var driver = new Driver(this.name, this.contractedHours, this.startingDate);
+    // Add the driver.
     this.gameService.getGame().addDriver(driver);
+    // Deduct the hiring costs of 500.
+    this.gameService.getGame().withdrawBalance(500);
+    // Redirect to management.
     this.router.navigate(['management']);
   }
 

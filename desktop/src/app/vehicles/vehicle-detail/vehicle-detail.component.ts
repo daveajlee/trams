@@ -17,9 +17,9 @@ import {GameService} from "../../shared/game.service";
  */
 export class VehicleDetailComponent implements OnInit, OnDestroy {
 
-  vehicle: Vehicle;
-  id: number;
-  idSubscription: Subscription;
+  private vehicle: Vehicle;
+  private id: number;
+  private idSubscription: Subscription;
 
   /**
    * Construct a new vehicle-detail component based on the supplied information.
@@ -35,8 +35,8 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      if ( this.gameService.getGame().vehicles.length > 0 ) {
-        this.vehicle = this.gameService.getGame().vehicles[this.id];
+      if ( this.gameService.getGame().doVehiclesExist() ) {
+        this.vehicle = this.gameService.getGame().getVehicleByPosition(this.id);
       } else {
         this.vehicle = this.vehiclesService.getVehicle(this.id);
       }
@@ -51,36 +51,32 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   getVehiclePictureLink(): string {
-    if ( this.vehicle.vehicleType === 'Single Decker Bus') {
+    if ( this.vehicle.getVehicleType() === 'Single Decker Bus') {
       return 'assets/singledecker-bus-pixabay.png';
-    } else if ( this.vehicle.vehicleType === 'Double Decker Bus') {
+    } else if ( this.vehicle.getVehicleType() === 'Double Decker Bus') {
       return 'assets/doubledecker-bus-pixabay.png';
-    } else if ( this.vehicle.vehicleType === 'Bendy Bus') {
+    } else if ( this.vehicle.getVehicleType() === 'Bendy Bus') {
       return 'assets/bendybus-albertstoynov-unsplash.jpg';
-    } else if ( this.vehicle.vehicleType === 'Tram') {
+    } else if ( this.vehicle.getVehicleType() === 'Tram') {
       return 'assets/tram-pixabay.png';
     }
-    else if ( this.vehicle.vehicleType === 'Train') {
-      return 'assets/' + this.vehicle.vehicleType + '-' + this.vehicle.additionalTypeInformationMap['Power Mode'] + '.jpg';
+    else if ( this.vehicle.getVehicleType() === 'Train') {
+      return 'assets/' + this.vehicle.getVehicleType()+ '-' + this.vehicle.getPowerMode() + '.jpg';
     } else {
-      return 'assets/' + this.vehicle.vehicleType + '.jpg';
+      return 'assets/' + this.vehicle.getVehicleType() + '.jpg';
     }
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    var allVehicles = this.gameService.getGame().vehicles;
-    for ( var i = 0; i < allVehicles.length; i++ ) {
-      if ( this.gameService.getGame().vehicles[i].fleetNumber.valueOf() === vehicle.fleetNumber.valueOf() ) {
-        this.gameService.getGame().balance += parseFloat(this.gameService.getGame().vehicles[i].additionalTypeInformationMap.get('Value'));
-        this.gameService.getGame().vehicles.splice(i, 1);
-      }
-    }
-    console.log('Currently the length of vehicles is: ' + this.gameService.getGame().vehicles.length )
+    this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.getFleetNumber());
   }
-  /*verifyMap(): void {
-    this.vehicle.additionalTypeInformationMap.forEach().forEach((key: string, value: string) => {
-      console.log(key, value);
-    });
-  }*/
+
+  /**
+   * Get the vehicle that we are currently displaying.
+   * @return the vehicle information as a Vehicle object.
+   */
+  getVehicle(): Vehicle {
+    return this.vehicle;
+  }
 
 }

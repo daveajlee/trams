@@ -3,13 +3,14 @@
  */
 export class Vehicle {
 
-    public fleetNumber: string;
-    public vehicleType: string;
-    public livery: string;
-    public allocatedTour: string;
-    public inspectionStatus: string;
-    public nextInspectionDueInDays: number;
-    public additionalTypeInformationMap: Map<string, string>;
+    private fleetNumber: string;
+    private vehicleType: string;
+    private livery: string;
+    private allocatedTour: string;
+    private inspectionStatus: string;
+    private nextInspectionDueInDays: number;
+    private additionalTypeInformationMap: Map<string, string>;
+    private delay: number;
 
     /**
      * Construct a new model for Vehicles which contains the supplied data.
@@ -30,6 +31,111 @@ export class Vehicle {
         this.inspectionStatus = inspectionStatus;
         this.nextInspectionDueInDays = nextInspectionDueInDays;
         this.additionalTypeInformationMap = additionalTypeInformationMap;
+        this.delay = 0;
+    }
+
+    /**
+     * Retrieve the allocated tour for this vehicle.
+     * @return the allocated tour as a string in format route/schedule id.
+     */
+    getAllocatedTour(): string {
+        return this.allocatedTour;
+    }
+
+    /**
+     * Set the allocated tour for this vehicle.
+     * @param allocatedTour the allocated tour as a string in format route/schedule id
+     */
+    setAllocatedTour( allocatedTour: string ) {
+        this.allocatedTour = allocatedTour;
+    }
+
+    /**
+     * Retrieve the fleet number of this vehicle.
+     * @return the fleet number as a string.
+     */
+    getFleetNumber(): string {
+        return this.fleetNumber;
+    }
+
+    /**
+     * Retrieve the delay of this vehicle in minutes.
+     * @return the delay of this vehicle in minutes as a number.
+     */
+    getDelay(): number {
+        return this.delay;
+    }
+
+    /**
+     * Adjust the delay of this vehicle. Minus reduces delay, plus increases delay.
+     * @param adjustment the number of minutes to increase (positive) or decrease (negative)
+     */
+    adjustDelay(adjustment: number): void {
+        // Adjust the delay - adding a minus number subtracts.
+        this.delay += adjustment;
+        // If delay is below 0, then set to 0.
+        if ( this.delay < 0 ) {
+            this.delay = 0;
+        }
+    }
+
+    /**
+     * Retrieve the value of this vehicle if specified.
+     * @return the value of this vehicle if specified as a number.
+     */
+    getValue(): number {
+        if ( this.additionalTypeInformationMap.get('Value') ) {
+            return parseFloat(this.additionalTypeInformationMap.get('Value'));
+        }
+        return 0;
+    }
+
+    /**
+     * Retrieve the power mode of this vehicle if specified.
+     * @return the power mode of this vehicle if specified.
+     */
+    getPowerMode(): string {
+        return this.additionalTypeInformationMap.get('Power Mode');
+    }
+
+    /**
+     * Retrieve the type of the vehicle such as bus, train or tram.
+     * @return the type of the vehicle as a string.
+     */
+    getVehicleType(): string {
+        return this.vehicleType;
+    }
+
+    /**
+     * Retrieve the livery of this vehicle.
+     * @return the livery as a string,
+     */
+    getLivery(): string {
+        return this.livery;
+    }
+
+    /**
+     * Retrieve the additional information for types map.
+     * @return the additional information as a Map object.
+     */
+    getAdditionalInformation(): Map<string, string> {
+        return this.additionalTypeInformationMap;
+    }
+
+    /**
+     * Retrieve the inspection status of this vehicle.
+     * @return the inspection status as a String.
+     */
+    getInspectionStatus(): string {
+        return this.inspectionStatus;
+    }
+
+    /**
+     * Retrieve the number of days until this vehicle next needs an inspection.
+     * @return the number of days as a number.
+     */
+    getDaysUntilNextInspection(): number {
+        return this.nextInspectionDueInDays;
     }
 
 }

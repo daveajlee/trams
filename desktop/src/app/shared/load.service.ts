@@ -20,10 +20,7 @@ import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
  */
 export class LoadService {
 
-    gameService: GameService;
-
-    constructor(private gameService2: GameService) {
-        this.gameService = gameService2;
+    constructor(private gameService: GameService) {
     }
 
     /**
@@ -51,14 +48,17 @@ export class LoadService {
                     // Save an array for routes.
                     var routes = [];
                     var stopDistances = [];
+                    var schedules = [];
                     // Go through the child nodes of operator elements.
                     for ( let j = 0; j < operatorElements.item(i).childNodes.length; j++ ) {
                         if ( operatorElements.item(i).childNodes.item(j).nodeName === 'route' ) {
                             // Process the route elements.
                             const route = operatorElements.item(i).childNodes.item(j).childNodes;
-                            var routeObj = new Route();
-                            routeObj.company = operatorName;
-                            routeObj.routeNumber = route[0].parentElement.attributes.getNamedItem("number").value;
+                            let company = operatorName;
+                            let routeNumber = route[0].parentElement.attributes.getNamedItem("number").value;
+                            let startStop = "";
+                            let endStop = "";
+                            let routeStops = [];
                             // Process the stops.
                             const routeInfo = route[0].parentElement.children;
                             // Go through either outstops, instops and detailsched.
@@ -72,13 +72,13 @@ export class LoadService {
                                             + ":" + outstops[n].parentElement.children[n].attributes.getNamedItem("evetime").value);
                                     }
                                     // Add start and end stop.
-                                    routeObj.startStop = stopDistances[0].split(":")[0];
-                                    routeObj.endStop = stopDistances[stopDistances.length-1].split(":")[0];
+                                    startStop = stopDistances[0].split(":")[0];
+                                    endStop = stopDistances[stopDistances.length-1].split(":")[0];
                                     const stops = [];
                                     for ( let h = 0; h < stopDistances.length; h++ ) {
                                         stops.push(stopDistances[h].split(":")[0]);
+                                        routeStops.push(stopDistances[h].split(":")[1]);
                                     }
-                                    routeObj.stops = stops;
                                 }
                                 // The in stops we only add if they have not yet been added.
                                 else if ( routeInfo[m].parentElement.children[m].nodeName === 'instops' ) {
@@ -108,7 +108,7 @@ export class LoadService {
                                         var schedId = scheds[a].parentElement.children[a].attributes.getNamedItem("id").value;
                                         var serviceId = scheds[a].parentElement.children[a].attributes.getNamedItem("serviceId").value;
                                         var startTime = scheds[a].parentElement.children[a].attributes.getNamedItem("startTime").value;
-                                        var startStop = scheds[a].parentElement.children[a].attributes.getNamedItem("startStop").value;
+                                        var schedStartStop = scheds[a].parentElement.children[a].attributes.getNamedItem("startStop").value;
                                         var endDest = scheds[a].parentElement.children[a].attributes.getNamedItem("endDest").value;
                                         var times = scheds[a].parentElement.children[a].attributes.getNamedItem("times").value;
                                         // Either retrieve the schedule or create a new schedule.
@@ -119,17 +119,17 @@ export class LoadService {
                                             }
                                         }
                                         if ( !mySchedule ) {
-                                            mySchedule = new ScheduleModel(routeObj.routeNumber, schedId);
+                                            mySchedule = new ScheduleModel(routeNumber, schedId);
                                             schedules.push(mySchedule);
                                         }
                                         // Now we create a service for this schedule.
                                         const serviceModel = new ServiceModel(serviceId);
                                         // Add the start time and stop.
-                                        serviceModel.addStop(startTime, startTime, startStop);
+                                        serviceModel.addStop(startTime, startTime, schedStartStop);
                                         // Determine start position in array.
                                         var startPos = 0;
                                         for ( var b = 0; b < stopDistances.length; b++ ) {
-                                            if ( stopDistances[b].startsWith(startStop)) {
+                                            if ( stopDistances[b].startsWith(schedStartStop)) {
                                                 startPos = b;
                                             }
                                         }
@@ -191,9 +191,12 @@ export class LoadService {
                                             mySchedule.addService(serviceModel);
                                         }
                                     }
-                                    routeObj.schedules = schedules;
+
                                 }
                             }
+                            console.log(routeNumber);
+                            var routeObj = new Route(routeNumber, startStop, endStop, routeStops, company);
+                            routeObj.setSchedules(schedules);
                             // Process each route element and save it to route db.
                             console.log(routeObj);
                             routes.push(routeObj);
@@ -225,17 +228,17 @@ export class LoadService {
                     this.gameService.setGame(new Game(operatorName, "", new Date(), customScenario, "Easy",
                         200000.0, 90, [], [], [], [], []));
                     // Add the supplied vehicles.
-                    var mySuppliedVehicles = customScenario.suppliedVehicles;
+                    var mySuppliedVehicles = customScenario.getSuppliedVehicles();
                     for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
-                        for ( let j = 0; j < mySuppliedVehicles[i].quantity; j++ ) {
+                        for ( let j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
                             const additionalProps = new Map<string, string>();
-                            additionalProps.set('Model', mySuppliedVehicles[i].model.modelName);
-                            additionalProps.set('Age', ((mySuppliedVehicles[i].model.modelName === "Single") ? (200000 / mySuppliedVehicles[i].model.value) * 12 : (400000 / mySuppliedVehicles[i].model.value) * 12) + " months" );
-                            additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].model.standingCapacity);
-                            additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].model.seatingCapacity);
-                            additionalProps.set('Value', '' + mySuppliedVehicles[i].model.value);
-                            this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].model.modelName === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
-                                mySuppliedVehicles[i].model.modelType, '', 0, additionalProps));
+                            additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
+                            additionalProps.set('Age', ((mySuppliedVehicles[i].getModel().getModelName() === "Single") ? (200000 / mySuppliedVehicles[i].getModel().getValue()) * 12 : (400000 / mySuppliedVehicles[i].getModel().getValue()) * 12) + " months" );
+                            additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+                            additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+                            additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
+                            this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].getModel().getModelName() === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
+                                mySuppliedVehicles[i].getModel().getModelType(), '', 0, additionalProps));
                         }
                     }
                     // Add the routes.
@@ -243,8 +246,8 @@ export class LoadService {
                         this.gameService.getGame().addRoute(routes[t]);
                         // Add the allocations.
                         for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
-                            for (let j = 0; j < mySuppliedVehicles[i].quantity; j++) {
-                                this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].model.modelType ));
+                            for (let j = 0; j < mySuppliedVehicles[i].getQuantity(); j++) {
+                                this.gameService.getGame().addAllocation(new Allocation(routes[t].routeNumber, '' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType() ));
                             }
                         }
                     }
@@ -273,11 +276,11 @@ export class LoadService {
      * @returns the scenario object corresponding to the supplied name.
      */
     loadScenario(scenario: string): Scenario {
-        if ( scenario === SCENARIO_LANDUFF.scenarioName ) {
+        if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
             return SCENARIO_LANDUFF;
-        } else if ( scenario === SCENARIO_LONGTS.scenarioName) {
+        } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
             return SCENARIO_LONGTS;
-        } else if ( scenario === SCENARIO_MDORF.scenarioName ) {
+        } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
             return SCENARIO_MDORF;
         } else {
             return null;

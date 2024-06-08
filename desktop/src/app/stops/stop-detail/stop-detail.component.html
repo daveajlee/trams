@@ -1,8 +1,8 @@
 <!-- Show the stop name and the current time -->
-<h1 class="text-center">{{stop.name}} - <app-clock></app-clock></h1>
+<h1 class="text-center">{{getStop().getName()}} - <app-clock></app-clock></h1>
 
 <!-- Show an iframe with the location of the stop through integration of OpenStreetMap -->
-<iframe *ngIf="stop.latitude != 0 && stop.longitude != 0" class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
+<iframe *ngIf="getStop().getLatitude() != 0 && getStop().getLongitude() != 0" class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
 
 <!-- Show a heading with next departures -->
 <h3 class="text-center">Next Departures</h3>
@@ -18,9 +18,9 @@
   </thead>
   <tbody>
   <tr *ngFor="let departureEl of getDepartures(), let i = index">
-    <td>{{departureEl.departureTime}}</td>
-    <td>{{departureEl.routeNumber}}</td>
-    <td>{{departureEl.destination}}</td>
+    <td>{{departureEl.getDepartureTime()}}</td>
+    <td>{{departureEl.getRouteNumber()}}</td>
+    <td>{{departureEl.getDestination()}}</td>
   </tr>
   </tbody>
 </table>
@@ -39,9 +39,9 @@
   </thead>
   <tbody>
   <tr *ngFor="let arrivalEl of getArrivals(), let i = index">
-    <td>{{arrivalEl.arrivalTime}}</td>
-    <td>{{arrivalEl.routeNumber}}</td>
-    <td>{{arrivalEl.destination}}</td>
+    <td>{{arrivalEl.getArrivalTime()}}</td>
+    <td>{{arrivalEl.getRouteNumber()}}</td>
+    <td>{{arrivalEl.getDestination()}}</td>
   </tr>
   </tbody>
 </table>
@@ -61,18 +61,45 @@
   <tbody>
   <tr *ngFor="let todayDeparturesEl of getDeparturesByDate(), let i = index">
     <td [ngClass]="{
-            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
-            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
-         }">{{todayDeparturesEl.departureTime}}</td>
+            'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
+            'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
+         }">{{todayDeparturesEl.getDepartureTime()}}</td>
     <td [ngClass]="{
-            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
-            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
-         }">{{todayDeparturesEl.routeNumber}}</td>
+            'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
+            'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
+         }">{{todayDeparturesEl.getRouteNumber()}}</td>
     <td [ngClass]="{
-            'departureMissed' : todayDeparturesEl.departureTime < (this.hours + ':' + this.minutes) ,
-            'departureAvailable' : todayDeparturesEl.departureTime > (this.hours + ':' + this.minutes)
-         }">{{todayDeparturesEl.destination}}</td>
+            'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
+            'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
+         }">{{todayDeparturesEl.getDestination()}}</td>
   </tr>
   </tbody>
+</table>
+
+<!-- Show a heading with departures for a specific date -->
+<h3 class="text-center m-5">Departures for a specific date</h3>
+
+<!-- Component to choose date -->
+<div class="form-group top-space m-2">
+    <label for="selectedDate" style="font-weight: bold;">Date:</label>
+    <input class="form-control" [(ngModel)]="selectedDate" type="date" id="selectedDate"/>
+</div>
+
+<!-- Show a table with all departures for this date with time, route and destination -->
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Time</th>
+        <th scope="col">Route</th>
+        <th scope="col">Destination</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let specificDeparturesEl of getDeparturesForSpecificDate(), let i = index">
+        <td>{{specificDeparturesEl.getDepartureTime()}}</td>
+        <td>{{specificDeparturesEl.getRouteNumber()}}</td>
+        <td>{{specificDeparturesEl.getDestination()}}</td>
+    </tr>
+    </tbody>
 </table>
 

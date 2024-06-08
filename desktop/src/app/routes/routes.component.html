@@ -9,26 +9,44 @@
   <hr class="my-4">
 </div>
 
+<!-- Display the filter options -->
+<div>
+    <button class="btn btn-primary m-2" type="submit" (click)="filterRoutes(true)">Day Routes</button>
+    <button class="btn btn-primary m-2" type="submit" (click)="filterRoutes(false)">Night Routes</button>
+</div>
+
+<!-- Display the filter text option -->
+<div class="form-group top-space m-5">
+    <label for="filteredRouteNumber" style="font-weight: bold;">Filter by Route Number:</label>
+    <input class="form-control" [(ngModel)]="filteredRouteNumber" type="text" id="filteredRouteNumber" (change)="filterRouteNumber()"/>
+</div>
+
 <!-- Display a table of all route numbers and the agency running the routes which are stored in TraMS -->
 <table class="table">
   <thead class="thead-light">
     <tr>
-      <th scope="col">Route Number</th>
-      <th scope="col">From</th>
-      <th scope="col">To</th>
-      <th scope="col">Operator</th>
+        <th scope="col"></th>
+        <th scope="col">Route Number</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Operator</th>
         <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let routeEl of routes, let i = index">
-      <th scope="row">{{routeEl.routeNumber}}</th>
-      <td>{{routeEl.startStop}}</td>
-      <td>{{routeEl.endStop}}</td>
-      <td>{{routeEl.company}}</td>
+    <tr *ngFor="let routeEl of retrieveAllRoutes(), let i = index">
         <td>
-            <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.routeNumber)">Edit</button>
-            <button class="btn btn-danger" style="margin: 3px;" type="submit" (click)="deleteRoute(routeEl.routeNumber)">Delete</button>
+            <i *ngIf="routeEl.isNightRoute()" class="icofont-night"></i>
+            <i *ngIf="!routeEl.isNightRoute()" class="icofont-sun-alt"></i>
+        </td>
+        <td>{{routeEl.getRouteNumber()}}</td>
+        <td>{{routeEl.getStartStop()}}</td>
+        <td>{{routeEl.getEndStop()}}</td>
+        <td>{{routeEl.getCompany()}}</td>
+        <td>
+            <button class="btn btn-info" style="margin: 3px;" type="submit" (click)="viewTimetable(routeEl.getRouteNumber())">View Timetable</button>
+            <button class="btn btn-primary" style="margin: 3px;" type="submit" (click)="editRoute(routeEl.getRouteNumber())">Edit</button>
+            <button class="btn btn-danger" style="margin: 3px;" type="submit" (click)="deleteRoute(routeEl.getRouteNumber())">Delete</button>
         </td>
     </tr>
   </tbody>

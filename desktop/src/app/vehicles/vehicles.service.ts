@@ -10,7 +10,7 @@ import {VehiclesResponse} from './vehicles-response.model';
  */
 export class VehiclesService {
 
-    vehiclesChanged = new Subject<Vehicle[]>();
+    private vehiclesChanged = new Subject<Vehicle[]>();
 
     private vehicles: Vehicle[];
 
@@ -19,7 +19,7 @@ export class VehiclesService {
      * @param vehicles an array of vehicles sent from the server
      */
     setVehicles(vehicles: VehiclesResponse): void {
-        this.vehicles = vehicles.vehicleResponses;
+        this.vehicles = vehicles.getVehicleResponses();
         this.vehiclesChanged.next(this.vehicles.slice());
     }
 
@@ -36,6 +36,14 @@ export class VehiclesService {
      */
     getVehicle(index: number): Vehicle {
         return this.vehicles.slice()[index];
+    }
+
+    /**
+     * Retrieve the vehicles that changed.
+     * @return an array of vehicles that changed as Subject objects.
+     */
+    getVehiclesChanged(): Subject<Vehicle[]> {
+        return this.vehiclesChanged;
     }
 
 }
