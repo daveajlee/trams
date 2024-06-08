@@ -9,6 +9,10 @@ export class ServiceModel {
     private stopList: StopTimeModel[];
     private outOfService: boolean;
 
+    // These variables allow a service to either start or stop before normal to reduce delays etc.
+    private tempStartStopPos: number;
+    private tempEndStopPos: number;
+
     /**
      * Construct a new ServiceModel object based on the supplied information
      * @param serviceId the id of the service
@@ -17,6 +21,8 @@ export class ServiceModel {
         this.serviceId = serviceId;
         this.stopList = [];
         this.outOfService = false;
+        this.tempStartStopPos = -1;
+        this.tempEndStopPos = -1;
     }
 
     /**
@@ -50,6 +56,48 @@ export class ServiceModel {
      */
     getStopList(): StopTimeModel[] {
         return this.stopList;
+    }
+
+    /**
+     * Set the temporary start stop for this service by setting the position.
+     * @param stop the name of the stop as a string.
+     */
+    setTempStartStop(stop: string) {
+        // Go through the stop list and set the position of the matching stop.
+        for (let i = 0; i < this.stopList.length; i++) {
+            if ( this.stopList[i].getStop() == stop ) {
+                this.tempStartStopPos = i;
+            }
+        }
+    }
+
+    /**
+     * Set the temporary end stop for this service by setting the position.
+     * @param stop the name of the stop as a string.
+     */
+    setTempEndStop(stop: string) {
+        // Go through the stop list and set the position of the matching stop.
+        for ( let i = 0; i < this.stopList.length; i++) {
+            if ( this.stopList[i].getStop() == stop ) {
+                this.tempEndStopPos = i;
+            }
+        }
+    }
+
+    /**
+     * Return the temporary start stop position which may be -1 if it is not set.
+     * @return the temporary start stop position as a number.
+     */
+    getTempStartStop(): number {
+        return this.tempStartStopPos;
+    }
+
+    /**
+     * Return the temporary end stop position which may be -1 if it is not set.
+     * @return the temporary end stop position as a number.
+     */
+    getTempEndStop(): number {
+        return this.tempEndStopPos;
     }
 
 }

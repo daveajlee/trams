@@ -22,6 +22,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   private destination: string;
   private delay: number;
   private currentService: ServiceModel;
+  private nextService: ServiceModel;
 
   private messages: string[];
 
@@ -48,7 +49,14 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
           this.stop = positionModel.getStop();
           this.destination = positionModel.getDestination();
           this.delay = positionModel.getDelay();
-          this.currentService = PositionHelper.getCurrentService(schedules[i], this.gameService.getGame() );
+          let services = PositionHelper.getCurrentAndNextService(schedules[i], this.gameService.getGame() );
+          if ( services.length > 0 ) {
+            this.currentService = services[0];
+          }
+          if ( services.length > 1 ) {
+            this.nextService = services[1];
+          }
+
         }
       }
 
@@ -124,7 +132,9 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    */
   shortenService(): void {
     // This is where we actually shorten the service.
-    console.log('We still need to shorten the service in the simulation');
+    this.currentService.setTempEndStop(this.stop);
+    // Also shorten the next service if it exists.
+    this.nextService.setTempStartStop(this.stop);
     // Decrease the passenger satisfaction by 5%.
     this.gameService.getGame().adjustPassengerSatisfaction(-5);
     // Now we print messages saving that the vehicle schedule is being shortened.

@@ -33,13 +33,27 @@ export class PositionHelper {
                 continue;
             }
             for ( let j = 0; j < services[i].getStopList().length; j++ ) {
+
                 // If we exactly match the departure time then this is where we are.
                 if ( services[i].getStopList()[j].getDepartureTime() === currentTime ) {
+                    // Check if we have a temporary start stop or end stop - then we are there.
+                    if ( services[i].getTempEndStop() != -1 && j >= services[i].getTempEndStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    } else if ( services[i].getTempStartStop() != -1 && j <= services[i].getTempStartStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempStartStop()].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    }
+                    // Otherwise we are at the normal position.
                     return new PositionModel(schedule.getServices()[i].getStopList()[j].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
                 }
                 // If we are before departure time but after arrival time then we are also here.
                 else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
                     && services[i].getStopList()[j].getArrivalTime() <= currentTime) {
+                    // Check if we have a temporary start stop or end stop - then we are there.
+                    if ( services[i].getTempEndStop() != -1 && j >= services[i].getTempEndStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    } else if ( services[i].getTempStartStop() != -1 && j <= services[i].getTempStartStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempStartStop()].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    }
                     return new PositionModel(schedule.getServices()[i].getStopList()[j].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
                 }
                 // If we are before both departure time and arrival time then we are at the previous stop if there was one.
@@ -47,6 +61,12 @@ export class PositionHelper {
                     && services[i].getStopList()[j].getArrivalTime() > currentTime
                     && services[0].getStopList()[0].getArrivalTime() < currentTime // Ensure service has started
                     && j != 0 ) {
+                    // Check if we have a temporary start stop or end stop - then we are there.
+                    if ( services[i].getTempEndStop() != -1 && j >= services[i].getTempEndStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), schedule.getServices()[i].getStopList()[services[i].getTempEndStop()].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    } else if ( services[i].getTempStartStop() != -1 && j <= services[i].getTempStartStop() ) {
+                        return new PositionModel(schedule.getServices()[i].getStopList()[services[i].getTempStartStop()].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
+                    }
                     return new PositionModel(schedule.getServices()[i].getStopList()[j-1].getStop(), schedule.getServices()[i].getStopList()[schedule.getServices()[i].getStopList().length-1].getStop(), game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()));
                 }
                 // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
@@ -65,13 +85,13 @@ export class PositionHelper {
     }
 
     /**
-     * Helper method to find the current service that is running for a schedule.
+     * Helper method to find the current and next service that is and will be running for a schedule.
      * Take into account any delays.
      * @param schedule the Schedule Model object that we want to retrieve the current service for.
      * @param game the current game that we are playing.
-     * @return the service as a ServiceModel object.
+     * @return the current service and next service as elements 0 and 1 in a ServiceModel array.
      */
-    static getCurrentService(schedule: ScheduleModel, game: Game): ServiceModel {
+    static getCurrentAndNextService(schedule: ScheduleModel, game: Game): ServiceModel[] {
         // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
         if ( game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()) === -1 ) {
             return null;
@@ -88,19 +108,31 @@ export class PositionHelper {
             for ( let j = 0; j < services[i].getStopList().length; j++ ) {
                 // If we exactly match the departure time then this is where we are.
                 if ( services[i].getStopList()[j].getDepartureTime() === currentTime ) {
-                    return services[i];
+                    if (i < (services.length - 1) ) {
+                        return [services[i], services[i+1]];
+                    } else {
+                        return [services[i]];
+                    }
                 }
                 // If we are before departure time but after arrival time then we are also here.
                 else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
                     && services[i].getStopList()[j].getArrivalTime() <= currentTime) {
-                    return services[i];
+                    if (i < (services.length - 1) ) {
+                        return [services[i], services[i+1]];
+                    } else {
+                        return [services[i]];
+                    }
                 }
                 // If we are before both departure time and arrival time then we are at the previous stop if there was one.
                 else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
                     && services[i].getStopList()[j].getArrivalTime() > currentTime
                     && services[0].getStopList()[0].getArrivalTime() < currentTime // Ensure service has started
                     && j != 0 ) {
-                    return services[i];
+                    if (i < (services.length - 1) ) {
+                        return [services[i], services[i+1]];
+                    } else {
+                        return [services[i]];
+                    }
                 }
                 // If there was not a previous stop then it is the previous service last stop where we are at if there was one.
                 else if ( services[i].getStopList()[j].getDepartureTime() > currentTime
@@ -108,7 +140,11 @@ export class PositionHelper {
                     && services[0].getStopList()[0].getArrivalTime() < currentTime // Ensure service has started
                     && j === 0
                     && i != 0 ) {
-                    return services[i-1];
+                    if (i < (services.length - 1) ) {
+                        return [services[i-1], services[i]];
+                    } else {
+                        return [services[i-1]];
+                    }
                 }
 
             }
