@@ -20,6 +20,10 @@
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="shortenService()">Shorten Service</button>
     </div>
 
+    <div class="col text-center">
+        <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="outOfService()">Out of Service</button>
+    </div>
+
     <div *ngFor="let message of getMessages(), let i = index">
         <p>{{message}}</p>
     </div>

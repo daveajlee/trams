@@ -7,6 +7,7 @@ export class ServiceModel {
 
     private serviceId: string;
     private stopList: StopTimeModel[];
+    private outOfService: boolean;
 
     /**
      * Construct a new ServiceModel object based on the supplied information
@@ -15,6 +16,7 @@ export class ServiceModel {
     constructor( serviceId: string ) {
         this.serviceId = serviceId;
         this.stopList = [];
+        this.outOfService = false;
     }
 
     /**
@@ -25,6 +27,21 @@ export class ServiceModel {
      */
     addStop(departureTime: string, arrivalTime: string, stop: string) {
         this.stopList.push(new StopTimeModel(departureTime, arrivalTime, stop));
+    }
+
+    /**
+     * Set the service to out of service if the user desires to reduce delays.
+     */
+    setServiceToOutOfService() {
+        this.outOfService = true;
+    }
+
+    /**
+     * Check if the service is out of service.
+     * @return a boolean which is true iff service is out of service.
+     */
+    isOutOfService(): boolean {
+        return this.outOfService;
     }
 
     /**
