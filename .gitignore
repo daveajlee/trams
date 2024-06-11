@@ -16,3 +16,6 @@ docs/node_modules/
 
 # Auto generated files
 index.android.bundle
+
+# Provision Profile for App Store Connect
+*.provisionprofile

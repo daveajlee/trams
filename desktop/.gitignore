@@ -19,3 +19,9 @@ dist/
 
 #Electron release files
 out/
+
+# Provision Profile for App Store Connect
+*.provisionprofile
+
+# Environment files
+.env
