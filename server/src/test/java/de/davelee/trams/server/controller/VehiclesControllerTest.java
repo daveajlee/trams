@@ -126,7 +126,7 @@ public class VehiclesControllerTest {
         assertEquals("Purchased", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getVehicleHistoryReason());
         assertEquals("01-03-2021 00:00", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
         //Check that days until next inspection is calculated correctly.
-        assertEquals("Inspected",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
+        assertEquals("Inspection Due!",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
         assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
         //Third test is for retrieving by route number and company.
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(Lists.newArrayList(Vehicle.builder()
