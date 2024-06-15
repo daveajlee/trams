@@ -18,15 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
@@ -87,6 +85,7 @@ public class VehiclesControllerTest {
                 .build()));
         ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
         assertEquals(3, responseEntity.getBody().getCount());
         assertEquals("Bus", responseEntity.getBody().getVehicleResponses()[0].getVehicleType());
         //Check that days until next inspection is calculated correctly.
@@ -120,6 +119,7 @@ public class VehiclesControllerTest {
                 .build()));
         ResponseEntity<VehiclesResponse> responseEntity2 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("21"), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
+        assertNotNull(responseEntity2.getBody());
         assertEquals(1, responseEntity2.getBody().getCount());
         assertEquals("Bus", responseEntity2.getBody().getVehicleResponses()[0].getVehicleType());
         assertEquals("Purchased!", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
@@ -127,7 +127,7 @@ public class VehiclesControllerTest {
         assertEquals("01-03-2021 00:00", responseEntity2.getBody().getVehicleResponses()[0].getUserHistory().get(0).getDate());
         //Check that days until next inspection is calculated correctly.
         assertEquals("Inspection Due!",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
-        assertNotNull(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays());
+        assertTrue(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays() > -1);
         //Third test is for retrieving by route number and company.
         Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(Lists.newArrayList(Vehicle.builder()
                 .livery("Green with red text")
@@ -152,6 +152,7 @@ public class VehiclesControllerTest {
                 .build()));
         ResponseEntity<VehiclesResponse> responseEntity3 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.of("1"));
         assertEquals(HttpStatus.OK, responseEntity3.getStatusCode());
+        assertNotNull(responseEntity3.getBody());
         assertEquals(1, responseEntity3.getBody().getCount());
         assertEquals("Bus", responseEntity3.getBody().getVehicleResponses()[0].getVehicleType());
         assertEquals("Purchased!", responseEntity3.getBody().getVehicleResponses()[0].getUserHistory().get(0).getComment());
