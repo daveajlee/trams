@@ -24,6 +24,8 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
       ME_CONFIG_MONGODB_ADMINPASSWORD: mymongodb
+      ME_CONFIG_MONGODB_URL: mongodb://mongoadmin:mymongodb@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
 
   eureka:
     image: daveajlee/eureka-server
