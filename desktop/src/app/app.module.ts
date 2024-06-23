@@ -44,6 +44,7 @@ import { SwitchlocalComponent } from './switchlocal/switchlocal.component';
 import { RouteeditorComponent } from './routeeditor/routeeditor.component';
 import { TimetableviewerComponent } from './timetableviewer/timetableviewer.component';
 import {TipService} from "./shared/tip.service";
+import {ServerService} from "./shared/server.service";
 
 @NgModule({
   declarations: [
@@ -88,7 +89,7 @@ import {TipService} from "./shared/tip.service";
     MatProgressBarModule,
     ReactiveFormsModule
   ],
-  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService, TipService],
+  providers: [StopsService, RoutesService, VehiclesService, GameService, LoadService, SaveService, TipService, ServerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

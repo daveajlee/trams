@@ -1,22 +1,35 @@
 import {Injectable} from '@angular/core';
 import {Game} from '../game/game.model';
+import {ServerService} from "./server.service";
 
 @Injectable()
 /**
- * This class provides access via http calls to the server to collect data about stops and routes as necessary.
+ * This class stores either the local game (offline version) or uses a separate service to contact the server (online version).
  */
 export class GameService {
 
     private game: Game;
     private offlineVersion: boolean = true;
-    private serverUrl: string;
+
+
+    /**
+     * Construct a new game service which contains a server service that manages http calls in the case of online mode.
+     * @param serverService the server service that manages the http calls.
+     */
+    constructor( private serverService: ServerService ) {
+    }
 
     /**
      * Set the game to the current game that was supplied by the user.
      * @param currentGame the current game that the user supplied.
      */
     setGame(currentGame: Game): void {
-        this.game = currentGame;
+        if ( this.offlineVersion ) {
+            this.game = currentGame;
+        } else {
+            this.serverService.createCompany(currentGame);
+        }
+
     }
 
     getGame(): Game {
@@ -40,11 +53,11 @@ export class GameService {
      * @param serverUrl the new server url to be set
      */
     setServerUrl(serverUrl: string) {
-        this.serverUrl = serverUrl;
+        this.serverService.setServerUrl(serverUrl);
     }
 
     getServerUrl() {
-        return this.serverUrl;
+        return this.serverService.getServerUrl();
     }
 
 }

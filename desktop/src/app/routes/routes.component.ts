@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Route} from './route.model';
 import {Subscription} from 'rxjs';
-import {DataService} from '../shared/data.service';
 import {RoutesService} from './routes.service';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-routes',
@@ -23,12 +23,12 @@ export class RoutesComponent implements OnInit, OnDestroy {
 
   /**
    * Create a new routes component which constructs a data service and a route service to retreive data from the server.
-   * @param dataService which contains the HTTP connection to the server
+   * @param serverService which contains the HTTP connection to the server
    * @param routesService which formats the HTTP calls into a way which the frontend can read and render.
    * @param gameService a service which retrieves game information
    * @param router a router service provided by Angular
    */
-  constructor(private dataService: DataService, private routesService: RoutesService, private gameService: GameService,
+  constructor(private serverService: ServerService, private routesService: RoutesService, private gameService: GameService,
               private router:Router) {
   }
 

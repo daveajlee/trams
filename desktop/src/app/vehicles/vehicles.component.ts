@@ -2,11 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Vehicle} from './vehicle.model';
 import {VehiclesService} from './vehicles.service';
-import {DataService} from '../shared/data.service';
 import {HttpClient} from '@angular/common/http';
 import {VehiclesResponse} from './vehicles-response.model';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-vehicles',
@@ -26,12 +26,12 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   /**
    * Create a new vehicles component which constructs a data service and a vehicle service to retrieve data from the server.
    * @param http an http client which can make http calls
-   * @param dataService which contains the HTTP connection to the server
+   * @param serverService which contains the HTTP connection to the server
    * @param vehiclesService which formats the HTTP calls into a way which the frontend can read and render.
    * @param gameService a service which retrieves game information
    * @param router a router service provided by Angular
    */
-  constructor(private http: HttpClient, private dataService: DataService, private vehiclesService: VehiclesService,
+  constructor(private http: HttpClient, private serverService: ServerService, private vehiclesService: VehiclesService,
               private gameService: GameService, private router:Router) { }
 
   /**

@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {DataService} from '../shared/data.service';
 import {StopsService} from './stops.service';
 import {Stop} from './stop.model';
 import {Subscription} from 'rxjs';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-stops',
@@ -23,12 +23,12 @@ export class StopsComponent implements OnInit, OnDestroy {
 
   /**
    * Create a new stops component which constructs a data service and a stop service to retreive data from the server.
-   * @param dataService which contains the HTTP connection to the server
+   * @param serverService which contains the HTTP connection to the server
    * @param gameService a service which retrieves game information
    * @param stopsService which formats the HTTP calls into a way which the frontend can read and render.
    * @param router the router object from Angular to move screens.
    */
-  constructor(private dataService: DataService, private gameService: GameService, private stopsService: StopsService, public router: Router) { }
+  constructor(private serverService: ServerService, private gameService: GameService, private stopsService: StopsService, public router: Router) { }
 
   /**
    * Initialise a new stops component which maintains a list of stops that can be updated and set from the server calls.
