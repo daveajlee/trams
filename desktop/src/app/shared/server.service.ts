@@ -5,6 +5,9 @@ import {RoutesResponse} from "../routes/routes-response.model";
 import {VehiclesResponse} from "../vehicles/vehicles-response.model";
 import {CompanyRequest} from "../scenariolist/company.request";
 import {Game} from "../game/game.model";
+import {lastValueFrom} from "rxjs";
+import {MessageRequest} from "../messages/message.request";
+import {TimeHelper} from "./time.helper";
 
 @Injectable()
 /**
@@ -40,11 +43,11 @@ export class ServerService {
      * Add the game to the server as a company.
      * @param game the game object to add to the server.
      */
-    createCompany(game: Game): void {
+    async createCompany(game: Game): Promise<void> {
         // Create the company request object.
-        let companyRequest = new CompanyRequest(game.getCompanyName(), game.getBalance(), game.getPlayerName(), game.getCurrentDateTime().toString(), game.getScenario().getScenarioName(), game.getDifficultyLevel());
+        let companyRequest = new CompanyRequest(game.getCompanyName(), game.getBalance(), game.getPlayerName(), TimeHelper.formatDateTimeAsString(game.getCurrentDateTime()), game.getScenario().getScenarioName(), game.getDifficultyLevel());
         // Post it to the server.
-        this.httpClient.post(this.serverUrl + '/company/', companyRequest);
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/company/', companyRequest));
     }
 
     /**
@@ -75,6 +78,15 @@ export class ServerService {
         this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + company).subscribe(vehicles => {
             return vehicles;
         });
+    }
+
+    /**
+     * Add the message to the server for the specified company.
+     * @param messageRequest the message to add to the server.
+     */
+    async addMessage(messageRequest: MessageRequest) {
+        // Post it to the server.
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/message/', messageRequest));
     }
 
 }

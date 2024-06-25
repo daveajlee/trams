@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ScenarioService} from './scenario.service';
 import {GameService} from '../shared/game.service';
 import {Game} from '../game/game.model';
 import { Scenario } from '../shared/scenario.model';
@@ -10,6 +9,9 @@ import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 import {Vehicle} from "../vehicles/vehicle.model";
 import {Driver} from "../drivers/driver.model";
+import {MessageRequest} from "../messages/message.request";
+import {ServerService} from "../shared/server.service";
+import {TimeHelper} from "../shared/time.helper";
 
 @Component({
   selector: 'app-scenariolist',
@@ -29,10 +31,10 @@ export class ScenariolistComponent implements OnInit {
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
    * @param route which manages the current route in Angular.
    * @param gameService which manages the creation of games.
-   * @param scenarioService which manages the creation of a new company and scenario.
+   * @param serverService which manages the http calls to the server in online mode.
    * @param router which manages routing in Angular.
    */
-  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService: GameService,
+  constructor(private route: ActivatedRoute, private serverService: ServerService, private gameService: GameService,
               public router: Router) {
   }
 
@@ -58,13 +60,21 @@ export class ScenariolistComponent implements OnInit {
   onScenarioSelect(scenario: string): void {
       this.gameService.setGame(new Game(this.company, this.playerName, new Date(this.startingDate), this.loadScenario(scenario), this.difficultyLevel
         , 200000.0, 90, [], [], [], [], []));
-      // Add the message.
-      this.gameService.getGame().addMessage("New Managing Director Announced",
-            "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
-            +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).getTargets())
-            + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
-            + "\n\nGood luck!",
-            "INBOX", this.gameService.getGame().getCurrentDateTime(), true, scenario + " Council");
+      // Define the message.
+      let welcomeMessage = new MessageRequest(this.company, "New Managing Director Announced",
+        "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
+        +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).getTargets())
+        + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
+        + "\n\nGood luck!", scenario + " Council", "INBOX",  TimeHelper.formatDateTimeAsString(new Date(this.startingDate)));
+      // Now add it according to which version we are running.
+      if ( this.gameService.isOfflineVersion() ) {
+          this.gameService.getGame().addMessage(welcomeMessage.getSubject(),
+              welcomeMessage.getContent(),
+              welcomeMessage.getFolder(), new Date(this.startingDate), true, welcomeMessage.getSender());
+      } else {
+          console.log(welcomeMessage);
+          this.serverService.addMessage(welcomeMessage);
+      }
       // Add the supplied vehicles.
       var mySuppliedVehicles = this.loadScenario(scenario).getSuppliedVehicles();
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
@@ -85,7 +95,6 @@ export class ScenariolistComponent implements OnInit {
           this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
       }
       this.router.navigate(['management']);
-      // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
   }
 
     /**

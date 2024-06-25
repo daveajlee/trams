@@ -24,6 +24,31 @@ export class TimeHelper {
     }
 
     /**
+     * Helper method to format date and time as dd-MM-yyyy HH:mm
+     * @param dateTime the date object to format.
+     * @return date as a string in format dd-MM-yyyy HH:mm
+     */
+    static formatDateTimeAsString(dateTime: Date) {
+        let dateString;
+        // Format date.
+        if ( dateTime.getDate() < 10 ) {
+            dateString = "0" + dateTime.getDate();
+        } else {
+            dateString = "" + dateTime.getDate();
+        }
+        // Format month.
+        if ( (dateTime.getMonth()+1) < 10 ) {
+            dateString += "-0" + (dateTime.getMonth()+1);
+        } else {
+            dateString += "-" + (dateTime.getMonth()+1);
+        }
+        // Format year.
+        dateString += "-" + dateTime.getFullYear();
+        // Append time.
+        return dateString + " " + this.formatTimeAsString(dateTime);
+    }
+
+    /**
      * This is a helper method which adds a number of minutes to the time.
      * @param time the time as a string in the format HH:mm
      * @param addMinutes the number of minutes to add to the time.
