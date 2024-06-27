@@ -72,7 +72,7 @@ public class VehicleServiceTest {
                 .fleetNumber("213")
                 .company("Lee Buses")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Map.of("Registration Number", "HJK234D2"))
+                .typeSpecificInfos(Map.of("registrationNumber", "HJK234D2"))
                 .build();
         Mockito.when(vehicleRepository.insert(vehicle)).thenReturn(vehicle);
         assertFalse(vehicleService.addVehicle(vehicle));

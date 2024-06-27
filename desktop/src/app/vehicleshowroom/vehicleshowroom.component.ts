@@ -4,6 +4,7 @@ import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {Vehicle} from "../vehicles/vehicle.model";
+import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
 
 @Component({
   selector: 'app-vehicleshowroom',
@@ -69,12 +70,12 @@ export class VehicleshowroomComponent {
   onPurchaseVehicle(): void {
     // First we determine the next fleet number,
     let highestFleetNumberSoFar = this.gameService.getGame().getHighestFleetNumber();
-    const additionalProps = new Map<string, string>();
-    additionalProps.set('Model', this.getVehicleType());
-    additionalProps.set('Age', '0 months');
-    additionalProps.set('Standing Capacity', '' + this.getVehicleStandingCapacity());
-    additionalProps.set('Seating Capacity', '' + this.getVehicleSeatingCapacity());
-    additionalProps.set('Value', '' + this.getVehiclePurchasePrice());
+    const additionalProps = new AdditionalTypeInformation();
+    additionalProps.setModel(this.getVehicleType());
+    additionalProps.setAge('0 months');
+    additionalProps.setStandingCapacity('' + this.getVehicleStandingCapacity());
+    additionalProps.setSeatingCapacity('' + this.getVehicleSeatingCapacity());
+    additionalProps.setValue('' + this.getVehiclePurchasePrice());
     if ( this.getVehiclePurchasePrice() > this.gameService.getGame().getBalance() ) {
       alert('You need to earn more money before you can buy new vehicles!');
     } else {

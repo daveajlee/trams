@@ -12,6 +12,8 @@ import {Driver} from "../drivers/driver.model";
 import {MessageRequest} from "../messages/message.request";
 import {ServerService} from "../shared/server.service";
 import {TimeHelper} from "../shared/time.helper";
+import {VehicleRequest} from "../vehicles/vehicle.request";
+import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
 
 @Component({
   selector: 'app-scenariolist',
@@ -72,21 +74,30 @@ export class ScenariolistComponent implements OnInit {
               welcomeMessage.getContent(),
               welcomeMessage.getFolder(), new Date(this.startingDate), true, welcomeMessage.getSender());
       } else {
-          console.log(welcomeMessage);
           this.serverService.addMessage(welcomeMessage);
       }
       // Add the supplied vehicles.
       var mySuppliedVehicles = this.loadScenario(scenario).getSuppliedVehicles();
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
           for ( var j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
-              const additionalProps = new Map<string, string>();
-              additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
-              additionalProps.set('Age', '0 months');
-              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
-              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
-              additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
-              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
-                  '', '', 0, additionalProps));
+              let additionalProps = new AdditionalTypeInformation();
+              additionalProps.setModel(mySuppliedVehicles[i].getModel().getModelName());
+              additionalProps.setAge('0 months');
+              additionalProps.setStandingCapacity('' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+              additionalProps.setSeatingCapacity('' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+              additionalProps.setValue('' + mySuppliedVehicles[i].getModel().getValue());
+              if ( mySuppliedVehicles[i].getVehicleType().toUpperCase() == 'BUS' ) {
+                  additionalProps.setRegistrationNumber('' + this.loadScenario(scenario).getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  (i+j+1));
+              }
+              if ( this.gameService.isOfflineVersion() ) {
+                  this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
+                      '', '', 0, additionalProps));
+              } else {
+                  this.serverService.addVehicle(new VehicleRequest('' + (i+j+1), this.company,
+                      mySuppliedVehicles[i].getVehicleType().toUpperCase(), 'none', additionalProps, "" + mySuppliedVehicles[i].getModel().getSeatingCapacity(),
+                      "" + mySuppliedVehicles[i].getModel().getStandingCapacity(), mySuppliedVehicles[i].getModel().getModelName()));
+              }
+
           }
       }
       // Add the supplied drivers.

@@ -54,7 +54,7 @@ public class ExportControllerTest {
                         .fleetNumber("213")
                         .allocatedTour("1/1")
                         .vehicleType(VehicleType.BUS)
-                        .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                        .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                         .deliveryDate(LocalDateTime.of(2017,3,25, 0, 0))
                         .inspectionDate(LocalDateTime.of(2017,4,25,0,0))
                         .company("Lee Buses")

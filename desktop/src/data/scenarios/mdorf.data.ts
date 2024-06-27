@@ -18,7 +18,7 @@ const TARGETS = ["Serve all bus stops in MDorf.", "Ensure a frequent service on 
 const MINIMUM_SATISFACTION= 35;
 
 // The type and number of supplied vehicles.
-const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 'Single Decker Bus',44, 36, 85000.0, 'assets/Bus.jpg'), 3)];
+const SUPPLIED_VEHICLES = [new SuppliedVehicles("BUS", new VehicleModel("MyBus Single Decker", 'Single Decker Bus',44, 36, 85000.0, 'assets/Bus.jpg'), 3)];
 
 // The supplied drivers for this scenario.
 const SUPPLIED_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann"];
@@ -75,6 +75,9 @@ const STOP_DISTANCES =["City Lake:0,7,3,14,12,12,10,7,18,23,24,10,15,9,11,21,25,
     "Y Junction:5,7,9,11,13,15,17,13,14,14,15,16,18,19,17,21,19,17,14,12,14,16,10,8,9,8,10,12,11,10,7,15,17,21,15,17,19,21,21,17,6,8,6,7,15,6,6,5,15,0",
     "City Park:7,9,11,13,15,14,16,12,10,10,11,13,16,14,16,17,18,16,12,13,15,17,11,9,10,10,11,13,14,13,9,17,18,23,17,19,21,23,20,19,8,9,7,8,17,8,15,14,15,0"];
 
+// The short code for registration numbers.
+const REGISTRATION_SHORT_CODE = "MDF";
+
 // Export scenario.
 export const SCENARIO_MDORF = new Scenario(MAP, NAME, DESC, TARGETS, MINIMUM_SATISFACTION,
-    SUPPLIED_VEHICLES, SUPPLIED_DRIVERS, STOP_DISTANCES);
+    SUPPLIED_VEHICLES, SUPPLIED_DRIVERS, STOP_DISTANCES, REGISTRATION_SHORT_CODE);

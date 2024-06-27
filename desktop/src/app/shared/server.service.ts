@@ -8,6 +8,7 @@ import {Game} from "../game/game.model";
 import {lastValueFrom} from "rxjs";
 import {MessageRequest} from "../messages/message.request";
 import {TimeHelper} from "./time.helper";
+import {VehicleRequest} from "../vehicles/vehicle.request";
 
 @Injectable()
 /**
@@ -87,6 +88,15 @@ export class ServerService {
     async addMessage(messageRequest: MessageRequest) {
         // Post it to the server.
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/message/', messageRequest));
+    }
+
+    /**
+     * Add the vehicle to the server for the specified company.
+     * @param vehicleRequest the vehicle to add to the server.
+     */
+    async addVehicle(vehicleRequest: VehicleRequest) {
+        // Post it to the server.
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/vehicle/', vehicleRequest));
     }
 
 }

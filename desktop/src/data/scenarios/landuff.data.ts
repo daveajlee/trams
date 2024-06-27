@@ -18,7 +18,7 @@ const TARGETS = ["Serve all bus stops in Landuff.", "Ensure a frequent service o
 const MINIMUM_SATISFACTION= 70;
 
 // The type and number of supplied vehicles.
-const SUPPLIED_VEHICLES = [new SuppliedVehicles("Bus", new VehicleModel("MyBus Single Decker", 'Single Decker Bus', 44, 36, 85000.0, 'assets/Bus.jpg'), 4)];
+const SUPPLIED_VEHICLES = [new SuppliedVehicles("BUS", new VehicleModel("MyBus Single Decker", 'Single Decker Bus', 44, 36, 85000.0, 'assets/Bus.jpg'), 4)];
 
 // The supplied drivers for this scenario.
 const SUPPLIED_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann","Daniel Mustermann"];
@@ -71,7 +71,10 @@ const STOP_DISTANCES = ["Airport:0,12,15,10,10,9,12,5,12,6,9,8,16,17,6,5,14,9,11
     "Tourist Info:10,13,8,4,5,18,7,13,13,5,6,13,8,2,3,11,9,10,12,15,5,8,9,8,6,13,15,12,8,4,15,6,3,6,8,18,16,14,16,13,7,3,7,6,4,0",
     "Mile Inn:11,8,7,7,6,17,11,14,19,18,19,3,8,6,7,10,20,19,15,12,3,8,9,1,11,3,15,13,11,10,6,8,9,8,13,15,13,11,13,10,7,6,8,7,4,0"];
 
+// The short code for registration numbers.
+const REGISTRATION_SHORT_CODE = "LDF";
+
 // Export scenario.
 export const SCENARIO_LANDUFF = new Scenario(MAP, NAME, DESC, TARGETS, MINIMUM_SATISFACTION,
-    SUPPLIED_VEHICLES, SUPPLIED_DRIVERS, STOP_DISTANCES);
+    SUPPLIED_VEHICLES, SUPPLIED_DRIVERS, STOP_DISTANCES, REGISTRATION_SHORT_CODE);
 

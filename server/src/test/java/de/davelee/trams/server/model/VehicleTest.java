@@ -35,7 +35,7 @@ public class VehicleTest {
                 .allocatedRoute("1")
                 .allocatedTour("1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Map.of("Registration Number", "W234 DFFKD"))
+                .typeSpecificInfos(Map.of("registrationNumber", "W234 DFFKD"))
                 .timesheet(Map.of(LocalDateTime.of(2021,10,29,0,0), 16))
                 .build();
         //Verify the builder functionality through getter methods
@@ -52,7 +52,7 @@ public class VehicleTest {
         assertEquals("1", vehicle.getAllocatedTour());
         assertEquals(1, vehicle.getTimesheet().size());
         //Verify the toString method
-        assertEquals("Vehicle(id=null, fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25T00:00, inspectionDate=2021-04-25T00:00, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=BUS, typeSpecificInfos={Registration Number=W234 DFFKD}, timesheet={2021-10-29T00:00=16}, vehicleHistoryEntryList=null)", vehicle.toString());
+        assertEquals("Vehicle(id=null, fleetNumber=213, company=Lee Buses, deliveryDate=2021-03-25T00:00, inspectionDate=2021-04-25T00:00, seatingCapacity=50, standingCapacity=80, modelName=BendyBus 2000, livery=Green with black slide, vehicleStatus=DELIVERED, allocatedRoute=1, allocatedTour=1, delayInMinutes=0, vehicleType=BUS, typeSpecificInfos={registrationNumber=W234 DFFKD}, timesheet={2021-10-29T00:00=16}, vehicleHistoryEntryList=null)", vehicle.toString());
         //Now use the setter methods
         vehicle.setTypeSpecificInfos(Map.of("Power Mode", "Electric"));
         vehicle.setModelName("BendyTrain 500 Plus");

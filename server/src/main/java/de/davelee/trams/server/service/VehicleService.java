@@ -180,6 +180,7 @@ public class VehicleService {
      * @return a <code>boolean</code> which is true iff the vehicle fulfils all validation rules.
      */
     private boolean validateVehicle ( final Vehicle vehicle ) {
+        System.out.println(vehicle);
         //Vehicles always have a valid operator, delivery date and model.
         if (StringUtils.isBlank(vehicle.getCompany()) || StringUtils.isBlank(vehicle.getModelName()) || vehicle.getDeliveryDate() == null ) {
             return false;
@@ -189,7 +190,8 @@ public class VehicleService {
             return false;
         }
         //Buses always have a registration number.
-        if ( vehicle.getVehicleType() == VehicleType.BUS && vehicle.getTypeSpecificInfos().get("Registration Number") == null ) {
+        if ( vehicle.getVehicleType() == VehicleType.BUS && vehicle.getTypeSpecificInfos().get("registrationNumber") == null ) {
+            System.out.println("Registration number not set!");
             return false;
         }
         //Trains always have an operating mode.

@@ -14,6 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@ToString
 public class PurchaseVehicleRequest {
 
     /**
