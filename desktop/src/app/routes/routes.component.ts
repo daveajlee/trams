@@ -43,7 +43,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    if ( !this.gameService.isOfflineVersion() ) {
+    if ( !this.gameService.isOfflineMode() ) {
       this.subscription.unsubscribe();
     }
   }
@@ -52,7 +52,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Helper method to retrieve all stops.
    */
   retrieveAllRoutes(): Route[] {
-    if ( this.gameService.isOfflineVersion() ) {
+    if ( this.gameService.isOfflineMode() ) {
       return this.gameService.getGame().getRoutes();
     } else {
       this.subscription = this.routesService.getRoutesChanged().subscribe((routes: Route[]) => {

@@ -14,6 +14,7 @@ import {ServerService} from "../shared/server.service";
 import {TimeHelper} from "../shared/time.helper";
 import {VehicleRequest} from "../vehicles/vehicle.request";
 import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
+import {DriverRequest} from "../drivers/driver.request";
 
 @Component({
   selector: 'app-scenariolist',
@@ -69,7 +70,7 @@ export class ScenariolistComponent implements OnInit {
         + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
         + "\n\nGood luck!", scenario + " Council", "INBOX",  TimeHelper.formatDateTimeAsString(new Date(this.startingDate)));
       // Now add it according to which version we are running.
-      if ( this.gameService.isOfflineVersion() ) {
+      if ( this.gameService.isOfflineMode() ) {
           this.gameService.getGame().addMessage(welcomeMessage.getSubject(),
               welcomeMessage.getContent(),
               welcomeMessage.getFolder(), new Date(this.startingDate), true, welcomeMessage.getSender());
@@ -89,7 +90,7 @@ export class ScenariolistComponent implements OnInit {
               if ( mySuppliedVehicles[i].getVehicleType().toUpperCase() == 'BUS' ) {
                   additionalProps.setRegistrationNumber('' + this.loadScenario(scenario).getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  (i+j+1));
               }
-              if ( this.gameService.isOfflineVersion() ) {
+              if ( this.gameService.isOfflineMode() ) {
                   this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
                       '', '', 0, additionalProps));
               } else {
@@ -103,7 +104,11 @@ export class ScenariolistComponent implements OnInit {
       // Add the supplied drivers.
       var mySuppliedDrivers = this.loadScenario(scenario).getSuppliedDrivers();
       for ( i = 0; i < mySuppliedDrivers.length; i++ ) {
-          this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
+          if ( this.gameService.isOfflineMode() ) {
+              this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
+          } else {
+              this.serverService.addDriver(new DriverRequest(mySuppliedDrivers[i], 35, TimeHelper.formatDateTimeAsString(new Date()), this.company));
+          }
       }
       this.router.navigate(['management']);
   }

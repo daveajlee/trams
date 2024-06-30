@@ -75,7 +75,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
       this.hours = this.leftPadZero(time.getHours());
       this.minutes = this.leftPadZero(time.getMinutes());
-      if ( this.gameService.isOfflineVersion() ) {
+      if ( this.gameService.isOfflineMode() ) {
         this.stop = new Stop('' + this.id, this.gameService.getGame().getScenario().getStopDistances()[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.getName());
         this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().getCurrentDateTime());
@@ -237,7 +237,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * When destroying this component we should ensure that all subscriptions are cancelled.
    */
   ngOnDestroy(): void {
-    if ( !this.gameService.isOfflineVersion() ) {
+    if ( !this.gameService.isOfflineMode() ) {
       this.idSubscription.unsubscribe();
       this.departuresSubscription.unsubscribe();
       this.arrivalsSubscription.unsubscribe();

@@ -9,6 +9,7 @@ import {lastValueFrom} from "rxjs";
 import {MessageRequest} from "../messages/message.request";
 import {TimeHelper} from "./time.helper";
 import {VehicleRequest} from "../vehicles/vehicle.request";
+import {DriverRequest} from "../drivers/driver.request";
 
 @Injectable()
 /**
@@ -97,6 +98,15 @@ export class ServerService {
     async addVehicle(vehicleRequest: VehicleRequest) {
         // Post it to the server.
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/vehicle/', vehicleRequest));
+    }
+
+    /**
+     * Add the driver to the server for the specified company.
+     * @param driverRequest the driver to add to the server.
+     */
+    async addDriver(driverRequest: DriverRequest) {
+        // Post it to the server.
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/driver/', driverRequest));
     }
 
 }

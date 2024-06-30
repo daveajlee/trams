@@ -4,12 +4,12 @@ import {ServerService} from "./server.service";
 
 @Injectable()
 /**
- * This class stores either the local game (offline version) or uses a separate service to contact the server (online version).
+ * This class stores either the local game (offline mode) or uses a separate service to contact the server (online version).
  */
 export class GameService {
 
     private game: Game;
-    private offlineVersion: boolean = true;
+    private offlineMode: boolean = true;
 
 
     /**
@@ -24,7 +24,7 @@ export class GameService {
      * @param currentGame the current game that the user supplied.
      */
     setGame(currentGame: Game): void {
-        if ( this.offlineVersion ) {
+        if ( this.offlineMode ) {
             this.game = currentGame;
         } else {
             this.serverService.createCompany(currentGame);
@@ -37,15 +37,15 @@ export class GameService {
     }
 
     /**
-     * Set whether the offline version should be used.
-     * @param useOfflineVersion a boolean which is true iff the offline version should be used.
+     * Set whether the offline mode should be used.
+     * @param useOfflineMode a boolean which is true iff the offline mode should be used.
      */
-    setOfflineVersion(useOfflineVersion: boolean) {
-        this.offlineVersion = useOfflineVersion;
+    setOfflineMode(useOfflineMode: boolean) {
+        this.offlineMode = useOfflineMode;
     }
 
-    isOfflineVersion(): boolean {
-        return this.offlineVersion;
+    isOfflineMode(): boolean {
+        return this.offlineMode;
     }
 
     /**
