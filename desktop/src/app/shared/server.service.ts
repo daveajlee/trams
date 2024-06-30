@@ -10,6 +10,7 @@ import {MessageRequest} from "../messages/message.request";
 import {TimeHelper} from "./time.helper";
 import {VehicleRequest} from "../vehicles/vehicle.request";
 import {DriverRequest} from "../drivers/driver.request";
+import {CompanyResponse} from "../management/company.response";
 
 @Injectable()
 /**
@@ -18,6 +19,8 @@ import {DriverRequest} from "../drivers/driver.request";
 export class ServerService {
 
     private serverUrl: string;
+    private company: string;
+    private playerName: string;
 
     /**
      * Construct a new ServerService object which calls the http calls and returns the data provided.
@@ -48,36 +51,36 @@ export class ServerService {
     async createCompany(game: Game): Promise<void> {
         // Create the company request object.
         let companyRequest = new CompanyRequest(game.getCompanyName(), game.getBalance(), game.getPlayerName(), TimeHelper.formatDateTimeAsString(game.getCurrentDateTime()), game.getScenario().getScenarioName(), game.getDifficultyLevel());
+        // Set the company and player name attributes.
+        this.company = game.getCompanyName();
+        this.playerName = game.getPlayerName();
         // Post it to the server.
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/company/', companyRequest));
     }
 
     /**
-     * Retrieve the list of stops that exist on the server for a specified company.
-     * @param company the name of the company to retrieve the stops for.
+     * Retrieve the list of stops that exist on the server for the configured company.
      */
-    getStops(company: string): any {
-        this.httpClient.get<StopsResponse>(this.serverUrl + '/stops/?company=' + company).subscribe(stops => {
+    getStops(): any {
+        this.httpClient.get<StopsResponse>(this.serverUrl + '/stops/?company=' + this.company).subscribe(stops => {
             return stops;
         });
     }
 
     /**
-     * Retrieve the list of routes that exist on the server for a specified company.
-     * @param company the name of the company to retrieve the routes for.
+     * Retrieve the list of routes that exist on the server for the configured company.
      */
-    getRoutes(company: string): any {
-        this.httpClient.get<RoutesResponse>(this.serverUrl + '/routes/?company=' + company).subscribe(routes => {
+    getRoutes(): any {
+        this.httpClient.get<RoutesResponse>(this.serverUrl + '/routes/?company=' + this.company).subscribe(routes => {
             return routes;
         });
     }
 
     /**
-     * Retrieve the list of vehicles that exist on the server for a specified company.
-     * @param company the name of the company to retrieve the vehicles for.
+     * Retrieve the list of vehicles that exist on the server for the configured company.
      */
-    getVehicles(company: string): any {
-        this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + company).subscribe(vehicles => {
+    getVehicles(): any {
+        this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company).subscribe(vehicles => {
             return vehicles;
         });
     }
@@ -107,6 +110,33 @@ export class ServerService {
     async addDriver(driverRequest: DriverRequest) {
         // Post it to the server.
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/driver/', driverRequest));
+    }
+
+    /**
+     * Get the current date time for the configured company and player name.
+     * @return the current date time as a string in the format dd-MM-yyyy HH:mm
+     */
+    async getCurrentDateTime(): Promise<string> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.time;
+    }
+
+    /**
+     * Get the current balance for the configured company and player name.
+     * @return the current balance as a number
+     */
+    async getBalance(): Promise<number> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.balance;
+    }
+
+    /**
+     * Get the current passenger satisfaction for the configured company and player name.
+     * @return the current passenger satisfaction as a number
+     */
+    async getPassengerSatisfaction(): Promise<number> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.satisfactionRate;
     }
 
 }

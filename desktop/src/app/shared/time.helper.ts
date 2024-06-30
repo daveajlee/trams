@@ -49,6 +49,26 @@ export class TimeHelper {
     }
 
     /**
+     * Helper method to convert the string dd-MM-yyyy HH:mm into a javascript object.
+     * @param dateTime the string dd-MM-yyyy HH:mm to convert to a javascript Date object.
+     * @return the date returned as a javascript Date object.
+     */
+    static formatStringAsDateObject(dateTime: string) {
+        const dateTimeSplit = dateTime.split(" ");
+        const dateParts = dateTimeSplit[0].split("-");
+        const timeParts = dateTimeSplit[1].split(":");
+
+        const year = parseInt(dateParts[2], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const day = parseInt(dateParts[0], 10);
+
+        const hour = parseInt(timeParts[0], 10);
+        const minute = parseInt(timeParts[1], 10);
+        return new Date(year, month, day, hour, minute);
+
+    }
+
+    /**
      * This is a helper method which adds a number of minutes to the time.
      * @param time the time as a string in the format HH:mm
      * @param addMinutes the number of minutes to add to the time.

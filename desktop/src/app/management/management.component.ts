@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {GameService} from '../shared/game.service';
 import {Router} from '@angular/router';
 import {TipService} from "../shared/tip.service";
+import {TimeHelper} from "../shared/time.helper";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-management',
@@ -10,19 +12,58 @@ import {TipService} from "../shared/tip.service";
 })
 export class ManagementComponent implements OnInit {
 
-  constructor(private gameService: GameService, public router: Router, private tipService: TipService) {
+  private dateTimeFromServer: string;
+  private balanceFromServer: number;
+  private satisfactionFromServer: number;
+
+  constructor(private gameService: GameService, public router: Router, private tipService: TipService,
+              private serverService: ServerService) {
+    if ( !this.gameService.isOfflineMode() ) {
+      this.serverService.getCurrentDateTime().then((dateTime) => {
+        this.dateTimeFromServer = dateTime;
+      } )
+      this.serverService.getBalance().then((balance) => {
+        this.balanceFromServer = balance;
+      } )
+      this.serverService.getPassengerSatisfaction().then((satisfaction) => {
+        this.satisfactionFromServer = satisfaction;
+      } )
+    }
   }
 
+  /**
+   * Retrieve the current date which can either be from the local game or the server if in online mode.
+   * @return the current date and time in the format to display to the user.
+   */
   getCurrentDate(): string {
-    return this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    if ( this.gameService.isOfflineMode() ) {
+      return this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } else {
+      if ( this.dateTimeFromServer ) {
+        let date = TimeHelper.formatStringAsDateObject(this.dateTimeFromServer);
+        return date.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+    }
   }
 
   getBalance(): string {
-    return '' + this.gameService.getGame().getBalance();
+    if ( this.gameService.isOfflineMode() ) {
+      return '' + this.gameService.getGame().getBalance();
+    } else {
+      if ( this.balanceFromServer ) {
+        return '' + this.balanceFromServer;
+      }
+    }
   }
 
   getPassengerSatisfaction(): number {
-    return this.gameService.getGame().getPassengerSatisfaction();
+    if ( this.gameService.isOfflineMode() ) {
+      return this.gameService.getGame().getPassengerSatisfaction();
+    } else {
+      if ( this.satisfactionFromServer ) {
+        return this.satisfactionFromServer;
+      }
+    }
   }
 
   ngOnInit(): void {
