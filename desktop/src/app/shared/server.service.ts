@@ -70,19 +70,15 @@ export class ServerService {
     /**
      * Retrieve the list of routes that exist on the server for the configured company.
      */
-    getRoutes(): any {
-        this.httpClient.get<RoutesResponse>(this.serverUrl + '/routes/?company=' + this.company).subscribe(routes => {
-            return routes;
-        });
+    async getRoutes(): Promise<RoutesResponse> {
+        return await lastValueFrom(this.httpClient.get<RoutesResponse>(this.serverUrl + '/routes/?company=' + this.company));
     }
 
     /**
      * Retrieve the list of vehicles that exist on the server for the configured company.
      */
-    getVehicles(): any {
-        this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company).subscribe(vehicles => {
-            return vehicles;
-        });
+    async getVehicles(): Promise<VehiclesResponse> {
+        return await lastValueFrom(this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company));
     }
 
     /**

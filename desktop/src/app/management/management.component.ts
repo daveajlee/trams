@@ -15,6 +15,9 @@ export class ManagementComponent implements OnInit {
   private dateTimeFromServer: string;
   private balanceFromServer: number;
   private satisfactionFromServer: number;
+  private doRoutesExist: boolean;
+  private doVehiclesExist: boolean;
+  private doAllocationsExist: boolean;
 
   constructor(private gameService: GameService, public router: Router, private tipService: TipService,
               private serverService: ServerService) {
@@ -28,6 +31,28 @@ export class ManagementComponent implements OnInit {
       this.serverService.getPassengerSatisfaction().then((satisfaction) => {
         this.satisfactionFromServer = satisfaction;
       } )
+      this.serverService.getRoutes().then((routes) => {
+        if ( routes ) {
+          this.doRoutesExist = routes.getRouteResponses().length > 0;
+        } else {
+          this.doRoutesExist = false;
+        }
+      })
+      this.serverService.getVehicles().then((vehicles) => {
+        if ( vehicles ) {
+          this.doVehiclesExist = vehicles.vehicleResponses.length > 0;
+          this.doAllocationsExist = false;
+          for ( let vehicle of vehicles.vehicleResponses ) {
+            if ( vehicle.allocatedRoute ) {
+              this.doAllocationsExist = true;
+            }
+          }
+        } else {
+          this.doVehiclesExist = false;
+          this.doAllocationsExist = false;
+        }
+
+      })
     }
   }
 
@@ -109,16 +134,30 @@ export class ManagementComponent implements OnInit {
   }
 
   noRoutesExist(): boolean {
-    return !this.gameService.getGame().doRoutesExist();
+    if ( this.gameService.isOfflineMode() ) {
+      return !this.gameService.getGame().doRoutesExist();
+    } else {
+      return !this.doRoutesExist;
+    }
   }
 
   noVehiclesExist(): boolean {
-    return this.gameService.getGame().doRoutesExist() && !this.gameService.getGame().doVehiclesExist();
+    if ( this.gameService.isOfflineMode() ) {
+      return this.gameService.getGame().doRoutesExist() && !this.gameService.getGame().doVehiclesExist();
+    } else {
+      return this.doRoutesExist && !this.doVehiclesExist;
+    }
+
   }
 
   noAllocationsExist(): boolean {
-    return this.gameService.getGame().doRoutesExist() && this.gameService.getGame().doVehiclesExist()
-        && !this.gameService.getGame().doAllocationsExist();
+    if ( this.gameService.isOfflineMode() ) {
+      return this.gameService.getGame().doRoutesExist() && this.gameService.getGame().doVehiclesExist()
+          && !this.gameService.getGame().doAllocationsExist();
+    } else {
+      return this.doRoutesExist && this.doVehiclesExist && !this.doAllocationsExist;
+    }
+
   }
 
   showRandomTip(): string {

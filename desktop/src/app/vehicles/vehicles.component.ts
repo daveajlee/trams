@@ -7,6 +7,7 @@ import {VehiclesResponse} from './vehicles-response.model';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {ServerService} from "../shared/server.service";
+import {AdditionalTypeInformation} from "./additionalTypeInfo.model";
 
 @Component({
   selector: 'app-vehicles',
@@ -70,7 +71,13 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     } else {
       this.searchSubscription = this.http.get<VehiclesResponse>(this.gameService.getServerUrl() + '/' +
           'vehicles/?company=Company&fleetNumber=' + searchValue).subscribe(vehicleInfos => {
-        this.vehicles = vehicleInfos.getVehicleResponses();
+            this.vehicles = [];
+            if ( vehicleInfos ) {
+              for (let vehicle of vehicleInfos.vehicleResponses) {
+                this.vehicles.push(new Vehicle(vehicle.fleetNumber, vehicle.vehicleType, vehicle.livery, vehicle.allocatedTour,
+                    vehicle.inspectionStatus, vehicle.nextInspectionDueInDays, new AdditionalTypeInformation()))
+              }
+            }
       });
     }
   }
