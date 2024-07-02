@@ -125,11 +125,24 @@ export class ManagementComponent implements OnInit {
   onChangeAllocation(): void {
     this.router.navigate(['allocations']);
   }
+
   onResign(): void {
-    if(confirm("Are you sure you want to resign from " + this.gameService.getGame().getCompanyName() + "? This will end " +
-        "your game and any changes you have made will not be saved.")) {
-      // Currently it is enough to redirect to the homepage since we do not save data in local storage yet.
-      this.router.navigate([''])
+    // If we are in offline mode then simply confirm and return to start page.
+    if ( this.gameService.isOfflineMode() ) {
+      if(confirm("Are you sure you want to resign from " + this.gameService.getGame().getCompanyName() + "? This will end " +
+          "your game and any changes you have made will not be saved.")) {
+        // Currently it is enough to redirect to the homepage since we do not save data in local storage yet.
+        this.router.navigate([''])
+      }
+    } else {
+      // If we are in online mode then confirm, delete from server and return to start page.
+      if(confirm("Are you sure you want to resign from " + this.serverService.getCompanyName() + "? This will end " +
+          "your game and any changes you have made will not be saved.")) {
+        // Delete the company
+        this.serverService.deleteCompany().then(() => {
+          this.router.navigate([''])
+        })
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 package de.davelee.trams.server.controller;
 
 import de.davelee.trams.server.model.Message;
+import de.davelee.trams.server.response.MessageResponse;
 import de.davelee.trams.server.response.MessagesResponse;
 import de.davelee.trams.server.response.MessagesResponse;
 import de.davelee.trams.server.service.MessageService;
@@ -55,9 +56,9 @@ public class MessagesController {
             return ResponseEntity.noContent().build();
         }
         //Otherwise convert to messages response and return.
-        MessagesResponse[] messageResponses = new MessagesResponse[messages.size()];
+        MessageResponse[] messageResponses = new MessageResponse[messages.size()];
         for ( int i = 0; i < messageResponses.length; i++ ) {
-            messageResponses[i] = MessagesResponse.builder()
+            messageResponses[i] = MessageResponse.builder()
                     .company(messages.get(i).getCompany())
                     .dateTime(DateUtils.convertLocalDateTimeToDate(messages.get(i).getDateTime()))
                     .subject(messages.get(i).getSubject())

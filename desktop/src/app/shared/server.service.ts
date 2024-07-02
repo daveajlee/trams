@@ -139,7 +139,7 @@ export class ServerService {
 
     /**
      * Retrieve all of the messages in a particular folder.
-     *
+     * @return the array of messages that exist for the supplied folder.
      */
     async getMessagesByFolder(folder: string): Promise<Message[]> {
         let messages = [];
@@ -150,6 +150,28 @@ export class ServerService {
             }
         }
         return messages;
+    }
+
+    /**
+     * Retrieve the company name.
+     * @return the company name as a string.
+     */
+    getCompanyName(): string {
+        return this.company;
+    }
+
+    /**
+     * Delete the company - including the drivers, messages and vehicles.
+     */
+    async deleteCompany(): Promise<void> {
+        // Delete the messages
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
+        // Delete the drivers
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
+        // Delete the vehicles
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicles/?company=' + this.company));
+        // Delete the company
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
     }
 
 }

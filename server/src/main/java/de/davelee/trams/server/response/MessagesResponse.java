@@ -19,6 +19,6 @@ public class MessagesResponse {
     private Long count;
 
     //an array of all messages found by the server.
-    private MessagesResponse[] messageResponses;
+    private MessageResponse[] messageResponses;
 
 }

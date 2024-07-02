@@ -18,4 +18,12 @@ public interface DriverRepository extends MongoRepository<Driver, String> {
      * @return a <code>List</code> of <code>Driver</code> objects containing the matching drivers (usually one).
      */
     List<Driver> findByCompanyAndNameStartsWith (final String company, final String name);
+
+    /**
+     * Return a list of drivers owned by this company.
+     * @param company a <code>String</code> containing the name of the company to retrieve drivers for.
+     * @return a <code>List</code> of <code>Driver</code> objects containing the matching drivers.
+     */
+    List<Driver> findByCompany (final String company);
+
 }

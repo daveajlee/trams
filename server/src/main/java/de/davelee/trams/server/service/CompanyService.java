@@ -1,6 +1,7 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.Company;
+import de.davelee.trams.server.model.Driver;
 import de.davelee.trams.server.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,6 +115,16 @@ public class CompanyService {
             return company.getDifficultyLevel();
         }
         return "";
+    }
+
+    /**
+     * Delete all of the companies matching the company name and player name.
+     * @param name a <code>String</code> with the name of the company to search for.
+     * @param playerName a <code>String</code> with the player name to search for.
+     */
+    public void deleteCompanies(final String name, final String playerName) {
+        List<Company> companies = retrieveCompanyByNameAndPlayerName(name, playerName);
+        companies.forEach(companyRepository::delete);
     }
 
 }

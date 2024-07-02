@@ -22,7 +22,7 @@ public class MessageResponseTest {
      */
     @Test
     public void testSettersToString() {
-        MessagesResponse messageResponse = new MessagesResponse();
+        MessageResponse messageResponse = new MessageResponse();
         messageResponse.setCompany("Mustermann GmbH");
         messageResponse.setFolder("INBOX");
         messageResponse.setSender("Local Authority");

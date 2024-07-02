@@ -1,6 +1,7 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.Driver;
+import de.davelee.trams.server.model.Vehicle;
 import de.davelee.trams.server.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,25 @@ public class DriverService {
     public List<Driver> retrieveDriversByCompanyAndName (final String company, final String name) {
         //Return all matching drivers
         return driverRepository.findByCompanyAndNameStartsWith(company, name);
+    }
+
+    /**
+     * Retrieve all drivers for a particular company from the database for all types.
+     * @param company a <code>String</code> with the company to search for.
+     * @return a <code>List</code> of <code>Driver</code> objects.
+     */
+    public List<Driver> retrieveDriversByCompany ( final String company) {
+        //Return the drivers found.
+        return driverRepository.findByCompany(company);
+    }
+
+    /**
+     * Delete all drivers currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to delete drivers for.
+     */
+    public void deleteDrivers(final String company) {
+        List<Driver> drivers = retrieveDriversByCompany(company);
+        drivers.forEach(driverRepository::delete);
     }
 }
 
