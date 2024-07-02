@@ -161,6 +161,23 @@ export class ServerService {
     }
 
     /**
+     * Retrieve the player name.
+     * @return the player name as a string.
+     */
+    getPlayerName(): string {
+        return this.playerName;
+    }
+
+    /**
+     * Get the current scenario name for the configured company and player name.
+     * @return the current scenario name as a string
+     */
+    async getScenarioName(): Promise<string> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.scenarioName;
+    }
+
+    /**
      * Delete the company - including the drivers, messages and vehicles.
      */
     async deleteCompany(): Promise<void> {
