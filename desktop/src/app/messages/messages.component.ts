@@ -6,6 +6,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import {Message} from "./message.model";
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-messages',
@@ -21,7 +22,7 @@ export class MessagesComponent {
 
   private selectedFolder: string;
 
-  constructor(private gameService: GameService, public router: Router) {
+  constructor(private gameService: GameService, public router: Router, private serverService: ServerService) {
     this.displayMessages = [];
     this.onInboxSelect();
     this.selectedFolder = "INBOX";
@@ -29,23 +30,47 @@ export class MessagesComponent {
   }
 
   onInboxSelect(): void {
-    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("INBOX");
+    if ( this.gameService.isOfflineMode() ) {
+      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("INBOX");
+    } else {
+      this.serverService.getMessagesByFolder("INBOX").then((messages) => {
+        this.displayMessages = messages;
+      });
+    }
     this.selectedFolder = "INBOX";
   }
 
   onOutboxSelect(): void {
+    if ( this.gameService.isOfflineMode() ) {
+      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("OUTBOX");
+    } else {
+      this.serverService.getMessagesByFolder("OUTBOX").then((messages) => {
+        this.displayMessages = messages;
+      });
+    }
     this.selectedFolder = "OUTBOX";
-    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("OUTBOX");
   }
 
   onSentSelect(): void {
+    if ( this.gameService.isOfflineMode() ) {
+      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
+    } else {
+      this.serverService.getMessagesByFolder("SENT ITEMS").then((messages) => {
+        this.displayMessages = messages;
+      });
+    }
     this.selectedFolder = "SENT ITEMS";
-    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
   }
 
   onTrashSelect(): void {
+    if ( this.gameService.isOfflineMode() ) {
+      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
+    } else {
+      this.serverService.getMessagesByFolder("TRASH").then((messages) => {
+        this.displayMessages = messages;
+      });
+    }
     this.selectedFolder = "TRASH";
-    this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
   }
 
   backToManagementScreen(): void {

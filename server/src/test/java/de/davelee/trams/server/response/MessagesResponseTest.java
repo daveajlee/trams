@@ -17,8 +17,8 @@ public class MessagesResponseTest {
      */
     @Test
     public void testGettersAndSetters() {
-        MessageResponse[] messageResponses = new MessageResponse[1];
-        messageResponses[0] = MessageResponse.builder()
+        MessagesResponse[] messageResponses = new MessagesResponse[1];
+        messageResponses[0] = MessagesResponse.builder()
                 .company("Mustermann GmbH")
                 .folder("INBOX")
                 .sender("Local Authority")

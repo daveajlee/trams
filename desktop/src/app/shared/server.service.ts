@@ -11,6 +11,8 @@ import {TimeHelper} from "./time.helper";
 import {VehicleRequest} from "../vehicles/vehicle.request";
 import {DriverRequest} from "../drivers/driver.request";
 import {CompanyResponse} from "../management/company.response";
+import {Message} from "../messages/message.model";
+import {MessagesResponse} from "../messages/messages.response";
 
 @Injectable()
 /**
@@ -133,6 +135,21 @@ export class ServerService {
     async getPassengerSatisfaction(): Promise<number> {
         let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
         return company.satisfactionRate;
+    }
+
+    /**
+     * Retrieve all of the messages in a particular folder.
+     *
+     */
+    async getMessagesByFolder(folder: string): Promise<Message[]> {
+        let messages = [];
+        let messagesResponse = await lastValueFrom(this.httpClient.get<MessagesResponse>(this.serverUrl + '/messages/?company=' + this.company + '&folder=' + folder));
+        if ( messagesResponse ) {
+            for ( let messageResponse of messagesResponse.messageResponses ) {
+                messages.push(new Message(messageResponse.subject, messageResponse.text, messageResponse.folder, TimeHelper.formatStringAsDateObject(messageResponse.dateTime)));
+            }
+        }
+        return messages;
     }
 
 }
