@@ -27,4 +27,24 @@ public class Route {
      */
     private String company;
 
+    /**
+     * The start stop of this route.
+     */
+    private String startStop;
+
+    /**
+     * The last stop of this route.
+     */
+    private String endStop;
+
+    /**
+     * The list of intermediate stops served by this route.
+     */
+    private String[] stops;
+
+    /**
+     * A boolean which is true iff this is a night route.
+     */
+    private boolean nightRoute;
+
 }

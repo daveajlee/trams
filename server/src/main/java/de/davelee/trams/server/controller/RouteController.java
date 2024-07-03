@@ -46,6 +46,10 @@ public class RouteController {
         Route route = Route.builder()
                 .company(routeRequest.getCompany())
                 .routeNumber(routeRequest.getRouteNumber())
+                .startStop(routeRequest.getStartStop())
+                .endStop(routeRequest.getEndStop())
+                .stops(routeRequest.getStops())
+                .nightRoute(routeRequest.isNightRoute())
                 .build();
         //Attempt to add the route to the database.
         return routeService.addRoute(route) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();

@@ -13,6 +13,7 @@ import {DriverRequest} from "../drivers/driver.request";
 import {CompanyResponse} from "../management/company.response";
 import {Message} from "../messages/message.model";
 import {MessagesResponse} from "../messages/messages.response";
+import {Route} from "../routes/route.model";
 
 @Injectable()
 /**
@@ -185,10 +186,22 @@ export class ServerService {
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
         // Delete the drivers
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
+        // Delete the routes
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/routes/?company=' + this.company));
         // Delete the vehicles
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicles/?company=' + this.company));
         // Delete the company
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
     }
+
+    /**
+     * Add the route to the server for the specified company.
+     * @param route the route to add to the server.
+     */
+    async addRoute(route: Route) {
+        // Post it to the server.
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/route/', route));
+    }
+
 
 }
