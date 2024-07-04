@@ -77,8 +77,11 @@ public class RouteController {
         }
         //Translate route response and return.
         return ResponseEntity.ok(RouteResponse.builder()
-                 .routeNumber(routes.get(0).getRouteNumber())
-                .company(routes.get(0).getCompany())
+                .routeNumber(routes.getFirst().getRouteNumber())
+                .company(routes.getFirst().getCompany())
+                .startStop(routes.getFirst().getStartStop())
+                .stops(routes.getFirst().getStops())
+                .endStop(routes.getFirst().getEndStop())
                 .build());
     }
 

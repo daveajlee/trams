@@ -46,7 +46,7 @@ public class FrequencyPatternUtils {
         // Process the list of weekdays that the service should operate.
         List<DayOfWeek> dayOfWeekList = new ArrayList<>();
         for (int i = 0; i < daysOfOperation.length; i++) {
-            dayOfWeekList.add(DayOfWeek.valueOf(daysOfOperation[i]));
+            dayOfWeekList.add(DayOfWeek.valueOf(daysOfOperation[i].toUpperCase()));
         }
         // Return the operating days.
         return OperatingDays

@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {GameService} from "../shared/game.service";
 import {PositionHelper} from "../shared/position.helper";
 import {ServiceModel} from "../stops/stop-detail/service.model";
+import {RoutesService} from "../routes/routes.service";
 
 @Component({
   selector: 'app-schedule-information',
@@ -26,7 +27,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
 
   private messages: string[];
 
-  constructor(private gameService: GameService, private route: ActivatedRoute, public router: Router ) {
+  constructor(private gameService: GameService, private route: ActivatedRoute, public router: Router, private routeService: RoutesService ) {
   }
 
   /**
@@ -151,7 +152,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
     // This is where we actually put the vehicle out of service.
     this.currentService.setServiceToOutOfService();
     // Reduce the delay by 10% of the duration.
-    this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.gameService.getGame().getRoute(this.selectedRoute).getDuration(this.gameService.getGame().getScenario())));
+    this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.routeService.getDuration(this.gameService.getGame().getScenario(), this.gameService.getGame().getRoute(this.selectedRoute).getStartStop(), this.gameService.getGame().getRoute(this.selectedRoute).getStops(), this.gameService.getGame().getRoute(this.selectedRoute).getEndStop())));
     // Decrease the passenger satisfaction by 3%.
     this.gameService.getGame().adjustPassengerSatisfaction(-3);
     // Now we print messages saying that the vehicle is being put out of service.

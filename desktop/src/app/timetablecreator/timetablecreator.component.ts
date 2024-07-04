@@ -14,6 +14,8 @@ import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 import {ServerService} from "../shared/server.service";
 import {TimetableRequest} from "../shared/timetable.request";
+import {RouteResponse} from "../routes/route.response";
+import {RoutesService} from "../routes/routes.service";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -38,10 +40,12 @@ export class TimetablecreatorComponent {
 
   private currentDateTime: Date;
   private route: Route;
+  private routeResponse: RouteResponse;
   private scenarioName: string;
 
   constructor(private activatedRoute: ActivatedRoute, private gameService: GameService,
-              public router: Router, private datePipe: DatePipe, private serverService: ServerService) {
+              public router: Router, private datePipe: DatePipe, private serverService: ServerService,
+              private routeService: RoutesService) {
     // Set the current date time.
     if ( this.gameService.isOfflineMode() ) {
       this.currentDateTime = this.gameService.getGame().getCurrentDateTime();
@@ -62,8 +66,7 @@ export class TimetablecreatorComponent {
         this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
       })
     }
-    // Set the current route.
-    this.route = this.gameService.getGame().getRoute(this.routeNumber);
+
     // Set the scenario name.
     if ( this.gameService.isOfflineMode() ) {
       this.scenarioName = this.gameService.getGame().getScenario().getScenarioName();
@@ -89,6 +92,17 @@ export class TimetablecreatorComponent {
     this.activatedRoute.queryParams
         .subscribe(params => {
               this.routeNumber = params.routeNumber;
+              console.log('Route number is ' + this.routeNumber);
+              // Set the current route.
+              if ( this.gameService.isOfflineMode() ) {
+                this.route = this.gameService.getGame().getRoute(this.routeNumber);
+              } else {
+                if ( this.routeNumber ) {
+                  this.serverService.getRoute(this.routeNumber).then((route) => {
+                    this.routeResponse = route;
+                  });
+                }
+              }
             }
         );
   }
@@ -111,27 +125,54 @@ export class TimetablecreatorComponent {
 
   getFrequencyPatternStartStops(): string[] {
     let possibleStops = [];
-    if ( !this.frequencyPatternStartStop ) {
-      this.frequencyPatternStartStop = this.route.getStartStop();
+    if ( this.gameService.isOfflineMode() ) {
+      if ( !this.frequencyPatternStartStop ) {
+        this.frequencyPatternStartStop = this.route.getStartStop();
+      }
+      possibleStops.push(this.route.getStartStop());
+      possibleStops = possibleStops.concat(this.route.getStops());
+    } else {
+      if ( this.routeResponse ) {
+        if ( !this.frequencyPatternStartStop ) {
+          this.frequencyPatternStartStop = this.routeResponse.startStop;
+        }
+        possibleStops.push(this.routeResponse.startStop);
+        possibleStops = possibleStops.concat(this.routeResponse.stops);
+      }
     }
-    possibleStops.push(this.route.getStartStop());
-    possibleStops = possibleStops.concat(this.route.getStops());
     return possibleStops;
   }
 
   getFrequencyPatternEndStops(): string[] {
     let possibleStops = [];
-    if ( !this.frequencyPatternEndStop ) {
-      this.frequencyPatternEndStop = this.route.getEndStop();
+    if ( this.gameService.isOfflineMode() ) {
+      if ( !this.frequencyPatternEndStop ) {
+        this.frequencyPatternEndStop = this.route.getEndStop();
+      }
+      possibleStops.push(this.route.getEndStop());
+      possibleStops = possibleStops.concat(this.route.getStops());
+    } else {
+      if ( this.routeResponse ) {
+        if ( !this.frequencyPatternEndStop ) {
+          this.frequencyPatternEndStop = this.routeResponse.endStop;
+        }
+        possibleStops.push(this.routeResponse.endStop);
+        possibleStops = possibleStops.concat(this.routeResponse.stops);
+      }
     }
-    possibleStops.push(this.route.getEndStop());
-    possibleStops = possibleStops.concat(this.route.getStops());
     return possibleStops;
   }
 
   getNumberVehicles() : number {
     // Calculate the duration.
-    let duration = this.route.getDuration(this.loadScenario(this.scenarioName));
+    let duration;
+    if( this.gameService.isOfflineMode() ) {
+      duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.route.getStartStop(), this.route.getStops(), this.route.getEndStop());
+    } else {
+      if ( this.routeResponse ) {
+        duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.routeResponse.startStop, this.routeResponse.stops, this.routeResponse.endStop);
+      }
+    }
     // Check that duration is greater than 0.
     if ( duration > 0 ) {
       // Now calculate vehicles by dividing duration through frequency.
@@ -196,7 +237,7 @@ export class TimetablecreatorComponent {
     if ( this.gameService.isOfflineMode() ) {
       this.route.addTimetable(timetable);
     } else {
-      this.serverService.addTimetable(new TimetableRequest(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns, this.serverService.getCompanyName(), this.routeNumber));
+      this.serverService.addTimetable(new TimetableRequest(this.timetableName, this.convertTimestampToDateString(this.validFromDate), this.convertTimestampToDateString(this.validToDate), this.frequencyPatterns, this.serverService.getCompanyName(), this.routeNumber));
     }
     // This is where we should now generate the schedules for the relevant timetable.
     if ( timetable.getValidFromDate() <= this.currentDateTime && timetable.getValidToDate() >= this.currentDateTime ) {
@@ -233,6 +274,19 @@ export class TimetablecreatorComponent {
     }
     // Now go to route editor screen.
     this.router.navigate(['routeeditor', this.routeNumber]);
+  }
+
+  /**
+   * This is a helper method to convert the date timestamp e.g. 2025-07-04T00:00:00.000Z
+   * to dd-MM-yyyy HH:mm
+   */
+  convertTimestampToDateString(value: string): string {
+    let dateParts = value.split('-');
+    let dateFormat = dateParts[2].split('T')[0] + '-' + dateParts[1] + '-' + dateParts[0];
+    let timeParts = value.split('T');
+    let timeParts2 = timeParts[0].split(':');
+    let timeFormat = timeParts2[0] + ':' + timeParts2[1];
+    return dateFormat + ' ' + timeFormat;
   }
 
   /**

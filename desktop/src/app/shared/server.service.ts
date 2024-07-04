@@ -15,6 +15,7 @@ import {Message} from "../messages/message.model";
 import {MessagesResponse} from "../messages/messages.response";
 import {Route} from "../routes/route.model";
 import {TimetableRequest} from "./timetable.request";
+import {RouteResponse} from "../routes/route.response";
 
 @Injectable()
 /**
@@ -210,6 +211,14 @@ export class ServerService {
      */
     async addTimetable(timetable: TimetableRequest) {
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/timetable/', timetable));
+    }
+
+    /**
+     * Get the route matching the supplied route number for the specified company.
+     * @param routeNumber the route number to retrieve.
+     */
+    async getRoute(routeNumber: string): Promise<RouteResponse> {
+        return await lastValueFrom(this.httpClient.get<RouteResponse>(this.serverUrl + '/route/?company=' + this.company + '&routeNumber=' + routeNumber))
     }
 
 
