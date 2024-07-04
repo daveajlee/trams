@@ -14,6 +14,7 @@ import {CompanyResponse} from "../management/company.response";
 import {Message} from "../messages/message.model";
 import {MessagesResponse} from "../messages/messages.response";
 import {Route} from "../routes/route.model";
+import {TimetableRequest} from "./timetable.request";
 
 @Injectable()
 /**
@@ -201,6 +202,14 @@ export class ServerService {
     async addRoute(route: Route) {
         // Post it to the server.
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/route/', route));
+    }
+
+    /**
+     * Add the timetable to the server for the specified company.
+     * @param timetable the timetable to add to the server.
+     */
+    async addTimetable(timetable: TimetableRequest) {
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/timetable/', timetable));
     }
 
 

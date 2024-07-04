@@ -1,7 +1,6 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.Driver;
-import de.davelee.trams.server.model.Vehicle;
 import de.davelee.trams.server.repository.DriverRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

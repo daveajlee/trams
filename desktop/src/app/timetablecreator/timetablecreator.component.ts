@@ -7,6 +7,13 @@ import {Timetable} from "../shared/timetable.model";
 import {ScheduleModel} from "../stops/stop-detail/schedule.model";
 import {ServiceModel} from "../stops/stop-detail/service.model";
 import {TimeHelper} from "../shared/time.helper";
+import {Route} from "../routes/route.model";
+import {Scenario} from "../shared/scenario.model";
+import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
+import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
+import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {ServerService} from "../shared/server.service";
+import {TimetableRequest} from "../shared/timetable.request";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -19,7 +26,6 @@ export class TimetablecreatorComponent {
   timetableName: string;
   validFromDate: string;
   validToDate: string;
-  private gameService: GameService;
 
   frequencyPatternName: string;
   frequencyPatternStartStop: string;
@@ -30,15 +36,42 @@ export class TimetablecreatorComponent {
 
   private frequencyPatterns: FrequencyPattern[];
 
-  constructor(private route: ActivatedRoute, private gameService2: GameService,
-              public router: Router, private datePipe: DatePipe) {
-    this.gameService = gameService2;
-    // Valid from date is current date.
-    this.validFromDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
-    // Valid to date is current date + 1 year.
-    let oneFromYearNow = new Date(this.gameService.getGame().getCurrentDateTime());
-    oneFromYearNow.setFullYear(oneFromYearNow.getFullYear() + 1)
-    this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
+  private currentDateTime: Date;
+  private route: Route;
+  private scenarioName: string;
+
+  constructor(private activatedRoute: ActivatedRoute, private gameService: GameService,
+              public router: Router, private datePipe: DatePipe, private serverService: ServerService) {
+    // Set the current date time.
+    if ( this.gameService.isOfflineMode() ) {
+      this.currentDateTime = this.gameService.getGame().getCurrentDateTime();
+      // Valid from date is current date.
+      this.validFromDate = this.datePipe.transform(this.currentDateTime, 'yyyy-MM-dd');
+      // Valid to date is current date + 1 year.
+      let oneFromYearNow = new Date(this.currentDateTime);
+      oneFromYearNow.setFullYear(oneFromYearNow.getFullYear() + 1)
+      this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
+    } else {
+      this.serverService.getCurrentDateTime().then((dateTime) => {
+        this.currentDateTime = TimeHelper.formatStringAsDateObject(dateTime);
+        // Valid from date is current date.
+        this.validFromDate = this.datePipe.transform(this.currentDateTime, 'yyyy-MM-dd');
+        // Valid to date is current date + 1 year.
+        let oneFromYearNow = new Date(this.currentDateTime);
+        oneFromYearNow.setFullYear(oneFromYearNow.getFullYear() + 1)
+        this.validToDate = this.datePipe.transform(oneFromYearNow, 'yyyy-MM-dd');
+      })
+    }
+    // Set the current route.
+    this.route = this.gameService.getGame().getRoute(this.routeNumber);
+    // Set the scenario name.
+    if ( this.gameService.isOfflineMode() ) {
+      this.scenarioName = this.gameService.getGame().getScenario().getScenarioName();
+    } else {
+      this.serverService.getScenarioName().then((scenarioName) => {
+        this.scenarioName = scenarioName;
+      })
+    }
     // Set start time to 06:00
     this.frequencyPatternStartTime = "06:00";
     // set end time to 18:30
@@ -53,7 +86,7 @@ export class TimetablecreatorComponent {
    * Copy parameters from last request so that we do not lose the information that the user has provided.
    */
   ngOnInit(): void {
-    this.route.queryParams
+    this.activatedRoute.queryParams
         .subscribe(params => {
               this.routeNumber = params.routeNumber;
             }
@@ -78,30 +111,27 @@ export class TimetablecreatorComponent {
 
   getFrequencyPatternStartStops(): string[] {
     let possibleStops = [];
-    let route = this.gameService.getGame().getRoute(this.routeNumber);
     if ( !this.frequencyPatternStartStop ) {
-      this.frequencyPatternStartStop = route.getStartStop();
+      this.frequencyPatternStartStop = this.route.getStartStop();
     }
-    possibleStops.push(route.getStartStop());
-    possibleStops = possibleStops.concat(route.getStops());
+    possibleStops.push(this.route.getStartStop());
+    possibleStops = possibleStops.concat(this.route.getStops());
     return possibleStops;
   }
 
   getFrequencyPatternEndStops(): string[] {
     let possibleStops = [];
-    let route = this.gameService.getGame().getRoute(this.routeNumber);
     if ( !this.frequencyPatternEndStop ) {
-      this.frequencyPatternEndStop = route.getEndStop();
+      this.frequencyPatternEndStop = this.route.getEndStop();
     }
-    possibleStops.push(route.getEndStop());
-    possibleStops = possibleStops.concat(route.getStops());
+    possibleStops.push(this.route.getEndStop());
+    possibleStops = possibleStops.concat(this.route.getStops());
     return possibleStops;
   }
 
   getNumberVehicles() : number {
     // Calculate the duration.
-    let route = this.gameService.getGame().getRoute(this.routeNumber);
-    let duration = route.getDuration(this.gameService.getGame().getScenario());
+    let duration = this.route.getDuration(this.loadScenario(this.scenarioName));
     // Check that duration is greater than 0.
     if ( duration > 0 ) {
       // Now calculate vehicles by dividing duration through frequency.
@@ -163,9 +193,13 @@ export class TimetablecreatorComponent {
     // Create Timetable.
     var timetable = new Timetable(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns);
     // Add it to the route.
-    this.gameService.getGame().getRoute(this.routeNumber).addTimetable(timetable);
+    if ( this.gameService.isOfflineMode() ) {
+      this.route.addTimetable(timetable);
+    } else {
+      this.serverService.addTimetable(new TimetableRequest(this.timetableName, this.validFromDate, this.validToDate, this.frequencyPatterns, this.serverService.getCompanyName(), this.routeNumber));
+    }
     // This is where we should now generate the schedules for the relevant timetable.
-    if ( timetable.getValidFromDate() <= this.gameService.getGame().getCurrentDateTime() && timetable.getValidToDate() >= this.gameService.getGame().getCurrentDateTime() ) {
+    if ( timetable.getValidFromDate() <= this.currentDateTime && timetable.getValidToDate() >= this.currentDateTime ) {
       // Timetable is relevant so get frequency pattern.
       for ( let i = 0; i < timetable.getFrequencyPatterns().length; i++ ) {
           // Now we go through the tours which are the schedules.
@@ -193,7 +227,7 @@ export class TimetablecreatorComponent {
               serviceCounter++;
             }
             // Now we add the route schedule.
-            this.gameService.getGame().getRoute(this.routeNumber).addSchedule(routeSchedule);
+            this.route.addSchedule(routeSchedule);
           }
       }
     }
@@ -212,23 +246,23 @@ export class TimetablecreatorComponent {
     // Go through remaining stops for the route.
     let distance = 0;
     if ( outgoing ) {
-      for ( let k = 0; k < this.gameService.getGame().getRoute(this.routeNumber).getStops().length; k++ ) {
+      for ( let k = 0; k < this.route.getStops().length; k++ ) {
         // Get the distance between this stop and the last stop.
-        distance += (k == 0 ) ? this.gameService.getGame().getScenario().getDistanceBetweenStop(frequencyPattern.getStartStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k])
-            : this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[k-1], this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
-        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[k]);
+        distance += (k == 0 ) ? this.loadScenario(this.scenarioName).getDistanceBetweenStop(frequencyPattern.getStartStop(), this.route.getStops()[k])
+            : this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[k-1], this.route.getStops()[k]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[k]);
       }
     } else {
-      for ( let m = this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1; m >= 0; m-- ) {
+      for ( let m = this.route.getStops().length - 1; m >= 0; m-- ) {
         // Get the distance between this stop and the last stop.
-        distance += ( m == this.gameService.getGame().getRoute(this.routeNumber).getStops().length - 1 ) ? this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], frequencyPattern.getEndStop())
-            : this.gameService.getGame().getScenario().getDistanceBetweenStop(this.gameService.getGame().getRoute(this.routeNumber).getStops()[m], this.gameService.getGame().getRoute(this.routeNumber).getStops()[m+1]);
+        distance += ( m == this.route.getStops().length - 1 ) ? this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[m], frequencyPattern.getEndStop())
+            : this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[m], this.route.getStops()[m+1]);
         console.log('Distance is ' + distance);
-        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.gameService.getGame().getRoute(this.routeNumber).getStops()[m]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[m]);
       }
     }
     // Now we need to do the end stop.
-    distance += this.gameService.getGame().getScenario().getDistanceBetweenStop(frequencyPattern.getEndStop(), this.gameService.getGame().getRoute(this.routeNumber).getStops()[this.gameService.getGame().getRoute(this.routeNumber).getStops().length-1]);
+    distance += this.loadScenario(this.scenarioName).getDistanceBetweenStop(frequencyPattern.getEndStop(), this.route.getStops()[this.route.getStops().length-1]);
     service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop());
     return service;
   }
@@ -248,6 +282,23 @@ export class TimetablecreatorComponent {
     if ( currentHours > suppliedHours ) {
       return false;
     } else return !(currentHours == suppliedHours && currentMinutes >= suppliedMinutes);
+  }
+
+  /**
+   * This is a helper method to load the correct scenario based on the supplied scenario name.
+   * @param scenario which contains the name of the scenario that the user chose.
+   * @returns the scenario object corresponding to the supplied name.
+   */
+  loadScenario(scenario: string): Scenario {
+    if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
+      return SCENARIO_LANDUFF;
+    } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
+      return SCENARIO_LONGTS;
+    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
+      return SCENARIO_MDORF;
+    } else {
+      return null;
+    }
   }
 
 }
