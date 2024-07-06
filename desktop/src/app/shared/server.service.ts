@@ -16,6 +16,7 @@ import {MessagesResponse} from "../messages/messages.response";
 import {Route} from "../routes/route.model";
 import {TimetableRequest} from "./timetable.request";
 import {RouteResponse} from "../routes/route.response";
+import {GenerateStopTimesRequest} from "../timetablecreator/generatestoptimes.request";
 
 @Injectable()
 /**
@@ -188,6 +189,8 @@ export class ServerService {
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
         // Delete the drivers
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
+        // Delete the timetables
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetables/?company=' + this.company));
         // Delete the routes
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/routes/?company=' + this.company));
         // Delete the vehicles
@@ -210,6 +213,7 @@ export class ServerService {
      * @param timetable the timetable to add to the server.
      */
     async addTimetable(timetable: TimetableRequest) {
+        console.log(timetable);
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/timetable/', timetable));
     }
 
@@ -221,5 +225,12 @@ export class ServerService {
         return await lastValueFrom(this.httpClient.get<RouteResponse>(this.serverUrl + '/route/?company=' + this.company + '&routeNumber=' + routeNumber))
     }
 
+    /**
+     * Generate the stop times for a particular frequency pattern within a timetable.
+     * @param generateStopTimesRequest the parameters for generating stop times.
+     */
+    async generateStopTimes(generateStopTimesRequest: GenerateStopTimesRequest): Promise<void> {
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/stopTimes/generate', generateStopTimesRequest));
+    }
 
 }

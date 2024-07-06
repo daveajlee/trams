@@ -16,6 +16,7 @@ import {ServerService} from "../shared/server.service";
 import {TimetableRequest} from "../shared/timetable.request";
 import {RouteResponse} from "../routes/route.response";
 import {RoutesService} from "../routes/routes.service";
+import {GenerateStopTimesRequest} from "./generatestoptimes.request";
 
 @Component({
   selector: 'app-timetablecreator',
@@ -236,16 +237,13 @@ export class TimetablecreatorComponent {
     // Add it to the route.
     if ( this.gameService.isOfflineMode() ) {
       this.route.addTimetable(timetable);
-    } else {
-      this.serverService.addTimetable(new TimetableRequest(this.timetableName, this.convertTimestampToDateString(this.validFromDate), this.convertTimestampToDateString(this.validToDate), this.frequencyPatterns, this.serverService.getCompanyName(), this.routeNumber));
-    }
-    // This is where we should now generate the schedules for the relevant timetable.
-    if ( timetable.getValidFromDate() <= this.currentDateTime && timetable.getValidToDate() >= this.currentDateTime ) {
-      // Timetable is relevant so get frequency pattern.
-      for ( let i = 0; i < timetable.getFrequencyPatterns().length; i++ ) {
+      // This is where we should now generate the schedules for the relevant timetable.
+      if ( timetable.getValidFromDate() <= this.currentDateTime && timetable.getValidToDate() >= this.currentDateTime ) {
+        // Timetable is relevant so get frequency pattern.
+        for ( let i = 0; i < timetable.getFrequencyPatterns().length; i++ ) {
           // Now we go through the tours which are the schedules.
-          for ( let j = 0; j < timetable.getFrequencyPatterns()[i].getNumTours(); j++ ) {
-            let routeSchedule = new ScheduleModel(this.routeNumber, "" + (i+1) * (j+1));
+          for (let j = 0; j < timetable.getFrequencyPatterns()[i].getNumTours(); j++) {
+            let routeSchedule = new ScheduleModel(this.routeNumber, "" + (i + 1) * (j + 1));
             console.log('Generating schedule ' + routeSchedule.getRouteNumberAndScheduleId());
             // Note the duration which is the frequency * num Tours
             let duration = timetable.getFrequencyPatterns()[i].getFrequencyInMinutes() * timetable.getFrequencyPatterns()[i].getNumTours();
@@ -253,27 +251,76 @@ export class TimetablecreatorComponent {
             let loopTime = timetable.getFrequencyPatterns()[i].getStartTime();
             let serviceCounter = 0;
             // Now repeat until we reach the end time.
-            while ( this.isBeforeTime(loopTime, timetable.getFrequencyPatterns()[i].getEndTime()) ) {
+            while (this.isBeforeTime(loopTime, timetable.getFrequencyPatterns()[i].getEndTime())) {
               // Add an outgoing service.
               routeSchedule.addService(this.generateService(timetable.getFrequencyPatterns()[i], loopTime, serviceCounter, j, true));
               // Add half of duration to cover outgoing service.
-              loopTime = TimeHelper.addTime(loopTime, (duration/2));
+              loopTime = TimeHelper.addTime(loopTime, (duration / 2));
               // Increase service counter
               serviceCounter++;
               // Add return service.
               routeSchedule.addService(this.generateService(timetable.getFrequencyPatterns()[i], loopTime, serviceCounter, j, false));
               // Add half of duration to cover return service.
-              loopTime = TimeHelper.addTime(loopTime, (duration/2));
+              loopTime = TimeHelper.addTime(loopTime, (duration / 2));
               // Increase service counter
               serviceCounter++;
             }
             // Now we add the route schedule.
             this.route.addSchedule(routeSchedule);
           }
+        }
       }
+      // Now go to route editor screen.
+      this.router.navigate(['routeeditor', this.routeNumber]);
+    } else {
+      console.log(this.convertTimestampToDateString(this.validFromDate));
+      console.log(this.convertTimestampToDateString(this.validToDate));
+      this.serverService.addTimetable(new TimetableRequest(this.timetableName, this.convertTimestampToDateString(this.validFromDate), this.convertTimestampToDateString(this.validToDate), this.frequencyPatterns, this.serverService.getCompanyName(), this.routeNumber)).then(() => {
+        // This is where we should now generate the schedules for the relevant timetable.
+        if (timetable.getValidFromDate() <= this.currentDateTime && timetable.getValidToDate() >= this.currentDateTime) {
+          // Timetable is relevant so get frequency pattern.
+          for (let i = 0; i < timetable.getFrequencyPatterns().length; i++) {
+            // Now we send the generate request to the server.
+            this.serverService.generateStopTimes(new GenerateStopTimesRequest(this.serverService.getCompanyName(),
+                this.getStopNames(timetable.getFrequencyPatterns()[i].getStartStop(), this.routeResponse.stops, timetable.getFrequencyPatterns()[i].getEndStop()), this.routeNumber, timetable.getFrequencyPatterns()[i].getStartTime(),
+                timetable.getFrequencyPatterns()[i].getEndTime(), timetable.getFrequencyPatterns()[i].getFrequencyInMinutes(),
+                TimeHelper.formatDateTimeAsString(timetable.getValidFromDate()),
+                TimeHelper.formatDateTimeAsString(timetable.getValidToDate()), this.getOperatingDays(timetable.getFrequencyPatterns()[i].getDaysOfOperation()))).then(() => {
+              // Now go to route editor screen.
+              this.router.navigate(['routeeditor', this.routeNumber]);
+            });
+          }
+        }
+      });
     }
-    // Now go to route editor screen.
-    this.router.navigate(['routeeditor', this.routeNumber]);
+  }
+
+  /**
+   * Get the list of operating days as a comma-separated string.
+   * @param operatingDays operating days as an array
+   * @return the operating days as a comma-separated string.
+   */
+  getOperatingDays(operatingDays: string[]): string {
+    let myOperatingDays = "";
+    operatingDays.forEach((operatingDay) => {
+      myOperatingDays = operatingDay + ",";
+    })
+    return myOperatingDays;
+  }
+
+  /**
+   * This creates an array of stop names that should be served.
+   * @param startStop the start stop to be served as a string
+   * @param stops the list of intermediate stops to be served as a string array
+   * @param endStop the end stop to be served as a string
+   * @return the array of stop names
+   */
+  getStopNames(startStop: string, stops: string[], endStop: string): string[] {
+    let stopNames = [];
+    stopNames.push(startStop);
+    stopNames = stopNames.concat(stops);
+    stopNames.push(endStop);
+    return stopNames;
   }
 
   /**
@@ -281,11 +328,17 @@ export class TimetablecreatorComponent {
    * to dd-MM-yyyy HH:mm
    */
   convertTimestampToDateString(value: string): string {
+    console.log('value: ' + value);
     let dateParts = value.split('-');
     let dateFormat = dateParts[2].split('T')[0] + '-' + dateParts[1] + '-' + dateParts[0];
-    let timeParts = value.split('T');
-    let timeParts2 = timeParts[0].split(':');
-    let timeFormat = timeParts2[0] + ':' + timeParts2[1];
+    let timeFormat;
+    if ( value.includes('T') ) {
+      let timeParts = value.split('T');
+      let timeParts2 = timeParts[0].split(':');
+      timeFormat = timeParts2[0] + ':' + timeParts2[1];
+    } else {
+      timeFormat = "00:00";
+    }
     return dateFormat + ' ' + timeFormat;
   }
 

@@ -6,8 +6,8 @@ import {FrequencyPattern} from "./frequencypattern.model";
 export class TimetableRequest {
 
     private name: string;
-    private validFromDate: Date;
-    private validToDate: Date;
+    private validFromDate: string;
+    private validToDate: string;
     private frequencyPatterns: FrequencyPattern[];
     private company: string;
     private routeNumber: string;
@@ -25,8 +25,8 @@ export class TimetableRequest {
     constructor(name: string, validFromDate: string, validToDate: string, frequencyPatterns: FrequencyPattern[], company: string,
                 routeNumber: string) {
         this.name = name;
-        this.validFromDate = new Date(validFromDate);
-        this.validToDate = new Date(validToDate);
+        this.validFromDate = validFromDate;
+        this.validToDate = validToDate;
         this.frequencyPatterns = frequencyPatterns;
         this.company = company;
         this.routeNumber = routeNumber;

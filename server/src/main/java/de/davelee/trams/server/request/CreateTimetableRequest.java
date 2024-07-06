@@ -2,8 +2,6 @@ package de.davelee.trams.server.request;
 
 import lombok.*;
 
-import java.time.LocalDate;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to create
  * a timetable for a particular route and company.

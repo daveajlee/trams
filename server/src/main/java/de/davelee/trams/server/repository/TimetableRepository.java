@@ -19,4 +19,11 @@ public interface TimetableRepository extends MongoRepository<Timetable, String> 
      */
     List<Timetable> findByCompanyAndRouteNumberStartsWith (final String company, final String routeNumber);
 
+    /**
+     * Return a list of timetables owned by this company.
+     * @param company a <code>String</code> containing the name of the company to retrieve timetables for.
+     * @return a <code>List</code> of <code>Timetable</code> objects containing the matching timetables.
+     */
+    List<Timetable> findByCompany (final String company);
+
 }

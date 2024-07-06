@@ -41,7 +41,7 @@ public class TimetableController {
     @Operation(summary = "Create a timetable", description = "Create a timetable")
     @PostMapping(value = "/")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully created timetable"), @ApiResponse(responseCode = "409", description = "Timetable conflicted with a timetable that already exists")})
-    public ResponseEntity<CreateTimetableResponse> createTimetable(@RequestBody CreateTimetableRequest createTimetableRequest) {
+    public ResponseEntity<Void> createTimetable(@RequestBody CreateTimetableRequest createTimetableRequest) {
         //Check that the request is valid.
         if (StringUtils.isBlank(createTimetableRequest.getCompany())) {
             return ResponseEntity.badRequest().build();
@@ -60,12 +60,13 @@ public class TimetableController {
                 .validFromDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidFromDate()))
                 .validToDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidToDate()))
                 .build();
+        System.out.println(timetable);
         if (timetableService.addTimetable(timetable)) {
-            //Return the timetable response object if it was added successfully.
-            return ResponseEntity.ok(CreateTimetableResponse.builder().build());
+            //Return ok if it was added successfully.
+            return ResponseEntity.ok().build();
         }
         //Otherwise return an empty 500 response.
-        return ResponseEntity.of(Optional.of(CreateTimetableResponse.builder().build())).status(500).build();
+        return ResponseEntity.status(500).build();
     }
 
 }

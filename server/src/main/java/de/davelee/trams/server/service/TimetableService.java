@@ -38,4 +38,23 @@ public class TimetableService {
         return timetableRepository.findByCompanyAndRouteNumberStartsWith(company, routeNumber);
     }
 
+    /**
+     * Retrieve all timetables for a particular company from the database for all types.
+     * @param company a <code>String</code> with the company to search for.
+     * @return a <code>List</code> of <code>Timetable</code> objects.
+     */
+    public List<Timetable> retrieveTimetablesByCompany ( final String company) {
+        //Return the timetables found.
+        return timetableRepository.findByCompany(company);
+    }
+
+    /**
+     * Delete all timetables currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to delete timetables for.
+     */
+    public void deleteTimetables(final String company) {
+        List<Timetable> timetables = retrieveTimetablesByCompany(company);
+        timetables.forEach(timetableRepository::delete);
+    }
+
 }

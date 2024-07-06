@@ -92,4 +92,12 @@ export class FrequencyPattern {
         return this.numTours;
     }
 
+    /**
+     * Get the days of operation as a string array.
+     * @return the days of operation as a string array.
+     */
+    getDaysOfOperation(): string[] {
+        return this.daysOfOperation;
+    }
+
 }
