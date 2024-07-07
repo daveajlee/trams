@@ -40,4 +40,3 @@ Since the future desktop client based on Electron is still being developed, the 
 
 * Details of what is currently implemented can be found here: https://www.davelee.de/trams/#/features
 * Details of what is currently planned for the near future: https://www.davelee.de/trams/#/roadmap
-* Whilst the server is relatively feature complete (see the above links for more details), there is no client to support this server yet. Please use the old Desktop game repo (https://github.com/daveajlee/trams-game) or write your own client ;)
