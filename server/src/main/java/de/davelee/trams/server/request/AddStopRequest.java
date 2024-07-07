@@ -2,6 +2,7 @@ package de.davelee.trams.server.request;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,9 +32,14 @@ public class AddStopRequest {
     private int waitingTime;
 
     /**
-     * The distances between this stop and other stops as key/value pair with stop name and distance in minutes.
+     * A list of the other stop names since some programming languages do not support map/key values.
      */
-    private Map<String, Integer> distances;
+    private List<String> otherStopNames;
+
+    /**
+     * The distances between this stop and the other stops. The distance matches the position in the stop names list.
+     */
+    private List<Integer> otherStopDistances;
 
     /**
      * The latitude location of the stop which should be in a valid format for a latitude e.g. 50.0200004

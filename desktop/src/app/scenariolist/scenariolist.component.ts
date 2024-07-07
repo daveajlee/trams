@@ -15,6 +15,7 @@ import {TimeHelper} from "../shared/time.helper";
 import {VehicleRequest} from "../vehicles/vehicle.request";
 import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
 import {DriverRequest} from "../drivers/driver.request";
+import {AddStopRequest} from "../stops/addstop.request";
 
 @Component({
   selector: 'app-scenariolist',
@@ -110,7 +111,33 @@ export class ScenariolistComponent implements OnInit {
               this.serverService.addDriver(new DriverRequest(mySuppliedDrivers[i], 35, TimeHelper.formatDateTimeAsString(new Date()), this.company));
           }
       }
-      this.router.navigate(['management']);
+      // Add the stops if we are running in online mode.
+      if ( !this.gameService.isOfflineMode() ) {
+          var stopDistances = this.loadScenario(scenario).getStopDistances();
+          // Go through the stops.
+          for ( let i = 0; i < stopDistances.length; i++ ) {
+              // Get the stop we are dealing with.
+              let stopName = stopDistances[i].split(":")[0];
+              // Initialise lists for distances.
+              let otherStopNames = []; let otherStopDistances = [];
+              let splitStopDistances = stopDistances[i].split(":")[1].split(",");
+              for ( let j = 0; j < splitStopDistances.length; j++ ) {
+                  if ( j !== i ) {
+                      otherStopNames.push(stopDistances[j].split(":")[0]);
+                      otherStopDistances.push(splitStopDistances[j]);
+                  }
+              }
+              // Create request.
+              let addStopRequest = new AddStopRequest(stopName, this.serverService.getCompanyName(),
+                  0, otherStopNames, otherStopDistances, 0, 0);
+              // Add the stop to the server.
+              this.serverService.addStop(addStopRequest).then(() => {
+                  this.router.navigate(['management']);
+              })
+          }
+      } else {
+          this.router.navigate(['management']);
+      }
   }
 
     /**

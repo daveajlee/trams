@@ -58,8 +58,6 @@ public class VehicleController {
         if ( vehicles != null && vehicles.size() != 0 ) {
             return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(409).build();
         }
-        System.out.println(purchaseVehicleRequest);
-        System.out.println(purchaseVehicleRequest.getAdditionalTypeInformationMap());
         //Construct the vehicle and add it to the database.
         Vehicle vehicle = Vehicle.builder()
                 .company(purchaseVehicleRequest.getCompany())

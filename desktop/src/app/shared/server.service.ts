@@ -17,6 +17,7 @@ import {Route} from "../routes/route.model";
 import {TimetableRequest} from "./timetable.request";
 import {RouteResponse} from "../routes/route.response";
 import {GenerateStopTimesRequest} from "../timetablecreator/generatestoptimes.request";
+import {AddStopRequest} from "../stops/addstop.request";
 
 @Injectable()
 /**
@@ -189,6 +190,8 @@ export class ServerService {
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
         // Delete the drivers
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
+        // Delete the stops
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stops/?company=' + this.company));
         // Delete the timetables
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetables/?company=' + this.company));
         // Delete the routes
@@ -213,7 +216,6 @@ export class ServerService {
      * @param timetable the timetable to add to the server.
      */
     async addTimetable(timetable: TimetableRequest) {
-        console.log(timetable);
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/timetable/', timetable));
     }
 
@@ -232,5 +234,14 @@ export class ServerService {
     async generateStopTimes(generateStopTimesRequest: GenerateStopTimesRequest): Promise<void> {
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/stopTimes/generate', generateStopTimesRequest));
     }
+
+    /**
+     * Add the stop to the server for the specified company.
+     * @param stop the stop to add to the server.
+     */
+    async addStop(stop: AddStopRequest) {
+        await lastValueFrom(this.httpClient.post(this.serverUrl + '/stop/', stop));
+    }
+
 
 }
