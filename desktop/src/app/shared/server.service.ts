@@ -190,6 +190,8 @@ export class ServerService {
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
         // Delete the drivers
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
+        // Delete the stop times
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stopTimes/?company=' + this.company));
         // Delete the stops
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stops/?company=' + this.company));
         // Delete the timetables

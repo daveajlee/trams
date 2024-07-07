@@ -20,7 +20,7 @@ export class RoutesService {
    * @param routesResponse the response sent from the server with matching routes.
    */
   setRoutes(routesResponse: RoutesResponse): void {
-    this.routes = routesResponse.getRouteResponses();
+    this.routes = routesResponse.routeResponses;
     this.routesChanged.next(this.routes.slice());
   }
 

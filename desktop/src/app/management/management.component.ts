@@ -33,7 +33,7 @@ export class ManagementComponent implements OnInit {
       } )
       this.serverService.getRoutes().then((routes) => {
         if ( routes ) {
-          this.doRoutesExist = routes.getRouteResponses().length > 0;
+          this.doRoutesExist = routes.routeResponses.length > 0;
         } else {
           this.doRoutesExist = false;
         }

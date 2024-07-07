@@ -373,4 +373,24 @@ public class StopTimesController {
         return stopTimeList;
     }
 
+    /**
+     * Delete all stop times currently stored in the database for a particular company.
+     * @param company a <code>String</code> containing the name of the company to search for.
+     * @return a <code>ResponseEntity</code> object containing the results of the action.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @Operation(summary = "Delete stop times", description="Delete all stop times")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted stop times")})
+    public ResponseEntity<Void> deleteStopTimes (final String company ) {
+        //First of all, check if the company field is empty or null, then return bad request.
+        if (StringUtils.isBlank(company)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Delete all stop times for this company.
+        stopTimeService.deleteStopTimes(company);
+        //Return ok.
+        return ResponseEntity.ok().build();
+    }
+
 }

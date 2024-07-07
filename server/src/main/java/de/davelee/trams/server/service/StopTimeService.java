@@ -1,12 +1,10 @@
 package de.davelee.trams.server.service;
 
-import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.StopTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -194,6 +192,25 @@ public class StopTimeService {
     private LocalTime convertToLocalTime ( final String time ) {
         String[] timeHoursMinArray = time.split(":");
         return LocalTime.of(Integer.parseInt(timeHoursMinArray[0]), Integer.parseInt(timeHoursMinArray[1]));
+    }
+
+    /**
+     * Retrieve all stop times for a particular company from the database.
+     * @param company a <code>String</code> with the company to search for.
+     * @return a <code>List</code> of <code>StopTime</code> objects.
+     */
+    public List<StopTime> retrieveStopTimesByCompany ( final String company) {
+        //Return the stop times found.
+        return stopTimeRepository.findByCompany(company);
+    }
+
+    /**
+     * Delete all stop times currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to delete stop times for.
+     */
+    public void deleteStopTimes(final String company) {
+        List<StopTime> stopTimes = retrieveStopTimesByCompany(company);
+        stopTimes.forEach(stopTimeRepository::delete);
     }
 
 }
