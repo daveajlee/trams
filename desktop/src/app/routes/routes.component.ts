@@ -17,8 +17,8 @@ import {ServerService} from "../shared/server.service";
  */
 export class RoutesComponent implements OnInit, OnDestroy {
 
+  private allRoutes: Route[];
   private routes: Route[];
-  private subscription: Subscription;
   filteredRouteNumber: string;
 
   /**
@@ -30,36 +30,35 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   constructor(private serverService: ServerService, private routesService: RoutesService, private gameService: GameService,
               private router:Router) {
+    if ( this.gameService.isOfflineMode() ) {
+      this.allRoutes = this.gameService.getGame().getRoutes();
+      this.routes = this.allRoutes;
+    } else {
+      this.serverService.getRoutes().then((routes) => {
+        // Set the routes to an empty array.
+        this.allRoutes = [];
+        // Convert the route responses to route objects and add to array.
+        for ( let i = 0; i < routes.routeResponses.length; i++ ) {
+          let route = new Route(routes.routeResponses[i].routeNumber, routes.routeResponses[i].startStop,
+              routes.routeResponses[i].endStop, routes.routeResponses[i].stops, routes.routeResponses[i].company);
+          route.setNightRoute(routes.routeResponses[i].nightRoute);
+          this.allRoutes.push(route);
+        }
+        this.routes = this.allRoutes;
+      })
+    }
   }
 
   /**
    * Initialise a new routes component which maintains a list of routes that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    this.routes = this.retrieveAllRoutes();
   }
 
   /**
    * Destroy the subscription when the component is destroyed.
    */
   ngOnDestroy(): void {
-    if ( !this.gameService.isOfflineMode() ) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  /**
-   * Helper method to retrieve all stops.
-   */
-  retrieveAllRoutes(): Route[] {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getRoutes();
-    } else {
-      this.subscription = this.routesService.getRoutesChanged().subscribe((routes: Route[]) => {
-        this.routes = routes;
-      });
-      return this.routesService.getRoutes();
-    }
   }
 
   /**
@@ -67,7 +66,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * @param dayRoutes true iff day routes should be shown or false if only night routes should be shown.
    */
   filterRoutes(dayRoutes: boolean): void {
-    let routes = this.retrieveAllRoutes();
+    let routes = this.allRoutes;
     if ( dayRoutes ) {
       this.routes = routes.filter((route: Route) =>
           !route.isNightRoute())
@@ -81,7 +80,7 @@ export class RoutesComponent implements OnInit, OnDestroy {
    * Filter the route number.
    */
   filterRouteNumber(): void {
-    let routes = this.retrieveAllRoutes();
+    let routes = this.allRoutes;
     if ( this.filteredRouteNumber != "" ) {
       this.routes = routes.filter((route: Route) =>
           route.getRouteNumber().startsWith(this.filteredRouteNumber));
@@ -115,6 +114,14 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   viewTimetable(routeNumber: string) {
     this.router.navigate(['timetableviewer', routeNumber]);
+  }
+
+  /**
+   * Retrieve the routes to be displayed to the user.
+   * @return the list of routes that should currently be displayed to the user.
+   */
+  getRoutes(): Route[] {
+    return this.routes;
   }
 
   /**

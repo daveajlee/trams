@@ -1,12 +1,8 @@
 package de.davelee.trams.server.response;
 
-import de.davelee.trams.server.utils.CustomerUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test cases for the <class>MessagesResponse</class> class which are not covered
@@ -29,7 +25,7 @@ public class MessageResponseTest {
         messageResponse.setText("This is a test message");
         messageResponse.setSubject("Test");
         messageResponse.setDateTime("28-12-2020 12:22");
-        assertEquals("MessagesResponse(company=Mustermann GmbH, subject=Test, text=This is a test message, sender=Local Authority, folder=INBOX, dateTime=28-12-2020 12:22)", messageResponse.toString());
+        assertEquals("MessageResponse(company=Mustermann GmbH, subject=Test, text=This is a test message, sender=Local Authority, folder=INBOX, dateTime=28-12-2020 12:22)", messageResponse.toString());
     }
 
 }

@@ -1,9 +1,9 @@
-package de.davelee.trams.server.request;
+package de.davelee.trams.server.response;
 
 import lombok.*;
 
 /**
- * This class is part of the TraMS Server REST API. It represents a request to create
+ * This class is part of the TraMS Server REST API. It represents a response with
  * a frequency pattern for a particular timetable.
  * @author Dave Lee
  */
@@ -13,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class FrequencyPatternRequest {
+public class FrequencyPatternResponse {
 
     /**
      * The name of this frequency pattern.

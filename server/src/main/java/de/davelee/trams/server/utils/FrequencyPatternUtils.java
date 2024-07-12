@@ -3,6 +3,7 @@ package de.davelee.trams.server.utils;
 import de.davelee.trams.server.model.FrequencyPattern;
 import de.davelee.trams.server.model.OperatingDays;
 import de.davelee.trams.server.request.FrequencyPatternRequest;
+import de.davelee.trams.server.response.FrequencyPatternResponse;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -53,7 +54,45 @@ public class FrequencyPatternUtils {
                 .builder()
                 .operatingDays(dayOfWeekList)
                 .build();
+    }
 
+    /**
+     * This method converts a FrequencyPattern object to a FrequencyPatternResponse object. If the conversion is not
+     * successful then return null.
+     * @param frequencyPatterns an array of <code>FrequencyPattern</code> objects
+     * @return a <code>FrequencyPatternResponse</code> array with the converted objects or null if no conversion is possible.
+     */
+    public static FrequencyPatternResponse[] convertFrequencyPatternsToFrequencyPatternResponses (final FrequencyPattern[] frequencyPatterns) {
+        FrequencyPatternResponse[] frequencyPatternResponses = new FrequencyPatternResponse[frequencyPatterns.length];
+        for ( int i = 0; i < frequencyPatternResponses.length; i++ ) {
+            frequencyPatternResponses[i] = FrequencyPatternResponse.builder()
+                    .frequencyInMinutes(frequencyPatterns[i].getFrequencyInMinutes())
+                    .startStop(frequencyPatterns[i].getStartStop())
+                    .startTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getStartTime()))
+                    .endStop(frequencyPatterns[i].getEndStop())
+                    .endTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getEndTime()))
+                    .daysOfOperation(FrequencyPatternUtils.convertOperatingDays(frequencyPatterns[i].getDaysOfOperation()))
+                    .name(frequencyPatterns[i].getName())
+                    .numTours(frequencyPatterns[i].getNumTours())
+                    .build();
+        }
+        return frequencyPatternResponses;
+    }
+
+    /**
+     * Convert the days of operation array as a String into an array of a OperatingDays object.
+     * @param operatingDays a <code>String</code> array to be converted.
+     * @return a <code>String</code> array with the converted days.
+     */
+    public static String[] convertOperatingDays(OperatingDays operatingDays) {
+        // Process the operating days.
+        List<DayOfWeek> dayOfWeekList = operatingDays.getOperatingDays();
+        String[] daysOfOperation = new String[dayOfWeekList.size()];
+        for (int i = 0; i < dayOfWeekList.size(); i++) {
+            daysOfOperation[i] = dayOfWeekList.get(i).name();
+        }
+        // Return the operating days.
+        return daysOfOperation;
     }
 
 }

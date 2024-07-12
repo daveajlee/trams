@@ -95,7 +95,7 @@ public class StopTimesController {
             processDate = processDate.plusDays(1);
         } while ( ! processDate.isAfter(lastDate) );
         //If the list is empty or null then return no content.
-        if ( stopTimeList.size() == 0 ) {
+        if ( stopTimeList.isEmpty() ) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         //Now do the proessing into correct Response objects and return.
@@ -109,6 +109,7 @@ public class StopTimesController {
                     .journeyNumber(stopTimeList.get(i).getJourneyNumber())
                     .operatingDays(StopTimeUtils.convertOperatingDaysToString(stopTimeList.get(i).getOperatingDays()))
                     .routeNumber(stopTimeList.get(i).getRouteNumber())
+                    .scheduleNumber(stopTimeList.get(i).getScheduleNumber())
                     .validFromDate(stopTimeList.get(i).getValidFromDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .validToDate(stopTimeList.get(i).getValidToDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                     .stopName(stopTimeList.get(i).getStopName())
@@ -154,7 +155,7 @@ public class StopTimesController {
                 forEach(stopTime -> {
                     RealTimeEntryModel realTimeEntryModel = new RealTimeEntryModel();
                     realTimeEntryModel.setMins((int) Duration.between(LocalTime.now(), stopTime.getDepartureTime()).getSeconds() / 60);
-                    realTimeEntryModel.setRoute(routeService.getRoutesByCompanyAndRouteNumber(operator, stopTime.getRouteNumber()).get(0));
+                    realTimeEntryModel.setRoute(routeService.getRoutesByCompanyAndRouteNumber(operator, stopTime.getRouteNumber()).getFirst());
                     if ( stopTime.getDestination().contentEquals(stop)) {
                         realTimeEntryModel.setDestination("Journey Terminates Here");
                     } else {
@@ -170,8 +171,6 @@ public class StopTimesController {
                 realTimeEntryModels.subList(0, numDepartures) : realTimeEntryModels );
         return realTimeModel;
     }
-
-
 
     /**
      * Generate stop time entries within a specified time and frequency and save them to the database.
@@ -190,20 +189,20 @@ public class StopTimesController {
         LocalTime randomStartTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
         Random rand = new Random();
         randomStartTime = randomStartTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
-        //Generate the first trip in outward direction.
-        stopTimeList.addAll(generateFirstTrip(Direction.OUTGOING, generateStopTimesRequest, randomStartTime, 1));
-        //Generate all remaining trips in outward direction.
-        stopTimeList.addAll(generateRemainingTrips(Direction.OUTGOING, generateStopTimesRequest,
-                        randomStartTime.plusMinutes(generateStopTimesRequest.getFrequency()),
-                        Integer.parseInt(stopTimeList.get(stopTimeList.size()-1).getJourneyNumber())+1));
         //The start time for return trips.
         LocalTime randomStartReturnTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
         randomStartReturnTime = randomStartReturnTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
+        //Generate the first trip in outward direction.
+        stopTimeList.addAll(generateFirstTrip(Direction.OUTGOING, generateStopTimesRequest, randomStartTime, 1, randomStartTime.isBefore(randomStartReturnTime) ? 1 : 2));
+        //Generate all remaining trips in outward direction.
+        stopTimeList.addAll(generateRemainingTrips(Direction.OUTGOING, generateStopTimesRequest,
+                        randomStartTime.plusMinutes(generateStopTimesRequest.getFrequency()),
+                        Integer.parseInt(stopTimeList.getLast().getJourneyNumber())+1));
         //Generate the first trip in return direction.
-        stopTimeList.addAll(generateFirstTrip(Direction.RETURN, generateStopTimesRequest, randomStartReturnTime,Integer.parseInt(stopTimeList.get(stopTimeList.size()-1).getJourneyNumber())+1));
+        stopTimeList.addAll(generateFirstTrip(Direction.RETURN, generateStopTimesRequest, randomStartReturnTime,Integer.parseInt(stopTimeList.getLast().getJourneyNumber())+1, !randomStartTime.isBefore(randomStartReturnTime) ? 2 : 1));
         //Generate all remaining trips in return direction.
         stopTimeList.addAll(generateRemainingTrips(Direction.RETURN, generateStopTimesRequest, randomStartReturnTime.plusMinutes(generateStopTimesRequest.getFrequency()),
-                Integer.parseInt(stopTimeList.get(stopTimeList.size()-1).getJourneyNumber())+1));
+                Integer.parseInt(stopTimeList.getLast().getJourneyNumber())+1));
         //Add all of the stop times in bulk to the database.
         return stopTimeService.addStopTimes(stopTimeList) ? ResponseEntity.ok().build() : ResponseEntity.status(500).build();
     }
@@ -215,10 +214,11 @@ public class StopTimesController {
      *                                 generate stop times including stops, distances and frequencies.
      * @param startTripTime a <code>LocalTime</code> object with the time to start to generate the trip from.
      * @param startJourneyNumber a <code>int</code> with the journey number to use for the first stop time generated.
+     * @param scheduleNumber a <code>int</code> with the schedule number to use for the first trip.
      * @return a <code>List</code> of <code>StopTime</code> objects which have been generated automatically.
      */
     private List<StopTime> generateFirstTrip ( final Direction direction, final GenerateStopTimesRequest generateStopTimesRequest,
-                                               final LocalTime startTripTime, final int startJourneyNumber ) {
+                                               final LocalTime startTripTime, final int startJourneyNumber, final int scheduleNumber ) {
         //Initialise journey number.
         int journeyNumber = startJourneyNumber;
         //Initilise time.
@@ -233,6 +233,7 @@ public class StopTimesController {
                     .departureTime(generateTime.plusMinutes(stopService.getStop(generateStopTimesRequest.getCompany(), generateStopTimesRequest.getStopNames()[0]).getWaitingTime()))
                     .stopName(generateStopTimesRequest.getStopNames()[0])
                     .id(journeyNumber)
+                    .scheduleNumber(scheduleNumber)
                     .journeyNumber("" + journeyNumber++)
                     .destination(generateStopTimesRequest.getStopNames()[generateStopTimesRequest.getStopNames().length - 1])
                     .routeNumber(generateStopTimesRequest.getRouteNumber())
@@ -328,6 +329,7 @@ public class StopTimesController {
                             .stopName(generateStopTimesRequest.getStopNames()[i])
                             .id(journeyNumber)
                             .journeyNumber("" + journeyNumber++)
+                            .scheduleNumber(-1)
                             .destination(generateStopTimesRequest.getStopNames()[generateStopTimesRequest.getStopNames().length - 1])
                             .routeNumber(generateStopTimesRequest.getRouteNumber())
                             .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))
@@ -355,6 +357,7 @@ public class StopTimesController {
                             .stopName(generateStopTimesRequest.getStopNames()[i])
                             .id(journeyNumber)
                             .journeyNumber("" + journeyNumber++)
+                            .scheduleNumber(-1)
                             .destination(generateStopTimesRequest.getStopNames()[0])
                             .routeNumber(generateStopTimesRequest.getRouteNumber())
                             .operatingDays(StopTimeUtils.convertOperatingDays(generateStopTimesRequest.getOperatingDays()))

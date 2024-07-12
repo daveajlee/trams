@@ -1,10 +1,10 @@
 /**
  * This class defines a response for Routes in TraMS which consist of a count and a Route array.
  */
-import {Route} from './route.model';
+import {RouteResponse} from "./route.response";
 
 export class RoutesResponse {
 
-    public routeResponses: Route[];
+    public routeResponses: RouteResponse[];
 
 }

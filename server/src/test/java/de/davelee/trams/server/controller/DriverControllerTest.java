@@ -46,7 +46,7 @@ public class DriverControllerTest {
                         .company("Lee Transport")
                         .build());
         assertEquals(200, responseEntity.getStatusCode().value());
-        assertTrue(responseEntity.getBody().isEmployed());
+        assertTrue(responseEntity.getBody() != null && responseEntity.getBody().isEmployed());
         assertEquals(500, responseEntity.getBody().getEmploymentCost());
     }
 
@@ -56,7 +56,7 @@ public class DriverControllerTest {
     @Test
     public void testInvalidEmployDriver() {
         //Mock important methods
-        Mockito.when(driverService.retrieveDriversByCompanyAndName("Lee Transport", "Max")).thenReturn(Lists.newArrayList(Driver.builder()
+        Mockito.when(driverService.retrieveDriversByCompanyAndName("Lee Transport", "Max Mustermann")).thenReturn(Lists.newArrayList(Driver.builder()
                 .name("Max Mustermann")
                 .startDate(DateUtils.convertDateToLocalDateTime("29-06-2024 00:00"))
                 .contractedHours(35)

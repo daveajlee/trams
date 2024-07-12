@@ -49,6 +49,11 @@ public class StopTimeResponse {
     private String routeNumber;
 
     /**
+     * The schedule number for this journey.
+     */
+    private int scheduleNumber;
+
+    /**
      * The date from which this stop occurs (inclusive).
      */
     private String validFromDate;

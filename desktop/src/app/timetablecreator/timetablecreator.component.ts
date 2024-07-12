@@ -165,19 +165,21 @@ export class TimetablecreatorComponent {
   }
 
   getNumberVehicles() : number {
-    // Calculate the duration.
-    let duration;
-    if( this.gameService.isOfflineMode() ) {
-      duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.route.getStartStop(), this.route.getStops(), this.route.getEndStop());
-    } else {
-      if ( this.routeResponse ) {
-        duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.routeResponse.startStop, this.routeResponse.stops, this.routeResponse.endStop);
+    if ( this.scenarioName ) {
+      // Calculate the duration.
+      let duration;
+      if( this.gameService.isOfflineMode() ) {
+        duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.route.getStartStop(), this.route.getStops(), this.route.getEndStop());
+      } else {
+        if ( this.routeResponse ) {
+          duration = this.routeService.getDuration(this.loadScenario(this.scenarioName), this.routeResponse.startStop, this.routeResponse.stops, this.routeResponse.endStop);
+        }
       }
-    }
-    // Check that duration is greater than 0.
-    if ( duration > 0 ) {
-      // Now calculate vehicles by dividing duration through frequency.
-      return Math.ceil(duration/this.frequencyPatternFrequency);
+      // Check that duration is greater than 0.
+      if ( duration > 0 ) {
+        // Now calculate vehicles by dividing duration through frequency.
+        return Math.ceil(duration / this.frequencyPatternFrequency);
+      }
     }
     return 0;
   }

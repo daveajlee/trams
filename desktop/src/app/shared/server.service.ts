@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {StopsResponse} from "../stops/stops-response.model";
-import {RoutesResponse} from "../routes/routes-response.model";
+import {RoutesResponse} from "../routes/routes.response";
 import {VehiclesResponse} from "../vehicles/vehicles-response.model";
 import {CompanyRequest} from "../scenariolist/company.request";
 import {Game} from "../game/game.model";
@@ -18,6 +18,7 @@ import {TimetableRequest} from "./timetable.request";
 import {RouteResponse} from "../routes/route.response";
 import {GenerateStopTimesRequest} from "../timetablecreator/generatestoptimes.request";
 import {AddStopRequest} from "../stops/addstop.request";
+import {TimetablesResponse} from "./timetables.response";
 
 @Injectable()
 /**
@@ -245,5 +246,21 @@ export class ServerService {
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/stop/', stop));
     }
 
+    /**
+     * Retrieve the list of timetables that exist on the server for the configured company.
+     * @param routeNumber the route number to retrieve the timetables for.
+     */
+    async getTimetables(routeNumber: string): Promise<TimetablesResponse> {
+        return await lastValueFrom(this.httpClient.get<TimetablesResponse>(this.serverUrl + '/timetables/?company=' + this.company + '&routeNumber=' + routeNumber));
+    }
 
+    /**
+     * Delete the timetable matching the supplied route number and timetable name for the configured company.
+     * @param routeNumber the route number which must match.
+     * @param name the name of the timetable which must match.
+     */
+    async deleteTimetable(routeNumber: string, name: string): Promise<void> {
+        // Delete the timetable
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetable/?company=' + this.company + '&name=' + name + '&routeNumber=' + routeNumber));
+    }
 }

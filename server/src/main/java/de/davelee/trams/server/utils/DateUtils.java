@@ -63,4 +63,17 @@ public class DateUtils {
         return date.format(DATE_TIME_FORMATTER);
     }
 
+    /**
+     * This method converts a LocalTime object to a string time in the format HH:mm. If the conversion is not
+     * successful then return null.
+     * @param time a <code>LocalTime</code> with the time to convert
+     * @return a <code>String</code> with the converted String.
+     */
+    public static String convertLocalTimeToTime (final LocalTime time ) {
+        if ( time == null ) {
+            return null;
+        }
+        return time.format(TIME_FORMATTER);
+    }
+
 }

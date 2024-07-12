@@ -1,16 +1,12 @@
 package de.davelee.trams.server.model;
 
-import de.davelee.trams.server.constant.OperatingDaysAbbreviations;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 /**
  * This class represents a departure and/or arrival at a particular stop. A stop time can contain an id, a name, an arrival and/or departure time, a destination,
@@ -58,6 +54,11 @@ public class StopTime {
      * The number of the route which this journey is a part of.
      */
     private String routeNumber;
+
+    /**
+     * The schedule number for this journey.
+     */
+    private int scheduleNumber;
 
     /**
      * The date from which this stop occurs (inclusive).

@@ -34,7 +34,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let routeEl of retrieveAllRoutes(), let i = index">
+    <tr *ngFor="let routeEl of getRoutes(), let i = index">
         <td>
             <i *ngIf="routeEl.isNightRoute()" class="icofont-night"></i>
             <i *ngIf="!routeEl.isNightRoute()" class="icofont-sun-alt"></i>

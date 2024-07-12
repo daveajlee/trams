@@ -49,6 +49,7 @@ public class DriverController {
         }
         //Check that this driver does not already exist.
         List<Driver> drivers = driverService.retrieveDriversByCompanyAndName(employDriverRequest.getCompany(), employDriverRequest.getName());
+        System.out.println(drivers);
         if (drivers != null && !drivers.isEmpty()) {
             return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(409).build();
         }

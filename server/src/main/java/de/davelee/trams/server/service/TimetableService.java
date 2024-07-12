@@ -39,6 +39,18 @@ public class TimetableService {
     }
 
     /**
+     * Retrieve all timetables starting with the supplied company name, route number and timetable name from the database.
+     * @param company a <code>String</code> with the name of the company to search for.
+     * @param routeNumber a <code>String</code> with the route number to search for.
+     * @param name a <code>Stringt</code> with the name of the timetable to search for.
+     * @return a <code>List</code> of <code>Driver</code> objects matching the supplied criteria.
+     */
+    public List<Timetable> retrieveTimetablesByCompanyAndRouteNumberAndName (final String company, final String routeNumber, final String name) {
+        //Return all matching timetables
+        return timetableRepository.findByCompanyAndRouteNumberAndName(company, routeNumber, name);
+    }
+
+    /**
      * Retrieve all timetables for a particular company from the database for all types.
      * @param company a <code>String</code> with the company to search for.
      * @return a <code>List</code> of <code>Timetable</code> objects.
@@ -54,6 +66,17 @@ public class TimetableService {
      */
     public void deleteTimetables(final String company) {
         List<Timetable> timetables = retrieveTimetablesByCompany(company);
+        timetables.forEach(timetableRepository::delete);
+    }
+
+    /**
+     * Delete all timetables matching the supplied name and route number currently stored in the database for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to delete timetables for.
+     * @param name a <code>String</code> containing the name of the timetable to delete.
+     * @param routeNumber a <code>String</code> containing the route number of the timetable to delete.
+     */
+    public void deleteTimetable(final String company, final String name, final String routeNumber) {
+        List<Timetable> timetables = timetableRepository.findByCompanyAndRouteNumberAndName(company, routeNumber, name);
         timetables.forEach(timetableRepository::delete);
     }
 

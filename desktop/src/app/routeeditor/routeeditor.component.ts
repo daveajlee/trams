@@ -42,7 +42,14 @@ export class RouteeditorComponent {
           this.startStop = route.startStop;
           this.endStop = route.endStop;
           this.stops = route.stops;
-          //this.timetables = route.getTimetables();
+          this.serverService.getTimetables(this.routeNumber).then((timetables) => {
+            this.timetables = [];
+            console.log(timetables);
+            let timetableResponses = timetables.timetableResponses;
+            for ( let i = 0; i < timetableResponses.length; i++ ) {
+              this.timetables.push(new Timetable(timetableResponses[i].name, timetableResponses[i].validFromDate, timetableResponses[i].validToDate, timetableResponses[i].frequencyPatterns))
+            }
+          })
         });
       }
 
@@ -59,7 +66,10 @@ export class RouteeditorComponent {
     this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
   }
 
-  onDeleteTimetable(timetableName: string): void {
+  async onDeleteTimetable(timetableName: string): Promise<void> {
+    if ( !this.gameService.isOfflineMode() ) {
+      await this.serverService.deleteTimetable(this.routeNumber, timetableName);
+    }
     for ( let i = 0; i < this.timetables.length; i++ ) {
       if ( this.timetables[i].getName() === timetableName ) {
         this.timetables.splice(i, 1);

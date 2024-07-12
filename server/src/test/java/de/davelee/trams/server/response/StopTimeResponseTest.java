@@ -42,6 +42,7 @@ public class StopTimeResponseTest {
         stopTimeResponse.setCompany("Mustermann Buses GmbH");
         stopTimeResponse.setStopName("Greenerfield");
         stopTimeResponse.setRouteNumber("11");
+        stopTimeResponse.setScheduleNumber(1);
         stopTimeResponse.setJourneyNumber("101");
         stopTimeResponse.setDestination("Lakeside Central");
         stopTimeResponse.setArrivalTime("22:11");
@@ -52,6 +53,7 @@ public class StopTimeResponseTest {
         assertEquals("Greenerfield", stopTimeResponse.getStopName());
         assertEquals("Mustermann Buses GmbH", stopTimeResponse.getCompany());
         assertEquals("11", stopTimeResponse.getRouteNumber());
+        assertEquals(1, stopTimeResponse.getScheduleNumber());
         assertEquals("101", stopTimeResponse.getJourneyNumber());
         assertEquals("Lakeside Central", stopTimeResponse.getDestination());
         assertEquals("22:11", stopTimeResponse.getArrivalTime());
@@ -59,7 +61,7 @@ public class StopTimeResponseTest {
         assertEquals(3, stopTimeResponse.getOperatingDays().size());
         assertEquals("23-04-2020", stopTimeResponse.getValidFromDate());
         assertEquals("23-10-2020", stopTimeResponse.getValidToDate());
-        assertEquals("StopTimeResponse(stopName=Greenerfield, company=Mustermann Buses GmbH, arrivalTime=22:11, departureTime=22:12, destination=Lakeside Central, routeNumber=11, validFromDate=23-04-2020, validToDate=23-10-2020, operatingDays=[Friday, Saturday, Sunday], journeyNumber=101)", stopTimeResponse.toString());
+        assertEquals("StopTimeResponse(stopName=Greenerfield, company=Mustermann Buses GmbH, arrivalTime=22:11, departureTime=22:12, destination=Lakeside Central, routeNumber=11, scheduleNumber=1, validFromDate=23-04-2020, validToDate=23-10-2020, operatingDays=[Friday, Saturday, Sunday], journeyNumber=101)", stopTimeResponse.toString());
     }
 
 }
