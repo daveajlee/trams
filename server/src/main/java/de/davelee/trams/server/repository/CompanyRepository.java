@@ -28,4 +28,11 @@ public interface CompanyRepository extends MongoRepository<Company, Long> {
      */
     List<Company> findByNameAndPlayerName (final String name, final String playerName);
 
+    /**
+     * Return a list of companies matching the player name.
+     * @param playerName a <code>String</code> containing the player name to retrieve.
+     * @return a <code>List</code> of <code>Company</code> objects containing the matching player name.
+     */
+    List<Company> findByPlayerName (final String playerName);
+
 }

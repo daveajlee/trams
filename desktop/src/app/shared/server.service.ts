@@ -19,6 +19,7 @@ import {RouteResponse} from "../routes/route.response";
 import {GenerateStopTimesRequest} from "../timetablecreator/generatestoptimes.request";
 import {AddStopRequest} from "../stops/addstop.request";
 import {TimetablesResponse} from "./timetables.response";
+import {CompaniesResponse} from "./companies.response";
 
 @Injectable()
 /**
@@ -186,23 +187,8 @@ export class ServerService {
     /**
      * Delete the company - including the drivers, messages and vehicles.
      */
-    async deleteCompany(): Promise<void> {
-        // Delete the messages
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + this.company));
-        // Delete the drivers
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + this.company));
-        // Delete the stop times
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stopTimes/?company=' + this.company));
-        // Delete the stops
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stops/?company=' + this.company));
-        // Delete the timetables
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetables/?company=' + this.company));
-        // Delete the routes
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/routes/?company=' + this.company));
-        // Delete the vehicles
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicles/?company=' + this.company));
-        // Delete the company
-        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+    async deleteLoadedCompany(): Promise<void> {
+        await this.deleteCompany(this.company, this.playerName);
     }
 
     /**
@@ -262,5 +248,48 @@ export class ServerService {
     async deleteTimetable(routeNumber: string, name: string): Promise<void> {
         // Delete the timetable
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetable/?company=' + this.company + '&name=' + name + '&routeNumber=' + routeNumber));
+    }
+
+    /**
+     * Retrieve the list of companies that exist on the server for the configured player name.
+     * @param playerName the player name to search for.
+     */
+    async getCompanies(playerName: string): Promise<CompaniesResponse> {
+        return await lastValueFrom(this.httpClient.get<CompaniesResponse>(this.serverUrl + '/companies/?playerName=' + playerName));
+    }
+
+    /**
+     * Delete the supplied company and player name from the server.
+     * @param company the name of the company to delete.
+     * @param playerName the name of the player name that should be deleted.
+     */
+    async deleteCompany(company: string, playerName: string ) {
+        // Delete the messages
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/messages/?company=' + company));
+        // Delete the drivers
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/drivers/?company=' + company));
+        // Delete the stop times
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stopTimes/?company=' + company));
+        // Delete the stops
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stops/?company=' + company));
+        // Delete the timetables
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetables/?company=' + company));
+        // Delete the routes
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/routes/?company=' + company));
+        // Delete the vehicles
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicles/?company=' + company));
+        // Delete the company
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/company/?name=' + company + '&playerName=' + playerName))
+    }
+
+    /**
+     * Set the company and player name to the supplied values so that all other methods will return
+     * the correct company.
+     * @param name the name of the company to retrieve
+     * @param playerName the player name of the company to retrieve
+     */
+    async loadCompany ( name: string, playerName: string ) {
+        this.company = name;
+        this.playerName = playerName;
     }
 }

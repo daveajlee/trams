@@ -45,6 +45,7 @@ import { RouteeditorComponent } from './routeeditor/routeeditor.component';
 import { TimetableviewerComponent } from './timetableviewer/timetableviewer.component';
 import {TipService} from "./shared/tip.service";
 import {ServerService} from "./shared/server.service";
+import {LoadgameComponent} from "./loadgame/loadgame.component";
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import {ServerService} from "./shared/server.service";
     LivesituationComponent,
     ScheduleInformationComponent,
     NewgameComponent,
+    LoadgameComponent,
     SwitchlocalComponent,
     RouteeditorComponent,
     TimetableviewerComponent

@@ -1,7 +1,6 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.Company;
-import de.davelee.trams.server.model.Driver;
 import de.davelee.trams.server.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +47,16 @@ public class CompanyService {
     public List<Company> retrieveCompanyByNameAndPlayerName (final String name, final String playerName) {
         //Return the companies found.
         return companyRepository.findByNameAndPlayerName(name, playerName);
+    }
+
+    /**
+     * Retrieve all companies with the player name from the database.
+     * @param playerName a <code>String</code> with the player name to search for.
+     * @return a <code>List</code> of <code>Company</code> objects.
+     */
+    public List<Company> retrieveCompaniesByPlayerName (final String playerName) {
+        //Return the companies found.
+        return companyRepository.findByPlayerName(playerName);
     }
 
     /**

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {Router} from '@angular/router';
 import {DatePipe} from '@angular/common';
 import {LoadService} from "./shared/load.service";
+import {GameService} from "./shared/game.service";
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ export class AppComponent {
   private file: File | null = null;
   private showOutlet: boolean;
 
-  constructor(public router: Router, private datePipe: DatePipe, private loadService: LoadService) {
+  constructor(public router: Router, private datePipe: DatePipe, private loadService: LoadService,
+              private gameService: GameService) {
   }
 
   /**
@@ -48,11 +50,22 @@ export class AppComponent {
     return this.showOutlet;
   }
 
+  isOfflineMode(): boolean {
+    return this.gameService.isOfflineMode();
+  }
+
   /**
    * Clicking on the new game button redirects to the new game screen.
    */
   onNewGameClick(): void {
     this.router.navigate(['newgame']);
+  }
+
+  /**
+   * Clicking on the load game button redirects to the load game screen.
+   */
+  onLoadGameClick(): void {
+    this.router.navigate(['loadgame'])
   }
 
 }

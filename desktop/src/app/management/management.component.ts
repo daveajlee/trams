@@ -139,7 +139,7 @@ export class ManagementComponent implements OnInit {
       if(confirm("Are you sure you want to resign from " + this.serverService.getCompanyName() + "? This will end " +
           "your game and any changes you have made will not be saved.")) {
         // Delete the company
-        this.serverService.deleteCompany().then(() => {
+        this.serverService.deleteLoadedCompany().then(() => {
           this.router.navigate([''])
         })
       }

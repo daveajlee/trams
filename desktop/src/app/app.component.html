@@ -21,7 +21,7 @@
         <div class="col-sm-6">
             <!-- Load Game -->
             <div class="center-button big-top-space">
-                <button class="btn btn-primary btn-lg" (click)="fileInput.click()">Load Game
+                <button class="btn btn-primary btn-lg" (click)="isOfflineMode() ? fileInput.click() : onLoadGameClick()">Load Game
                 </button>
             </div>
             <!-- Set the file content to the server -->
