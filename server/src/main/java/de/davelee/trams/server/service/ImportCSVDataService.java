@@ -8,6 +8,7 @@ import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.RouteRepository;
 import de.davelee.trams.server.repository.StopRepository;
 import de.davelee.trams.server.repository.StopTimeRepository;
+import de.davelee.trams.server.utils.DateUtils;
 import de.davelee.trams.server.utils.RouteUtils;
 import de.davelee.trams.server.utils.StopUtils;
 import org.apache.commons.csv.CSVFormat;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.FileSystems;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -102,8 +100,8 @@ public class ImportCSVDataService {
             Reader reader = new FileReader(csvFilePath);
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withDelimiter(';').withTrim());
             String destination = ""; ArrayList<OperatingDays> operatingDays = new ArrayList<>();
-            LocalDateTime validFromLocalDate = LocalDateTime.parse(validFromDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            LocalDateTime validToLocalDate = LocalDateTime.parse(validToDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            LocalDateTime validFromLocalDate = DateUtils.convertBackwardDateToLocalDateTime(validFromDate);
+            LocalDateTime validToLocalDate = DateUtils.convertBackwardDateToLocalDateTime(validToDate);
             ArrayList<String> routeNumberList = new ArrayList<>();
             Map<String, String> footnotes = new HashMap<>();
             for(CSVRecord record : csvParser.getRecords()) {
@@ -140,8 +138,8 @@ public class ImportCSVDataService {
                             stopTime = StopTime.builder()
                                     .id(stopTimeCounter)
                                     .company(operatorName)
-                                    .departureTime(LocalTime.parse(record.get(i).substring(0,5), DateTimeFormatter.ofPattern("HH:mm")))
-                                    .arrivalTime(LocalTime.parse(record.get(i).substring(0,5), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .departureTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
+                                    .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
                                     .stopName(record.get(0))
                                     .destination(destination)
                                     .routeNumber(routeNumberList.get(i - 1))
@@ -155,8 +153,8 @@ public class ImportCSVDataService {
                             stopTime = StopTime.builder()
                                     .id(stopTimeCounter)
                                     .company(operatorName)
-                                    .departureTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
-                                    .arrivalTime(LocalTime.parse(record.get(i), DateTimeFormatter.ofPattern("HH:mm")))
+                                    .departureTime(DateUtils.convertTimeToLocalTime(record.get(i)))
+                                    .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i)))
                                     .stopName(record.get(0))
                                     .destination(destination)
                                     .routeNumber(routeNumberList.get(i - 1))

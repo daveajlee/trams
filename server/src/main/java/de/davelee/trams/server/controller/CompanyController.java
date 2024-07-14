@@ -11,12 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -80,13 +78,13 @@ public class CompanyController {
         }
         //Now convert to company response object.
         return ResponseEntity.ok(CompanyResponse.builder()
-                .name(companies.get(0).getName())
-                .playerName(companies.get(0).getPlayerName())
-                .balance(companies.get(0).getBalance().doubleValue())
-                .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
-                .time(DateUtils.convertLocalDateTimeToDate(companies.get(0).getTime()))
-                .scenarioName(companies.get(0).getScenarioName())
-                .difficultyLevel(companies.get(0).getDifficultyLevel())
+                .name(companies.getFirst().getName())
+                .playerName(companies.getFirst().getPlayerName())
+                .balance(companies.getFirst().getBalance().doubleValue())
+                .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
+                .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
+                .scenarioName(companies.getFirst().getScenarioName())
+                .difficultyLevel(companies.getFirst().getDifficultyLevel())
                 .build());
     }
 
@@ -110,8 +108,8 @@ public class CompanyController {
         }
         //Now adjust the balance and return the current balance after adjustment.
         return ResponseEntity.ok(BalanceResponse.builder()
-                .company(companies.get(0).getName())
-                .balance(companyService.adjustBalance(companies.get(0), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
+                .company(companies.getFirst().getName())
+                .balance(companyService.adjustBalance(companies.getFirst(), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
                 .build());
     }
 
@@ -135,8 +133,8 @@ public class CompanyController {
         }
         //Now adjust the satisfaction rate and return the current satisfaction rate after adjustment.
         return ResponseEntity.ok(SatisfactionRateResponse.builder()
-                .company(companies.get(0).getName())
-                .satisfactionRate(companyService.adjustSatisfactionRate(companies.get(0), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
+                .company(companies.getFirst().getName())
+                .satisfactionRate(companyService.adjustSatisfactionRate(companies.getFirst(), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
                 .build());
     }
 
@@ -160,8 +158,8 @@ public class CompanyController {
         }
         //Now add the time and return the current time after adjustment.
         return ResponseEntity.ok(TimeResponse.builder()
-                .company(companies.get(0).getName())
-                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.get(0), addTimeRequest.getMinutes())))
+                .company(companies.getFirst().getName())
+                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.getFirst(), addTimeRequest.getMinutes())))
                 .build());
     }
 
@@ -185,8 +183,8 @@ public class CompanyController {
         }
         //Now add the time and return the current time after adjustment.
         return ResponseEntity.ok(DifficultyLevelResponse.builder()
-                .company(companies.get(0).getName())
-                .difficultyLevel(companyService.adjustDifficultyLevel(companies.get(0), difficultyLevelRequest.getDifficultyLevel()))
+                .company(companies.getFirst().getName())
+                .difficultyLevel(companyService.adjustDifficultyLevel(companies.getFirst(), difficultyLevelRequest.getDifficultyLevel()))
                 .build());
     }
 
@@ -212,13 +210,13 @@ public class CompanyController {
         // Return the export.
         return ResponseEntity.ok(
                 ExportCompanyResponse.builder()
-                        .name(companies.get(0).getName())
-                        .balance(companies.get(0).getBalance().doubleValue())
-                        .playerName(companies.get(0).getPlayerName())
-                        .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
-                        .time(companies.get(0).getTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")))
-                        .scenarioName(companies.get(0).getScenarioName())
-                        .difficultyLevel(companies.get(0).getDifficultyLevel())
+                        .name(companies.getFirst().getName())
+                        .balance(companies.getFirst().getBalance().doubleValue())
+                        .playerName(companies.getFirst().getPlayerName())
+                        .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
+                        .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
+                        .scenarioName(companies.getFirst().getScenarioName())
+                        .difficultyLevel(companies.getFirst().getDifficultyLevel())
                         .routes(exportCompanyRequest.getRoutes())
                         .drivers(exportCompanyRequest.getDrivers())
                         .vehicles(exportCompanyRequest.getVehicles())

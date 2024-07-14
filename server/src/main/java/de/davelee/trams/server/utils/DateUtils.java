@@ -3,6 +3,7 @@ package de.davelee.trams.server.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +21,10 @@ public class DateUtils {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    private static final DateTimeFormatter BACKWARD_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     /**
      * This method converts a string date in the format dd-mm-yyyy HH:mm to a LocalDateTime object. If the conversion is not
      * successful then return null.
@@ -29,6 +34,36 @@ public class DateUtils {
     public static LocalDateTime convertDateToLocalDateTime (final String date ) {
         try {
             return LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+        } catch ( DateTimeParseException dateTimeParseException ) {
+            LOG.error("Could not convert date: " + date);
+            return null;
+        }
+    }
+
+    /**
+     * This method converts a string date in the format yyyy-MM-dd HH:mm to a LocalDateTime object. If the conversion is not
+     * successful then return null.
+     * @param date a <code>String</code> in the form yyyy-MM-dd HH:mm
+     * @return a <code>LocalDateTime</code> with the converted date or null if no conversion is possible.
+     */
+    public static LocalDateTime convertBackwardDateToLocalDateTime (final String date ) {
+        try {
+            return LocalDateTime.parse(date, BACKWARD_DATE_TIME_FORMATTER);
+        } catch ( DateTimeParseException dateTimeParseException ) {
+            LOG.error("Could not convert date: " + date);
+            return null;
+        }
+    }
+
+    /**
+     * This method converts a string date in the format dd-mm-yyyy to a LocalDate object. If the conversion is not
+     * successful then return null.
+     * @param date a <code>String</code> in the form dd-mm-yyyy
+     * @return a <code>LocalDate</code> with the converted date or null if no conversion is possible.
+     */
+    public static LocalDate convertDateToLocalDate (final String date ) {
+        try {
+            return LocalDate.parse(date, DATE_FORMATTER);
         } catch ( DateTimeParseException dateTimeParseException ) {
             LOG.error("Could not convert date: " + date);
             return null;
@@ -51,7 +86,7 @@ public class DateUtils {
     }
 
     /**
-     * This method converts a LocalDateTime object to a string date in the format dd-mm-yyyy. If the conversion is not
+     * This method converts a LocalDateTime object to a string date in the format dd-mm-yyyy HH:mm. If the conversion is not
      * successful then return null.
      * @param date a <code>LocalDateTime</code> with the date to convert
      * @return a <code>String</code> with the converted String.
@@ -61,6 +96,19 @@ public class DateUtils {
             return null;
         }
         return date.format(DATE_TIME_FORMATTER);
+    }
+
+    /**
+     * This method converts a LocalDate object to a string date in the format dd-mm-yyyy. If the conversion is not
+     * successful then return null.
+     * @param date a <code>LocalDate</code> with the date to convert
+     * @return a <code>String</code> with the converted String.
+     */
+    public static String convertLocalDateToDate ( final LocalDate date ) {
+        if ( date == null ) {
+            return null;
+        }
+        return date.format(DATE_FORMATTER);
     }
 
     /**

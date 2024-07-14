@@ -2,12 +2,12 @@ package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.StopTimeRepository;
+import de.davelee.trams.server.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -143,7 +143,7 @@ public class StopTimeService {
      */
     public List<StopTime> getDeparturesByDate (final String stopName, final String company, final String date ) {
         //Set the date as a local date
-        LocalDateTime departureDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        LocalDateTime departureDate = DateUtils.convertDateToLocalDateTime(date);
         //Return the stop times between now and midnight with the filter criteria.
         return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.

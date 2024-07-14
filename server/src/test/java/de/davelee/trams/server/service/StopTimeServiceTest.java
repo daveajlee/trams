@@ -92,7 +92,7 @@ public class StopTimeServiceTest {
         assertEquals(7, stopTimeTestArrivalList4.get(0).getId());
         assertEquals(8, stopTimeTestArrivalList4.get(1).getId());
         //Test case: test all departures for this date.
-        List<StopTime> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "Mustermann Bus GmbH", "2021-04-10 00:00");
+        List<StopTime> stopTimeDepartureDateList = stopTimeService.getDeparturesByDate("Lakeside", "Mustermann Bus GmbH", "10-04-2021 00:00");
         assertEquals(8, stopTimeDepartureDateList.size());
         assertEquals(8, stopTimeDepartureDateList.get(0).getId());
         assertEquals(7, stopTimeDepartureDateList.get(stopTimeDepartureDateList.size()-1).getId());

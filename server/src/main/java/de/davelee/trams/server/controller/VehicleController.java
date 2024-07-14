@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -352,7 +351,7 @@ public class VehicleController {
         }
         //Now calculate the current value of this vehicle.
         Vehicle vehicle = vehicles.get(0);
-        int age = Period.between(vehicle.getDeliveryDate().toLocalDate(), LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"))).getYears();
+        int age = Period.between(vehicle.getDeliveryDate().toLocalDate(), DateUtils.convertDateToLocalDate(date)).getYears();
         double value = age == 0 ? vehicle.getVehicleType().getPurchasePrice().doubleValue() : vehicle.getVehicleType().getPurchasePrice().doubleValue() - (vehicle.getVehicleType().getDepreciationFactor() * age) * vehicle.getVehicleType().getPurchasePrice().doubleValue();
         //A value below 0 is not allowed.
         value = value < 0 ? 0.0 : value;

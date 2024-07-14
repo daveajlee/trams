@@ -26,8 +26,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.*;
 
 /**
@@ -72,11 +70,11 @@ public class StopTimesController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //If end date is not empty or null, then set last date to the normal date to indicate no range otherwise end date.
-        LocalDate lastDate = StringUtils.isBlank(endDate) ? LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")) : LocalDate.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate lastDate = StringUtils.isBlank(endDate) ? DateUtils.convertDateToLocalDate(date) : DateUtils.convertDateToLocalDate(endDate);
         //Store the results of any service operations in a variable.
         List<StopTime> stopTimeList = new ArrayList<>();
         //Set the process date and start loop.
-        LocalDate processDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate processDate = DateUtils.convertDateToLocalDate(date);
         //Do this loop until the process date matches end date.
         do {
             //If departures and a starting time specified then get departures.
@@ -89,7 +87,7 @@ public class StopTimesController {
             }
             //In the final case return all departures for the specified date.
             else if (departures) {
-                stopTimeList.addAll(stopTimeService.getDeparturesByDate(stopName, company, processDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                stopTimeList.addAll(stopTimeService.getDeparturesByDate(stopName, company, DateUtils.convertLocalDateToDate(processDate)));
             }
             //Now increment the process date for next iteration if required.
             processDate = processDate.plusDays(1);
@@ -102,16 +100,16 @@ public class StopTimesController {
         StopTimeResponse[] stopTimeResponses = new StopTimeResponse[stopTimeList.size()];
         for ( int i = 0; i < stopTimeResponses.length; i++ ) {
             stopTimeResponses[i] = StopTimeResponse.builder()
-                    .arrivalTime(stopTimeList.get(i).getArrivalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
-                    .departureTime(stopTimeList.get(i).getDepartureTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                    .arrivalTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getArrivalTime()))
+                    .departureTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getDepartureTime()))
                     .destination(stopTimeList.get(i).getDestination())
                     .company(stopTimeList.get(i).getCompany())
                     .journeyNumber(stopTimeList.get(i).getJourneyNumber())
                     .operatingDays(StopTimeUtils.convertOperatingDaysToString(stopTimeList.get(i).getOperatingDays()))
                     .routeNumber(stopTimeList.get(i).getRouteNumber())
                     .scheduleNumber(stopTimeList.get(i).getScheduleNumber())
-                    .validFromDate(stopTimeList.get(i).getValidFromDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                    .validToDate(stopTimeList.get(i).getValidToDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                    .validFromDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidFromDate()))
+                    .validToDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidToDate()))
                     .stopName(stopTimeList.get(i).getStopName())
                     .build();
         }
@@ -144,12 +142,11 @@ public class StopTimesController {
             final String route) {
         //Get the current date and time.
         RealTimeModel realTimeModel = new RealTimeModel();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM).withLocale(Locale.UK);
         LocalDateTime localDateTime = LocalDateTime.now();
-        realTimeModel.setTimestamp(localDateTime.format(dateTimeFormatter));
+        realTimeModel.setTimestamp(DateUtils.convertLocalDateTimeToDate(localDateTime));
         List<RealTimeEntryModel> realTimeEntryModels = new ArrayList<>();
         //Get the departures from this stop - optionally only for a particular route.
-        List<StopTime> stopTimes = stopTimeService.getDeparturesByDate(stop, operator, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        List<StopTime> stopTimes = stopTimeService.getDeparturesByDate(stop, operator, DateUtils.convertLocalDateTimeToDate(LocalDateTime.now()));
         stopTimes.stream().
                 filter(stopTime -> stopTime.getDepartureTime().isAfter(LocalTime.of(localDateTime.getHour(), localDateTime.getMinute()))).
                 forEach(stopTime -> {
@@ -186,11 +183,11 @@ public class StopTimesController {
         //Store list of stop times generated.
         List<StopTime> stopTimeList = new ArrayList<>();
         //The start time for outward trips.
-        LocalTime randomStartTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime randomStartTime = DateUtils.convertTimeToLocalTime(generateStopTimesRequest.getStartTime());
         Random rand = new Random();
         randomStartTime = randomStartTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
         //The start time for return trips.
-        LocalTime randomStartReturnTime = LocalTime.parse(generateStopTimesRequest.getStartTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime randomStartReturnTime = DateUtils.convertTimeToLocalTime(generateStopTimesRequest.getStartTime());
         randomStartReturnTime = randomStartReturnTime.plusMinutes(rand.nextInt(generateStopTimesRequest.getFrequency()));
         //Generate the first trip in outward direction.
         stopTimeList.addAll(generateFirstTrip(Direction.OUTGOING, generateStopTimesRequest, randomStartTime, 1, randomStartTime.isBefore(randomStartReturnTime) ? 1 : 2));
@@ -311,7 +308,7 @@ public class StopTimesController {
         //Create an empty list to add stop times to.
         List<StopTime> stopTimeList = new ArrayList<>();
         //Store the last time after which no trips should be generated.
-        LocalTime endTime = LocalTime.parse(generateStopTimesRequest.getEndTime(), DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime endTime = DateUtils.convertTimeToLocalTime(generateStopTimesRequest.getEndTime());
         //Store the generate time.
         LocalTime generateTime = firstArrivalTime;
         //Process by direction.
