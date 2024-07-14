@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class provides a service for managing timetables in Trams Server.
@@ -35,7 +36,7 @@ public class TimetableService {
      */
     public List<Timetable> retrieveTimetablesByCompanyAndRouteNumber (final String company, final String routeNumber) {
         //Return all matching timetables
-        return timetableRepository.findByCompanyAndRouteNumberStartsWith(company, routeNumber);
+        return timetableRepository.findByCompanyAndRouteNumber(company, routeNumber);
     }
 
     /**
@@ -72,12 +73,17 @@ public class TimetableService {
     /**
      * Delete all timetables matching the supplied name and route number currently stored in the database for the specified company.
      * @param company a <code>String</code> object containing the name of the company to delete timetables for.
-     * @param name a <code>String</code> containing the name of the timetable to delete.
+     * @param name a <code>String</code> containing the name of the timetable to delete (which is optional).
      * @param routeNumber a <code>String</code> containing the route number of the timetable to delete.
      */
-    public void deleteTimetable(final String company, final String name, final String routeNumber) {
-        List<Timetable> timetables = timetableRepository.findByCompanyAndRouteNumberAndName(company, routeNumber, name);
-        timetables.forEach(timetableRepository::delete);
+    public void deleteTimetable(final String company, final Optional<String> name, final String routeNumber) {
+        if ( name.isPresent() ) {
+            List<Timetable> timetables = timetableRepository.findByCompanyAndRouteNumberAndName(company, routeNumber, name.get());
+            timetables.forEach(timetableRepository::delete);
+        } else {
+            List<Timetable> timetables = timetableRepository.findByCompanyAndRouteNumber(company, routeNumber);
+            timetables.forEach(timetableRepository::delete);
+        }
     }
 
 }

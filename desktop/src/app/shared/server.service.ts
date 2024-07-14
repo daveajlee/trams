@@ -292,4 +292,17 @@ export class ServerService {
         this.company = name;
         this.playerName = playerName;
     }
+
+    /**
+     * Delete the route matching the route number for the configured company.
+     * @param routeNumber the route number to be deleted as a string.
+     */
+    async deleteRoute (routeNumber: string): Promise<void> {
+        // Delete the route
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/route/?company=' + this.company + '&routeNumber=' + routeNumber))
+        // Delete the timetables matching this route.
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/timetable/?company=' + this.company + '&routeNumber=' + routeNumber))
+        // Delete the stop times matching this route.
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stopTimes/?company=' + this.company + '&routeNumber=' + routeNumber))
+    }
 }

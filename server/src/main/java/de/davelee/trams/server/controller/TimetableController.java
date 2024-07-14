@@ -70,20 +70,20 @@ public class TimetableController {
     /**
      * Delete a timetable matching the name and route number stored in the database for a particular company.
      * @param company a <code>String</code> containing the name of the company to search for.
-     * @param name a <code>String</code> containing the name of the timetable to search for.
      * @param routeNumber a <code>String</code> containing the route number to search for.
+     * @param name a <code>String</code> containing the name of the timetable to search for.
      * @return a <code>ResponseEntity</code> object containing the results of the action.
      */
     @DeleteMapping("/")
     @CrossOrigin
     @Operation(summary = "Delete a timetable", description="Delete a timetable")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted timetable")})
-    public ResponseEntity<Void> deleteTimetable (final String company, final String name, final String routeNumber ) {
+    public ResponseEntity<Void> deleteTimetable (final String company, final String routeNumber, final Optional<String> name ) {
         //First of all, check if the company field and/or name and/or route number fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(name) || StringUtils.isBlank(routeNumber)) {
+        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        //Delete all timetables for this company.
+        //Delete timetable matching the specified criteria.
         timetableService.deleteTimetable(company, name, routeNumber);
         //Return ok.
         return ResponseEntity.ok().build();

@@ -114,10 +114,14 @@ export class RoutecreatorComponent implements OnInit {
     if ( (document.getElementById('checkbox-night') as HTMLInputElement).checked ) {
       route.setNightRoute(true);
     }
-    this.gameService.isOfflineMode() ?
-        this.gameService.getGame().addRoute(route) :
-        this.serverService.addRoute(route);
-    this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
+    if ( this.gameService.isOfflineMode() ) {
+      this.gameService.getGame().addRoute(route);
+      this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
+    } else {
+      this.serverService.addRoute(route).then(() => {
+        this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
+      })
+    }
   }
 
 }

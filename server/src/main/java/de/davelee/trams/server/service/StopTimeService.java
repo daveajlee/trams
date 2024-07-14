@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -195,22 +196,18 @@ public class StopTimeService {
     }
 
     /**
-     * Retrieve all stop times for a particular company from the database.
-     * @param company a <code>String</code> with the company to search for.
-     * @return a <code>List</code> of <code>StopTime</code> objects.
-     */
-    public List<StopTime> retrieveStopTimesByCompany ( final String company) {
-        //Return the stop times found.
-        return stopTimeRepository.findByCompany(company);
-    }
-
-    /**
      * Delete all stop times currently stored in the database for the specified company.
      * @param company a <code>String</code> object containing the name of the company to delete stop times for.
+     * @param routeNumber a <code>String</code> object containing the route number to be deleted (optional).
      */
-    public void deleteStopTimes(final String company) {
-        List<StopTime> stopTimes = retrieveStopTimesByCompany(company);
-        stopTimes.forEach(stopTimeRepository::delete);
+    public void deleteStopTimes(final String company, final Optional<String> routeNumber) {
+        if (routeNumber.isPresent() ) {
+            List<StopTime> stopTimes = stopTimeRepository.findByCompanyAndRouteNumber(company, routeNumber.get());
+            stopTimes.forEach(stopTimeRepository::delete);
+        } else {
+            List<StopTime> stopTimes = stopTimeRepository.findByCompany(company);
+            stopTimes.forEach(stopTimeRepository::delete);
+        }
     }
 
 }

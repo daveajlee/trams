@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Route} from './route.model';
-import {Subscription} from 'rxjs';
 import {RoutesService} from './routes.service';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
@@ -37,12 +36,14 @@ export class RoutesComponent implements OnInit, OnDestroy {
       this.serverService.getRoutes().then((routes) => {
         // Set the routes to an empty array.
         this.allRoutes = [];
-        // Convert the route responses to route objects and add to array.
-        for ( let i = 0; i < routes.routeResponses.length; i++ ) {
-          let route = new Route(routes.routeResponses[i].routeNumber, routes.routeResponses[i].startStop,
-              routes.routeResponses[i].endStop, routes.routeResponses[i].stops, routes.routeResponses[i].company);
-          route.setNightRoute(routes.routeResponses[i].nightRoute);
-          this.allRoutes.push(route);
+        if ( routes && routes.count > 0 ) {
+          // Convert the route responses to route objects and add to array.
+          for ( let i = 0; i < routes.routeResponses.length; i++ ) {
+            let route = new Route(routes.routeResponses[i].routeNumber, routes.routeResponses[i].startStop,
+                routes.routeResponses[i].endStop, routes.routeResponses[i].stops, routes.routeResponses[i].company);
+            route.setNightRoute(routes.routeResponses[i].nightRoute);
+            this.allRoutes.push(route);
+          }
         }
         this.routes = this.allRoutes;
       })
@@ -95,8 +96,14 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   deleteRoute(routeNumber: string) {
     if(confirm("Are you sure you want to delete route " + routeNumber + "?") == true) {
-      this.gameService.getGame().deleteRoute(routeNumber);
-      this.router.navigate(['management']);
+      if ( this.gameService.isOfflineMode() ) {
+        this.gameService.getGame().deleteRoute(routeNumber);
+        this.router.navigate(['management']);
+      } else {
+        this.serverService.deleteRoute(routeNumber).then(() => {
+          this.router.navigate(['management']);
+        })
+      }
     }
   }
 

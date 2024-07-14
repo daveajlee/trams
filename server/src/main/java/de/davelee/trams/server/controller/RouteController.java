@@ -73,6 +73,7 @@ public class RouteController {
         List<Route> routes = routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber);
         //More than 1 route indicates data inconsistency.
         if ( routes.size() != 1 ) {
+            System.out.println("Number of routes for " + company + " and routeNumber " + routeNumber + " is " + routes.size());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //Translate route response and return.

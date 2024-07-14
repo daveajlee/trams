@@ -17,7 +17,7 @@ public interface TimetableRepository extends MongoRepository<Timetable, String> 
      * @param routeNumber a <code>String</code> containing the route number that the timetable should contain as a minimum.
      * @return a <code>List</code> of <code>Timetable</code> objects containing the matching timetables (usually one).
      */
-    List<Timetable> findByCompanyAndRouteNumberStartsWith (final String company, final String routeNumber);
+    List<Timetable> findByCompanyAndRouteNumber (final String company, final String routeNumber);
 
     /**
      * Return a list of timetables owned by this company and have a route number matching the supplied route number
