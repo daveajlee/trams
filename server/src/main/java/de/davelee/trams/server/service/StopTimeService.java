@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -144,18 +141,22 @@ public class StopTimeService {
     public List<StopTime> getDeparturesByDate (final String stopName, final String company, final String date ) {
         //Set the date as a local date
         LocalDateTime departureDate = DateUtils.convertDateToLocalDateTime(date);
-        //Return the stop times between now and midnight with the filter criteria.
-        return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
+        if ( departureDate != null ) {
+            //Return the stop times between now and midnight with the filter criteria.
+            return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
                 .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(departureDate))
                 //Filter stop times that are before the valid from date.
-                .filter(stopTime -> stopTime.getValidFromDate().minusDays(1).isBefore(departureDate))
+                .filter(stopTime -> departureDate.minusDays(1).isAfter(stopTime.getValidFromDate()))
                 //Filter remove stop times are after the valid to date.
-                .filter(stopTime -> stopTime.getValidToDate().plusDays(1).isAfter(departureDate))
+                .filter(stopTime -> departureDate.plusDays(1).isBefore(stopTime.getValidToDate()))
                 //Sort the stop times by time.
                 .sorted(Comparator.comparing(StopTime::getDepartureTime))
                 //Collect list as output.
                 .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**

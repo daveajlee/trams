@@ -33,7 +33,12 @@ public class DateUtils {
      */
     public static LocalDateTime convertDateToLocalDateTime (final String date ) {
         try {
-            return LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+            if ( date.contains(":") ) {
+                return LocalDateTime.parse(date, DATE_TIME_FORMATTER);
+            } else {
+                // If date does not have a semi-colon, add time with 12:00 at the end.
+                return LocalDateTime.parse(date + " 12:00", DATE_TIME_FORMATTER);
+            }
         } catch ( DateTimeParseException dateTimeParseException ) {
             LOG.error("Could not convert date: " + date);
             return null;

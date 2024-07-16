@@ -305,7 +305,7 @@ export class TimetablecreatorComponent {
   getOperatingDays(operatingDays: string[]): string {
     let myOperatingDays = "";
     operatingDays.forEach((operatingDay) => {
-      myOperatingDays = operatingDay + ",";
+      myOperatingDays += operatingDay + ",";
     })
     return myOperatingDays;
   }

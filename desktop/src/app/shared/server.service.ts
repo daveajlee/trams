@@ -20,6 +20,7 @@ import {GenerateStopTimesRequest} from "../timetablecreator/generatestoptimes.re
 import {AddStopRequest} from "../stops/addstop.request";
 import {TimetablesResponse} from "./timetables.response";
 import {CompaniesResponse} from "./companies.response";
+import {StopTimesResponse} from "../stops/stop-detail/stoptimes.response";
 
 @Injectable()
 /**
@@ -221,6 +222,7 @@ export class ServerService {
      * @param generateStopTimesRequest the parameters for generating stop times.
      */
     async generateStopTimes(generateStopTimesRequest: GenerateStopTimesRequest): Promise<void> {
+        console.log(generateStopTimesRequest);
         await lastValueFrom(this.httpClient.post(this.serverUrl + '/stopTimes/generate', generateStopTimesRequest));
     }
 
@@ -305,4 +307,14 @@ export class ServerService {
         // Delete the stop times matching this route.
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/stopTimes/?company=' + this.company + '&routeNumber=' + routeNumber))
     }
+
+    /**
+     * Get the stop times matching the route number for the configured company.
+     * @param routeNumber the route number to get the stop times for.
+     */
+    async getStopTimes ( routeNumber: string): Promise<StopTimesResponse> {
+        // Get the stop times
+        return await lastValueFrom(this.httpClient.get<StopTimesResponse>(this.serverUrl + '/stopTimes/?stopName=Airport&company=' + this.company + '&routeNumber=' + routeNumber + '&date=15-07-2024&endDate=15-07-2024&departures=true&arrivals=true'));
+    }
+
 }

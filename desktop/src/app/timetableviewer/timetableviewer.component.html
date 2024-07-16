@@ -10,7 +10,7 @@
 <div class="form-group top-space m-5">
     <label for="scheduleList" style="font-weight: bold;">Schedule:</label>
     <select class="form-control m-2" [(ngModel)]="selectedSchedule" id="scheduleList">
-        <option *ngFor="let item of this.getSchedules()" [ngValue]="item">{{ item }}</option>
+        <option *ngFor="let item of this.schedules" [ngValue]="item">{{ item }}</option>
     </select>
 </div>
 
