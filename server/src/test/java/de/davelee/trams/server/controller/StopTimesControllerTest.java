@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testDeparturesEndpoints() {
-        Mockito.when(stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "22:00")).thenReturn(Lists.newArrayList(StopTime.builder()
+        Mockito.when(stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "22:00", "")).thenReturn(Lists.newArrayList(StopTime.builder()
                 .arrivalTime(LocalTime.of(22,11))
                 .company("Mustermann Bus GmbH")
                 .departureTime(LocalTime.of(22,13))
@@ -65,13 +64,13 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null,true, false);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null,true, false, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("101", responseEntity.getBody().getStopTimeResponses()[0].getJourneyNumber());
-        ResponseEntity<StopTimesResponse> responseEntity2 = stopTimesController.getStopTimes("Lakeside", "", Optional.of("22:00"), "15-03-2020", null, true, false);
+        ResponseEntity<StopTimesResponse> responseEntity2 = stopTimesController.getStopTimes("Lakeside", "", Optional.of("22:00"), "15-03-2020", null, true, false, Optional.empty());
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity2.getStatusCode());
-        ResponseEntity<StopTimesResponse> responseEntity3 = stopTimesController.getStopTimes("Lakeside", "Mustermann Buses GmbH", Optional.of("22:00"), "15-03-2020", null,true, false);
+        ResponseEntity<StopTimesResponse> responseEntity3 = stopTimesController.getStopTimes("Lakeside", "Mustermann Buses GmbH", Optional.of("22:00"), "15-03-2020", null,true, false, Optional.empty());
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
     }
 
@@ -80,7 +79,7 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testArrivalsEndpoints() {
-        Mockito.when(stopTimeService.getArrivals(anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
+        Mockito.when(stopTimeService.getArrivals(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
                 .arrivalTime(LocalTime.of(22,11))
                 .company("Mustermann Bus GmbH")
                 .departureTime(LocalTime.of(22,13))
@@ -96,7 +95,7 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null, false, true);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null, false, true, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("22:11", responseEntity.getBody().getStopTimeResponses()[0].getArrivalTime());
@@ -107,7 +106,7 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testDeparturesDateEndpoints() {
-        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
+        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
                 .arrivalTime(LocalTime.of(22,11))
                 .departureTime(LocalTime.of(22,13))
                 .destination("Greenfield")
@@ -122,7 +121,7 @@ public class StopTimesControllerTest {
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
-        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.empty(), "10-04-2021", null, true, false);
+        ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.empty(), "10-04-2021", null, true, false, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
         assertEquals("101", responseEntity.getBody().getStopTimeResponses()[0].getJourneyNumber());

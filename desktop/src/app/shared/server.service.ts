@@ -312,9 +312,14 @@ export class ServerService {
      * Get the stop times matching the route number for the configured company.
      * @param routeNumber the route number to get the stop times for.
      */
-    async getStopTimes ( routeNumber: string): Promise<StopTimesResponse> {
-        // Get the stop times
-        return await lastValueFrom(this.httpClient.get<StopTimesResponse>(this.serverUrl + '/stopTimes/?stopName=Airport&company=' + this.company + '&routeNumber=' + routeNumber + '&date=15-07-2024&endDate=15-07-2024&departures=true&arrivals=true'));
+    async getStopTimes ( routeNumber: string, date: string, stop: string, scheduleNumber: string ): Promise<StopTimesResponse> {
+        // Get the stop times.
+        if ( scheduleNumber != "" ) {
+            return await lastValueFrom(this.httpClient.get<StopTimesResponse>(this.serverUrl + '/stopTimes/?stopName=' + stop + '&company=' + this.company + '&routeNumber=' + routeNumber + '&date=' + date + '&endDate=' + date + '&departures=true&arrivals=true&scheduleNumber=' + scheduleNumber));
+        } else {
+            return await lastValueFrom(this.httpClient.get<StopTimesResponse>(this.serverUrl + '/stopTimes/?stopName=' + stop + '&company=' + this.company + '&routeNumber=' + routeNumber + '&date=' + date + '&endDate=' + date + '&departures=true&arrivals=true'));
+        }
+
     }
 
 }

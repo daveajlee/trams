@@ -29,6 +29,10 @@ public class StopTimeService {
     public boolean addStopTimes ( final List<StopTime> stopTimeList ) {
         //Attempt to add all of the stop times to the database.
         for ( StopTime stopTime : stopTimeList ) {
+            if ( stopTime.getScheduleNumber() != -1 ) {
+                System.out.println("Service add stop times");
+                System.out.println(stopTime);
+            }
             if ( stopTimeRepository.save(stopTime) == null ) {
                 return false;
             }
@@ -44,8 +48,8 @@ public class StopTimeService {
      * @return a <code>List</code> of <code>StopTime</code> objects which may be null if no departures were found or there
      * are no departures in next 2 hours.
      */
-    public List<StopTime> getDepartures (final String stopName, final String company, final String startingTime ) {
-        return getTimes(stopName, company, startingTime, "Departure", Comparator.comparing(StopTime::getDepartureTime));
+    public List<StopTime> getDepartures (final String stopName, final String company, final String startingTime, final String scheduleNumber ) {
+        return getTimes(stopName, company, startingTime, "Departure", Comparator.comparing(StopTime::getDepartureTime), scheduleNumber);
     }
 
     /**
@@ -56,8 +60,8 @@ public class StopTimeService {
      * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop arrivals were not found or there
      * are no arrivals in next 2 hours.
      */
-    public List<StopTime> getArrivals (final String stopName, final String company, final String startingTime ) {
-        return getTimes(stopName, company, startingTime, "Arrival", Comparator.comparing(StopTime::getArrivalTime));
+    public List<StopTime> getArrivals (final String stopName, final String company, final String startingTime, final String scheduleNumber ) {
+        return getTimes(stopName, company, startingTime, "Arrival", Comparator.comparing(StopTime::getArrivalTime), scheduleNumber);
     }
 
     /**
@@ -70,7 +74,7 @@ public class StopTimeService {
      * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop times were not found or there
      *       are no stop times in next 2 hours.
      */
-    public List<StopTime> getTimes (final String stopName, final String company, final String startingTime, final String type, final Comparator<StopTime> comparator ) {
+    public List<StopTime> getTimes (final String stopName, final String company, final String startingTime, final String type, final Comparator<StopTime> comparator, final String scheduleNumber ) {
         //Initial time to starting time or current time if no starting time was supplied.
         final LocalTime time = startingTime != null ? convertToLocalTime(startingTime) : LocalTime.now();
 
@@ -102,6 +106,12 @@ public class StopTimeService {
                     //Only show next 3 stop times.
                     .limit(3- stopTimes.size())
                     .collect(Collectors.toList()));
+            // If schedule number is not empty then filter the schedule number.
+            if ( !scheduleNumber.equalsIgnoreCase("")) {
+                stopTimes = stopTimes.stream()
+                        .filter(stopTime -> stopTime.getScheduleNumber() == Integer.parseInt(scheduleNumber.split("/")[1]))
+                        .collect(Collectors.toList());
+            }
             return stopTimes;
         }
         //Normal processing
@@ -138,22 +148,29 @@ public class StopTimeService {
      * @return a <code>List</code> of <code>StopTime</code> objects which may be null if the stop times were
      * not found or there are no stop times on this date.
      */
-    public List<StopTime> getDeparturesByDate (final String stopName, final String company, final String date ) {
+    public List<StopTime> getDeparturesByDate (final String stopName, final String company, final String date, final String scheduleNumber ) {
         //Set the date as a local date
         LocalDateTime departureDate = DateUtils.convertDateToLocalDateTime(date);
         if ( departureDate != null ) {
             //Return the stop times between now and midnight with the filter criteria.
-            return stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
+            List<StopTime> stopTimes = stopTimeRepository.findByCompanyAndStopName(company, stopName).stream()
                 //Filter stop times which do not run on this day.
                 .filter(stopTime -> stopTime.getOperatingDays().checkIfOperatingDay(departureDate))
                 //Filter stop times that are before the valid from date.
-                .filter(stopTime -> departureDate.minusDays(1).isAfter(stopTime.getValidFromDate()))
+                .filter(stopTime -> departureDate.isAfter(stopTime.getValidFromDate()))
                 //Filter remove stop times are after the valid to date.
-                .filter(stopTime -> departureDate.plusDays(1).isBefore(stopTime.getValidToDate()))
+                .filter(stopTime -> departureDate.isBefore(stopTime.getValidToDate()))
                 //Sort the stop times by time.
                 .sorted(Comparator.comparing(StopTime::getDepartureTime))
                 //Collect list as output.
                 .collect(Collectors.toList());
+            // If schedule number is not empty then filter the schedule number.
+            if ( !scheduleNumber.equalsIgnoreCase("")) {
+                stopTimes = stopTimes.stream()
+                        .filter(stopTime -> stopTime.getScheduleNumber() == Integer.parseInt(scheduleNumber.split("/")[1]))
+                        .collect(Collectors.toList());
+            }
+            return stopTimes;
         } else {
             return Collections.emptyList();
         }

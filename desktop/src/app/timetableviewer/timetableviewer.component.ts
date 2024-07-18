@@ -20,7 +20,10 @@ export class TimetableviewerComponent {
   private routeResponse: RouteResponse;
   selectedSchedule: string;
   selectedDate: string;
+  selectedStop: string;
   schedules: string[];
+  stops: string[];
+  stopTimes: StopTimeModel[];
 
   /**
    * Construct a new Timetable Viewer component
@@ -45,22 +48,35 @@ export class TimetableviewerComponent {
         this.route.getSchedules().forEach((element) => {
           this.schedules.push(element.getRouteNumberAndScheduleId());
         } );
+        this.stops = [];
+        this.stops.push(this.route.getStartStop());
+        this.stops = this.stops.concat(this.route.getStops());
+        this.stops.push(this.route.getEndStop());
+        this.selectedStop = this.route.getStartStop();
       } else {
         // Retrieve the route
         this.serverService.getRoute(this.routeNumber).then((route) => {
           this.routeResponse = route;
           // Retrieve the current date.
           this.serverService.getCurrentDateTime().then((currentDateTime) => {
-            this.selectedDate = currentDateTime;
+            let dateSplit = currentDateTime.split(" ")[0].split("-");
+            this.selectedDate = dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0];
             // Retrieve the schedules.
-            this.serverService.getStopTimes(this.routeNumber).then((stopTimes) => {
+            this.serverService.getStopTimes(this.routeNumber, currentDateTime.split(" ")[0], route.startStop, "").then((stopTimes) => {
               this.schedules = [];
               for ( let i = 0; i < stopTimes.count; i++ ) {
                 if ( !this.schedules.includes(this.routeNumber + "/" + stopTimes.stopTimeResponses[i].scheduleNumber) ) {
                   this.schedules.push(this.routeNumber + "/" + stopTimes.stopTimeResponses[i].scheduleNumber);
                 }
               }
+              this.selectedSchedule = this.schedules[0];
             })
+            // Retrieve the stops.
+            this.selectedStop = route.startStop;
+            this.stops = [];
+            this.stops.push(route.startStop);
+            this.stops = this.stops.concat(route.stops);
+            this.stops.push(route.endStop);
           })
         })
       }
@@ -78,7 +94,7 @@ export class TimetableviewerComponent {
   /**
    * Return a list of the stop times that are served by this schedule.
    */
-  getStopTimes(): StopTimeModel[] {
+  getStopTimes(): void {
     if ( this.gameService.isOfflineMode() ) {
       let stopTimeModels = [];
       for ( let i = 0; i < this.route.getSchedules().length; i++ ) {
@@ -88,9 +104,17 @@ export class TimetableviewerComponent {
           }
         }
       }
-      return stopTimeModels;
+      this.stopTimes = stopTimeModels;
     } else {
-      return [];
+      let date = this.selectedDate.split("-")[2] + "-" + this.selectedDate.split("-")[1] + "-" + this.selectedDate.split("-")[0];
+      this.serverService.getStopTimes(this.routeNumber, date, this.selectedStop, this.selectedSchedule).then((stopTimeResponses) => {
+        this.stopTimes = [];
+        if ( stopTimeResponses.count > 0 ) {
+          for ( let i = 0; i < stopTimeResponses.count; i++ ) {
+            this.stopTimes.push(new StopTimeModel(stopTimeResponses.stopTimeResponses[i].departureTime, stopTimeResponses.stopTimeResponses[i].arrivalTime, this.selectedStop ));
+          }
+        }
+      });
     }
   }
 
