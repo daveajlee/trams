@@ -20,6 +20,19 @@
     <input class="form-control" [(ngModel)]="selectedDate" type="date" id="selectedDate"/>
 </div>
 
+<!-- Component to choose stop -->
+<div class="form-group top-space m-5">
+    <label for="stopList" style="font-weight: bold;">Stop:</label>
+    <select class="form-control m-2" [(ngModel)]="selectedStop" id="stopList">
+        <option *ngFor="let item of this.stops" [ngValue]="item">{{ item }}</option>
+    </select>
+</div>
+
+<!-- Button to search for stoo times -->
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="getStopTimes()">Search</button>
+</div>
+
 <!-- Component to show the actual timetables. -->
 <table class="table">
     <thead>
@@ -30,7 +43,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let stopTimesEl of getStopTimes()">
+    <tr *ngFor="let stopTimesEl of stopTimes">
         <td>{{stopTimesEl.getDepartureTime()}}</td>
         <td>{{stopTimesEl.getArrivalTime()}}</td>
         <td>{{stopTimesEl.getStop()}}</td>
