@@ -48,6 +48,7 @@ export class TimetableviewerComponent {
         this.route.getSchedules().forEach((element) => {
           this.schedules.push(element.getRouteNumberAndScheduleId());
         } );
+        this.schedules.push("All");
         this.stops = [];
         this.stops.push(this.route.getStartStop());
         this.stops = this.stops.concat(this.route.getStops());
@@ -63,12 +64,16 @@ export class TimetableviewerComponent {
             this.selectedDate = dateSplit[2] + "-" + dateSplit[1] + "-" + dateSplit[0];
             // Retrieve the schedules.
             this.serverService.getStopTimes(this.routeNumber, currentDateTime.split(" ")[0], route.startStop, "").then((stopTimes) => {
+              console.log('Retrieving stop times for ' + this.routeNumber + ' and start stop ' + route.startStop + ' date ' + currentDateTime.split(" ")[0]);
+              console.log(stopTimes);
               this.schedules = [];
               for ( let i = 0; i < stopTimes.count; i++ ) {
                 if ( !this.schedules.includes(this.routeNumber + "/" + stopTimes.stopTimeResponses[i].scheduleNumber) ) {
                   this.schedules.push(this.routeNumber + "/" + stopTimes.stopTimeResponses[i].scheduleNumber);
+
                 }
               }
+              this.schedules.push("");
               this.selectedSchedule = this.schedules[0];
             })
             // Retrieve the stops.
@@ -98,20 +103,35 @@ export class TimetableviewerComponent {
     if ( this.gameService.isOfflineMode() ) {
       let stopTimeModels = [];
       for ( let i = 0; i < this.route.getSchedules().length; i++ ) {
-        if ( (this.route.getSchedules()[i].getRouteNumberAndScheduleId()) == this.selectedSchedule ){
+        if ( this.selectedSchedule === "All" || (this.route.getSchedules()[i].getRouteNumberAndScheduleId()) == this.selectedSchedule ){
           for ( let j = 0; j < this.route.getSchedules()[i].getServices().length; j++ ) {
-            stopTimeModels = stopTimeModels.concat(this.route.getSchedules()[i].getServices()[j].getStopList());
+            for ( let k = 0; k < this.route.getSchedules()[i].getServices()[j].getStopList().length; k++ ) {
+                if ( this.route.getSchedules()[i].getServices()[j].getStopList()[k].getStop() === this.selectedStop ) {
+                    stopTimeModels.push(new StopTimeModel(this.route.getSchedules()[i].getServices()[j].getStopList()[k].getDepartureTime(),
+                        this.route.getSchedules()[i].getServices()[j].getStopList()[k].getArrivalTime(),
+                        this.route.getSchedules()[i].getServices()[j].getStopList()[this.route.getSchedules()[i].getServices()[j].getStopList().length -1].getStop(),
+                        this.route.getSchedules()[i].getRouteNumberAndScheduleId()))
+                }
+            }
           }
         }
       }
       this.stopTimes = stopTimeModels;
+      this.stopTimes.sort((a, b) => {
+        if ( a.getDepartureTime() < b.getDepartureTime() ) {
+          return -1;
+        } else if ( a.getDepartureTime() > b.getDepartureTime() ) {
+          return 1;
+        }
+        return 0;
+      })
     } else {
       let date = this.selectedDate.split("-")[2] + "-" + this.selectedDate.split("-")[1] + "-" + this.selectedDate.split("-")[0];
       this.serverService.getStopTimes(this.routeNumber, date, this.selectedStop, this.selectedSchedule).then((stopTimeResponses) => {
         this.stopTimes = [];
         if ( stopTimeResponses.count > 0 ) {
           for ( let i = 0; i < stopTimeResponses.count; i++ ) {
-            this.stopTimes.push(new StopTimeModel(stopTimeResponses.stopTimeResponses[i].departureTime, stopTimeResponses.stopTimeResponses[i].arrivalTime, this.selectedStop ));
+              this.stopTimes.push(new StopTimeModel(stopTimeResponses.stopTimeResponses[i].departureTime, stopTimeResponses.stopTimeResponses[i].arrivalTime, stopTimeResponses.stopTimeResponses[i].destination, this.routeNumber + "/" + stopTimeResponses.stopTimeResponses[i].scheduleNumber ));
           }
         }
       });
