@@ -21,6 +21,7 @@ import {AddStopRequest} from "../stops/addstop.request";
 import {TimetablesResponse} from "./timetables.response";
 import {CompaniesResponse} from "./companies.response";
 import {StopTimesResponse} from "../stops/stop-detail/stoptimes.response";
+import {AdjustBalanceRequest} from "./adjustbalance.request";
 
 @Injectable()
 /**
@@ -319,7 +320,29 @@ export class ServerService {
         } else {
             return await lastValueFrom(this.httpClient.get<StopTimesResponse>(this.serverUrl + '/stopTimes/?stopName=' + stop + '&company=' + this.company + '&routeNumber=' + routeNumber + '&date=' + date + '&endDate=' + date + '&departures=true&arrivals=true'));
         }
+    }
 
+    /**
+     * Get the highest fleet number currently in use for the configured company.
+     */
+    async getHighestFleetNumber(): Promise<number> {
+        let highestFleetNumberSoFar = 0;
+        let vehicles = await this.getVehicles();
+        for ( var i = 0; i < vehicles.count; i++ ) {
+            if ( parseInt(vehicles.vehicleResponses[i].fleetNumber) > highestFleetNumberSoFar ) {
+                highestFleetNumberSoFar = parseInt(vehicles.vehicleResponses[i].fleetNumber);
+            }
+        }
+        return highestFleetNumberSoFar;
+    }
+
+    /**
+     * Adjust the balance by the specified amount for the configured company.
+     * A negative amount reduces the balance, a positive amount credits the balance.
+     * @param amount an amount to either reduce (negative) or increase (positive) the balance.
+     */
+    async adjustBalance(amount: number): Promise<void> {
+        await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/balance', new AdjustBalanceRequest(this.company, amount)));
     }
 
 }
