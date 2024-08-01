@@ -1,6 +1,7 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.constant.VehicleHistoryReason;
+import de.davelee.trams.server.constant.VehicleStatus;
 import de.davelee.trams.server.constant.VehicleType;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.VehicleRepository;
@@ -100,7 +101,8 @@ public class VehicleService {
      */
     public BigDecimal sellVehicle (final Vehicle vehicle ) {
         vehicle.addVehicleHistoryEntry(LocalDateTime.now(), VehicleHistoryReason.SOLD, "Sold for " + vehicle.getVehicleType().getPurchasePrice());
-        vehicle.setAllocatedTour(""); //Remove allocated tour.
+        vehicle.setAllocatedTour("");
+        vehicle.setVehicleStatus(VehicleStatus.SOLD);//Remove allocated tour.
         if ( vehicleRepository.save(vehicle) != null ) {
             return vehicle.getVehicleType().getPurchasePrice();
         }

@@ -1,5 +1,3 @@
-import {FrequencyPattern} from "./frequencypattern.model";
-
 /**
  * This class defines a model for requests to adjust the balance in TraMS.
  */

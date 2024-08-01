@@ -37,9 +37,12 @@ export class VehiclesComponent implements OnInit, OnDestroy {
           this.doVehiclesExist = vehicles.vehicleResponses.length > 0;
           this.vehicles = [];
           for ( let i = 0; i < vehicles.vehicleResponses.length; i++ ) {
-            this.vehicles.push(this.convertResponseToVehicle(vehicles.vehicleResponses[i]));
+            if ( vehicles.vehicleResponses[i].vehicleStatus && vehicles.vehicleResponses[i].vehicleStatus != "SOLD") {
+              this.vehicles.push(this.convertResponseToVehicle(vehicles.vehicleResponses[i]));
+            } else if ( !vehicles.vehicleResponses[i].vehicleStatus ) {
+              this.vehicles.push(this.convertResponseToVehicle(vehicles.vehicleResponses[i]));
+            }
           }
-          console.log(this.vehicles);
         }
       });
     }
@@ -92,7 +95,11 @@ export class VehiclesComponent implements OnInit, OnDestroy {
         if ( foundVehicles.count > 0 ) {
           this.vehicles = [];
           for ( let i = 0; i < foundVehicles.vehicleResponses.length; i++ ) {
-            this.vehicles.push(this.convertResponseToVehicle(foundVehicles.vehicleResponses[i]));
+            if ( foundVehicles.vehicleResponses[i].vehicleStatus && foundVehicles.vehicleResponses[i].vehicleStatus != "SOLD") {
+              this.vehicles.push(this.convertResponseToVehicle(foundVehicles.vehicleResponses[i]));
+            } else if ( !foundVehicles.vehicleResponses[i].vehicleStatus ) {
+              this.vehicles.push(this.convertResponseToVehicle(foundVehicles.vehicleResponses[i]));
+            }
           }
         }
       });

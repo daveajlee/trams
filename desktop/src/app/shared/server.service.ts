@@ -22,6 +22,8 @@ import {TimetablesResponse} from "./timetables.response";
 import {CompaniesResponse} from "./companies.response";
 import {StopTimesResponse} from "../stops/stop-detail/stoptimes.response";
 import {AdjustBalanceRequest} from "./adjustbalance.request";
+import {SellVehicleRequest} from "./sellvehicle.request";
+import {SellVehicleResponse} from "./sellvehicle.response";
 
 @Injectable()
 /**
@@ -349,10 +351,17 @@ export class ServerService {
     }
 
     /**
-     * Retrieve the vehicle number with the fleet number for the configured company.
+     * Retrieve the vehicle with the fleet number for the configured company.
      */
     async getVehicle(fleetNumber: string): Promise<VehiclesResponse> {
         return await lastValueFrom(this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company + '&fleetNumber=' + fleetNumber));
+    }
+
+    /**
+     * Sell the vehicle with the fleet number for the configured company.
+     */
+    async sellVehicle(fleetNumber: string): Promise<SellVehicleResponse> {
+        return await lastValueFrom(this.httpClient.patch<SellVehicleResponse>(this.serverUrl + '/vehicle/sell', new SellVehicleRequest(this.company, fleetNumber)));
     }
 
 }
