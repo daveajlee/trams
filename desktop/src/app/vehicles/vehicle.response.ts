@@ -1,3 +1,5 @@
+import {AdditionalTypeInformation} from "./additionalTypeInfo.model";
+
 /**
  * This class defines a model for responses containing a vehicle in TraMS.
  */
@@ -82,5 +84,10 @@ export class VehicleResponse {
      * The number of days until the next inspection is due.
      */
     public nextInspectionDueInDays: number;
+
+    /**
+     * The additional type information map.
+     */
+    public additionalTypeInformationMap: AdditionalTypeInformation;
 
 }

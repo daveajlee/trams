@@ -312,6 +312,9 @@ export class ServerService {
     /**
      * Get the stop times matching the route number for the configured company.
      * @param routeNumber the route number to get the stop times for.
+     * @param date the date to retrieve the stop times for.
+     * @param stop the name of the stop to retrieve the stop times for.
+     * @param scheduleNumber the schedule number to retrieve the stop times for.
      */
     async getStopTimes ( routeNumber: string, date: string, stop: string, scheduleNumber: string ): Promise<StopTimesResponse> {
         // Get the stop times.
@@ -343,6 +346,13 @@ export class ServerService {
      */
     async adjustBalance(amount: number): Promise<void> {
         await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/balance', new AdjustBalanceRequest(this.company, amount)));
+    }
+
+    /**
+     * Retrieve the vehicle number with the fleet number for the configured company.
+     */
+    async getVehicle(fleetNumber: string): Promise<VehiclesResponse> {
+        return await lastValueFrom(this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company + '&fleetNumber=' + fleetNumber));
     }
 
 }
