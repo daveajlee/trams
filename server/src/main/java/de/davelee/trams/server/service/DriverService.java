@@ -57,5 +57,15 @@ public class DriverService {
         List<Driver> drivers = retrieveDriversByCompany(company);
         drivers.forEach(driverRepository::delete);
     }
+
+    /**
+     * Delete all drivers currently stored in the database with the specified name for the specified company.
+     * @param company a <code>String</code> object containing the name of the company to delete drivers for.
+     * @param name a <code>String</code> object containing the name of the driver.
+     */
+    public void deleteDriversByCompanyAndName(final String company, final String name) {
+        List<Driver> drivers = retrieveDriversByCompanyAndName(company, name);
+        drivers.forEach(driverRepository::delete);
+    }
 }
 

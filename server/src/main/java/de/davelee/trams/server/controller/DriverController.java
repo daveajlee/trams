@@ -11,11 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,4 +65,26 @@ public class DriverController {
         //Otherwise return an empty 500 response.
         return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(500).build();
     }
+
+    /**
+     * Delete the driver currently stored in the database for a particular company with the particular name.
+     * @param company a <code>String</code> containing the name of the company to search for.
+     * @param name a <code>String</code> containing the name of the driver.
+     * @return a <code>ResponseEntity</code> object containing the results of the action.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @Operation(summary = "Delete driver", description="Delete driver with name and company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted driver")})
+    public ResponseEntity<Void> deleteDriver (final String company, final String name ) {
+        //First of all, check if the company field is empty or null, then return bad request.
+        if (StringUtils.isBlank(company) && StringUtils.isBlank(name)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        //Delete the driver.
+        driverService.deleteDriversByCompanyAndName(company, name);
+        //Return ok.
+        return ResponseEntity.ok().build();
+    }
+
 }
