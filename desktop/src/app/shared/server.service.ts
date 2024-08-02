@@ -24,6 +24,7 @@ import {StopTimesResponse} from "../stops/stop-detail/stoptimes.response";
 import {AdjustBalanceRequest} from "./adjustbalance.request";
 import {SellVehicleRequest} from "./sellvehicle.request";
 import {SellVehicleResponse} from "./sellvehicle.response";
+import {DriversResponse} from "../drivers/drivers.response";
 
 @Injectable()
 /**
@@ -362,6 +363,29 @@ export class ServerService {
      */
     async sellVehicle(fleetNumber: string): Promise<SellVehicleResponse> {
         return await lastValueFrom(this.httpClient.patch<SellVehicleResponse>(this.serverUrl + '/vehicle/sell', new SellVehicleRequest(this.company, fleetNumber)));
+    }
+
+    /**
+     * Retrieve the drivers for the configured company.
+     */
+    async getDrivers(): Promise<DriversResponse> {
+        return await lastValueFrom(this.httpClient.get<DriversResponse>(this.serverUrl + '/drivers/?company=' + this.company));
+    }
+
+    /**
+     * Retrieve the driver with the name for the configured company.
+     */
+    async getDriver(name: string): Promise<DriversResponse> {
+        return await lastValueFrom(this.httpClient.get<DriversResponse>(this.serverUrl + '/drivers/?company=' + this.company + '&name=' + name));
+    }
+
+    /**
+     * Delete the driver matching the name for the configured company.
+     * @param name the name to be deleted as a string.
+     */
+    async sackDriver (name: string): Promise<void> {
+        // Delete the driver
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/driver/?company=' + this.company + '&name=' + name))
     }
 
 }

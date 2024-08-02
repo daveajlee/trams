@@ -3,6 +3,9 @@ import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {Driver} from "../drivers/driver.model";
 import {DatePipe} from "@angular/common";
+import {TimeHelper} from "../shared/time.helper";
+import {ServerService} from "../shared/server.service";
+import {DriverRequest} from "../drivers/driver.request";
 
 @Component({
   selector: 'app-drivercreator',
@@ -20,10 +23,17 @@ export class DrivercreatorComponent {
    * @param gameService the game service containing the currently loaded game.
    * @param router the router for navigating to other pages.
    * @param datePipe a date pipe object for transforming dates in Angular.
+   * @param serverService the server service managing http calls.
    */
-  constructor(private gameService: GameService, public router: Router, private datePipe: DatePipe) {
+  constructor(private gameService: GameService, public router: Router, private datePipe: DatePipe, private serverService: ServerService) {
     this.contractedHours = 40;
-    this.startingDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
+    if ( this.gameService.isOfflineMode() ) {
+      this.startingDate = this.datePipe.transform(this.gameService.getGame().getCurrentDateTime(), 'yyyy-MM-dd');
+    } else {
+      this.serverService.getCurrentDateTime().then((dateTime) => {
+        this.startingDate = this.datePipe.transform(TimeHelper.formatStringAsDateObject(dateTime), 'yyyy-MM-dd');
+      })
+    }
   }
 
   /**
@@ -35,12 +45,27 @@ export class DrivercreatorComponent {
 
   onSubmitDriver(): void {
     var driver = new Driver(this.name, this.contractedHours, this.startingDate);
-    // Add the driver.
-    this.gameService.getGame().addDriver(driver);
-    // Deduct the hiring costs of 500.
-    this.gameService.getGame().withdrawBalance(500);
-    // Redirect to management.
-    this.router.navigate(['management']);
+    if ( this.gameService.isOfflineMode()) {
+      // Add the driver.
+      this.gameService.getGame().addDriver(driver);
+      // Deduct the hiring costs of 500.
+      this.gameService.getGame().withdrawBalance(500);
+      // Redirect to management.
+      this.router.navigate(['management']);
+    } else {
+      let dateParts = driver.getStartDate().split("-");
+      let startDateServerFormat = dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0];
+      console.log(startDateServerFormat);
+      // Add the driver.
+      this.serverService.addDriver(new DriverRequest(driver.getName(), driver.getContractedHours(), startDateServerFormat, this.serverService.getCompanyName())).then(() => {
+        // Deduct the hiring costs of 500.
+        this.serverService.adjustBalance(-500).then(() => {
+          // Redirect to management.
+          this.router.navigate(['management']);
+        })
+      })
+    }
+
   }
 
   backToManagementScreen(): void {
