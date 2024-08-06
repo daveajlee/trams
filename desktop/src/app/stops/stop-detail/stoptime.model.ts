@@ -7,17 +7,20 @@ export class StopTimeModel {
     private departureTime: string;
     private arrivalTime: string;
     private stop: string;
+    private scheduleNumber: string;
 
     /**
      * Construct a new StopTimeModel object based on the supplied information
      * @param departureTime the time that the vehicle will depart
      * @param arrivalTime the time that the vehicle will arrive
      * @param stop the name of the stop.
+     * @param scheduleNumber the schedule number running this service.
      */
-    constructor(departureTime: string, arrivalTime: string, stop: string ) {
+    constructor(departureTime: string, arrivalTime: string, stop: string, scheduleNumber: string) {
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.stop = stop;
+        this.scheduleNumber = scheduleNumber;
     }
 
     /**
@@ -42,6 +45,14 @@ export class StopTimeModel {
      */
     getStop(): string {
         return this.stop;
+    }
+
+    /**
+     * Retrieve the schedule number.
+     * @return the schedule number as a String.
+     */
+    getScheduleNumber(): string {
+        return this.scheduleNumber;
     }
 
 }

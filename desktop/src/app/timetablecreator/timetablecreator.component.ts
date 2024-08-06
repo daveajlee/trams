@@ -287,7 +287,9 @@ export class TimetablecreatorComponent {
                 this.getStopNames(timetable.getFrequencyPatterns()[i].getStartStop(), this.routeResponse.stops, timetable.getFrequencyPatterns()[i].getEndStop()), this.routeNumber, timetable.getFrequencyPatterns()[i].getStartTime(),
                 timetable.getFrequencyPatterns()[i].getEndTime(), timetable.getFrequencyPatterns()[i].getFrequencyInMinutes(),
                 TimeHelper.formatDateTimeAsString(timetable.getValidFromDate()),
-                TimeHelper.formatDateTimeAsString(timetable.getValidToDate()), this.getOperatingDays(timetable.getFrequencyPatterns()[i].getDaysOfOperation()))).then(() => {
+                TimeHelper.formatDateTimeAsString(timetable.getValidToDate()), this.getOperatingDays(timetable.getFrequencyPatterns()[i].getDaysOfOperation()),
+                timetable.getFrequencyPatterns()[i].getNumTours(), timetable.getFrequencyPatterns()[i].getStartStop(),
+                timetable.getFrequencyPatterns()[i].getEndStop(), this.loadScenario(this.scenarioName).getStopDistances())).then(() => {
               // Now go to route editor screen.
               this.router.navigate(['routeeditor', this.routeNumber]);
             });
@@ -351,7 +353,7 @@ export class TimetablecreatorComponent {
     // Now we start generating the services.
     let service = new ServiceModel("" + serviceNumber);
     // Add the start stop.
-    service.addStop(TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), outgoing ? frequencyPattern.getStartStop() : frequencyPattern.getEndStop());
+    service.addStop(TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), TimeHelper.addTime(startTime, tourNumber * frequencyPattern.getFrequencyInMinutes()), outgoing ? frequencyPattern.getStartStop() : frequencyPattern.getEndStop(), "");
     // Go through remaining stops for the route.
     let distance = 0;
     if ( outgoing ) {
@@ -359,7 +361,7 @@ export class TimetablecreatorComponent {
         // Get the distance between this stop and the last stop.
         distance += (k == 0 ) ? this.loadScenario(this.scenarioName).getDistanceBetweenStop(frequencyPattern.getStartStop(), this.route.getStops()[k])
             : this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[k-1], this.route.getStops()[k]);
-        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[k]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[k], "");
       }
     } else {
       for ( let m = this.route.getStops().length - 1; m >= 0; m-- ) {
@@ -367,12 +369,12 @@ export class TimetablecreatorComponent {
         distance += ( m == this.route.getStops().length - 1 ) ? this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[m], frequencyPattern.getEndStop())
             : this.loadScenario(this.scenarioName).getDistanceBetweenStop(this.route.getStops()[m], this.route.getStops()[m+1]);
         console.log('Distance is ' + distance);
-        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[m]);
+        service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), this.route.getStops()[m], "");
       }
     }
     // Now we need to do the end stop.
     distance += this.loadScenario(this.scenarioName).getDistanceBetweenStop(frequencyPattern.getEndStop(), this.route.getStops()[this.route.getStops().length-1]);
-    service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop());
+    service.addStop(TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), TimeHelper.addTime(startTime, ((tourNumber * frequencyPattern.getFrequencyInMinutes())) + distance), outgoing ? frequencyPattern.getEndStop() : frequencyPattern.getStartStop(), "");
     return service;
   }
 

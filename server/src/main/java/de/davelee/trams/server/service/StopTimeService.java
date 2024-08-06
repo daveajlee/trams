@@ -1,8 +1,10 @@
 package de.davelee.trams.server.service;
 
-import de.davelee.trams.server.model.StopTime;
+import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.StopTimeRepository;
+import de.davelee.trams.server.request.GenerateStopTimesRequest;
 import de.davelee.trams.server.utils.DateUtils;
+import de.davelee.trams.server.utils.FrequencyPatternUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,9 @@ public class StopTimeService {
     @Autowired
     private StopTimeRepository stopTimeRepository;
 
+    @Autowired
+    private CompanyService companyService;
+
     /**
      * Add the supplied list of stop times to the database.
      * @param stopTimeList a <code>List</code> of <code>StopTime</code> objects containing the list of stop times to be added.
@@ -29,10 +34,6 @@ public class StopTimeService {
     public boolean addStopTimes ( final List<StopTime> stopTimeList ) {
         //Attempt to add all of the stop times to the database.
         for ( StopTime stopTime : stopTimeList ) {
-            if ( stopTime.getScheduleNumber() != -1 ) {
-                System.out.println("Service add stop times");
-                System.out.println(stopTime);
-            }
             if ( stopTimeRepository.save(stopTime) == null ) {
                 return false;
             }
@@ -109,7 +110,7 @@ public class StopTimeService {
             // If schedule number is not empty then filter the schedule number.
             if ( !scheduleNumber.equalsIgnoreCase("")) {
                 stopTimes = stopTimes.stream()
-                        .filter(stopTime -> stopTime.getScheduleNumber() == Integer.parseInt(scheduleNumber.split("/")[1]))
+                        .filter(stopTime -> Integer.parseInt(stopTime.getService().getRouteSchedule().getScheduleId()) == Integer.parseInt(scheduleNumber.split("/")[1]))
                         .collect(Collectors.toList());
             }
             return stopTimes;
@@ -167,7 +168,7 @@ public class StopTimeService {
             // If schedule number is not empty then filter the schedule number.
             if ( !scheduleNumber.equalsIgnoreCase("")) {
                 stopTimes = stopTimes.stream()
-                        .filter(stopTime -> stopTime.getScheduleNumber() == Integer.parseInt(scheduleNumber.split("/")[1]))
+                        .filter(stopTime -> Integer.parseInt(stopTime.getService().getRouteSchedule().getScheduleId()) == Integer.parseInt(scheduleNumber.split("/")[1]))
                         .collect(Collectors.toList());
             }
             return stopTimes;
@@ -226,6 +227,130 @@ public class StopTimeService {
             List<StopTime> stopTimes = stopTimeRepository.findByCompany(company);
             stopTimes.forEach(stopTimeRepository::delete);
         }
+    }
+
+    /**
+     * Generate the stop times.
+     * @param generateStopTimesRequest the request to generate stop times.
+     */
+    public void generateStopTimes(final GenerateStopTimesRequest generateStopTimesRequest) {
+        // Now we go through the tours which are the schedules.
+        for (int j = 0; j < generateStopTimesRequest.getNumTours(); j++) {
+            RouteSchedule routeSchedule = new RouteSchedule(generateStopTimesRequest.getRouteNumber(), "" + (j + 1));
+            // Note the duration which is the frequency * num Tours
+            int duration = generateStopTimesRequest.getFrequency() * generateStopTimesRequest.getNumTours();
+            // Set the loop time to the starting time.
+            LocalTime loopTime = DateUtils.convertTimeToLocalTime(generateStopTimesRequest.getStartTime());
+            int serviceCounter = 1;
+            // Now repeat until we reach the end time.
+            while (!loopTime.isAfter(DateUtils.convertTimeToLocalTime(generateStopTimesRequest.getEndTime()))) {
+                // Add an outgoing service.
+                generateService(generateStopTimesRequest, loopTime, serviceCounter,(j+1), true,
+                        routeSchedule);
+                // Add half of duration to cover outgoing service.
+                loopTime = loopTime.plusMinutes(duration / 2);
+                // Increase service counter
+                serviceCounter++;
+                // Add return service.
+                generateService(generateStopTimesRequest, loopTime, serviceCounter, (j+1), false,
+                        routeSchedule);
+                // Add half of duration to cover return service.
+                loopTime = loopTime.plusMinutes((duration / 2));
+                // Increase service counter
+                serviceCounter++;
+            }
+        }
+    }
+
+    /**
+     * This is a helper method to generate a service based on the information provided.
+     * @param generateStopTimesRequest the request to generate stop times.
+     * @param startTime a <code>LocalTime</code> object with the start time for generating stop times.
+     * @param serviceNumber a <code>int</code> with the first service number to generate.
+     * @param tourNumber a <code>int</code> with the second service number to generate.
+     * @param outgoing a <code>boolean</code> which is true iff we are generating in the outgoing direction.
+     * @param routeSchedule a <code>RouteSchedule</code> object matching the route schedule that we are currently generating.
+     * @return the service that we generated as a <code>ServiceTrip</code> object.
+     */
+    public ServiceTrip generateService( final GenerateStopTimesRequest generateStopTimesRequest, final LocalTime startTime,
+                                        final int serviceNumber, final int tourNumber, final boolean outgoing,
+                                        final RouteSchedule routeSchedule) {
+        // Now we start generating the services.
+        String serviceId = "" + serviceNumber;
+        List<Stop> stopList = new ArrayList<>();
+        List<StopTime> stopTimeList = new ArrayList<>();
+        // Go through stops for the route.
+        int distance = 0;
+        if ( outgoing ) {
+            for ( int k = 0; k < generateStopTimesRequest.getStopNames().length; k++ ) {
+                // Get the distance between this stop and the last stop.
+                distance += (k == 0 ) ? getDistanceBetweenStop(generateStopTimesRequest.getStartStop(), generateStopTimesRequest.getStopNames()[k], generateStopTimesRequest.getStopDistances())
+                        : getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[k-1], generateStopTimesRequest.getStopNames()[k], generateStopTimesRequest.getStopDistances());
+                stopList.add(Stop.builder().name(generateStopTimesRequest.getStopNames()[k]).build());
+                stopTimeList.add(StopTime.builder()
+                                .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
+                                .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
+                                .destination(generateStopTimesRequest.getEndStop())
+                                .stopName(generateStopTimesRequest.getStopNames()[k])
+                                .company(generateStopTimesRequest.getCompany())
+                                .operatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")))
+                                .validFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()))
+                                .validToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()))
+                                .routeNumber(generateStopTimesRequest.getRouteNumber())
+                                .build());
+            }
+        } else {
+            for ( int m = generateStopTimesRequest.getStopNames().length - 1; m >= 0; m-- ) {
+                // Get the distance between this stop and the last stop.
+                distance += ( m == generateStopTimesRequest.getStopNames().length - 1 ) ? getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[m], generateStopTimesRequest.getEndStop(), generateStopTimesRequest.getStopDistances())
+                        : getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[m], generateStopTimesRequest.getStopNames()[m+1], generateStopTimesRequest.getStopDistances());
+                stopList.add(Stop.builder().name(generateStopTimesRequest.getStopNames()[m]).build());
+                stopTimeList.add(StopTime.builder()
+                                .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
+                                .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
+                                .destination(generateStopTimesRequest.getStartStop())
+                                .stopName(generateStopTimesRequest.getStopNames()[m])
+                                .company(generateStopTimesRequest.getCompany())
+                                .operatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")))
+                                .validFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()))
+                                .validToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()))
+                                .routeNumber(generateStopTimesRequest.getRouteNumber())
+                                .build());
+            }
+        }
+        // Now we need to do the end stop.
+        ServiceTrip serviceTrip = ServiceTrip.builder()
+                .serviceId(serviceId)
+                .stopList(stopList)
+                .routeSchedule(routeSchedule)
+                .build();
+        for ( StopTime stopTime : stopTimeList ) {
+            stopTime.setService(serviceTrip);
+            stopTimeRepository.save(stopTime);
+        }
+        return serviceTrip;
+    }
+
+    /**
+     * Get the distance between two particular stops.
+     * @param stop1 the first stop as a string to measure the distance to the second stop.
+     * @param stop2 the second stop as a string to measure the distance from the first stop.
+     * @param stopDistances the distances between stops in the format stopName:distance1,distance2 per entry.
+     * @return the distance between the stops in minutes as a number.
+     */
+    public int getDistanceBetweenStop (final String stop1, final String stop2, final String[] stopDistances) {
+        int stop1Pos = -1; int stop2Pos = -1;
+        for ( var i = 0; i < stopDistances.length; i++ ) {
+            if ( stopDistances[i].split(":")[0].contentEquals(stop1) ) {
+                stop1Pos = i;
+            } else if ( stopDistances[i].split(":")[0].contentEquals(stop2) ) {
+                stop2Pos = i;
+            }
+        }
+        if ( stop1Pos >= 0 && stop2Pos >= 0 ) {
+            return Integer.parseInt(stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
+        }
+        return -1;
     }
 
 }

@@ -1,3 +1,5 @@
+import {FrequencyPattern} from "../shared/frequencypattern.model";
+
 export class GenerateStopTimesRequest {
 
     private company: string;
@@ -9,6 +11,10 @@ export class GenerateStopTimesRequest {
     private validFromDate: string;
     private validToDate: string;
     private operatingDays: string;
+    private numTours: number;
+    private startStop: string;
+    private endStop: string;
+    private stopDistances: string[];
 
     /**
      * Construct a new generate stop times request which contains the supplied data.
@@ -21,10 +27,15 @@ export class GenerateStopTimesRequest {
      * @param validFromDate the valid from date of this timetable in format dd-MM-yyyy
      * @param validToDate the valid to date of this timetable in format dd-MM-yyyy
      * @param operatingDays the days when these stop times run as a comma-separated string.
+     * @param numTours the number of tours to be generated
+     * @param startStop the start stop to generate stop times from
+     * @param endStop the end stop to generate end times from
+     * @param stopDistances the distances between stops in the scenario being played
      */
 
     constructor(company: string, stopNames: string[], routeNumber: string, startTime: string, endTime: string,
-                frequency: number, validFromDate: string, validToDate: string, operatingDays: string) {
+                frequency: number, validFromDate: string, validToDate: string, operatingDays: string,
+                numTours: number, startStop: string, endStop: string, stopDistances: string[]) {
         this.company = company;
         this.stopNames = stopNames;
         this.routeNumber = routeNumber;
@@ -34,6 +45,10 @@ export class GenerateStopTimesRequest {
         this.validFromDate = validFromDate;
         this.validToDate = validToDate
         this.operatingDays = operatingDays;
+        this.numTours = numTours;
+        this.startStop = startStop;
+        this.endStop = endStop;
+        this.stopDistances = stopDistances;
     }
 
 }

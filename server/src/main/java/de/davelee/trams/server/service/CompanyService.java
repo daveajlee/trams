@@ -113,6 +113,15 @@ public class CompanyService {
     }
 
     /**
+     * Return the current date for the specified company.
+     * @param company a <code>String</code> with the name of the company to retrieve the time for.
+     * @return the current date as a <code>LocalDateTime</code> object.
+     */
+    public LocalDateTime getTime(final String company) {
+        return retrieveCompanyByName(company).getFirst().getTime();
+    }
+
+    /**
      * Adjust the difficulty level of the company to the supplied difficulty level.
      * @param company a <code>Company</code> object which should have its difficulty level adjusted.
      * @param difficultyLevel a <code>String</code> containing the difficulty level that should now be used for the company.

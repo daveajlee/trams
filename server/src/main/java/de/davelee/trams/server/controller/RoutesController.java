@@ -60,6 +60,9 @@ public class RoutesController {
             routeResponses[i] = RouteResponse.builder()
                     .company(routes.get(i).getCompany())
                     .routeNumber(routes.get(i).getRouteNumber())
+                    .startStop(routes.get(i).getStartStop())
+                    .stops(routes.get(i).getStops())
+                    .endStop(routes.get(i).getEndStop())
                     .build();
         }
         return ResponseEntity.ok(RoutesResponse.builder()

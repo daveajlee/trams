@@ -28,14 +28,12 @@ public class StopTimeTest {
                 .departureTime(LocalTime.of(19,48))
                 .destination("Greenfield")
                 .footnote("Continues as 405B to Brownfield")
-                .id(1234)
                 .journeyNumber("123")
                 .operatingDays(OperatingDays.builder()
                         .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
                         .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0)))
                         .build())
                 .routeNumber("405A")
-                .scheduleNumber(1)
                 .stopName("Lakeside")
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
@@ -44,7 +42,6 @@ public class StopTimeTest {
         assertEquals(LocalTime.of(19,46), stopTime.getArrivalTime());
         assertEquals(LocalTime.of(19,48), stopTime.getDepartureTime());
         assertEquals("Greenfield", stopTime.getDestination());
-        assertEquals(1234, stopTime.getId());
         assertEquals("123", stopTime.getJourneyNumber());
         assertEquals(Collections.singletonList(DayOfWeek.MONDAY), stopTime.getOperatingDays().getOperatingDays());
         assertEquals(Arrays.asList(LocalDateTime.of(2020,12,25,0,0)), stopTime.getOperatingDays().getSpecialOperatingDays());
@@ -53,14 +50,13 @@ public class StopTimeTest {
         assertEquals(LocalDateTime.of(2021,12,11,0,0), stopTime.getValidToDate());
         assertEquals("Continues as 405B to Brownfield", stopTime.getFootnote());
         //Verify the toString method
-        assertEquals("StopTime(id=1234, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, scheduleNumber=1, validFromDate=2020-12-12T00:00, validToDate=2021-12-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=123, footnote=Continues as 405B to Brownfield)", stopTime.toString());
+        assertEquals("StopTime(id=null, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, service=null, validFromDate=2020-12-12T00:00, validToDate=2021-12-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=123, footnote=Continues as 405B to Brownfield)", stopTime.toString());
         //Now use the setter methods
         stopTime.setArrivalTime(LocalTime.of(20, 46));
         stopTime.setCompany("Mustermann Bus GmbH");
         stopTime.setDepartureTime(LocalTime.of(20,48));
         stopTime.setDestination("Lake Way");
         stopTime.setFootnote(null);
-        stopTime.setId(12345);
         stopTime.setJourneyNumber("1234");
         stopTime.setOperatingDays(OperatingDays.builder()
                 .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
@@ -72,7 +68,7 @@ public class StopTimeTest {
         stopTime.setValidToDate(LocalDateTime.of(2021,11,11,0,0));
         //And verify again through the toString methods
         //assertEquals("", stopTime.getOperatingDays().toString());
-        assertEquals("StopTime(id=12345, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, scheduleNumber=1, validFromDate=2020-11-12T00:00, validToDate=2021-11-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=1234, footnote=null)", stopTime.toString());
+        assertEquals("StopTime(id=null, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, service=null, validFromDate=2020-11-12T00:00, validToDate=2021-11-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=1234, footnote=null)", stopTime.toString());
     }
 
     /**
@@ -85,7 +81,6 @@ public class StopTimeTest {
                 .arrivalTime(LocalTime.of(19, 46))
                 .departureTime(LocalTime.of(19,48))
                 .destination("Greenfield")
-                .id(1234)
                 .journeyNumber("123")
                 .operatingDays(OperatingDays.builder()
                         .operatingDays(Arrays.asList(DayOfWeek.MONDAY))

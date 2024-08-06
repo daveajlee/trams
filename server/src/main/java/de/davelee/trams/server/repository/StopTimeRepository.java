@@ -1,7 +1,6 @@
 package de.davelee.trams.server.repository;
 
 import de.davelee.trams.server.model.StopTime;
-import de.davelee.trams.server.model.Timetable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * This class enables as part of Spring Data access to the stop time objects stored in the Mongo DB.
  * @author Dave Lee
  */
-public interface StopTimeRepository extends MongoRepository<StopTime, String> {
+public interface StopTimeRepository extends MongoRepository<StopTime, Long> {
 
     /**
      * Find all departures and/or arrivals for a particular company and stop name.

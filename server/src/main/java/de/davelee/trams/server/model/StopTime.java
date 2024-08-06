@@ -1,10 +1,10 @@
 package de.davelee.trams.server.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -14,16 +14,20 @@ import java.time.LocalTime;
  * takes place and the journey number.
  * @author Dave Lee
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @ToString
+@Document
 public class StopTime {
 
     /**
      * The id of the stop time.
      */
-    private int id;
+    @Id
+    private BigInteger id;
 
     /**
      * The name of the stop where the journey will arrive or depart.
@@ -56,9 +60,9 @@ public class StopTime {
     private String routeNumber;
 
     /**
-     * The schedule number for this journey.
+     * The service for this journey,
      */
-    private int scheduleNumber;
+    private ServiceTrip service;
 
     /**
      * The date from which this stop occurs (inclusive).

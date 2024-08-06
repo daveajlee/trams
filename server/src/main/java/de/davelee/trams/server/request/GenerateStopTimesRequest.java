@@ -40,9 +40,24 @@ public class GenerateStopTimesRequest {
     private String endTime;
 
     /**
+     * The start stop to generate stop times from.
+     */
+    private String startStop;
+
+    /**
+     * The end stop to generate stop times until.
+     */
+    private String endStop;
+
+    /**
      * The frequency in which stops times should be generated in minutes. Minimum value is 1.
      */
     private int frequency;
+
+    /**
+     * The number of tours that should be generated.
+     */
+    private int numTours;
 
     /**
      * The valid from date with the date from which stop times are valid. The date is inclusive.
@@ -58,5 +73,10 @@ public class GenerateStopTimesRequest {
      * The days when these stop times run.
      */
     private String operatingDays;
+
+    /**
+     * The distances between stops in the format stopName:distance,distance,distance per stop as one entry.
+     */
+    private String[] stopDistances;
 
 }

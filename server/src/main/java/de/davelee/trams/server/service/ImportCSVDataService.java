@@ -136,7 +136,6 @@ public class ImportCSVDataService {
                         StopTime stopTime = null;
                         if ( record.get(i).length() > 5 ) {
                             stopTime = StopTime.builder()
-                                    .id(stopTimeCounter)
                                     .company(operatorName)
                                     .departureTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
                                     .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
@@ -151,7 +150,6 @@ public class ImportCSVDataService {
                                     .build();
                         } else {
                             stopTime = StopTime.builder()
-                                    .id(stopTimeCounter)
                                     .company(operatorName)
                                     .departureTime(DateUtils.convertTimeToLocalTime(record.get(i)))
                                     .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i)))

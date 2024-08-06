@@ -126,7 +126,7 @@ export class LoadService {
                                         // Now we create a service for this schedule.
                                         const serviceModel = new ServiceModel(serviceId);
                                         // Add the start time and stop.
-                                        serviceModel.addStop(startTime, startTime, schedStartStop);
+                                        serviceModel.addStop(startTime, startTime, schedStartStop, routeNumber + "/" + schedId);
                                         // Determine start position in array.
                                         var startPos = 0;
                                         for ( var b = 0; b < stopDistances.length; b++ ) {
@@ -161,7 +161,7 @@ export class LoadService {
                                                     nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                                                 }
                                                 // Create the stop time.
-                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0], routeNumber + "/" + schedId);
                                                 // Now we set this time to next time and we are done for this loop.
                                                 thisTime = nextTime;
                                             }
@@ -185,7 +185,7 @@ export class LoadService {
                                                     nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                                                 }
                                                 // Create the stop time.
-                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0], routeNumber + "/" + schedId);
                                                 // Now we set this time to next time and we are done for this loop.
                                                 thisTime = nextTime;
                                             }

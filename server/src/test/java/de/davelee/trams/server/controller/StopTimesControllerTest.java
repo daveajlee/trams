@@ -1,10 +1,9 @@
 package de.davelee.trams.server.controller;
 
-import de.davelee.trams.server.model.OperatingDays;
-import de.davelee.trams.server.model.Stop;
-import de.davelee.trams.server.model.StopTime;
+import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.request.GenerateStopTimesRequest;
 import de.davelee.trams.server.response.StopTimesResponse;
+import de.davelee.trams.server.service.CompanyService;
 import de.davelee.trams.server.service.StopService;
 import de.davelee.trams.server.service.StopTimeService;
 import org.assertj.core.util.Lists;
@@ -43,6 +42,9 @@ public class StopTimesControllerTest {
     @Mock
     private StopService stopService;
 
+    @Mock
+    private CompanyService companyService;
+
     /**
      * Test the departure endpoint of this controller.
      */
@@ -53,7 +55,6 @@ public class StopTimesControllerTest {
                 .company("Mustermann Bus GmbH")
                 .departureTime(LocalTime.of(22,13))
                 .destination("Greenfield")
-                .id(1)
                 .journeyNumber("101")
                 .operatingDays(OperatingDays.builder()
                         .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
@@ -61,6 +62,7 @@ public class StopTimesControllerTest {
                         .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
+                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
@@ -84,7 +86,6 @@ public class StopTimesControllerTest {
                 .company("Mustermann Bus GmbH")
                 .departureTime(LocalTime.of(22,13))
                 .destination("Greenfield")
-                .id(1)
                 .journeyNumber("101")
                 .operatingDays(OperatingDays.builder()
                         .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
@@ -92,6 +93,7 @@ public class StopTimesControllerTest {
                         .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
+                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
@@ -110,7 +112,6 @@ public class StopTimesControllerTest {
                 .arrivalTime(LocalTime.of(22,11))
                 .departureTime(LocalTime.of(22,13))
                 .destination("Greenfield")
-                .id(1)
                 .journeyNumber("101")
                 .operatingDays(OperatingDays.builder()
                         .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
@@ -118,6 +119,7 @@ public class StopTimesControllerTest {
                         .build())
                 .routeNumber("405A")
                 .stopName("Lakeside")
+                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
                 .validFromDate(LocalDateTime.of(2020,12,12,0,0))
                 .validToDate(LocalDateTime.of(2021,12,11,0,0))
                 .build()));
@@ -173,6 +175,7 @@ public class StopTimesControllerTest {
                         .name("Airport")
                         .build()
         );
+        Mockito.when(companyService.getTime("Lee Transport")).thenReturn(LocalDateTime.now());
         //1st test
         GenerateStopTimesRequest generateStopTimesRequest = GenerateStopTimesRequest.builder()
                 .company("Lee Transport")
@@ -185,7 +188,7 @@ public class StopTimesControllerTest {
                 .validToDate("10-12-2022")
                 .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022")
                 .build();
-        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, frequency=90, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022)", generateStopTimesRequest.toString());
+        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, startStop=null, endStop=null, frequency=90, numTours=0, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022, stopDistances=null)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
         //Mocks for 2nd test
         Mockito.when(stopService.getStop("Lee Transport", "Bus Station")).thenReturn(

@@ -94,7 +94,6 @@ public class ImportGTFSDataService {
                     //Add the StopTime information to the database.
                     List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(gtfsStopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
                     StopTime stopTime = StopTime.builder()
-                            .id(stopTimeCounter)
                             .company(store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName())
                             .departureTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime())))
                             .arrivalTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime())))
