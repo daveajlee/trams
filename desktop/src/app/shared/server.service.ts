@@ -25,6 +25,9 @@ import {AdjustBalanceRequest} from "./adjustbalance.request";
 import {SellVehicleRequest} from "./sellvehicle.request";
 import {SellVehicleResponse} from "./sellvehicle.response";
 import {DriversResponse} from "../drivers/drivers.response";
+import {Allocation} from "../allocations/allocation.model";
+import {AllocationRequest} from "../allocations/allocation.request";
+import {DeleteAllocationRequest} from "../allocations/deleteallocation.request";
 
 @Injectable()
 /**
@@ -386,6 +389,41 @@ export class ServerService {
     async sackDriver (name: string): Promise<void> {
         // Delete the driver
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/driver/?company=' + this.company + '&name=' + name))
+    }
+
+    /**
+     * Get the allocations from the server.
+     * @return an array of allocations from the server.
+     */
+    async getAllocations(): Promise<Allocation[]> {
+        let allocations = [];
+        let vehicles = await lastValueFrom(this.httpClient.get<VehiclesResponse>(this.serverUrl + '/vehicles/?company=' + this.company));
+        for ( let i = 0; i < vehicles.count; i++ ) {
+            if ( vehicles.vehicleResponses[i].allocatedTour && vehicles.vehicleResponses[i].allocatedTour != "") {
+                console.log(vehicles.vehicleResponses[i].allocatedTour);
+                allocations.push(new Allocation(vehicles.vehicleResponses[i].allocatedTour.split("/")[0],
+                    vehicles.vehicleResponses[i].fleetNumber, vehicles.vehicleResponses[i].allocatedTour.split("/")[1]));
+            }
+        }
+        return allocations;
+    }
+
+    /**
+     * Add an allocation to the server.
+     * @param allocatedRoute the route number that should be allocated.
+     * @param fleetNumber the fleet number that should be allocated.
+     * @param allocatedTour the tour or schedule number that should be allocated.
+     */
+    async addAllocation(allocatedRoute: string, fleetNumber: string, allocatedTour: string): Promise<void> {
+        await lastValueFrom(this.httpClient.patch(this.serverUrl + '/vehicle/allocate', new AllocationRequest(this.company, fleetNumber, allocatedRoute, allocatedTour)));
+    }
+
+    /**
+     * Delete an allocation from the server.
+     * @param fleetNumber the fleet number that should be deleted.
+     */
+    async deleteAllocation(fleetNumber: string): Promise<void> {
+        await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicle/allocate?company=' + this.company + '&fleetNumber=' + fleetNumber));
     }
 
 }

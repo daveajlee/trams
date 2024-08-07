@@ -11,7 +11,6 @@ export class AdjustBalanceRequest {
      * @param company the company that we should adjust the balance for.
      * @param value the amount that we should adjust the balance by.
      */
-
     constructor(company: string, value: number) {
         this.company = company;
         this.value = value;

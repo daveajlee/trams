@@ -457,21 +457,10 @@ public class VehicleControllerTest {
         ResponseEntity responseEntity3 = vehicleController.allocateVehicle(allocateVehicleRequest);
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
         //Test remove actual allocation.
-        ResponseEntity responseEntity4 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
-                .company("Lee Transport")
-                .fleetNumber("223")
-                .build());
+        ResponseEntity responseEntity4 = vehicleController.removeVehicleAllocation("Lee Transport", "223");
         assertEquals(HttpStatus.OK, responseEntity4.getStatusCode());
-        //Remove fleet number.
-        ResponseEntity responseEntity5 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
-                .company("Lee Transport")
-                .build());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity5.getStatusCode());
         //Test with vehicle that does not exist
-        RemoveVehicleRequest removeVehicleRequest = new RemoveVehicleRequest();
-        removeVehicleRequest.setFleetNumber("233");
-        removeVehicleRequest.setCompany("Lee Transport");
-        ResponseEntity responseEntity6 = vehicleController.removeVehicleAllocation(removeVehicleRequest);
+        ResponseEntity responseEntity6 = vehicleController.removeVehicleAllocation("Lee Transport", "233");
         assertEquals(HttpStatus.NO_CONTENT, responseEntity6.getStatusCode());
     }
 

@@ -282,19 +282,20 @@ public class VehicleController {
 
     /**
      * Remove the allocation of the vehicle matching the supplied company and fleet number.
-     * @param removeVehicleRequest a <code>RemoveVehicleRequest</code> object containing the information about the vehicle.
+     * @param company the company to remove the allocation for.
+     * @param fleetNumber the fleet number to remove the allocation for.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @Operation(summary = "Remove a particular allocation", description="Remove the allocation of a particular vehicle to a particular tour")
     @DeleteMapping(value="/allocate")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully removed allocation"), @ApiResponse(responseCode="204",description="No vehicle found")})
-    public ResponseEntity<Void> removeVehicleAllocation (@RequestBody RemoveVehicleRequest removeVehicleRequest) {
+    public ResponseEntity<Void> removeVehicleAllocation (final String company, final String fleetNumber) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(removeVehicleRequest.getCompany()) || StringUtils.isBlank(removeVehicleRequest.getFleetNumber())) {
+        if ( StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber)) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise allocations cannot be removed.
-        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(removeVehicleRequest.getCompany(), removeVehicleRequest.getFleetNumber());
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber);
         if ( vehicles == null || vehicles.size() != 1 ) {
             return ResponseEntity.noContent().build();
         }
