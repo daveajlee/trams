@@ -1,9 +1,8 @@
 package de.davelee.trams.server.controller;
 
-import de.davelee.trams.server.model.RealTimeEntryModel;
-import de.davelee.trams.server.model.RealTimeModel;
-import de.davelee.trams.server.model.StopTime;
+import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.request.GenerateStopTimesRequest;
+import de.davelee.trams.server.response.PositionResponse;
 import de.davelee.trams.server.response.StopTimeResponse;
 import de.davelee.trams.server.response.StopTimesResponse;
 import de.davelee.trams.server.service.CompanyService;
@@ -46,6 +45,30 @@ public class StopTimesController {
 
     @Autowired
     private CompanyService companyService;
+
+    /**
+     * Get the current position of the vehicle.
+     * @param company a <code>String</code> object containing the name of the company to return the vehicle for.
+     * @param allocatedTour a <code>String</code> containing the allocated tour of the vehicle.
+     * @param dateTime a <code>String</code> with the current date and time.
+     * @param difficultyLevel a <code>String</code> with the difficulty level selected by the user.
+     */
+    @Operation(summary = "Get current position of a particular vehicle", description="Get current position of a particular vehicle")
+    @GetMapping(value="/position")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description="Successfully got the position of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
+    public ResponseEntity<PositionResponse> getPosition(final String company, final String allocatedTour, final String dateTime, final String difficultyLevel ) {
+        if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour) || StringUtils.isBlank(dateTime)) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Now calculate the current position of the vehicle.
+        Position position = stopTimeService.retrievePositionForAllocatedTour(company, allocatedTour, DateUtils.convertDateToLocalDateTime(dateTime));
+        // Return the position.
+        return ResponseEntity.ok(PositionResponse.builder()
+                .stop(position.getStop())
+                .destination(position.getDestination())
+                .delay(position.getDelay())
+                .company(position.getCompany()).build());
+    }
 
     /**
      * Return the next departures and/or arrivals based on the supplied user parameters.
