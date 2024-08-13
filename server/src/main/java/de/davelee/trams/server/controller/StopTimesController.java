@@ -5,10 +5,7 @@ import de.davelee.trams.server.request.GenerateStopTimesRequest;
 import de.davelee.trams.server.response.PositionResponse;
 import de.davelee.trams.server.response.StopTimeResponse;
 import de.davelee.trams.server.response.StopTimesResponse;
-import de.davelee.trams.server.service.CompanyService;
-import de.davelee.trams.server.service.RouteService;
-import de.davelee.trams.server.service.StopService;
-import de.davelee.trams.server.service.StopTimeService;
+import de.davelee.trams.server.service.*;
 import de.davelee.trams.server.utils.DateUtils;
 import de.davelee.trams.server.utils.StopTimeUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +35,7 @@ public class StopTimesController {
     private StopTimeService stopTimeService;
 
     @Autowired
-    private StopService stopService;
+    private VehicleService vehicleService;
 
     @Autowired
     private RouteService routeService;
@@ -60,8 +57,14 @@ public class StopTimesController {
         if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour) || StringUtils.isBlank(dateTime)) {
             return ResponseEntity.badRequest().build();
         }
+        // Get the vehicle currently run - return no content if no vehicle is assigned.
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour(company, allocatedTour.split("/")[0], allocatedTour);
+        if ( vehicles.isEmpty() ) {
+            return ResponseEntity.noContent().build();
+        }
         //Now calculate the current position of the vehicle.
-        Position position = stopTimeService.retrievePositionForAllocatedTour(company, allocatedTour, DateUtils.convertDateToLocalDateTime(dateTime));
+        Position position = stopTimeService.retrievePositionForAllocatedTour(company, allocatedTour, DateUtils.convertDateToLocalDateTime(dateTime),
+                vehicles.getFirst().getDelayInMinutes());
         // Return the position.
         return ResponseEntity.ok(PositionResponse.builder()
                 .stop(position.getStop())

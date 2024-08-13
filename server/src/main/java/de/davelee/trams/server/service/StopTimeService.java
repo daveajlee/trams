@@ -359,7 +359,7 @@ public class StopTimeService {
      * @param allocatedTour the allocated tour in the format route / route schedule or tour number.
      * @param currentDateTime the current date and time as a <code>LocalDateTime</code> object.
      */
-    public Position retrievePositionForAllocatedTour ( final String company, final String allocatedTour, final LocalDateTime currentDateTime) {
+    public Position retrievePositionForAllocatedTour ( final String company, final String allocatedTour, final LocalDateTime currentDateTime, final int delay) {
         // Get all of the stop times for this company and route number,
         List<StopTime> stopTimes = stopTimeRepository.findByCompanyAndRouteNumber(company, allocatedTour.split("/")[0]);
         // Filter any of the stop times that are not valid and that do not match the allocated tour,
@@ -377,24 +377,27 @@ public class StopTimeService {
         // Now we should have all stop times for this allocated tour,
         // Go through the remaining stop times until we get the departure time that is after current time and then it is the previous one.
         for ( int i = 0; i < stopTimes.size(); i++ ) {
-            if ( stopTimes.get(i).getDepartureTime().isAfter(currentDateTime.toLocalTime()) ) {
+            if ( stopTimes.get(i).getDepartureTime().isAfter(currentDateTime.toLocalTime().minusMinutes(delay)) ) {
                 // If i is 0, then we are still at depot since we have not started.
                 if ( i == 0  ) {
                     return Position.builder()
                             .stop("Depot")
                             .destination("N/A")
+                            .delay(delay)
                             .company(company).build();
                 }
                 // Otherwise we have the position.
                 return Position.builder()
                         .stop(stopTimes.get(i-1).getStopName())
                         .destination(stopTimes.get(i-1).getDestination())
+                        .delay(delay)
                         .company(stopTimes.get(i-1).getCompany()).build();
             }
         }
         return Position.builder()
                 .stop("Depot")
                 .destination("N/A")
+                .delay(delay)
                 .company(company).build();
     }
 
