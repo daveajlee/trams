@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {GameService} from "../shared/game.service";
 import {Route} from "../routes/route.model";
-import {ScheduleModel} from "../stops/stop-detail/schedule.model";
 import {PositionHelper} from "../shared/position.helper";
 import {ServerService} from "../shared/server.service";
 import {TimeHelper} from "../shared/time.helper";
@@ -22,6 +21,7 @@ export class LivesituationComponent implements OnInit {
   tours: string[];
   private simulationRunning: boolean;
   private interval: any;
+  positions: Map<string, string>;
 
   /**
    * Create a new live situation component to display the current live situation to the user.
@@ -43,6 +43,10 @@ export class LivesituationComponent implements OnInit {
             this.tours.push(this.routes[i].getSchedules()[j].getRouteNumberAndScheduleId())
           }
         }
+      }
+      this.positions = new Map<string, string>();
+      for ( let j = 0; j < this.tours.length; j++ ) {
+        this.getCurrentPosition(this.tours[j]);
       }
     } else {
       this.serverService.getRoutes().then((routes) => {
@@ -69,6 +73,10 @@ export class LivesituationComponent implements OnInit {
               if ( !this.tours.includes(this.selectedRoute + "/" + stopTimes.stopTimeResponses[i].scheduleNumber) ) {
                 this.tours.push(this.selectedRoute + "/" + stopTimes.stopTimeResponses[i].scheduleNumber);
               }
+            }
+            this.positions = new Map<string, string>();
+            for ( let j = 0; j < this.tours.length; j++ ) {
+              this.getCurrentPosition(this.tours[j]);
             }
           })
         })
@@ -110,13 +118,26 @@ export class LivesituationComponent implements OnInit {
     return this.simulationRunning;
   }
 
-  getCurrentPosition(routeTour: string): string {
+  /**
+   * Get the current position for the supplied route schedule id.
+   * @param routeTour the route schedule id that we want to retrieve the position for.
+   */
+  getCurrentPosition(routeTour: string): void {
     if ( this.gameService.isOfflineMode() ) {
-      return PositionHelper.getCurrentPosition(routeTour, this.routes, this.gameService.getGame()).getStop();
+      this.positions.set(routeTour, PositionHelper.getCurrentPosition(routeTour, this.routes, this.gameService.getGame()).getStop());
     } else {
-      return "";
+      this.serverService.getCurrentDateTime().then((dateTime) => {
+        this.serverService.getPosition(routeTour, dateTime, 'EASY').then((position) => {
+          if ( position && position.stop ) {
+            console.log('Position for ' + routeTour + ' is ' + position.stop);
+            this.positions.set(routeTour, position.stop);
+          } else {
+            console.log('Position for ' + routeTour + ' is not allocated');
+            this.positions.set(routeTour, "");
+          }
+        })
+      })
     }
-
   }
 
   setSimulationRunning(value: boolean) {
@@ -132,11 +153,18 @@ export class LivesituationComponent implements OnInit {
     }
   }
 
+  /**
+   * Clicking on the button with the route schedule id causes the schedule information screen to be opened.
+   * @param routeScheduleId the route schedule id to open the schedule information screen with.
+   */
   moveToScheduleScreen(routeScheduleId: string) {
     this.setSimulationRunning(false);
     this.router.navigate(['scheduleinfo', routeScheduleId.replace("/", ":")]);
   }
 
+  /**
+   * Return to the management screen by clicking the back button.
+   */
   backToManagementScreen(): void {
     this.setSimulationRunning(false);
     this.router.navigate(['management']);

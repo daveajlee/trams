@@ -27,7 +27,7 @@ import {SellVehicleResponse} from "./sellvehicle.response";
 import {DriversResponse} from "../drivers/drivers.response";
 import {Allocation} from "../allocations/allocation.model";
 import {AllocationRequest} from "../allocations/allocation.request";
-import {DeleteAllocationRequest} from "../allocations/deleteallocation.request";
+import {PositionResponse} from "./position.response";
 
 @Injectable()
 /**
@@ -424,6 +424,16 @@ export class ServerService {
      */
     async deleteAllocation(fleetNumber: string): Promise<void> {
         await lastValueFrom(this.httpClient.delete<void>(this.serverUrl + '/vehicle/allocate?company=' + this.company + '&fleetNumber=' + fleetNumber));
+    }
+
+    /**
+     * Get the current position of the allocated tour
+     * @param allocatedTour the tour that must be allocated to get the position for.
+     * @param dateTime the current date and time that should be used for finding the position.
+     * @param difficultyLevel the difficulty level that the user is currently using.
+     */
+    async getPosition(allocatedTour: string, dateTime: string, difficultyLevel: string): Promise<PositionResponse> {
+        return await lastValueFrom(this.httpClient.get<PositionResponse>(this.serverUrl + '/stopTimes/position?company=' + this.company + '&allocatedTour=' + allocatedTour + '&dateTime=' + dateTime + '&difficultyLevel=' + difficultyLevel))
     }
 
 }
