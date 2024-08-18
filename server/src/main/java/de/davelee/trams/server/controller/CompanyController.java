@@ -141,6 +141,31 @@ public class CompanyController {
     }
 
     /**
+     * Adjust the simulation interval of the company matching the supplied company. The current simulation interval after adjustment will be returned.
+     * @param adjustSimulationIntervalRequest a <code>AdjustSimulationIntervalRequest</code> object containing the information about the company and the value of the simulation rate which should be adjusted.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @Operation(summary = "Adjust simulation interval", description="Adjust simulation interval of the company")
+    @PatchMapping(value="/simulationInterval")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted satisfaction rate of company"), @ApiResponse(responseCode="204",description="No company found")})
+    public ResponseEntity<SimulationIntervalResponse> adjustSimulationInterval (@RequestBody AdjustSimulationIntervalRequest adjustSimulationIntervalRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(adjustSimulationIntervalRequest.getCompany()) || adjustSimulationIntervalRequest.getSimulationInterval() < 1) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the simulation interval cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(adjustSimulationIntervalRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now adjust the simulation interval and return the current simulation interval after adjustment.
+        return ResponseEntity.ok(SimulationIntervalResponse.builder()
+                .company(companies.getFirst().getName())
+                .simulationInterval(companyService.adjustSimulationInterval(companies.getFirst(), adjustSimulationIntervalRequest.getSimulationInterval()))
+                .build());
+    }
+
+    /**
      * Add the time in minutes to the company matching the supplied company name. The current time after adjustment will be returned.
      * @param addTimeRequest a <code>AddTimeRequest</code> object containing the information about the company and the time in minutes which should be added.
      * @return a <code>ResponseEntity</code> containing the results of the action.

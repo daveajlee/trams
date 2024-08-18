@@ -136,6 +136,20 @@ public class CompanyService {
     }
 
     /**
+     * Adjust the simulation interval of the company to the supplied simulation interval.
+     * @param company a <code>Company</code> object which should have its simulation interval adjusted.
+     * @param simulationInterval a <code>int</code> containing the simulation interval in minutes that should now be used for the company.
+     * @return a <code>int</code> containing the current simulation interval of the company.
+     */
+    public int adjustSimulationInterval ( final Company company, final int simulationInterval ) {
+        company.setSimulationInterval(simulationInterval);
+        if ( companyRepository.save(company) != null ) {
+            return company.getSimulationInterval();
+        }
+        return -1;
+    }
+
+    /**
      * Delete all of the companies matching the company name and player name.
      * @param name a <code>String</code> with the name of the company to search for.
      * @param playerName a <code>String</code> with the player name to search for.
