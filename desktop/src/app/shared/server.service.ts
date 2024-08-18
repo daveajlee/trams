@@ -28,6 +28,7 @@ import {DriversResponse} from "../drivers/drivers.response";
 import {Allocation} from "../allocations/allocation.model";
 import {AllocationRequest} from "../allocations/allocation.request";
 import {PositionResponse} from "./position.response";
+import {AdjustDifficultyLevelRequest} from "../options/adjustDifficultyLevel.request";
 
 @Injectable()
 /**
@@ -434,6 +435,32 @@ export class ServerService {
      */
     async getPosition(allocatedTour: string, dateTime: string, difficultyLevel: string): Promise<PositionResponse> {
         return await lastValueFrom(this.httpClient.get<PositionResponse>(this.serverUrl + '/stopTimes/position?company=' + this.company + '&allocatedTour=' + allocatedTour + '&dateTime=' + dateTime + '&difficultyLevel=' + difficultyLevel))
+    }
+
+    /**
+     * Get the current difficulty level for the configured company and player name.
+     * @return the difficulty level as a string.
+     */
+    async getDifficultyLevel(): Promise<string> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.difficultyLevel;
+    }
+
+    /**
+     * Adjust the current difficulty level for the configured company and player name.
+     * @param difficultyLevel the new difficulty level to set.
+     */
+    async adjustDifficultyLevel(difficultyLevel: string): Promise<void> {
+        await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/difficultyLevel', new AdjustDifficultyLevelRequest(this.company, difficultyLevel)));
+    }
+
+    /**
+     * Get the current simulation interval for the configured company and player name.
+     * @return the interval to increase the time by in simulation mode as a number.
+     */
+    async getSimulationInterval(): Promise<number> {
+        let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
+        return company.simulationInterval;
     }
 
 }

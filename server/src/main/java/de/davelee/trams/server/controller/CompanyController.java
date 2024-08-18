@@ -52,6 +52,7 @@ public class CompanyController {
                 .time(DateUtils.convertDateToLocalDateTime(companyRequest.getStartingTime()))
                 .scenarioName(companyRequest.getScenarioName())
                 .difficultyLevel(companyRequest.getDifficultyLevel())
+                .simulationInterval(100)
                 .build();
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
@@ -85,6 +86,7 @@ public class CompanyController {
                 .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
                 .scenarioName(companies.getFirst().getScenarioName())
                 .difficultyLevel(companies.getFirst().getDifficultyLevel())
+                .simulationInterval(companies.getFirst().getSimulationInterval())
                 .build());
     }
 
