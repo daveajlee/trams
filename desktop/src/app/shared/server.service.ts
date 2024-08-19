@@ -29,6 +29,7 @@ import {Allocation} from "../allocations/allocation.model";
 import {AllocationRequest} from "../allocations/allocation.request";
 import {PositionResponse} from "./position.response";
 import {AdjustDifficultyLevelRequest} from "../options/adjustDifficultyLevel.request";
+import {AdjustSimulationIntervalRequest} from "../options/adjustSimulationInterval.request";
 
 @Injectable()
 /**
@@ -461,6 +462,14 @@ export class ServerService {
     async getSimulationInterval(): Promise<number> {
         let company = await lastValueFrom(this.httpClient.get<CompanyResponse>(this.serverUrl + '/company/?name=' + this.company + '&playerName=' + this.playerName))
         return company.simulationInterval;
+    }
+
+    /**
+     * Adjust the current simulation interval for the configured company and player name.
+     * @param simulationInterval the new simulation interval in minutes to set.
+     */
+    async adjustSimulationInterval(simulationInterval: number): Promise<void> {
+        await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/simulationInterval', new AdjustSimulationIntervalRequest(this.company, simulationInterval)));
     }
 
 }

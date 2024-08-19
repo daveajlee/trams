@@ -61,7 +61,9 @@ export class OptionsComponent {
     if ( this.gameService.isOfflineMode() ) {
       this.gameService.getGame().setSimulationInterval(this.simulationInterval);
     } else {
-     //this.serverService.adjustSimulationInterval(this.simulationInterval);
+     this.serverService.adjustSimulationInterval(this.simulationInterval).then(() => {
+       alert('Simulation interval was adjusted successfully');
+     });
     }
   }
 
