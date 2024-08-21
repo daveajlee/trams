@@ -30,6 +30,11 @@ import {AllocationRequest} from "../allocations/allocation.request";
 import {PositionResponse} from "./position.response";
 import {AdjustDifficultyLevelRequest} from "../options/adjustDifficultyLevel.request";
 import {AdjustSimulationIntervalRequest} from "../options/adjustSimulationInterval.request";
+import {AddTimeRequest} from "../livesituation/addtime.request";
+import {AdjustVehicleDelayRequest} from "../livesituation/adjustvehicledelay.request";
+import {VehicleDelayResponse} from "../livesituation/vehicledelay.response";
+import {AdjustSatisfactionRequest} from "../livesituation/adjustsatisfaction.request";
+import {SatisfactionRateResponse} from "../livesituation/satisfactionrate.response";
 
 @Injectable()
 /**
@@ -470,6 +475,32 @@ export class ServerService {
      */
     async adjustSimulationInterval(simulationInterval: number): Promise<void> {
         await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/simulationInterval', new AdjustSimulationIntervalRequest(this.company, simulationInterval)));
+    }
+
+    /**
+     * Increase the time in minutes according to the current simulation interval.
+     */
+    async increaseTimeInMinutes(): Promise<void> {
+        let simulationInterval = await this.getSimulationInterval();
+        await lastValueFrom(this.httpClient.patch(this.serverUrl + '/company/time', new AddTimeRequest(this.company, simulationInterval)));
+    }
+
+    /**
+     * Adjust the delay for a particular vehicle with the specified amount.
+     * @param fleetNumber the fleet number of the vehicle to adjust the delay for.
+     * @param delay the amount to adjust the delay by which is negative if delay should be reduced and positive if delay should be increased.
+     * @return the delay that the vehicle now has.
+     */
+    async adjustDelay(fleetNumber: string, delay: number): Promise<VehicleDelayResponse> {
+        return await lastValueFrom(this.httpClient.patch<VehicleDelayResponse>(this.serverUrl + '/vehicle/delay', new AdjustVehicleDelayRequest(this.company, fleetNumber, delay)));
+    }
+
+    /**
+     * Adjust the passenger satisfaction rate.
+     * @param satisfactionRate the amount to adjust the passenger satisfaction by.
+     */
+    async adjustPassengerSatisfaction(satisfactionRate: number): Promise<SatisfactionRateResponse> {
+        return await lastValueFrom(this.httpClient.patch<SatisfactionRateResponse>(this.serverUrl + '/company/satisfaction', new AdjustSatisfactionRequest(this.company, satisfactionRate)))
     }
 
 }

@@ -140,6 +140,11 @@ export class LivesituationComponent implements OnInit {
     }
   }
 
+  /**
+   * Set whether or not the simulation is running. If so, create a javascript interval to run as the simulation.
+   * If not, then delete the javascript interval.
+   * @param value a boolean which is true iff the simulation should be running.
+   */
   setSimulationRunning(value: boolean) {
     this.simulationRunning = value;
     if ( value === true ) {
@@ -147,33 +152,55 @@ export class LivesituationComponent implements OnInit {
         if ( this.gameService.isOfflineMode() ) {
           this.gameService.getGame().updateSimulationStep();
         } else {
-          /*this.serverService.increaseTimeInMinutes(this.getSimulationInterval());
-
-          // Check if we went past midnight. If so, then we need to pay drivers again.
-          if ( ((this.currentDateTime.getHours() * 60) + this.currentDateTime.getMinutes()) <= this.getSimulationInterval() ) {
-            // Now we need to pay drivers.
-            this.withdrawBalance(this.drivers.length * 90);
-          }
-          // Generate a random delay for each vehicle that is running a schedule.
-          for ( let i = 0; i < this.vehicles.length; i++ ) {
-            if ( this.vehicles[i].getAllocatedTour() && this.vehicles[i].getAllocatedTour() != "") {
-              // With probability 40% decrease delay, 40% increase delay and 20% no change to delay.
-              let randomVal = Math.random() * (100);
-              if ( randomVal < 40 ) {
-                //Decrease delay.
-                this.vehicles[i].adjustDelay(Math.round(-Math.random() * 5));
-              } else if ( randomVal < 80 ) {
-                // Increase delay.
-                this.vehicles[i].adjustDelay(Math.round(Math.random() * 5));
-              } else {
-                // Do nothing as delay stays the same.
-              }
-            }
-          }
+          this.serverService.getSimulationInterval().then((simulationInterval) => {
+            this.serverService.increaseTimeInMinutes().then(() => {
+              this.serverService.getCurrentDateTime().then((date) => {
+                this.currentDate = TimeHelper.formatStringAsDateObject(date).toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                // Check if we went past midnight. If so, then we need to pay drivers again.
+                let hours = parseInt(date.split(" ")[1].split(":")[0]);
+                let minutes = parseInt(date.split(" ")[1].split(":")[1]);
+                if ( ((hours * 60) + minutes) <= simulationInterval ) {
+                  // Get the number of drivers we have.
+                  this.serverService.getDrivers().then((drivers) => {
+                    // Now we need to pay drivers.
+                    this.serverService.adjustBalance(-(drivers.count * 90)).then(() => {
+                      this.serverService.getBalance().then((balance) => {
+                        this.balance = '' + balance;
+                      })
+                    });
+                  })
+                }
+                // Generate a random delay for each vehicle that is running a schedule.
+                this.serverService.getVehicles().then((vehicles) => {
+                  for ( let i = 0; i < vehicles.vehicleResponses.length; i++ ) {
+                    if ( vehicles.vehicleResponses[i].allocatedTour && vehicles.vehicleResponses[i].allocatedTour != "") {
+                      // With probability 40% decrease delay, 40% increase delay and 20% no change to delay.
+                      let randomVal = Math.random() * (100);
+                      if ( randomVal < 40 ) {
+                        //Decrease delay.
+                        this.serverService.adjustDelay(vehicles.vehicleResponses[i].fleetNumber, Math.round(-Math.random() * 5));
+                      } else if ( randomVal < 80 ) {
+                        // Increase delay.
+                        this.serverService.adjustDelay(vehicles.vehicleResponses[i].fleetNumber, Math.round(Math.random() * 5));
+                      } else {
+                        // Do nothing as delay stays the same.
+                      }
+                    }
+                  }
+                })
+              })
+            });
+          })
           // Decrease or increase the passenger satisfaction by a maximum of 2 in either plus or minus direction,
           let randomDiff = Math.random() * (4);
-          this.adjustPassengerSatisfaction(Math.round((randomDiff-2)));
-          this.serverService.increase*/
+          this.serverService.adjustPassengerSatisfaction(Math.round((randomDiff-2))).then((satisfactionRateResponse) => {
+            this.passengerSatisfaction = satisfactionRateResponse.satisfactionRate;
+          });
+          // Get the next positions.
+          this.positions = new Map<string, string>();
+          for ( let j = 0; j < this.tours.length; j++ ) {
+            this.getCurrentPosition(this.tours[j]);
+          }
         }
         }, 10000);
     } else {
