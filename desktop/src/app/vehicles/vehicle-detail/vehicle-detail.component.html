@@ -6,9 +6,9 @@
 
     <div class="col">
         <!-- Show the vehicle picture -->
-        <img src="{{ getVehiclePictureLink() }}" class="img-responsive" style="max-height: 500px; max-width: 300px;" alt="Vehicle Picture"/>
+        <img src="{{ vehiclePictureLink }}" class="img-responsive" style="max-height: 500px; max-width: 300px;" alt="Vehicle Picture"/>
     </div>
-    <div class="col">
+    <div class="col" *ngIf="getVehicle()">
         <!-- Show the fleet number -->
         <h3 class="text-center">Fleet Number: {{getVehicle().getFleetNumber()}}</h3>
         <!-- Show the vehicle type -->

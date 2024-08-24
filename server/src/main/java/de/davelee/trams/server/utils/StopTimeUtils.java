@@ -3,7 +3,6 @@ package de.davelee.trams.server.utils;
 import de.davelee.trams.server.model.OperatingDays;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,10 @@ public class StopTimeUtils {
             operatingDaysStrList.add(operatingDay.name());
         }
         //Then add the individual dates of operation.
-        for ( LocalDateTime operatingDate : operatingDays.getSpecialOperatingDays() ) {
-            operatingDaysStrList.add(DateUtils.convertLocalDateTimeToDate(operatingDate));
+        if ( operatingDays.getSpecialOperatingDays() != null ) {
+            for ( LocalDateTime operatingDate : operatingDays.getSpecialOperatingDays() ) {
+                operatingDaysStrList.add(DateUtils.convertLocalDateTimeToDate(operatingDate));
+            }
         }
         //Return the list.
         return operatingDaysStrList;

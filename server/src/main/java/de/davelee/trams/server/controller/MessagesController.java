@@ -3,6 +3,7 @@ package de.davelee.trams.server.controller;
 import de.davelee.trams.server.model.Message;
 import de.davelee.trams.server.response.MessageResponse;
 import de.davelee.trams.server.response.MessagesResponse;
+import de.davelee.trams.server.response.MessagesResponse;
 import de.davelee.trams.server.service.MessageService;
 import de.davelee.trams.server.utils.DateUtils;
 import io.swagger.v3.oas.annotations.Operation;

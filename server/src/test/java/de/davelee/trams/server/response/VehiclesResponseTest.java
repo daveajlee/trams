@@ -22,7 +22,7 @@ public class VehiclesResponseTest {
                         .fleetNumber("213")
                         .allocatedTour("1/1")
                         .vehicleType("Bus")
-                        .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                        .additionalTypeInformationMap(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                         .inspectionStatus("Inspected")
                         .nextInspectionDueInDays(100)
                         .company("Lee Buses")

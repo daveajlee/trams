@@ -48,7 +48,7 @@ public class VehicleControllerTest {
         Mockito.when(vehicleService.addVehicle(any())).thenReturn(true);
         //Purchase valid bus
         ResponseEntity<PurchaseVehicleResponse> responseEntity = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
-                        .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                        .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
                         .modelName("Bendy Bus 2000")
                         .vehicleType("BUS")
                         .seatingCapacity(50)
@@ -101,7 +101,7 @@ public class VehicleControllerTest {
                 .fleetNumber("213")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .company("Lee Buses")
                 .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
                 .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
@@ -110,7 +110,7 @@ public class VehicleControllerTest {
         Mockito.when(vehicleService.addVehicle(any())).thenReturn(false);
         //Purchase bus with missing company.
         ResponseEntity<PurchaseVehicleResponse> responseEntity = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
-                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
                 .modelName("Bendy Bus 2000")
                 .vehicleType("BUS")
                 .seatingCapacity(50)
@@ -121,7 +121,7 @@ public class VehicleControllerTest {
         assertEquals(400, responseEntity.getStatusCodeValue());
         //Purchase bus which already exists.
         ResponseEntity<PurchaseVehicleResponse> responseEntity2 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
-                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
                 .modelName("Bendy Bus 2000")
                 .vehicleType("BUS")
                 .seatingCapacity(50)
@@ -133,7 +133,7 @@ public class VehicleControllerTest {
         assertEquals(409, responseEntity2.getStatusCodeValue());
         //Purchase bus which does not exist but does not validate and cannot be added to the database.
         ResponseEntity<PurchaseVehicleResponse> responseEntity3 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
-                .additionalTypeInformationMap(Map.of("Registration Number", "XXX2 BBB"))
+                .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
                 .modelName("Bendy Bus 2000")
                 .vehicleType("BUS")
                 .seatingCapacity(50)
@@ -156,7 +156,7 @@ public class VehicleControllerTest {
                 .fleetNumber("213")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .company("Lee Buses")
                 .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
                 .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
@@ -211,7 +211,7 @@ public class VehicleControllerTest {
                 .fleetNumber("213")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .company("Lee Buses")
                 .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
                 .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
@@ -282,7 +282,7 @@ public class VehicleControllerTest {
                 .fleetNumber("213")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .company("Lee Buses")
                 .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
                 .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
@@ -333,7 +333,7 @@ public class VehicleControllerTest {
                 .fleetNumber("213")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .company("Lee Buses")
                 .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
                 .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
@@ -401,7 +401,7 @@ public class VehicleControllerTest {
                 .fleetNumber("233")
                 .allocatedTour("1/1")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "HFJK23D"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "HFJK23D"))
                 .company("Lee Transport")
                 .deliveryDate(LocalDateTime.of(2021, 3, 25,0,0))
                 .inspectionDate(LocalDateTime.of(2021, 4, 25,0,0))
@@ -457,21 +457,10 @@ public class VehicleControllerTest {
         ResponseEntity responseEntity3 = vehicleController.allocateVehicle(allocateVehicleRequest);
         assertEquals(HttpStatus.NO_CONTENT, responseEntity3.getStatusCode());
         //Test remove actual allocation.
-        ResponseEntity responseEntity4 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
-                .company("Lee Transport")
-                .fleetNumber("223")
-                .build());
+        ResponseEntity responseEntity4 = vehicleController.removeVehicleAllocation("Lee Transport", "223");
         assertEquals(HttpStatus.OK, responseEntity4.getStatusCode());
-        //Remove fleet number.
-        ResponseEntity responseEntity5 = vehicleController.removeVehicleAllocation(RemoveVehicleRequest.builder()
-                .company("Lee Transport")
-                .build());
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity5.getStatusCode());
         //Test with vehicle that does not exist
-        RemoveVehicleRequest removeVehicleRequest = new RemoveVehicleRequest();
-        removeVehicleRequest.setFleetNumber("233");
-        removeVehicleRequest.setCompany("Lee Transport");
-        ResponseEntity responseEntity6 = vehicleController.removeVehicleAllocation(removeVehicleRequest);
+        ResponseEntity responseEntity6 = vehicleController.removeVehicleAllocation("Lee Transport", "233");
         assertEquals(HttpStatus.NO_CONTENT, responseEntity6.getStatusCode());
     }
 
@@ -561,7 +550,7 @@ public class VehicleControllerTest {
                 .livery("Green with red text")
                 .fleetNumber("223")
                 .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("Registration Number", "22-TEST"))
+                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "22-TEST"))
                 .company("Lee Transport")
                 .allocatedTour("1/2")
                 .delayInMinutes(5)

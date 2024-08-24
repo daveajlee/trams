@@ -27,7 +27,7 @@
     <label for="tourNumberList" style="font-weight: bold;">Tour Number:</label>
     <select class="form-control" [(ngModel)]="selectedTourNumber" id="tourNumberList">
         <option value="" disabled selected>Select tour</option>
-        <option *ngFor="let item of this.getDefinedTourNumbers()" [ngValue]="item">{{ item }}</option>
+        <option *ngFor="let item of this.tours" [ngValue]="item">{{ item }}</option>
     </select>
 </div>
 

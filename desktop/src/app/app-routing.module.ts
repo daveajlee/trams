@@ -25,6 +25,8 @@ import {ScheduleInformationComponent} from "./schedule-information/schedule-info
 import {NewgameComponent} from "./newgame/newgame.component";
 import {RouteeditorComponent} from "./routeeditor/routeeditor.component";
 import {TimetableviewerComponent} from "./timetableviewer/timetableviewer.component";
+import {LoadgameComponent} from "./loadgame/loadgame.component";
+import {AppComponent} from "./app.component";
 
 /**
  * Define the links which work in this application.
@@ -40,6 +42,7 @@ const appRoutes: Routes = [
     { path: 'management', component: ManagementComponent },
     { path: 'messages', component: MessagesComponent },
     { path: 'newgame', component: NewgameComponent },
+    { path: 'loadgame', component: LoadgameComponent },
     { path: 'options', component: OptionsComponent },
     { path: 'routes', component: RoutesComponent },
     { path: 'routecreator', component: RoutecreatorComponent },
@@ -58,6 +61,7 @@ const appRoutes: Routes = [
       { path: ':id', component: VehicleDetailComponent}
     ]},
     { path: 'vehicleshowroom', component: VehicleshowroomComponent },
+    { path: '', component: AppComponent}
 ];
 
 @NgModule({

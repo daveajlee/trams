@@ -2,9 +2,11 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {Subscription} from 'rxjs';
 import {VehiclesService} from '../vehicles.service';
-import {ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {Vehicle} from '../vehicle.model';
 import {GameService} from "../../shared/game.service";
+import {VehicleResponse} from "../vehicle.response";
+import {ServerService} from "../../shared/server.service";
 
 @Component({
   selector: 'app-vehicle-detail',
@@ -18,29 +20,50 @@ import {GameService} from "../../shared/game.service";
 export class VehicleDetailComponent implements OnInit, OnDestroy {
 
   private vehicle: Vehicle;
-  private id: number;
+  private fleetNumber: string;
   private idSubscription: Subscription;
+  public vehiclePictureLink: string;
 
   /**
    * Construct a new vehicle-detail component based on the supplied information.
    * @param vehiclesService a service which can retrieve and format vehicle information
    * @param gameService a service which can retrieve game information
    * @param route a variable which contains the current vehicle that the user clicked on.
+   * @param serverService which contains the HTTP connection to the server
+   * @param router a router service provided by Angular
    */
-  constructor(private vehiclesService: VehiclesService, private route: ActivatedRoute, private gameService: GameService) { }
+  constructor(private vehiclesService: VehiclesService, private route: ActivatedRoute, private gameService: GameService,
+              private serverService: ServerService, private router:Router) { }
 
   /**
    * Initialise the vehicle information during construction and ensure all variables are set to the correct data.
    */
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
-      this.id = +params['id'];
-      if ( this.gameService.getGame().doVehiclesExist() ) {
-        this.vehicle = this.gameService.getGame().getVehicleByPosition(this.id);
+      this.fleetNumber = params['id'];
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame().doVehiclesExist() ) {
+        this.vehicle = this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber);
+        this.vehiclePictureLink = this.getVehiclePictureLink();
       } else {
-        this.vehicle = this.vehiclesService.getVehicle(this.id);
+        this.serverService.getVehicle(this.fleetNumber).then((foundVehicles) => {
+          if ( foundVehicles.count === 1 ) {
+            this.vehicle = this.convertResponseToVehicle(foundVehicles.vehicleResponses[0]);
+            this.vehiclePictureLink = this.getVehiclePictureLink();
+          }
+        });
       }
     });
+  }
+
+  /**
+   * Convert a response to a vehicle object.
+   * @param vehicleResponse the response to be converted to a vehicle object.
+   * @return the converted vehicle object.
+   */
+  convertResponseToVehicle( vehicleResponse: VehicleResponse ): Vehicle {
+    return new Vehicle(vehicleResponse.fleetNumber, vehicleResponse.vehicleType, vehicleResponse.livery,
+        vehicleResponse.allocatedTour, vehicleResponse.inspectionStatus, vehicleResponse.nextInspectionDueInDays,
+        vehicleResponse.additionalTypeInformationMap);
   }
 
   /**
@@ -68,7 +91,16 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.getFleetNumber());
+    if ( this.gameService.isOfflineMode() ) {
+      this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.getFleetNumber());
+    } else {
+      this.serverService.sellVehicle(vehicle.getFleetNumber()).then((sellVehicleResponse) => {
+        if (sellVehicleResponse ) {
+          this.serverService.adjustBalance(sellVehicleResponse.soldPrice);
+          this.router.navigate(['management']);
+        }
+      })
+    }
   }
 
   /**

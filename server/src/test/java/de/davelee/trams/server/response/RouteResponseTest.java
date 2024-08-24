@@ -23,9 +23,12 @@ public class RouteResponseTest {
         assertEquals("Mustermann Bus GmbH", routeResponse.getCompany());
         routeResponse.setCompany("Mustermann Buses GmbH");
         routeResponse.setRouteNumber("405A");
+        routeResponse.setStartStop("Beach");
+        routeResponse.setStops(new String[] { "City Centre", "Hospital "});
+        routeResponse.setEndStop("Airport");
         assertEquals("405A", routeResponse.getRouteNumber());
         assertEquals("Mustermann Buses GmbH", routeResponse.getCompany());
-        assertEquals("RouteResponse(routeNumber=405A, company=Mustermann Buses GmbH)", routeResponse.toString());
+        assertEquals("RouteResponse(routeNumber=405A, company=Mustermann Buses GmbH, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital ], nightRoute=false)", routeResponse.toString());
     }
 
 }

@@ -13,6 +13,7 @@ import {Allocation} from "../allocations/allocation.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
 
 @Injectable()
 /**
@@ -125,7 +126,7 @@ export class LoadService {
                                         // Now we create a service for this schedule.
                                         const serviceModel = new ServiceModel(serviceId);
                                         // Add the start time and stop.
-                                        serviceModel.addStop(startTime, startTime, schedStartStop);
+                                        serviceModel.addStop(startTime, startTime, schedStartStop, routeNumber + "/" + schedId);
                                         // Determine start position in array.
                                         var startPos = 0;
                                         for ( var b = 0; b < stopDistances.length; b++ ) {
@@ -160,7 +161,7 @@ export class LoadService {
                                                     nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                                                 }
                                                 // Create the stop time.
-                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0], routeNumber + "/" + schedId);
                                                 // Now we set this time to next time and we are done for this loop.
                                                 thisTime = nextTime;
                                             }
@@ -184,7 +185,7 @@ export class LoadService {
                                                     nextTime.setMinutes(thisTime.getMinutes() + distanceInMins);
                                                 }
                                                 // Create the stop time.
-                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0]);
+                                                serviceModel.addStop(TimeHelper.formatTimeAsString(nextTime), TimeHelper.formatTimeAsString(nextTime), stopDistances[d].split(":")[0], routeNumber + "/" + schedId);
                                                 // Now we set this time to next time and we are done for this loop.
                                                 thisTime = nextTime;
                                             }
@@ -221,7 +222,8 @@ export class LoadService {
                         70,
                         suppliedVehicles,
                         [],
-                        stopDistances
+                        stopDistances,
+                        "CS"
                     );
                     // Create the game.
                     // Defaults: empty player name, starting time is now, scenario will be created soon and difficulty level is easy.
@@ -231,12 +233,12 @@ export class LoadService {
                     var mySuppliedVehicles = customScenario.getSuppliedVehicles();
                     for ( let i = 0; i < mySuppliedVehicles.length; i++ ) {
                         for ( let j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
-                            const additionalProps = new Map<string, string>();
-                            additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
-                            additionalProps.set('Age', ((mySuppliedVehicles[i].getModel().getModelName() === "Single") ? (200000 / mySuppliedVehicles[i].getModel().getValue()) * 12 : (400000 / mySuppliedVehicles[i].getModel().getValue()) * 12) + " months" );
-                            additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
-                            additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
-                            additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
+                            const additionalProps = new AdditionalTypeInformation();
+                            additionalProps.setModel(mySuppliedVehicles[i].getModel().getModelName());
+                            additionalProps.setAge(((mySuppliedVehicles[i].getModel().getModelName() === "Single") ? (200000 / mySuppliedVehicles[i].getModel().getValue()) * 12 : (400000 / mySuppliedVehicles[i].getModel().getValue()) * 12) + " months" );
+                            additionalProps.setStandingCapacity('' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+                            additionalProps.setSeatingCapacity('' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+                            additionalProps.setValue('' + mySuppliedVehicles[i].getModel().getValue());
                             this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), (mySuppliedVehicles[i].getModel().getModelName() === "Single") ? "Single Decker Bus" : "Double Decker Bus", '',
                                 mySuppliedVehicles[i].getModel().getModelType(), '', 0, additionalProps));
                         }

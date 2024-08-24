@@ -100,10 +100,15 @@ export class Game {
 
     /**
      * This method should retrieve the information for a particular driver.
-     * @param position the position in the drivers array which should be returned.
+     * @param name the name of the driver who should be retrieved.
      */
-    getDriverByPosition(position:number) {
-        return this.drivers[position];
+    getDriverByName(name: string) {
+        for ( var i = 0; i < this.drivers.length; i++ ) {
+            if ( this.drivers[i].getName().valueOf() === name.valueOf() ) {
+                return this.drivers[i];
+            }
+        }
+        return null;
     }
 
     /**
@@ -477,14 +482,6 @@ export class Game {
                 return this.vehicles[i].getFleetNumber();
             }
         }
-    }
-
-    /**
-     * This method should retrieve the information for a particular vehicle.
-     * @param position the position in the vehicles array which should be returned.
-     */
-    getVehicleByPosition(position:number) {
-        return this.vehicles[position];
     }
 
     /**

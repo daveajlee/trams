@@ -1,3 +1,5 @@
+import {AdditionalTypeInformation} from "./additionalTypeInfo.model";
+
 /**
  * This class defines a model for Vehicles in TraMS which consist of ?
  */
@@ -9,7 +11,7 @@ export class Vehicle {
     private allocatedTour: string;
     private inspectionStatus: string;
     private nextInspectionDueInDays: number;
-    private additionalTypeInformationMap: Map<string, string>;
+    private additionalTypeInformationMap: AdditionalTypeInformation;
     private delay: number;
 
     /**
@@ -23,7 +25,7 @@ export class Vehicle {
      * @param additionalTypeInformationMap stores the field key/value pair for any additional information of this vehicle.
      */
     constructor( fleetNumber: string, vehicleType: string, livery: string, allocatedTour: string, inspectionStatus: string,
-                 nextInspectionDueInDays: number, additionalTypeInformationMap: Map<string, string>) {
+                 nextInspectionDueInDays: number, additionalTypeInformationMap: AdditionalTypeInformation) {
         this.fleetNumber = fleetNumber;
         this.vehicleType = vehicleType;
         this.livery = livery;
@@ -84,8 +86,8 @@ export class Vehicle {
      * @return the value of this vehicle if specified as a number.
      */
     getValue(): number {
-        if ( this.additionalTypeInformationMap.get('Value') ) {
-            return parseFloat(this.additionalTypeInformationMap.get('Value'));
+        if ( this.additionalTypeInformationMap.getValue() ) {
+            return parseFloat(this.additionalTypeInformationMap.getValue());
         }
         return 0;
     }
@@ -95,7 +97,7 @@ export class Vehicle {
      * @return the power mode of this vehicle if specified.
      */
     getPowerMode(): string {
-        return this.additionalTypeInformationMap.get('Power Mode');
+        return this.additionalTypeInformationMap.getPowerMode();
     }
 
     /**
@@ -118,7 +120,7 @@ export class Vehicle {
      * Retrieve the additional information for types map.
      * @return the additional information as a Map object.
      */
-    getAdditionalInformation(): Map<string, string> {
+    getAdditionalInformation(): AdditionalTypeInformation {
         return this.additionalTypeInformationMap;
     }
 

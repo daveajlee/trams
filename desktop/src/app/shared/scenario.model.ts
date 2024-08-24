@@ -13,6 +13,7 @@ export class Scenario {
     private suppliedVehicles: SuppliedVehicles[];
     private suppliedDrivers: string[];
     private stopDistances: string[];
+    private registrationShortCode: string;
 
     /**
      * Construct a new scenario which contains the supplied data.
@@ -24,11 +25,12 @@ export class Scenario {
      * @param suppliedVehicles the type and number of supplied vehicles.
      * @param suppliedDrivers the supplied drivers for this scenario.
      * @param stopDistances the names and distances of stops of this scenario.
+     * @param registrationShortCode the short code of the start of the registration number for this scenario.
      */
 
     constructor ( locationMap: string, scenarioName: string, description: string, targets: string[],
                   minimumSatisfaction: number, suppliedVehicles: SuppliedVehicles[], suppliedDrivers: string[],
-                  stopDistances: string[]) {
+                  stopDistances: string[], registrationShortCode: string) {
         this.locationMap = locationMap;
         this.scenarioName = scenarioName;
         this.description = description;
@@ -37,6 +39,7 @@ export class Scenario {
         this.suppliedVehicles = suppliedVehicles;
         this.suppliedDrivers = suppliedDrivers;
         this.stopDistances = stopDistances;
+        this.registrationShortCode = registrationShortCode;
     }
 
     /**
@@ -61,6 +64,14 @@ export class Scenario {
      */
     getStopDistances(): string[] {
         return this.stopDistances;
+    }
+
+    /**
+     * Get the scenario specific registration number code for this scenario.
+     * @return the registration short code as a string.
+     */
+    getRegistrationShortCode(): string {
+        return this.registrationShortCode;
     }
 
     /**

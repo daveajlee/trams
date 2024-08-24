@@ -49,4 +49,9 @@ public class CompanyResponse {
      */
     private String difficultyLevel;
 
+    /**
+     * The interval in minutes which should be used when incrementing the time in simulation mode.
+     */
+    private int simulationInterval;
+
 }

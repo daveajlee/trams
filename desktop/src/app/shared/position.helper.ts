@@ -3,17 +3,34 @@ import {TimeHelper} from "./time.helper";
 import {Game} from "../game/game.model";
 import {PositionModel} from "../livesituation/position.model";
 import {ServiceModel} from "../stops/stop-detail/service.model";
+import {Route} from "../routes/route.model";
 
 export class PositionHelper {
 
     /**
      * Helper method to find the current position of the vehicle and schedule that it is assigned to.
      * Take into account any delays.
-     * @param schedule the Schedule Model object that we want to retrieve the position for.
+     * @param routeTour the route and tour id that we want to get the position of in the format route number / tour.
+     * @param routes the list of routes that are in the game.
      * @param game the current game that we are playing.
      * @return the position as a PositionModel object.
      */
-    static getCurrentPosition(schedule: ScheduleModel, game: Game): PositionModel {
+    static getCurrentPosition(routeTour: string, routes: Route[], game: Game): PositionModel {
+        // Get the schedule based on the route and tour.
+        let schedule: ScheduleModel;
+        for ( let i = 0; i < routes.length; i++ ) {
+            if ( routes[i].getRouteNumber() === routeTour.split("/")[0] ) {
+                let schedules = routes[i].getSchedules();
+                for ( let j = 0; j < schedules.length; j++ ) {
+                    if ( schedules[j].getRouteNumberAndScheduleId() === routeTour ) {
+                        schedule = schedules[j];
+                    }
+                }
+            }
+        }
+        if ( !schedule ) {
+            return new PositionModel("Depot", "", 0);
+        }
         // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
         if ( game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()) === -1 ) {
             return new PositionModel("Depot", "", 0);

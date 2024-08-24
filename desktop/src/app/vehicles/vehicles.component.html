@@ -27,7 +27,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let vehicleEl of getVehicles(), let i = index">
-                <td><a style="cursor:pointer" [routerLink]="[i]" routerLinkActive="active">{{vehicleEl.getFleetNumber()}}</a></td>
+                <td><a style="cursor:pointer" [routerLink]="[vehicleEl.getFleetNumber()]" routerLinkActive="active">{{vehicleEl.getFleetNumber()}}</a></td>
             </tr>
             </tbody>
         </table>

@@ -6,6 +6,7 @@ import de.davelee.trams.server.request.PurchaseTicketRequest;
 import de.davelee.trams.server.response.PurchaseTicketResponse;
 import de.davelee.trams.server.service.OrderService;
 import de.davelee.trams.server.service.TicketService;
+import de.davelee.trams.server.utils.DateUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,9 +23,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +79,7 @@ public class OrderController {
         if ( ticketList.size() != 1 ) {
             return ResponseEntity.badRequest().build();
         } else {
-            BigDecimal price = ticketList.get(0).getPriceList().get(purchaseTicketRequest.getTicketTargetGroup());
+            BigDecimal price = ticketList.getFirst().getPriceList().get(purchaseTicketRequest.getTicketTargetGroup());
             if ( price == null || (price.doubleValue()* purchaseTicketRequest.getQuantity()) != (purchaseTicketRequest.getPrice()* purchaseTicketRequest.getQuantity())) {
                 return ResponseEntity.badRequest().build();
             }
@@ -114,9 +115,9 @@ public class OrderController {
         qrCodeBuilder.append(" ");
         qrCodeBuilder.append(purchaseTicketRequest.getTicketType());
         qrCodeBuilder.append(" ");
-        qrCodeBuilder.append(DateTimeFormatter.ofPattern("dd/MM/yyyy").format(LocalDate.now()));
+        qrCodeBuilder.append(DateUtils.convertLocalDateTimeToDate(LocalDateTime.now()));
         qrCodeBuilder.append(" ");
-        qrCodeBuilder.append(DateTimeFormatter.ofPattern("HH:mm").format(LocalTime.now()));
+        qrCodeBuilder.append(DateUtils.convertLocalTimeToTime(LocalTime.now()));
         return qrCodeBuilder.toString();
     }
 

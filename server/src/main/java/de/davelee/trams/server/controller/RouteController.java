@@ -46,6 +46,10 @@ public class RouteController {
         Route route = Route.builder()
                 .company(routeRequest.getCompany())
                 .routeNumber(routeRequest.getRouteNumber())
+                .startStop(routeRequest.getStartStop())
+                .endStop(routeRequest.getEndStop())
+                .stops(routeRequest.getStops())
+                .nightRoute(routeRequest.isNightRoute())
                 .build();
         //Attempt to add the route to the database.
         return routeService.addRoute(route) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
@@ -69,12 +73,16 @@ public class RouteController {
         List<Route> routes = routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber);
         //More than 1 route indicates data inconsistency.
         if ( routes.size() != 1 ) {
+            System.out.println("Number of routes for " + company + " and routeNumber " + routeNumber + " is " + routes.size());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //Translate route response and return.
         return ResponseEntity.ok(RouteResponse.builder()
-                 .routeNumber(routes.get(0).getRouteNumber())
-                .company(routes.get(0).getCompany())
+                .routeNumber(routes.getFirst().getRouteNumber())
+                .company(routes.getFirst().getCompany())
+                .startStop(routes.getFirst().getStartStop())
+                .stops(routes.getFirst().getStops())
+                .endStop(routes.getFirst().getEndStop())
                 .build());
     }
 

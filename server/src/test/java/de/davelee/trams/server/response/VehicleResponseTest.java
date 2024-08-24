@@ -29,7 +29,7 @@ public class VehicleResponseTest {
                 .allocatedRoute("1A")
                 .allocatedTour("1")
                 .vehicleType("Bus")
-                .additionalTypeInformationMap(Collections.singletonMap("Registration Number", "XXX2 BBB"))
+                .additionalTypeInformationMap(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
                 .inspectionStatus("Inspected")
                 .nextInspectionDueInDays(100)
                 .company("Lee Buses")
@@ -39,7 +39,7 @@ public class VehicleResponseTest {
         assertEquals("1A", vehicleResponse.getAllocatedRoute());
         assertEquals("1", vehicleResponse.getAllocatedTour());
         assertEquals("Bus", vehicleResponse.getVehicleType());
-        assertEquals("XXX2 BBB", vehicleResponse.getAdditionalTypeInformationMap().get("Registration Number"));
+        assertEquals("XXX2 BBB", vehicleResponse.getAdditionalTypeInformationMap().get("registrationNumber"));
         assertEquals("Inspected", vehicleResponse.getInspectionStatus());
         assertEquals(100, vehicleResponse.getNextInspectionDueInDays());
         vehicleResponse.setLivery("Blue with orange text");

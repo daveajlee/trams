@@ -6,6 +6,7 @@ import {StopTimeModel} from "./stoptime.model";
 export class ServiceModel {
 
     private serviceId: string;
+    private scheduleId: string;
     private stopList: StopTimeModel[];
     private outOfService: boolean;
 
@@ -30,9 +31,10 @@ export class ServiceModel {
      * @param departureTime the time that the vehicle will depart
      * @param arrivalTime the time that the vehicle will arrive
      * @param stop the name of the stop.
+     * @param scheduleNumber the schedule number for this service.
      */
-    addStop(departureTime: string, arrivalTime: string, stop: string) {
-        this.stopList.push(new StopTimeModel(departureTime, arrivalTime, stop));
+    addStop(departureTime: string, arrivalTime: string, stop: string, scheduleNumber: string) {
+        this.stopList.push(new StopTimeModel(departureTime, arrivalTime, stop, scheduleNumber));
     }
 
     /**

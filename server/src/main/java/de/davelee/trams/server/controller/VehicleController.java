@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -283,19 +282,20 @@ public class VehicleController {
 
     /**
      * Remove the allocation of the vehicle matching the supplied company and fleet number.
-     * @param removeVehicleRequest a <code>RemoveVehicleRequest</code> object containing the information about the vehicle.
+     * @param company the company to remove the allocation for.
+     * @param fleetNumber the fleet number to remove the allocation for.
      * @return a <code>ResponseEntity</code> containing the results of the action.
      */
     @Operation(summary = "Remove a particular allocation", description="Remove the allocation of a particular vehicle to a particular tour")
     @DeleteMapping(value="/allocate")
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully removed allocation"), @ApiResponse(responseCode="204",description="No vehicle found")})
-    public ResponseEntity<Void> removeVehicleAllocation (@RequestBody RemoveVehicleRequest removeVehicleRequest) {
+    public ResponseEntity<Void> removeVehicleAllocation (final String company, final String fleetNumber) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(removeVehicleRequest.getCompany()) || StringUtils.isBlank(removeVehicleRequest.getFleetNumber())) {
+        if ( StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber)) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise allocations cannot be removed.
-        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(removeVehicleRequest.getCompany(), removeVehicleRequest.getFleetNumber());
+        List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(company, fleetNumber);
         if ( vehicles == null || vehicles.size() != 1 ) {
             return ResponseEntity.noContent().build();
         }
@@ -352,7 +352,7 @@ public class VehicleController {
         }
         //Now calculate the current value of this vehicle.
         Vehicle vehicle = vehicles.get(0);
-        int age = Period.between(vehicle.getDeliveryDate().toLocalDate(), LocalDate.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy"))).getYears();
+        int age = Period.between(vehicle.getDeliveryDate().toLocalDate(), DateUtils.convertDateToLocalDate(date)).getYears();
         double value = age == 0 ? vehicle.getVehicleType().getPurchasePrice().doubleValue() : vehicle.getVehicleType().getPurchasePrice().doubleValue() - (vehicle.getVehicleType().getDepreciationFactor() * age) * vehicle.getVehicleType().getPurchasePrice().doubleValue();
         //A value below 0 is not allowed.
         value = value < 0 ? 0.0 : value;

@@ -1,16 +1,12 @@
 package de.davelee.trams.server.model;
 
-import de.davelee.trams.server.constant.OperatingDaysAbbreviations;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 /**
  * This class represents a departure and/or arrival at a particular stop. A stop time can contain an id, a name, an arrival and/or departure time, a destination,
@@ -18,16 +14,20 @@ import java.util.List;
  * takes place and the journey number.
  * @author Dave Lee
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @ToString
+@Document
 public class StopTime {
 
     /**
      * The id of the stop time.
      */
-    private int id;
+    @Id
+    private BigInteger id;
 
     /**
      * The name of the stop where the journey will arrive or depart.
@@ -58,6 +58,11 @@ public class StopTime {
      * The number of the route which this journey is a part of.
      */
     private String routeNumber;
+
+    /**
+     * The service for this journey,
+     */
+    private ServiceTrip service;
 
     /**
      * The date from which this stop occurs (inclusive).

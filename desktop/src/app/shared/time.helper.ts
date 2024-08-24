@@ -24,6 +24,51 @@ export class TimeHelper {
     }
 
     /**
+     * Helper method to format date and time as dd-MM-yyyy HH:mm
+     * @param dateTime the date object to format.
+     * @return date as a string in format dd-MM-yyyy HH:mm
+     */
+    static formatDateTimeAsString(dateTime: Date) {
+        let dateString;
+        // Format date.
+        if ( dateTime.getDate() < 10 ) {
+            dateString = "0" + dateTime.getDate();
+        } else {
+            dateString = "" + dateTime.getDate();
+        }
+        // Format month.
+        if ( (dateTime.getMonth()+1) < 10 ) {
+            dateString += "-0" + (dateTime.getMonth()+1);
+        } else {
+            dateString += "-" + (dateTime.getMonth()+1);
+        }
+        // Format year.
+        dateString += "-" + dateTime.getFullYear();
+        // Append time.
+        return dateString + " " + this.formatTimeAsString(dateTime);
+    }
+
+    /**
+     * Helper method to convert the string dd-MM-yyyy HH:mm into a javascript object.
+     * @param dateTime the string dd-MM-yyyy HH:mm to convert to a javascript Date object.
+     * @return the date returned as a javascript Date object.
+     */
+    static formatStringAsDateObject(dateTime: string) {
+        const dateTimeSplit = dateTime.split(" ");
+        const dateParts = dateTimeSplit[0].split("-");
+        const timeParts = dateTimeSplit[1].split(":");
+
+        const year = parseInt(dateParts[2], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const day = parseInt(dateParts[0], 10);
+
+        const hour = parseInt(timeParts[0], 10);
+        const minute = parseInt(timeParts[1], 10);
+        return new Date(year, month, day, hour, minute);
+
+    }
+
+    /**
      * This is a helper method which adds a number of minutes to the time.
      * @param time the time as a string in the format HH:mm
      * @param addMinutes the number of minutes to add to the time.

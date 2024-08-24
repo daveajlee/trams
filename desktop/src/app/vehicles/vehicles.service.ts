@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Vehicle} from './vehicle.model';
 import {VehiclesResponse} from './vehicles-response.model';
+import {AdditionalTypeInformation} from "./additionalTypeInfo.model";
 
 @Injectable()
 /**
@@ -19,7 +20,11 @@ export class VehiclesService {
      * @param vehicles an array of vehicles sent from the server
      */
     setVehicles(vehicles: VehiclesResponse): void {
-        this.vehicles = vehicles.getVehicleResponses();
+        this.vehicles = [];
+        for ( let vehicle of vehicles.vehicleResponses) {
+            this.vehicles.push(new Vehicle(vehicle.fleetNumber, vehicle.vehicleType, vehicle.livery, vehicle.allocatedTour,
+                vehicle.inspectionStatus, vehicle.nextInspectionDueInDays, new AdditionalTypeInformation()))
+        }
         this.vehiclesChanged.next(this.vehicles.slice());
     }
 

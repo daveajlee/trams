@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -53,6 +52,7 @@ public class CompanyController {
                 .time(DateUtils.convertDateToLocalDateTime(companyRequest.getStartingTime()))
                 .scenarioName(companyRequest.getScenarioName())
                 .difficultyLevel(companyRequest.getDifficultyLevel())
+                .simulationInterval(100)
                 .build();
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
@@ -79,13 +79,14 @@ public class CompanyController {
         }
         //Now convert to company response object.
         return ResponseEntity.ok(CompanyResponse.builder()
-                .name(companies.get(0).getName())
-                .playerName(companies.get(0).getPlayerName())
-                .balance(companies.get(0).getBalance().doubleValue())
-                .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
-                .time(DateUtils.convertLocalDateTimeToDate(companies.get(0).getTime()))
-                .scenarioName(companies.get(0).getScenarioName())
-                .difficultyLevel(companies.get(0).getDifficultyLevel())
+                .name(companies.getFirst().getName())
+                .playerName(companies.getFirst().getPlayerName())
+                .balance(companies.getFirst().getBalance().doubleValue())
+                .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
+                .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
+                .scenarioName(companies.getFirst().getScenarioName())
+                .difficultyLevel(companies.getFirst().getDifficultyLevel())
+                .simulationInterval(companies.getFirst().getSimulationInterval())
                 .build());
     }
 
@@ -109,8 +110,8 @@ public class CompanyController {
         }
         //Now adjust the balance and return the current balance after adjustment.
         return ResponseEntity.ok(BalanceResponse.builder()
-                .company(companies.get(0).getName())
-                .balance(companyService.adjustBalance(companies.get(0), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
+                .company(companies.getFirst().getName())
+                .balance(companyService.adjustBalance(companies.getFirst(), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
                 .build());
     }
 
@@ -134,8 +135,33 @@ public class CompanyController {
         }
         //Now adjust the satisfaction rate and return the current satisfaction rate after adjustment.
         return ResponseEntity.ok(SatisfactionRateResponse.builder()
-                .company(companies.get(0).getName())
-                .satisfactionRate(companyService.adjustSatisfactionRate(companies.get(0), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
+                .company(companies.getFirst().getName())
+                .satisfactionRate(companyService.adjustSatisfactionRate(companies.getFirst(), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
+                .build());
+    }
+
+    /**
+     * Adjust the simulation interval of the company matching the supplied company. The current simulation interval after adjustment will be returned.
+     * @param adjustSimulationIntervalRequest a <code>AdjustSimulationIntervalRequest</code> object containing the information about the company and the value of the simulation rate which should be adjusted.
+     * @return a <code>ResponseEntity</code> containing the results of the action.
+     */
+    @Operation(summary = "Adjust simulation interval", description="Adjust simulation interval of the company")
+    @PatchMapping(value="/simulationInterval")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted satisfaction rate of company"), @ApiResponse(responseCode="204",description="No company found")})
+    public ResponseEntity<SimulationIntervalResponse> adjustSimulationInterval (@RequestBody AdjustSimulationIntervalRequest adjustSimulationIntervalRequest) {
+        //Check that the request is valid.
+        if ( StringUtils.isBlank(adjustSimulationIntervalRequest.getCompany()) || adjustSimulationIntervalRequest.getSimulationInterval() < 1) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Check that this company exists otherwise the simulation interval cannot be adjusted.
+        List<Company> companies = companyService.retrieveCompanyByName(adjustSimulationIntervalRequest.getCompany());
+        if ( companies == null || companies.size() != 1 ) {
+            return ResponseEntity.noContent().build();
+        }
+        //Now adjust the simulation interval and return the current simulation interval after adjustment.
+        return ResponseEntity.ok(SimulationIntervalResponse.builder()
+                .company(companies.getFirst().getName())
+                .simulationInterval(companyService.adjustSimulationInterval(companies.getFirst(), adjustSimulationIntervalRequest.getSimulationInterval()))
                 .build());
     }
 
@@ -159,8 +185,8 @@ public class CompanyController {
         }
         //Now add the time and return the current time after adjustment.
         return ResponseEntity.ok(TimeResponse.builder()
-                .company(companies.get(0).getName())
-                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.get(0), addTimeRequest.getMinutes())))
+                .company(companies.getFirst().getName())
+                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.getFirst(), addTimeRequest.getMinutes())))
                 .build());
     }
 
@@ -184,8 +210,8 @@ public class CompanyController {
         }
         //Now add the time and return the current time after adjustment.
         return ResponseEntity.ok(DifficultyLevelResponse.builder()
-                .company(companies.get(0).getName())
-                .difficultyLevel(companyService.adjustDifficultyLevel(companies.get(0), difficultyLevelRequest.getDifficultyLevel()))
+                .company(companies.getFirst().getName())
+                .difficultyLevel(companyService.adjustDifficultyLevel(companies.getFirst(), difficultyLevelRequest.getDifficultyLevel()))
                 .build());
     }
 
@@ -211,18 +237,39 @@ public class CompanyController {
         // Return the export.
         return ResponseEntity.ok(
                 ExportCompanyResponse.builder()
-                        .name(companies.get(0).getName())
-                        .balance(companies.get(0).getBalance().doubleValue())
-                        .playerName(companies.get(0).getPlayerName())
-                        .satisfactionRate(companies.get(0).getSatisfactionRate().doubleValue())
-                        .time(companies.get(0).getTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")))
-                        .scenarioName(companies.get(0).getScenarioName())
-                        .difficultyLevel(companies.get(0).getDifficultyLevel())
+                        .name(companies.getFirst().getName())
+                        .balance(companies.getFirst().getBalance().doubleValue())
+                        .playerName(companies.getFirst().getPlayerName())
+                        .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
+                        .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
+                        .scenarioName(companies.getFirst().getScenarioName())
+                        .difficultyLevel(companies.getFirst().getDifficultyLevel())
                         .routes(exportCompanyRequest.getRoutes())
                         .drivers(exportCompanyRequest.getDrivers())
                         .vehicles(exportCompanyRequest.getVehicles())
                         .messages(exportCompanyRequest.getMessages())
                         .build());
+    }
+
+    /**
+     * Delete a particular company.
+     * @param name a <code>String</code> containing the name of the company.
+     * @param playerName a <code>String</code> containing the name of the player.
+     * @return a <code>ResponseEntity</code> object containing the results of the action.
+     */
+    @DeleteMapping("/")
+    @CrossOrigin
+    @Operation(summary = "Delete company", description="Delete the particular company")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted company")})
+    public ResponseEntity<Void> deleteCompany (final String name, final String playerName ) {
+        //First of all, check if any of the fields are empty or null, then return bad request.
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(playerName)) {
+            return ResponseEntity.badRequest().build();
+        }
+        //Now delete the companies found.
+        companyService.deleteCompanies(name, playerName);
+        //Return ok.
+        return ResponseEntity.ok().build();
     }
 
 }

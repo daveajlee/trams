@@ -50,6 +50,16 @@ public class CompanyService {
     }
 
     /**
+     * Retrieve all companies with the player name from the database.
+     * @param playerName a <code>String</code> with the player name to search for.
+     * @return a <code>List</code> of <code>Company</code> objects.
+     */
+    public List<Company> retrieveCompaniesByPlayerName (final String playerName) {
+        //Return the companies found.
+        return companyRepository.findByPlayerName(playerName);
+    }
+
+    /**
      * Adjust the balance of the company by the supplied amount.
      * @param company a <code>Company</code> object which should have its balance adjusted.
      * @param value a <code>BigDecimal</code> containing the amount that should be added or subtracted.
@@ -103,6 +113,15 @@ public class CompanyService {
     }
 
     /**
+     * Return the current date for the specified company.
+     * @param company a <code>String</code> with the name of the company to retrieve the time for.
+     * @return the current date as a <code>LocalDateTime</code> object.
+     */
+    public LocalDateTime getTime(final String company) {
+        return retrieveCompanyByName(company).getFirst().getTime();
+    }
+
+    /**
      * Adjust the difficulty level of the company to the supplied difficulty level.
      * @param company a <code>Company</code> object which should have its difficulty level adjusted.
      * @param difficultyLevel a <code>String</code> containing the difficulty level that should now be used for the company.
@@ -114,6 +133,30 @@ public class CompanyService {
             return company.getDifficultyLevel();
         }
         return "";
+    }
+
+    /**
+     * Adjust the simulation interval of the company to the supplied simulation interval.
+     * @param company a <code>Company</code> object which should have its simulation interval adjusted.
+     * @param simulationInterval a <code>int</code> containing the simulation interval in minutes that should now be used for the company.
+     * @return a <code>int</code> containing the current simulation interval of the company.
+     */
+    public int adjustSimulationInterval ( final Company company, final int simulationInterval ) {
+        company.setSimulationInterval(simulationInterval);
+        if ( companyRepository.save(company) != null ) {
+            return company.getSimulationInterval();
+        }
+        return -1;
+    }
+
+    /**
+     * Delete all of the companies matching the company name and player name.
+     * @param name a <code>String</code> with the name of the company to search for.
+     * @param playerName a <code>String</code> with the player name to search for.
+     */
+    public void deleteCompanies(final String name, final String playerName) {
+        List<Company> companies = retrieveCompanyByNameAndPlayerName(name, playerName);
+        companies.forEach(companyRepository::delete);
     }
 
 }

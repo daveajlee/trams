@@ -12,17 +12,17 @@ export class SwitchlocalComponent {
     serverUrl: string;
 
     constructor(private gameService: GameService) {
-        this.hideServerUrl = this.gameService.isOfflineVersion();
-        this.serverUrl = "http://localhost:8084/api";
+        this.hideServerUrl = this.gameService.isOfflineMode();
+        this.serverUrl = "http://localhost:8085/api";
         this.gameService.setServerUrl(this.serverUrl);
     }
 
     /**
-     * Change the value of offline version to match the current value supplied by the event.
+     * Change the value of offline mode to match the current value supplied by the event.
      * @param event the event caused by user interaction.
      */
-    changeOfflineVersion( event: Event ) {
-        this.gameService.setOfflineVersion((<HTMLInputElement>event.target).checked);
+    changeOfflineMode( event: Event ) {
+        this.gameService.setOfflineMode((<HTMLInputElement>event.target).checked);
         this.hideServerUrl = (<HTMLInputElement>event.target).checked;
     }
 

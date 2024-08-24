@@ -1,6 +1,7 @@
 package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.constant.VehicleHistoryReason;
+import de.davelee.trams.server.constant.VehicleStatus;
 import de.davelee.trams.server.constant.VehicleType;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.VehicleRepository;
@@ -100,7 +101,8 @@ public class VehicleService {
      */
     public BigDecimal sellVehicle (final Vehicle vehicle ) {
         vehicle.addVehicleHistoryEntry(LocalDateTime.now(), VehicleHistoryReason.SOLD, "Sold for " + vehicle.getVehicleType().getPurchasePrice());
-        vehicle.setAllocatedTour(""); //Remove allocated tour.
+        vehicle.setAllocatedTour("");
+        vehicle.setVehicleStatus(VehicleStatus.SOLD);//Remove allocated tour.
         if ( vehicleRepository.save(vehicle) != null ) {
             return vehicle.getVehicleType().getPurchasePrice();
         }
@@ -180,6 +182,7 @@ public class VehicleService {
      * @return a <code>boolean</code> which is true iff the vehicle fulfils all validation rules.
      */
     private boolean validateVehicle ( final Vehicle vehicle ) {
+        System.out.println(vehicle);
         //Vehicles always have a valid operator, delivery date and model.
         if (StringUtils.isBlank(vehicle.getCompany()) || StringUtils.isBlank(vehicle.getModelName()) || vehicle.getDeliveryDate() == null ) {
             return false;
@@ -189,7 +192,8 @@ public class VehicleService {
             return false;
         }
         //Buses always have a registration number.
-        if ( vehicle.getVehicleType() == VehicleType.BUS && vehicle.getTypeSpecificInfos().get("Registration Number") == null ) {
+        if ( vehicle.getVehicleType() == VehicleType.BUS && vehicle.getTypeSpecificInfos().get("registrationNumber") == null ) {
+            System.out.println("Registration number not set!");
             return false;
         }
         //Trains always have an operating mode.

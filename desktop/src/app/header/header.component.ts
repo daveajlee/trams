@@ -3,6 +3,7 @@ import packageJson from '../../../package.json';
 import {Router} from "@angular/router";
 import {LoadService} from "../shared/load.service";
 import {SaveService} from "../shared/save.service";
+import {GameService} from "../shared/game.service";
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ export class HeaderComponent implements OnInit {
   /**
    * Construct a new HeaderComponent and do nothing.
    */
-  constructor(public router: Router, private loadService: LoadService, private saveService: SaveService) {
+  constructor(public router: Router, private loadService: LoadService, private saveService: SaveService,
+              private gameService: GameService) {
   }
 
   /**
@@ -83,6 +85,17 @@ export class HeaderComponent implements OnInit {
               alert('This file type is not supported. Please choose another file.');
           }
       }
+  }
+
+  isOfflineMode(): boolean {
+      return this.gameService.isOfflineMode();
+  }
+
+  /**
+   * Clicking on the load game button redirects to the load game screen.
+   */
+  onLoadGameList(): void {
+      this.router.navigate(['loadgame'])
   }
 
     /**

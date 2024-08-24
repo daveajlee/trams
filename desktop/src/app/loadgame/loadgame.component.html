@@ -1,0 +1,31 @@
+<!-- Jumbotron with page title -->
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Load Game</h1>
+</div>
+
+<!-- Show an input box where the user can enter the player name. -->
+<div class="form-group top-space m-5">
+    <label for="playerName" style="font-weight: bold;">Player Name:</label>
+    <input class="form-control" [(ngModel)]="playerName" type="text" id="playerName" />
+</div>
+
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="getCompanies()">Search</button>
+</div>
+
+<!-- Show the companies that are available -->
+<div class="top-space m-5">
+    <p class="h2 text-center">Companies</p>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let company of companies">
+            <p class="lead text-center">{{company.name}}
+                <button type="button" class="btn btn-primary ms-5" (click)="onLoadCompany(company.name)">Load</button>
+                <button type="button" class="btn btn-danger ms-5" (click)="onDeleteCompany(company.name)">Delete</button>
+            </p>
+        </li>
+    </ul>
+</div>
+
+<div class="col text-center">
+    <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
+</div>

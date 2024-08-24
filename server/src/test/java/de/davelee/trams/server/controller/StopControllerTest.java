@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +48,7 @@ public class StopControllerTest {
         addStopRequest2.setName("Sea Beach");
         addStopRequest2.setLatitude(53.821067);
         addStopRequest2.setLongitude(14.106563);
-        assertEquals(500, stopController.addStop(addStopRequest2).getStatusCodeValue());
+        assertEquals(500, stopController.addStop(addStopRequest2).getStatusCode().value());
         //Test missing company and name.
         addStopRequest2.setCompany(""); addStopRequest2.setName("");
         assertEquals(HttpStatus.BAD_REQUEST, stopController.addStop(addStopRequest2).getStatusCode());

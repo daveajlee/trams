@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ScenarioService} from './scenario.service';
 import {GameService} from '../shared/game.service';
 import {Game} from '../game/game.model';
 import { Scenario } from '../shared/scenario.model';
@@ -10,6 +9,13 @@ import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 import {Vehicle} from "../vehicles/vehicle.model";
 import {Driver} from "../drivers/driver.model";
+import {MessageRequest} from "../messages/message.request";
+import {ServerService} from "../shared/server.service";
+import {TimeHelper} from "../shared/time.helper";
+import {VehicleRequest} from "../vehicles/vehicle.request";
+import {AdditionalTypeInformation} from "../vehicles/additionalTypeInfo.model";
+import {DriverRequest} from "../drivers/driver.request";
+import {AddStopRequest} from "../stops/addstop.request";
 
 @Component({
   selector: 'app-scenariolist',
@@ -29,10 +35,10 @@ export class ScenariolistComponent implements OnInit {
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
    * @param route which manages the current route in Angular.
    * @param gameService which manages the creation of games.
-   * @param scenarioService which manages the creation of a new company and scenario.
+   * @param serverService which manages the http calls to the server in online mode.
    * @param router which manages routing in Angular.
    */
-  constructor(private route: ActivatedRoute, private scenarioService: ScenarioService, private gameService: GameService,
+  constructor(private route: ActivatedRoute, private serverService: ServerService, private gameService: GameService,
               public router: Router) {
   }
 
@@ -58,34 +64,80 @@ export class ScenariolistComponent implements OnInit {
   onScenarioSelect(scenario: string): void {
       this.gameService.setGame(new Game(this.company, this.playerName, new Date(this.startingDate), this.loadScenario(scenario), this.difficultyLevel
         , 200000.0, 90, [], [], [], [], []));
-      // Add the message.
-      this.gameService.getGame().addMessage("New Managing Director Announced",
-            "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
-            +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).getTargets())
-            + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
-            + "\n\nGood luck!",
-            "INBOX", this.gameService.getGame().getCurrentDateTime(), true, scenario + " Council");
+      // Define the message.
+      let welcomeMessage = new MessageRequest(this.company, "New Managing Director Announced",
+        "Congratulations - " +  this.playerName + " has been appointed Managing Director of " + this.company + "!"
+        +  "\n\nYour targets for the coming days and months: \n" + this.formatTargets(this.loadScenario(scenario).getTargets())
+        + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
+        + "\n\nGood luck!", scenario + " Council", "INBOX",  TimeHelper.formatDateTimeAsString(new Date(this.startingDate)));
+      // Now add it according to which version we are running.
+      if ( this.gameService.isOfflineMode() ) {
+          this.gameService.getGame().addMessage(welcomeMessage.getSubject(),
+              welcomeMessage.getContent(),
+              welcomeMessage.getFolder(), new Date(this.startingDate), true, welcomeMessage.getSender());
+      } else {
+          this.serverService.addMessage(welcomeMessage);
+      }
       // Add the supplied vehicles.
       var mySuppliedVehicles = this.loadScenario(scenario).getSuppliedVehicles();
       for ( var i = 0; i < mySuppliedVehicles.length; i++ ) {
           for ( var j = 0; j < mySuppliedVehicles[i].getQuantity(); j++ ) {
-              const additionalProps = new Map<string, string>();
-              additionalProps.set('Model', mySuppliedVehicles[i].getModel().getModelName());
-              additionalProps.set('Age', '0 months');
-              additionalProps.set('Standing Capacity', '' + mySuppliedVehicles[i].getModel().getStandingCapacity());
-              additionalProps.set('Seating Capacity', '' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
-              additionalProps.set('Value', '' + mySuppliedVehicles[i].getModel().getValue());
-              this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
-                  '', '', 0, additionalProps));
+              let additionalProps = new AdditionalTypeInformation();
+              additionalProps.setModel(mySuppliedVehicles[i].getModel().getModelName());
+              additionalProps.setAge('0 months');
+              additionalProps.setStandingCapacity('' + mySuppliedVehicles[i].getModel().getStandingCapacity());
+              additionalProps.setSeatingCapacity('' + mySuppliedVehicles[i].getModel().getSeatingCapacity());
+              additionalProps.setValue('' + mySuppliedVehicles[i].getModel().getValue());
+              if ( mySuppliedVehicles[i].getVehicleType().toUpperCase() == 'BUS' ) {
+                  additionalProps.setRegistrationNumber('' + this.loadScenario(scenario).getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  (i+j+1));
+              }
+              if ( this.gameService.isOfflineMode() ) {
+                  this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
+                      '', '', 0, additionalProps));
+              } else {
+                  this.serverService.addVehicle(new VehicleRequest('' + (i+j+1), this.company,
+                      mySuppliedVehicles[i].getVehicleType().toUpperCase(), 'none', additionalProps, "" + mySuppliedVehicles[i].getModel().getSeatingCapacity(),
+                      "" + mySuppliedVehicles[i].getModel().getStandingCapacity(), mySuppliedVehicles[i].getModel().getModelName()));
+              }
+
           }
       }
       // Add the supplied drivers.
       var mySuppliedDrivers = this.loadScenario(scenario).getSuppliedDrivers();
       for ( i = 0; i < mySuppliedDrivers.length; i++ ) {
-          this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
+          if ( this.gameService.isOfflineMode() ) {
+              this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
+          } else {
+              this.serverService.addDriver(new DriverRequest(mySuppliedDrivers[i], 35, TimeHelper.formatDateTimeAsString(new Date()), this.company));
+          }
       }
-      this.router.navigate(['management']);
-      // this.scenarioService.createCompany(this.company, this.playerName, this.difficultyLevel, this.startingDate, scenario);
+      // Add the stops if we are running in online mode.
+      if ( !this.gameService.isOfflineMode() ) {
+          var stopDistances = this.loadScenario(scenario).getStopDistances();
+          // Go through the stops.
+          for ( let i = 0; i < stopDistances.length; i++ ) {
+              // Get the stop we are dealing with.
+              let stopName = stopDistances[i].split(":")[0];
+              // Initialise lists for distances.
+              let otherStopNames = []; let otherStopDistances = [];
+              let splitStopDistances = stopDistances[i].split(":")[1].split(",");
+              for ( let j = 0; j < splitStopDistances.length; j++ ) {
+                  if ( j !== i ) {
+                      otherStopNames.push(stopDistances[j].split(":")[0]);
+                      otherStopDistances.push(splitStopDistances[j]);
+                  }
+              }
+              // Create request.
+              let addStopRequest = new AddStopRequest(stopName, this.serverService.getCompanyName(),
+                  0, otherStopNames, otherStopDistances, 0, 0);
+              // Add the stop to the server.
+              this.serverService.addStop(addStopRequest).then(() => {
+                  this.router.navigate(['management']);
+              })
+          }
+      } else {
+          this.router.navigate(['management']);
+      }
   }
 
     /**

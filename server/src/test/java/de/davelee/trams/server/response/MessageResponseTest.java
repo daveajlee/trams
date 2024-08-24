@@ -1,22 +1,18 @@
 package de.davelee.trams.server.response;
 
-import de.davelee.trams.server.utils.CustomerUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Test cases for the <class>MessageResponse</class> class which are not covered
+ * Test cases for the <class>MessagesResponse</class> class which are not covered
  * by other tests.
  * @author Dave Lee
  */
 public class MessageResponseTest {
 
     /**
-     * Test case: construct an empty <code>MessageResponse</code> object
+     * Test case: construct an empty <code>MessagesResponse</code> object
      * fill it with values through setters and return string of it.
      * Expected Result: valid values and string.
      */

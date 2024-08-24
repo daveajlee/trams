@@ -7,6 +7,7 @@ import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.RouteRepository;
 import de.davelee.trams.server.repository.StopTimeRepository;
 import de.davelee.trams.server.repository.StopRepository;
+import de.davelee.trams.server.utils.DateUtils;
 import de.davelee.trams.server.utils.RouteUtils;
 import de.davelee.trams.server.utils.StopUtils;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,10 +94,9 @@ public class ImportGTFSDataService {
                     //Add the StopTime information to the database.
                     List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(gtfsStopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
                     StopTime stopTime = StopTime.builder()
-                            .id(stopTimeCounter)
                             .company(store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName())
-                            .departureTime(LocalTime.parse(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime()), DateTimeFormatter.ofPattern("HH:mm")))
-                            .arrivalTime(LocalTime.parse(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime()), DateTimeFormatter.ofPattern("HH:mm")))
+                            .departureTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime())))
+                            .arrivalTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime())))
                             .stopName(gtfsStopTime.getStop().getName())
                             .destination(gtfsStopTime.getTrip().getTripHeadsign())
                             .routeNumber(gtfsStopTime.getTrip().getRoute().getShortName())

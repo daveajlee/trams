@@ -6,7 +6,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {HttpClient} from '@angular/common/http';
 import {RealTimeInfo} from './realtimeinfos.model';
 import {Subscription} from 'rxjs';
-import {StopTimesResponse} from "./stoptimes-response.model";
+import {StopTimesResponse} from "./stoptimes.response";
 import {GameService} from "../../shared/game.service";
 import {TimeHelper} from "../../shared/time.helper";
 
@@ -75,7 +75,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       this.today = time.getFullYear() + '-' + monthStr + '-' + dayOfMonth;
       this.hours = this.leftPadZero(time.getHours());
       this.minutes = this.leftPadZero(time.getMinutes());
-      if ( this.gameService.isOfflineVersion() ) {
+      if ( this.gameService.isOfflineMode() ) {
         this.stop = new Stop('' + this.id, this.gameService.getGame().getScenario().getStopDistances()[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.getName());
         this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().getCurrentDateTime());
@@ -98,15 +98,27 @@ export class StopDetailComponent implements OnInit, OnDestroy {
         this.departuresSubscription = this.http.get<StopTimesResponse>(
             this.gameService.getServerUrl() + '/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.getName() + '&date=' + this.today + '&startingTime=' +
             this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-          this.departures = realTimeInfos.getStopTimeResponses();
+              this.departures = [];
+              for ( let i = 0; i < realTimeInfos.count; i++ ) {
+                this.departures.push(new RealTimeInfo(realTimeInfos.stopTimeResponses[i].departureTime, realTimeInfos.stopTimeResponses[i].arrivalTime,
+                    realTimeInfos.stopTimeResponses[i].routeNumber, realTimeInfos.stopTimeResponses[i].destination));
+              }
         });
         // Retrieve arrivals for first stop id.
         this.arrivalsSubscription = this.http.get<StopTimesResponse>(this.gameService.getServerUrl() + '/stopTimes/?arrivals=true&company=Company&departures=false&stopName=' + this.stop.getName() + '&date=' + this.today + '&startingTime=' + this.hours + ':' + this.minutes).subscribe(realTimeInfos => {
-          this.arrivals = realTimeInfos.getStopTimeResponses();
+          this.arrivals = [];
+          for ( let i = 0; i < realTimeInfos.count; i++ ) {
+            this.arrivals.push(new RealTimeInfo(realTimeInfos.stopTimeResponses[i].departureTime, realTimeInfos.stopTimeResponses[i].arrivalTime,
+                realTimeInfos.stopTimeResponses[i].routeNumber, realTimeInfos.stopTimeResponses[i].destination));
+          }
         });
         // Retrieve departures for complete day.
         this.todaysDeparturesSubscription = this.http.get<StopTimesResponse>(this.gameService.getServerUrl() + '/stopTimes/?arrivals=false&company=Company&departures=true&stopName=' + this.stop.getName() + '&date=' + this.today).subscribe(departureInfos => {
-          this.todayDepartures = departureInfos.getStopTimeResponses();
+          this.todayDepartures = [];
+          for ( let i = 0; i < departureInfos.count; i++ ) {
+            this.todayDepartures.push(new RealTimeInfo(departureInfos.stopTimeResponses[i].departureTime, departureInfos.stopTimeResponses[i].arrivalTime,
+                departureInfos.stopTimeResponses[i].routeNumber, departureInfos.stopTimeResponses[i].destination));
+          }
         });
       }
     });
@@ -237,7 +249,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * When destroying this component we should ensure that all subscriptions are cancelled.
    */
   ngOnDestroy(): void {
-    if ( !this.gameService.isOfflineVersion() ) {
+    if ( !this.gameService.isOfflineMode() ) {
       this.idSubscription.unsubscribe();
       this.departuresSubscription.unsubscribe();
       this.arrivalsSubscription.unsubscribe();

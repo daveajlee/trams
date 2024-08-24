@@ -3,6 +3,7 @@ import {GameService} from "../shared/game.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Timetable} from "../shared/timetable.model";
+import {ServerService} from "../shared/server.service";
 
 @Component({
   selector: 'app-routeeditor',
@@ -23,16 +24,37 @@ export class RouteeditorComponent {
    * Construct a new Route Editor component
    * @param gameService the game service containing the currently loaded game.
    * @param router the router to navigate to other pages.
-   * @param route a variable which contains the current stop that the user clicked on.
+   * @param route a variable which contains the current stop that the user clicked on
+   * @param serverService the server service that manages the http calls
    */
-  constructor(private gameService: GameService, public router: Router, private route: ActivatedRoute) {
+  constructor(private gameService: GameService, public router: Router, private route: ActivatedRoute,
+              private serverService: ServerService) {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
-      let route = this.gameService.getGame().getRoute(this.routeNumber);
-      this.startStop = route.getStartStop();
-      this.endStop = route.getEndStop();
-      this.stops = route.getStops();
-      this.timetables = route.getTimetables();
+      if ( this.gameService.isOfflineMode() ) {
+        let route = this.gameService.getGame().getRoute(this.routeNumber);
+        this.startStop = route.getStartStop();
+        this.endStop = route.getEndStop();
+        this.stops = route.getStops();
+        this.timetables = route.getTimetables();
+      } else {
+        this.serverService.getRoute(this.routeNumber).then((route) => {
+          this.startStop = route.startStop;
+          this.endStop = route.endStop;
+          this.stops = route.stops;
+          this.serverService.getTimetables(this.routeNumber).then((timetables) => {
+            this.timetables = [];
+            console.log(timetables);
+            let timetableResponses = timetables.timetableResponses;
+            for ( let i = 0; i < timetableResponses.length; i++ ) {
+              this.timetables.push(new Timetable(timetableResponses[i].name, timetableResponses[i].validFromDate, timetableResponses[i].validToDate, timetableResponses[i].frequencyPatterns))
+            }
+          })
+        });
+      }
+
+
+
     });
   }
 
@@ -44,7 +66,10 @@ export class RouteeditorComponent {
     this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
   }
 
-  onDeleteTimetable(timetableName: string): void {
+  async onDeleteTimetable(timetableName: string): Promise<void> {
+    if ( !this.gameService.isOfflineMode() ) {
+      await this.serverService.deleteTimetable(this.routeNumber, timetableName);
+    }
     for ( let i = 0; i < this.timetables.length; i++ ) {
       if ( this.timetables[i].getName() === timetableName ) {
         this.timetables.splice(i, 1);

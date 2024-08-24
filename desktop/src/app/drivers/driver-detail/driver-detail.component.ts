@@ -1,8 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {GameService} from "../../shared/game.service";
 import {Driver} from "../driver.model";
 import {Subscription} from "rxjs";
+import {DriverResponse} from "../driver.response";
+import {ServerService} from "../../shared/server.service";
 
 @Component({
   selector: 'app-driver-detail',
@@ -16,24 +18,45 @@ import {Subscription} from "rxjs";
 export class DriverDetailComponent implements OnInit, OnDestroy {
 
   private driver: Driver;
-  private id: number;
+  private name: string;
   private idSubscription: Subscription;
 
   /**
    * Construct a new driver-detail component based on the supplied information.
    * @param gameService a service which can retrieve game information
    * @param route a variable which contains the current driver that the user clicked on.
+   * @param serverService a service managing the http calls
+   * @param router the router for navigating to other pages.
    */
-  constructor(private route: ActivatedRoute, private gameService: GameService) { }
+  constructor(private route: ActivatedRoute, private gameService: GameService, private serverService: ServerService, public router: Router, ) { }
 
   /**
    * Initialise the vehicle information during construction and ensure all variables are set to the correct data.
    */
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
-      this.id = +params['id'];
-      this.driver = this.gameService.getGame().getDriverByPosition(this.id);
+      this.name = params['id'];
+      if ( this.gameService.isOfflineMode() ) {
+        this.driver = this.gameService.getGame().getDriverByName(this.name);
+      } else {
+        console.log('Retrieve driver: ' + this.name);
+        this.serverService.getDriver(this.name).then((drivers) => {
+          console.log(drivers);
+          if ( drivers.count > 0 ) {
+            this.driver = this.convertResponseToDriver(drivers.driverResponses[0]);
+          }
+        })
+      }
     });
+  }
+
+  /**
+   * Convert a response to a driver object.
+   * @param driverResponse the response to be converted to a driver object.
+   * @return the converted driver object.
+   */
+  convertResponseToDriver( driverResponse: DriverResponse ): Driver {
+    return new Driver(driverResponse.name, driverResponse.contractedHours, driverResponse.startDate);
   }
 
   /**
@@ -47,7 +70,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * @return the name of the driver as a String.
    */
   getName(): string {
-    return this.driver.getName();
+    return this.driver ? this.driver.getName() : "";
   }
 
   /**
@@ -55,7 +78,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * @return the contracted hours of this driver as a number,
    */
   getContractedHours(): number {
-    return this.driver.getContractedHours();
+    return this.driver ? this.driver.getContractedHours() : 0;
   }
 
   /**
@@ -63,7 +86,7 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * @return the start date of this driver as a string.
    */
   getStartDate(): string {
-    return this.driver.getStartDate();
+    return this.driver ? this.driver.getStartDate() : "";
   }
 
   /**
@@ -71,7 +94,13 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * This does not cost any money currently.
    */
   sackDriver(): void {
-    this.gameService.getGame().deleteDriverByName(this.driver.getName());
+    if ( this.gameService.isOfflineMode() ) {
+      this.gameService.getGame().deleteDriverByName(this.driver.getName());
+    } else {
+      this.serverService.sackDriver(this.driver.getName()).then(() => {
+        this.router.navigate(['management']);
+      })
+    }
   }
 
 }

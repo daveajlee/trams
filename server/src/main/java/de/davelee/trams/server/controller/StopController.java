@@ -14,8 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class provides REST endpoints which provide operations associated with a single stop in the TraMS Server API.
@@ -46,12 +46,19 @@ public class StopController {
         if (StringUtils.isBlank(stopRequest.getCompany()) || StringUtils.isBlank(stopRequest.getName())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        // Build the distances map from the two lists in the request.
+        Map<String, Integer> distances = new HashMap<>();
+        if ( stopRequest.getOtherStopNames() != null && !stopRequest.getOtherStopNames().isEmpty()) {
+            for ( int i = 0; i < stopRequest.getOtherStopNames().size(); i++ ) {
+                distances.put(stopRequest.getOtherStopNames().get(i), stopRequest.getOtherStopDistances().get(i));
+            }
+        }
         //Convert the StopRequest to the Stop object.
         Stop stop = Stop.builder()
                 .company(stopRequest.getCompany())
                 .name(stopRequest.getName())
                 .waitingTime(stopRequest.getWaitingTime())
-                .distances(stopRequest.getDistances())
+                .distances(distances)
                 .latitude(stopRequest.getLatitude())
                 .longitude(stopRequest.getLongitude())
                 .build();

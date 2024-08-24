@@ -2,10 +2,10 @@ package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.Address;
 import de.davelee.trams.server.model.JourneyInstruction;
-import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.model.Stop;
 import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.request.JourneyRequest;
+import de.davelee.trams.server.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service containing methods to calculate and plan journeys. A maximum of one change (excluding walking) currently exists.
@@ -42,9 +39,6 @@ public class CalculateJourneyService {
 
     private final static Logger LOG = LoggerFactory.getLogger(CalculateJourneyService.class);
 
-    private final static String DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm";
-    private final static String TIME_FORMAT = "HH:mm";
-
     /**
      * Calculate the journey based on the journey request and return a series of journey instructions
      * which need to be followed to get from A to B.
@@ -55,19 +49,19 @@ public class CalculateJourneyService {
         //Create a blank list of journey instrutions.
         List<JourneyInstruction> journeyInstructionList = new ArrayList<>();
         //Translate time to local time.
-        LocalDateTime currentDateTime = LocalDateTime.parse(journeyRequest.getDepartDateTime(), DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+        LocalDateTime currentDateTime = DateUtils.convertDateToLocalDateTime(journeyRequest.getDepartDateTime());
         // 1. Walk to the nearest station if the start point is not a station.
         Stop startStop = stopService.getStop(journeyRequest.getOperator(), journeyRequest.getFrom());
         if ( startStop == null ) {
             //Calculate the journey instruction for walking to a nearest stop. If no suggestion found, return empty list.
-            JourneyInstruction journeyInstruction = walkToNearestStop(journeyRequest.getOperator(), journeyRequest.getFrom(), currentDateTime.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
+            JourneyInstruction journeyInstruction = walkToNearestStop(journeyRequest.getOperator(), journeyRequest.getFrom(), DateUtils.convertLocalDateTimeToDate(currentDateTime));
             if ( journeyInstruction == null ) {
                 return Collections.emptyList();
             }
             //Otherwise add it to the list and set start stop accordingly and increment duration.
             journeyInstructionList.add(journeyInstruction);
             startStop = stopService.getStop(journeyRequest.getOperator(), journeyInstruction.getDestination());
-            currentDateTime = currentDateTime.plusMinutes(journeyInstructionList.get(0).getDurationInMins());
+            currentDateTime = currentDateTime.plusMinutes(journeyInstructionList.getFirst().getDurationInMins());
         }
         //Check if we have already reached the destination.
         if ( isJourneyEnd(startStop.getName(), journeyRequest.getTo() ) ) {
@@ -84,39 +78,30 @@ public class CalculateJourneyService {
         if ( changeStop == null ) {
             return journeyInstructionList;
         }
-        // Get routes for the start stop.
-        final List<String> possibleFirstRoutes = new ArrayList<>();
-        List<String> startRoutes = stopTimeService.getAllRouteNumbersByStop(journeyRequest.getOperator(), startStop.getName());
-        possibleFirstRoutes.addAll(startRoutes);
         //2. Get the next departures for the current station.
         final LocalTime currentFinalTime = LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute());
-        List<StopTime> stopTimes = stopTimeService.getDepartures(startStop.getName(), journeyRequest.getOperator(), currentFinalTime.format(DateTimeFormatter.ofPattern("HH:mm")));
-        JourneyInstruction firstRouteJourneyInstruction = travelOn(stopTimes.get(0).getDestination(), journeyRequest.getOperator(), stopTimes.get(0).getRouteNumber(), stopTimes.get(0).getDepartureTime().format(DateTimeFormatter.ofPattern(TIME_FORMAT)), 10);
-        currentDateTime = currentDateTime.plusMinutes(Duration.between(LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute()), stopTimes.get(0).getDepartureTime()).toMinutes() + firstRouteJourneyInstruction.getDurationInMins());
+        List<StopTime> stopTimes = stopTimeService.getDepartures(startStop.getName(), journeyRequest.getOperator(), DateUtils.convertLocalTimeToTime(currentFinalTime), "");
+        JourneyInstruction firstRouteJourneyInstruction = travelOn(stopTimes.getFirst().getDestination(), journeyRequest.getOperator(), stopTimes.getFirst().getRouteNumber(), DateUtils.convertLocalTimeToTime(stopTimes.getFirst().getDepartureTime()), 10);
+        currentDateTime = currentDateTime.plusMinutes(Duration.between(LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute()), stopTimes.getFirst().getDepartureTime()).toMinutes() + firstRouteJourneyInstruction.getDurationInMins());
         journeyInstructionList.add(firstRouteJourneyInstruction);
         //Check if we need to change or if we have already reached our destination.
         if ( isJourneyEnd(changeStop, journeyRequest.getTo()) ) {
             return journeyInstructionList;
         }
         //Calculate the journey instruction for changing.
-        JourneyInstruction changeJourneyInstruction = new JourneyInstruction("CHANGE", currentDateTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT)), 2, "", null, changeStop);
+        JourneyInstruction changeJourneyInstruction = new JourneyInstruction("CHANGE", DateUtils.convertLocalTimeToTime(currentDateTime.toLocalTime()), 2, "", null, changeStop);
         currentDateTime = currentDateTime.plusMinutes(changeJourneyInstruction.getDurationInMins());
         journeyInstructionList.add(changeJourneyInstruction);
-        //Get routes for the end stop.
-        final List<String> possibleLastRoutes = new ArrayList<>();
-        List<String> endRoutes = stopTimeService.getAllRouteNumbersByStop(journeyRequest.getOperator(), endStop.getName());
-        //Check if the route, has this stop and if so in which direction.
-        possibleLastRoutes.addAll(endRoutes);
         //3. Get the next departures for the change station.
         final LocalTime currentFinalTime2 = LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute());
-        List<StopTime> secondStopTimes = stopTimeService.getDepartures(changeStop, journeyRequest.getOperator(), currentFinalTime2.format(DateTimeFormatter.ofPattern("HH:mm")));
+        List<StopTime> secondStopTimes = stopTimeService.getDepartures(changeStop, journeyRequest.getOperator(), DateUtils.convertLocalTimeToTime(currentFinalTime2), "");
         //Calculate journey duration based on waiting time and actual travel time.
-        JourneyInstruction secondRouteJourneyInstruction = travelOn(secondStopTimes.get(0).getDestination(), journeyRequest.getOperator(), secondStopTimes.get(0).getRouteNumber(), secondStopTimes.get(0).getDepartureTime().format(DateTimeFormatter.ofPattern(TIME_FORMAT)), 19);
-        currentDateTime = currentDateTime.plusMinutes(Duration.between(LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute()), secondStopTimes.get(0).getDepartureTime()).toMinutes() + secondRouteJourneyInstruction.getDurationInMins());
+        JourneyInstruction secondRouteJourneyInstruction = travelOn(secondStopTimes.getFirst().getDestination(), journeyRequest.getOperator(), secondStopTimes.getFirst().getRouteNumber(), DateUtils.convertLocalTimeToTime(secondStopTimes.getFirst().getDepartureTime()), 19);
+        currentDateTime = currentDateTime.plusMinutes(Duration.between(LocalTime.of(currentDateTime.getHour(), currentDateTime.getMinute()), secondStopTimes.getFirst().getDepartureTime()).toMinutes() + secondRouteJourneyInstruction.getDurationInMins());
         journeyInstructionList.add(secondRouteJourneyInstruction);
         //4. If the end point is not a station then we have to walk it.
         if ( !isJourneyEnd(endStop.getName(), journeyRequest.getTo()) ) {
-            JourneyInstruction walkDestinationJourneyInstruction = walkFromNearestStopToDestination(journeyRequest.getOperator(), journeyRequest.getTo(), currentDateTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT)));
+            JourneyInstruction walkDestinationJourneyInstruction = walkFromNearestStopToDestination(journeyRequest.getOperator(), journeyRequest.getTo(), DateUtils.convertLocalTimeToTime(currentDateTime.toLocalTime()));
             if ( walkDestinationJourneyInstruction != null ) {
                 journeyInstructionList.add(walkDestinationJourneyInstruction);
             }
@@ -184,7 +169,7 @@ public class CalculateJourneyService {
      */
     private JourneyInstruction travelOn ( final String destination, final String operator, final String routeNumber, final String time, final int durationInMins ) {
         return new JourneyInstruction("ROUTE", time, durationInMins, "",
-                routeService.getRoutesByCompanyAndRouteNumber(operator, routeNumber).get(0), destination);
+                routeService.getRoutesByCompanyAndRouteNumber(operator, routeNumber).getFirst(), destination);
     }
 
     /**
@@ -209,7 +194,7 @@ public class CalculateJourneyService {
             }
         }
         // Otherwise, we go through the routes and check if the stops exist.
-        List<StopTime> stopTimesStartRoute = stopTimeService.getDepartures(startStopName, operator, LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        List<StopTime> stopTimesStartRoute = stopTimeService.getDepartures(startStopName, operator, DateUtils.convertLocalTimeToTime(LocalTime.now()), "");
         for ( StopTime stopTimeStartRoute: stopTimesStartRoute ) {
             if ( endRoutes.contains(stopTimeStartRoute.getRouteNumber()) ) {
                 return stopTimeStartRoute.getStopName();
