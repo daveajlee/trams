@@ -160,14 +160,17 @@ export class LivesituationComponent implements OnInit {
                 let hours = parseInt(date.split(" ")[1].split(":")[0]);
                 let minutes = parseInt(date.split(" ")[1].split(":")[1]);
                 if ( ((hours * 60) + minutes) <= simulationInterval ) {
-                  // Get the number of drivers we have.
-                  this.serverService.getDrivers().then((drivers) => {
-                    // Now we need to pay drivers.
-                    this.serverService.adjustBalance(-(drivers.count * 90)).then(() => {
-                      this.serverService.getBalance().then((balance) => {
-                        this.balance = '' + balance;
-                      })
-                    });
+                  // Reset all service information.
+                  this.serverService.resetServices().then(() => {
+                    // Get the number of drivers we have.
+                    this.serverService.getDrivers().then((drivers) => {
+                      // Now we need to pay drivers.
+                      this.serverService.adjustBalance(-(drivers.count * 90)).then(() => {
+                        this.serverService.getBalance().then((balance) => {
+                          this.balance = '' + balance;
+                        })
+                      });
+                    })
                   })
                 }
                 // Generate a random delay for each vehicle that is running a schedule.

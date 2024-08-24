@@ -3,6 +3,7 @@ package de.davelee.trams.server.service;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.StopTimeRepository;
 import de.davelee.trams.server.request.GenerateStopTimesRequest;
+import de.davelee.trams.server.request.ServiceChangeRequest;
 import de.davelee.trams.server.utils.DateUtils;
 import de.davelee.trams.server.utils.FrequencyPatternUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -384,6 +385,7 @@ public class StopTimeService {
                             .stop("Depot")
                             .destination("N/A")
                             .delay(delay)
+                            .service(null)
                             .company(company).build();
                 }
                 // Otherwise we have the position.
@@ -391,6 +393,7 @@ public class StopTimeService {
                         .stop(stopTimes.get(i-1).getStopName())
                         .destination(stopTimes.get(i-1).getDestination())
                         .delay(delay)
+                        .service(stopTimes.get(i-1).getService())
                         .company(stopTimes.get(i-1).getCompany()).build();
             }
         }
@@ -398,7 +401,46 @@ public class StopTimeService {
                 .stop("Depot")
                 .destination("N/A")
                 .delay(delay)
+                .service(null)
                 .company(company).build();
+    }
+
+    /**
+     * Update a service with the supplied information from the change request.
+     * @param serviceChangeRequest the change request with the new information for the service.
+     */
+    public void updateServices(final ServiceChangeRequest serviceChangeRequest) {
+        // Retrieve all stop times for this company.
+        List<StopTime> stopTimes = stopTimeRepository.findByCompany(serviceChangeRequest.getCompany());
+        // For those which match the service id and schedule id.
+        for ( StopTime stopTime : stopTimes ) {
+            if ( stopTime.getService().getServiceId().contentEquals(serviceChangeRequest.getServiceId())
+                    && stopTime.getService().getRouteSchedule().getRouteNumberAndScheduleId().contentEquals(serviceChangeRequest.getScheduleId()) ) {
+                ServiceTrip service = stopTime.getService();
+                service.setOutOfService(serviceChangeRequest.isOutOfService());
+                service.setTempStartStopPos(serviceChangeRequest.getTempStartStopPos());
+                service.setTempEndStopPos(serviceChangeRequest.getTempEndStopPos());
+                stopTime.setService(service);
+                stopTimeRepository.save(stopTime);
+            }
+        }
+    }
+
+    /**
+     * Reset all services in all stop times to ensure that all information is reset and out of service
+     * and shortening services.
+     * @param company the company to reset the stop times for.
+     */
+    public void resetServices(final String company) {
+        List<StopTime> stopTimes = stopTimeRepository.findByCompany(company);
+        for ( StopTime stopTime : stopTimes ) {
+            ServiceTrip service = stopTime.getService();
+            service.setOutOfService(false);
+            service.setTempStartStopPos(0);
+            service.setTempEndStopPos(service.getStopList().size()-1);
+            stopTime.setService(service);
+            stopTimeRepository.save(stopTime);
+        }
     }
 
 }

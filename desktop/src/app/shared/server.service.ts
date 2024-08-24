@@ -35,6 +35,9 @@ import {AdjustVehicleDelayRequest} from "../livesituation/adjustvehicledelay.req
 import {VehicleDelayResponse} from "../livesituation/vehicledelay.response";
 import {AdjustSatisfactionRequest} from "../livesituation/adjustsatisfaction.request";
 import {SatisfactionRateResponse} from "../livesituation/satisfactionrate.response";
+import {ResetServiceRequest} from "../livesituation/resetService.request";
+import {ServiceTripResponse} from "../schedule-information/servicetrip.response";
+import {ServiceChangeRequest} from "../schedule-information/serviceChange.request";
 
 @Injectable()
 /**
@@ -501,6 +504,48 @@ export class ServerService {
      */
     async adjustPassengerSatisfaction(satisfactionRate: number): Promise<SatisfactionRateResponse> {
         return await lastValueFrom(this.httpClient.patch<SatisfactionRateResponse>(this.serverUrl + '/company/satisfaction', new AdjustSatisfactionRequest(this.company, satisfactionRate)))
+    }
+
+    /**
+     * Reset all services for a new day.
+     */
+    async resetServices() {
+        return await lastValueFrom(this.httpClient.patch<void>(this.serverUrl + '/stopTimes/resetService', new ResetServiceRequest(this.company)));
+    }
+
+    /**
+     * Shorten the service to the supplied stop with the supplied ids.
+     * @param serviceTrip the <code>ServiceTripResponse</code> object with the current service information.
+     * @param stop the stop where we shorten to and start the next service from.
+     */
+    async shortenService(serviceTrip: ServiceTripResponse, stop: string) {
+        // Get the number for the end stop since we are shortening service.
+        let stops = serviceTrip.stopList;
+        let stopPos;
+        for ( let i = 0; i < stops.length; i++ ) {
+            if ( stop === stops[i] ) {
+                stopPos = i;
+            }
+        }
+        // Shorten the current service.
+        await lastValueFrom(this.httpClient.patch<void>(this.serverUrl + '/stopTimes/updateService',
+            new ServiceChangeRequest(this.company, serviceTrip.serviceId, serviceTrip.scheduleId,
+                serviceTrip.outOfService, serviceTrip.tempStartStopPos, stopPos)));
+        // Shorten also the next service (which we assume is service id + 1.
+        await lastValueFrom(this.httpClient.patch<void>(this.serverUrl + '/stopTimes/updateService',
+            new ServiceChangeRequest(this.company, "" + (parseInt(serviceTrip.serviceId)+1), serviceTrip.scheduleId,
+                serviceTrip.outOfService, stopPos, serviceTrip.tempEndStopPos)));
+    }
+
+    /**
+     * Set this service to out of service.
+     * @param serviceTrip the <code>ServiceTripResponse</code> object with the current service information.
+     */
+    async outOfService(serviceTrip: ServiceTripResponse) {
+        // Set the service as out of service.
+        await lastValueFrom(this.httpClient.patch<void>(this.serverUrl + '/stopTimes/updateService',
+            new ServiceChangeRequest(this.company, serviceTrip.serviceId, serviceTrip.scheduleId,
+                true, serviceTrip.tempStartStopPos, serviceTrip.tempEndStopPos)));
     }
 
 }

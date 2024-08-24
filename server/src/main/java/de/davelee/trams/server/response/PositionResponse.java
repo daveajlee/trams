@@ -1,5 +1,6 @@
 package de.davelee.trams.server.response;
 
+import de.davelee.trams.server.model.ServiceTrip;
 import lombok.*;
 
 /**
@@ -35,5 +36,9 @@ public class PositionResponse {
      */
     private int delay;
 
+    /**
+     * The service that is running this journey.
+     */
+    private ServiceTripResponse service;
 
 }

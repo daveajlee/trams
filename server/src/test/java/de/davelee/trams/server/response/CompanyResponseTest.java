@@ -30,7 +30,7 @@ public class CompanyResponseTest {
         assertEquals("01-12-2020 16:54", companyResponse.getTime());
         assertEquals("Beginner's Scenario", companyResponse.getScenarioName());
         assertEquals("EASY", companyResponse.getDifficultyLevel());
-        assertEquals("CompanyResponse(name=Mustermann GmbH, balance=10000.0, playerName=Max Mustermann, time=01-12-2020 16:54, satisfactionRate=100.0, scenarioName=Beginner's Scenario, difficultyLevel=EASY)", companyResponse.toString());
+        assertEquals("CompanyResponse(name=Mustermann GmbH, balance=10000.0, playerName=Max Mustermann, time=01-12-2020 16:54, satisfactionRate=100.0, scenarioName=Beginner's Scenario, difficultyLevel=EASY, simulationInterval=0)", companyResponse.toString());
     }
 
 }

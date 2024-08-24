@@ -6,6 +6,11 @@ import {PositionHelper} from "../shared/position.helper";
 import {ServiceModel} from "../stops/stop-detail/service.model";
 import {RoutesService} from "../routes/routes.service";
 import {ServerService} from "../shared/server.service";
+import {ServiceTripResponse} from "./servicetrip.response";
+import {Scenario} from "../shared/scenario.model";
+import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
+import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
+import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 
 @Component({
   selector: 'app-schedule-information',
@@ -25,6 +30,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   private delay: number;
   private currentService: ServiceModel;
   private nextService: ServiceModel;
+  private serviceTrip: ServiceTripResponse;
 
   private messages: string[];
 
@@ -139,11 +145,19 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
             this.stop = position.stop;
             this.destination = position.destination;
             this.delay = position.delay;
+            this.serviceTrip = position.service;
+            // Check out of service and shorten info and display if appropriate.
+            if ( this.serviceTrip.outOfService ) {
+              this.destination = "Out Of Service";
+            } else if ( this.serviceTrip.tempEndStopPos > 0 ) {
+              this.destination = this.serviceTrip.stopList[this.serviceTrip.tempEndStopPos];
+            }
           } else {
             console.log('Position for ' + routeTour + ' is not allocated');
             this.stop = "";
             this.destination = "";
             this.delay = 0;
+            this.serviceTrip = null;
           }
         })
       })
@@ -212,12 +226,21 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    * and the current and next service updated to reflect change.
    */
   shortenService(): void {
-    // This is where we actually shorten the service.
-    this.currentService.setTempEndStop(this.stop);
-    // Also shorten the next service if it exists.
-    this.nextService.setTempStartStop(this.stop);
-    // Decrease the passenger satisfaction by 5%.
-    this.gameService.getGame().adjustPassengerSatisfaction(-5);
+    if ( this.gameService.isOfflineMode() ) {
+      // This is where we actually shorten the service.
+      this.currentService.setTempEndStop(this.stop);
+      // Also shorten the next service if it exists.
+      this.nextService.setTempStartStop(this.stop);
+      // Decrease the passenger satisfaction by 5%.
+      this.gameService.getGame().adjustPassengerSatisfaction(-5);
+    } else {
+      // This is where we actually shorten the service and shorten the next service if it exists.
+      this.serverService.shortenService(this.serviceTrip, this.stop).then(() => {
+        // Decrease the passenger satisfaction by 5%.
+        this.serverService.adjustPassengerSatisfaction(-5);
+      });
+    }
+
     // Now we print messages saving that the vehicle schedule is being shortened.
     this.messages.push("Vehicle " + this.fleetNumber + ", please terminate at " + this.stop + " and proceed in service in the reverse direction. Over!");
     this.messages.push("Response: Vehicle " + this.fleetNumber + ": Message acknowledged. Thanks! Over!");
@@ -229,15 +252,49 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
    * current service updated to reflect change.
    */
   outOfService(): void {
-    // This is where we actually put the vehicle out of service.
-    this.currentService.setServiceToOutOfService();
-    // Reduce the delay by 10% of the duration.
-    this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.routeService.getDuration(this.gameService.getGame().getScenario(), this.gameService.getGame().getRoute(this.selectedRoute).getStartStop(), this.gameService.getGame().getRoute(this.selectedRoute).getStops(), this.gameService.getGame().getRoute(this.selectedRoute).getEndStop())));
-    // Decrease the passenger satisfaction by 3%.
-    this.gameService.getGame().adjustPassengerSatisfaction(-3);
+    if ( this.gameService.isOfflineMode() ) {
+      // This is where we actually put the vehicle out of service.
+      this.currentService.setServiceToOutOfService();
+      // Reduce the delay by 10% of the duration.
+      this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.routeService.getDuration(this.gameService.getGame().getScenario(), this.gameService.getGame().getRoute(this.selectedRoute).getStartStop(), this.gameService.getGame().getRoute(this.selectedRoute).getStops(), this.gameService.getGame().getRoute(this.selectedRoute).getEndStop())));
+      // Decrease the passenger satisfaction by 3%.
+      this.gameService.getGame().adjustPassengerSatisfaction(-3);
+    } else {
+      // Get the route object so that we can calculate distance.
+      this.serverService.getRoute(this.selectedRoute).then((routeResponse) => {
+        // Get the scenario we are running.
+        this.serverService.getScenarioName().then((scenarioName) => {
+          // This is where we actually put the vehicle out of service.
+          this.serverService.outOfService(this.serviceTrip).then(() => {
+            // Reduce the delay by 10% of the duration.
+            this.serverService.adjustDelay(this.fleetNumber, -(0.1 * this.routeService.getDuration(this.loadScenario(scenarioName), routeResponse.startStop, routeResponse.stops, routeResponse.endStop))).then(() => {
+              // Decrease the passenger satisfaction by 3%.
+              this.serverService.adjustPassengerSatisfaction(-3);
+            });
+          });
+        });
+      });
+    }
     // Now we print messages saying that the vehicle is being put out of service.
     this.messages.push("Control: Vehicle " + this.fleetNumber + ", please go out of service until " + this.destination + ". Over!")
     this.messages.push("Vehicle " + this.fleetNumber + ": Message acknowledged. Thanks! Over!")
+  }
+
+  /**
+   * This is a helper method to load the correct scenario based on the supplied scenario name.
+   * @param scenario which contains the name of the scenario that the user chose.
+   * @returns the scenario object corresponding to the supplied name.
+   */
+  loadScenario(scenario: string): Scenario {
+    if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
+      return SCENARIO_LANDUFF;
+    } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
+      return SCENARIO_LONGTS;
+    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
+      return SCENARIO_MDORF;
+    } else {
+      return null;
+    }
   }
 
   /**

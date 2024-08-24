@@ -2,7 +2,10 @@ package de.davelee.trams.server.controller;
 
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.request.GenerateStopTimesRequest;
+import de.davelee.trams.server.request.ResetServiceRequest;
+import de.davelee.trams.server.request.ServiceChangeRequest;
 import de.davelee.trams.server.response.PositionResponse;
+import de.davelee.trams.server.response.ServiceTripResponse;
 import de.davelee.trams.server.response.StopTimeResponse;
 import de.davelee.trams.server.response.StopTimesResponse;
 import de.davelee.trams.server.service.*;
@@ -70,7 +73,26 @@ public class StopTimesController {
                 .stop(position.getStop())
                 .destination(position.getDestination())
                 .delay(position.getDelay())
+                .service(ServiceTripResponse.builder()
+                        .tempStartStopPos(position.getService().getTempStartStopPos())
+                        .tempEndStopPos(position.getService().getTempEndStopPos())
+                        .stopList(translateStopsToStringArray(position.getService().getStopList()))
+                        .outOfService(position.getService().isOutOfService())
+                        .scheduleId(position.getService().getRouteSchedule().getRouteNumberAndScheduleId())
+                        .serviceId(position.getService().getServiceId()).build())
                 .company(position.getCompany()).build());
+    }
+
+    /**
+     * Private Helper method to translate the name of stops to a string array.
+     * @param stops a <code>List</code> of
+     */
+    private String[] translateStopsToStringArray(List<Stop> stops) {
+        String[] stopNames = new String[stops.size()];
+        for ( int i = 0; i < stops.size(); i++ ) {
+            stopNames[i] = stops.get(i).getName();
+        }
+        return stopNames;
     }
 
     /**
@@ -217,6 +239,39 @@ public class StopTimesController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    /**
+     * Update all stops with the supplied service modifications.
+     * @param serviceChangeRequest a <code>ServiceChangeRequest</code> object containing the id and the
+     *                             changes to be made to the service object.
+     * @return a <code>ResponseEntity</code> object containing the results of the endpoint.
+     */
+    @PatchMapping("/updateService")
+    @CrossOrigin
+    @Operation(summary = "Update service information", description="Update a service with out of service or shortening information.")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully updated service information")})
+    public ResponseEntity<Void> updateServices ( @RequestBody final ServiceChangeRequest serviceChangeRequest ) {
+        // Update the supplied service for all stops that use this service.
+        stopTimeService.updateServices(serviceChangeRequest);
+        // Return the response entity to ok.
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Reset all stops with out of service false and shorten services set to null.
+     * @return a <code>ResponseEntity</code> object containing the results of the endpoint.
+     */
+    @PatchMapping("/resetService")
+    @CrossOrigin
+    @Operation(summary = "Reset all service information", description="Reset a service with out of service or shortening information.")
+    @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully reset service information")})
+    public ResponseEntity<Void> resetServices ( ResetServiceRequest resetServiceRequest ) {
+        // Reset the services.
+        stopTimeService.resetServices(resetServiceRequest.getCompany());
+        // Return the response entity to ok.
+        return ResponseEntity.ok().build();
+    }
+
 
     /**
      * Delete all stop times currently stored in the database for a particular company.

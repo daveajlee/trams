@@ -1,3 +1,5 @@
+import {ServiceTripResponse} from "../schedule-information/servicetrip.response";
+
 /**
  * This class defines a model for responses to finding the current position of a vehicle in TraMS.
  */
@@ -22,5 +24,10 @@ export class PositionResponse {
      * The current delay of the vehicle.
      */
     public delay: number;
+
+    /**
+     * The service trip that is associated with the current position.
+     */
+    public service: ServiceTripResponse;
 
 }

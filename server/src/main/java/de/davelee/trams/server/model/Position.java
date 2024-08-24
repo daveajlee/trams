@@ -35,4 +35,9 @@ public class Position {
      */
     private int delay;
 
+    /**
+     * The service that is running this journey.
+     */
+    private ServiceTrip service;
+
 }
