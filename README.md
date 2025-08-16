@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://www.davelee.de/common/assets/img/portfolio/trams-logo.png" alt="TraMS" width="300" height="300">
+<img src="https://www.davelee.de/common/assets/img/portfolio/trams.webp" alt="TraMS" width="300" height="300">
 </p>
 
 <p align=center><a href="https://app.codacy.com/gh/daveajlee/trams/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/9b51ca637d4743e4b5f8c75afcfad4e3" alt="Codacy Badge"> </a>
