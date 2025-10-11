@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
 import {GameService} from "../shared/game.service";
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-switchlocal',
   templateUrl: './switchlocal.component.html',
+  imports: [
+    FormsModule
+  ],
   styleUrls: ['./switchlocal.component.css']
 })
 export class SwitchlocalComponent {

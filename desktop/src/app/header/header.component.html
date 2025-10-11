@@ -53,7 +53,9 @@
   <div class="form-group top-space">
     <label for="helpContentList" style="font-weight: bold;">Choose a Help Topic...</label>
     <select class="form-control" [(ngModel)]="selectedHelpTopic" id="helpContentList">
-      <option *ngFor="let item of this.getHelpTopics()" [ngValue]="item">{{ item }}</option>
+      @for(item of this.getHelpTopics(); track item) {
+        <option [ngValue]="item">{{ item }}</option>
+      }
     </select>
     <hr/>
     <div [innerHTML]="this.getHelpContent(selectedHelpTopic)"></div>

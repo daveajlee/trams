@@ -4,10 +4,14 @@ import {Router} from "@angular/router";
 import {LoadService} from "../shared/load.service";
 import {SaveService} from "../shared/save.service";
 import {GameService} from "../shared/game.service";
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
+  imports: [
+    FormsModule
+  ],
   styleUrls: ['./header.component.css']
 })
 /**
@@ -17,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
   private version: string = packageJson.version;
 
-  selectedHelpTopic: string;
+  selectedHelpTopic: string = "";
 
   /**
    * Construct a new HeaderComponent and do nothing.
@@ -74,12 +78,12 @@ export class HeaderComponent implements OnInit {
   async onLoadGameClick(files: FileList | null): Promise<void> {
       if (files) {
           // Currently we only support tcs files.
-          if ( files.item(0).name.endsWith(".tcs") ) {
+          if ( files.item(0)!.name.endsWith(".tcs") ) {
               console.log('We process this in the tcs file');
-              await this.loadService.onLoadTcsFile(files.item(0));
+              await this.loadService.onLoadTcsFile(files.item(0)!);
               await this.router.navigate(['management']);
-          } else if ( files.item(0).name.endsWith(".json") ) {
-              await this.loadService.onLoadJSONFile(files.item(0));
+          } else if ( files.item(0)!.name.endsWith(".json") ) {
+              await this.loadService.onLoadJSONFile(files.item(0)!);
               await this.router.navigate(['management']);
           } else {
               alert('This file type is not supported. Please choose another file.');

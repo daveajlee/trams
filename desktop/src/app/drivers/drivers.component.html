@@ -22,9 +22,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let driverEl of getDrivers(), let i = index">
+            @for(driverEl of getDrivers(); track driverEl) {
+              <tr>
                 <td><a style="cursor:pointer" [routerLink]="[driverEl.getName()]" routerLinkActive="active">{{driverEl.getName()}}</a></td>
-            </tr>
+              </tr>
+            }
             </tbody>
         </table>
     </div>

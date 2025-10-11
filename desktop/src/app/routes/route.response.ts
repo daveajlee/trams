@@ -3,12 +3,12 @@
  */
 export class RouteResponse {
 
-  public routeNumber: string;
-  public company: string;
-  public startStop: string;
-  public endStop: string;
-  public stops: string[];
-  public nightRoute: boolean;
+  public routeNumber: string = "";
+  public company: string = "";
+  public startStop: string = "";
+  public endStop: string = "";
+  public stops: string[] = [];
+  public nightRoute: boolean = false;
 
   constructor( routeNumber: string, startStop: string, endStop: string, stops: string[], company: string) {
     this.routeNumber = routeNumber;

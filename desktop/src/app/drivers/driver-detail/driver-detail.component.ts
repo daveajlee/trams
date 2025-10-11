@@ -17,9 +17,9 @@ import {ServerService} from "../../shared/server.service";
  */
 export class DriverDetailComponent implements OnInit, OnDestroy {
 
-  private driver: Driver;
-  private name: string;
-  private idSubscription: Subscription;
+  private driver: Driver | null = null;
+  private name: string = "";
+  private idSubscription: Subscription | null = null;
 
   /**
    * Construct a new driver-detail component based on the supplied information.
@@ -36,8 +36,8 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.name = params['id'];
-      if ( this.gameService.isOfflineMode() ) {
-        this.driver = this.gameService.getGame().getDriverByName(this.name);
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+        this.driver = this.gameService.getGame()!.getDriverByName(this.name);
       } else {
         console.log('Retrieve driver: ' + this.name);
         this.serverService.getDriver(this.name).then((drivers) => {
@@ -94,10 +94,10 @@ export class DriverDetailComponent implements OnInit, OnDestroy {
    * This does not cost any money currently.
    */
   sackDriver(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.gameService.getGame().deleteDriverByName(this.driver.getName());
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.gameService.getGame()!.deleteDriverByName(this.driver!.getName());
     } else {
-      this.serverService.sackDriver(this.driver.getName()).then(() => {
+      this.serverService.sackDriver(this.driver!.getName()).then(() => {
         this.router.navigate(['management']);
       })
     }

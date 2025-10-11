@@ -3,15 +3,19 @@ import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {Allocation} from "../allocations/allocation.model";
 import {ServerService} from "../shared/server.service";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-allocationslist',
   templateUrl: './allocationslist.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./allocationslist.component.css']
 })
 export class AllocationslistComponent {
 
-  allocations: Allocation[];
+  allocations: Allocation[] = [];
 
   /**
    * Construct a new Allocations list component
@@ -20,8 +24,8 @@ export class AllocationslistComponent {
    * @param router the router for navigating to other pages.
    */
   constructor(private gameService: GameService, private serverService: ServerService, public router: Router) {
-    if ( this.gameService.isOfflineMode() ) {
-      this.allocations = this.gameService.getGame().getAllocations();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame()) {
+      this.allocations = this.gameService.getGame()!.getAllocations();
     } else {
       this.serverService.getAllocations().then(allocations => {
         this.allocations = allocations;
@@ -37,8 +41,8 @@ export class AllocationslistComponent {
   }
 
   deleteAllocation(routeNumber: string, fleetNumber: string, tourNumber: string): void {
-    if ( this.gameService.isOfflineMode() ) {
-      if ( this.gameService.getGame().deleteAllocation(fleetNumber, routeNumber, tourNumber) ) {
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if ( this.gameService.getGame()!.deleteAllocation(fleetNumber, routeNumber, tourNumber) ) {
         alert('Allocation was deleted successfully');
         this.router.navigate(['management']);
       }

@@ -72,13 +72,12 @@ export class Game {
      */
     deleteRoute(routeNumber: string): boolean {
         let counter = 0;
-        this.routes.forEach((element) => {
-            if ( element.getRouteNumber() == routeNumber ) {
-                this.routes.splice(counter, 1);
-                return true;
-            }
-            counter++;
-        } );
+        for ( let i = 0; i < this.routes.length; i++) {
+          if (  this.routes[i].getRouteNumber() == routeNumber ) {
+            this.routes.splice(counter, 1);
+            return true;
+          }
+        }
         return false;
     }
 
@@ -192,7 +191,7 @@ export class Game {
      * @param routeNumber the route number to retrieve the route object for.
      * @returns the route object or null if no route object matching the route number was found,
      */
-    getRoute( routeNumber: string ): Route {
+    getRoute( routeNumber: string ): Route | null {
         for ( var i = 0; i < this.routes.length; i++ ) {
             if ( this.routes[i].getRouteNumber() === routeNumber ) {
                 return this.routes[i];
@@ -262,7 +261,7 @@ export class Game {
      * @param fleetNumber the fleet number to retrieve the vehicle for.
      * @return the vehicle information for the fleet number or null if the fleet number does not exist.
      */
-    getVehicleByFleetNumber(fleetNumber: string): Vehicle {
+    getVehicleByFleetNumber(fleetNumber: string): Vehicle | null {
         for ( var i = 0; i < this.vehicles.length; i++ ) {
             if ( this.vehicles[i].getFleetNumber().valueOf() === fleetNumber ) {
                 return this.vehicles[i];
@@ -482,6 +481,7 @@ export class Game {
                 return this.vehicles[i].getFleetNumber();
             }
         }
+        return "";
     }
 
     /**

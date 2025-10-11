@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Scenario} from "../shared/scenario.model";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class provides access to the list of routes from the server so that all routes or a single route from the list can be returned
  * to the Frontend component.

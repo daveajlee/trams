@@ -81,8 +81,8 @@ export class Scenario {
      * @return the distance between the stops in minutes as a number.
      */
     getDistanceBetweenStop (stop1: string, stop2: string): number {
-        var stop1Pos: number; var stop2Pos: number;
-        for ( var i = 0; i < this.stopDistances.length; i++ ) {
+        let stop1Pos: number = 0; let stop2Pos: number = 0;
+        for ( let i = 0; i < this.stopDistances.length; i++ ) {
             if ( this.stopDistances[i].split(":")[0] == stop1 ) {
                 stop1Pos = i;
             } else if ( this.stopDistances[i].split(":")[0] == stop2 ) {
@@ -92,6 +92,7 @@ export class Scenario {
         if ( stop1Pos >= 0 && stop2Pos >= 0 ) {
             return parseInt(this.stopDistances[stop1Pos].split(":")[1].split(",")[stop2Pos]);
         }
+        return 0;
     }
 
     /**

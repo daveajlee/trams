@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class manages the tips that are currently defined and provides a random tip if required.
  */

@@ -5,21 +5,27 @@ import {Route} from "../routes/route.model";
 import {Allocation} from "./allocation.model";
 import {ServerService} from "../shared/server.service";
 import {AllocationRequest} from "./allocation.request";
+import {FormsModule} from '@angular/forms';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-allocations',
   templateUrl: './allocations.component.html',
+  imports: [
+    FormsModule,
+    HeaderComponent
+  ],
   styleUrls: ['./allocations.component.css']
 })
 export class AllocationsComponent {
 
-  public selectedRouteNumber: string;
-  public selectedFleetNumber: string;
-  public selectedTourNumber: string;
+  public selectedRouteNumber: string = "";
+  public selectedFleetNumber: string = "";
+  public selectedTourNumber: string = "";
 
-  public routeNumbers: string[];
-  public fleetNumbers: string[];
-  public tours: string[];
+  public routeNumbers: string[] = [];
+  public fleetNumbers: string[] = [];
+  public tours: string[] = [];
 
   /**
    * Construct a new Allocations component
@@ -28,14 +34,14 @@ export class AllocationsComponent {
    * @param router the router for navigating to other pages.
    */
   constructor(private gameService: GameService, private serverService: ServerService, public router: Router) {
-    if ( this.gameService.isOfflineMode() ) {
-      if ( this.gameService.getGame().doRoutesExist()) {
-        this.selectedRouteNumber = this.gameService.getGame().getFirstRouteNumber();
-        this.routeNumbers = this.gameService.getGame().getRouteNumbers();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if ( this.gameService.getGame()!.doRoutesExist()) {
+        this.selectedRouteNumber = this.gameService.getGame()!.getFirstRouteNumber();
+        this.routeNumbers = this.gameService.getGame()!.getRouteNumbers();
       }
-      if ( this.gameService.getGame().doVehiclesExist() ) {
-        this.selectedFleetNumber = this.gameService.getGame().getFirstFleetNumber();
-        this.fleetNumbers = this.gameService.getGame().getFleetNumbers();
+      if ( this.gameService.getGame()!.doVehiclesExist() && this.gameService.getGame() ) {
+        this.selectedFleetNumber = this.gameService.getGame()!.getFirstFleetNumber();
+        this.fleetNumbers = this.gameService.getGame()!.getFleetNumbers();
       }
     } else {
       this.serverService.getRoutes().then((routes) => {
@@ -80,7 +86,7 @@ export class AllocationsComponent {
   async getDefinedTourNumbers(): Promise<void> {
     if ( this.selectedRouteNumber ) {
       if ( this.gameService.isOfflineMode() ) {
-        let selectedRouteObject: Route = this.gameService.getGame().getRoute(this.selectedRouteNumber);
+        let selectedRouteObject: Route = this.gameService.getGame()!.getRoute(this.selectedRouteNumber)!;
         if ( selectedRouteObject ) {
           // We take the first timetable at the moment.
           if ( selectedRouteObject.doTimetablesExist() && selectedRouteObject.doFrequencyPatternsExist(0) ) {
@@ -122,9 +128,9 @@ export class AllocationsComponent {
    */
   onSaveAllocation(): void {
     console.log('I want to allocate ' + this.selectedRouteNumber + '/' + this.selectedTourNumber + " to " + this.selectedFleetNumber);
-    if ( this.gameService.isOfflineMode() ) {
-      this.gameService.getGame().addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
-      this.gameService.getGame().getVehicleByFleetNumber(this.selectedFleetNumber).setAllocatedTour(this.selectedRouteNumber + "/" + this.selectedTourNumber);
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.gameService.getGame()!.addAllocation(new Allocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber));
+      this.gameService.getGame()!.getVehicleByFleetNumber(this.selectedFleetNumber)!.setAllocatedTour(this.selectedRouteNumber + "/" + this.selectedTourNumber);
       this.router.navigate(['management']);
     } else {
       this.serverService.addAllocation(this.selectedRouteNumber, this.selectedFleetNumber, this.selectedTourNumber).then(() => {

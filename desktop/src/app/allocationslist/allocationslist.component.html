@@ -16,12 +16,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let allocationEl of allocations, let i = index">
+      @for (allocationEl of allocations; track allocationEl ) {
+        <tr>
             <td> {{allocationEl.getRouteNumber()}} </td>
             <td> {{allocationEl.getFleetNumber()}} </td>
             <td> {{allocationEl.getTourNumber()}} </td>
             <td><button class="btn btn-danger" style="margin: 5px;" type="submit" (click)="deleteAllocation(allocationEl.getRouteNumber(), allocationEl.getFleetNumber(), allocationEl.getTourNumber())">Delete</button></td>
         </tr>
+      }
     </tbody>
 
 </table>

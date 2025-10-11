@@ -4,9 +4,9 @@
 export class SatisfactionRateResponse {
 
     // the name of the company
-    company: string;
+    company: string = "";
 
     // the satisfaction rate of the company
-    satisfactionRate: number;
+    satisfactionRate: number = 0;
 
 }

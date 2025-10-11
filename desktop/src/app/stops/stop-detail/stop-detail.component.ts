@@ -9,10 +9,18 @@ import {Subscription} from 'rxjs';
 import {StopTimesResponse} from "./stoptimes.response";
 import {GameService} from "../../shared/game.service";
 import {TimeHelper} from "../../shared/time.helper";
+import {FormsModule} from '@angular/forms';
+import {NgClass} from '@angular/common';
+import {ClockComponent} from '../../clock/clock.component';
 
 @Component({
   selector: 'app-stop-detail',
   templateUrl: './stop-detail.component.html',
+  imports: [
+    FormsModule,
+    NgClass,
+    ClockComponent
+  ],
   styleUrls: ['./stop-detail.component.css']
 })
 /**
@@ -21,24 +29,24 @@ import {TimeHelper} from "../../shared/time.helper";
  */
 export class StopDetailComponent implements OnInit, OnDestroy {
 
-  private stop: Stop;
-  private id: number;
+  private stop: Stop | null = null;
+  private id: number = 0;
 
-  private hours: string;
-  private minutes: string;
-  private today: string;
+  private hours: string = "";
+  private minutes: string = "";
+  private today: string = "";
 
-  private mapUrl: SafeResourceUrl;
+  private mapUrl: SafeResourceUrl | null = null;
 
-  private departures: RealTimeInfo[];
-  private todayDepartures: RealTimeInfo[];
-  private arrivals: RealTimeInfo[];
+  private departures: RealTimeInfo[] = [];
+  private todayDepartures: RealTimeInfo[] = [];
+  private arrivals: RealTimeInfo[] = [];
 
-  private idSubscription: Subscription;
+  private idSubscription: Subscription | null = null;
 
-  private departuresSubscription: Subscription;
-  private arrivalsSubscription: Subscription;
-  private todaysDeparturesSubscription: Subscription;
+  private departuresSubscription: Subscription | null = null;
+  private arrivalsSubscription: Subscription | null = null;
+  private todaysDeparturesSubscription: Subscription | null = null;
 
   selectedDate: string;
 
@@ -53,7 +61,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    */
   constructor(private http: HttpClient, private stopsService: StopsService, private route: ActivatedRoute,
               private gameService: GameService, private router: Router, private dom: DomSanitizer) {
-    let currentDateTime = this.gameService.getGame().getCurrentDateTime();
+    let currentDateTime = this.gameService.getGame()!.getCurrentDateTime();
     this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
             + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
         (currentDateTime.getDate() < 10 ? "0"
@@ -67,7 +75,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
       // Determine current date & time
-      const time = this.gameService.getGame().getCurrentDateTime();
+      const time = this.gameService.getGame()!.getCurrentDateTime();
       const month = time.getMonth() + 1;
       let monthStr = String(month);
       if ( month < 10 ) { monthStr = '0' + month; }
@@ -76,11 +84,11 @@ export class StopDetailComponent implements OnInit, OnDestroy {
       this.hours = this.leftPadZero(time.getHours());
       this.minutes = this.leftPadZero(time.getMinutes());
       if ( this.gameService.isOfflineMode() ) {
-        this.stop = new Stop('' + this.id, this.gameService.getGame().getScenario().getStopDistances()[this.id].split(":")[0], 0, 0)
+        this.stop = new Stop('' + this.id, this.gameService.getGame()!.getScenario().getStopDistances()[this.id].split(":")[0], 0, 0)
         console.log('Retrieving ' + this.stop.getName());
-        this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame().getCurrentDateTime());
+        this.todayDepartures = this.retrieveDeparturesForDate(this.gameService.getGame()!.getCurrentDateTime());
         // Save the next 5 departures into the departures array and save the next 5 arrivals into the arrivals array.
-        let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame().getCurrentDateTime());
+        let currentTime = TimeHelper.formatTimeAsString(this.gameService.getGame()!.getCurrentDateTime());
         this.departures = []; this.arrivals = [];
         for ( let a = 0; a < this.todayDepartures.length; a++ ) {
           if ( this.todayDepartures[a].getDepartureTime() >= currentTime && this.departures.length < 5 ) {
@@ -128,7 +136,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    * Get information about the stop that we are currently displaying.
    * @return the current stop as a Stop object.
    */
-  getStop(): Stop {
+  getStop(): Stop | null {
     return this.stop;
   }
 
@@ -156,7 +164,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
     console.log('I want to retrieve departures for ' + date);
     let departures = [];
     // Go through the routes,
-    let routes = this.gameService.getGame().getRoutes();
+    let routes = this.gameService.getGame()!.getRoutes();
     for ( let a = 0; a < routes.length; a++ ) {
       let schedules = routes[a].getSchedules();
       if ( schedules ) {
@@ -165,7 +173,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
           for ( let c = 0; c < services.length; c++ ) {
             let stops = services[c].getStopList();
             for ( let d = 0; d < stops.length; d++ ) {
-              if ( this.stop.getName() === stops[d].getStop() ) {
+              if ( this.stop && this.stop.getName() === stops[d].getStop() ) {
                 // Exclude those stops which end here as they are not departures,
                 if ( stops[d].getStop() != stops[stops.length-1].getStop() ) {
                   // This service stops here so now create the real time model and add it to today departures.
@@ -212,7 +220,7 @@ export class StopDetailComponent implements OnInit, OnDestroy {
   /**
    * Return the URL on OpenStreetMap which contains the map of this stop.
    */
-  getOpenStreetMapUrl(): SafeResourceUrl {
+  getOpenStreetMapUrl(): SafeResourceUrl | null {
     return this.mapUrl;
   }
 
@@ -250,10 +258,10 @@ export class StopDetailComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     if ( !this.gameService.isOfflineMode() ) {
-      this.idSubscription.unsubscribe();
-      this.departuresSubscription.unsubscribe();
-      this.arrivalsSubscription.unsubscribe();
-      this.todaysDeparturesSubscription.unsubscribe();
+      if ( this.idSubscription ) { this.idSubscription.unsubscribe(); }
+      if ( this.departuresSubscription ) { this.departuresSubscription.unsubscribe(); }
+      if ( this.arrivalsSubscription ) { this.arrivalsSubscription.unsubscribe(); }
+      if ( this.todaysDeparturesSubscription ) { this.todaysDeparturesSubscription.unsubscribe(); }
     }
   }
 

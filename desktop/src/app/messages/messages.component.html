@@ -9,33 +9,54 @@
 <div class="row">
     <div class="col-3 nav-background-color">
         <div class="m-5" >
-            <h3 *ngIf="getSelectedFolder()==='INBOX'" (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h3>
-            <h5 *ngIf="getSelectedFolder()!='INBOX'" (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h5>
+          @if(getSelectedFolder()==='INBOX') {
+            <h3 (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h3>
+          }
+          @else {
+            <h5 (click)="onInboxSelect()" ><fa-icon [icon]="faInbox"></fa-icon> INBOX</h5>
+          }
         </div>
         <div class="m-5">
-            <h3 *ngIf="getSelectedFolder()==='OUTBOX'" (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h3>
-            <h5 *ngIf="getSelectedFolder()!='OUTBOX'" (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h5>
+          @if(getSelectedFolder()==='OUTBOX') {
+            <h3 (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h3>
+          } @else {
+            <h5 (click)="onOutboxSelect()"><fa-icon [icon]="faSnareFromSquare"></fa-icon> OUTBOX</h5>
+          }
         </div>
         <div class="m-5">
-            <h3 *ngIf="getSelectedFolder()==='SENT ITEMS'" (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h3>
-            <h5 *ngIf="getSelectedFolder()!='SENT ITEMS'" (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h5>
+          @if(getSelectedFolder()==='SENT ITEMS') {
+            <h3 (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h3>
+          } @else {
+            <h5 (click)="onSentSelect()"><fa-icon [icon]="faEnvelopeCircleCheck"></fa-icon> SENT ITEMS</h5>
+          }
         </div>
         <div class="m-5">
-            <h3 *ngIf="getSelectedFolder()==='TRASH'" (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h3>
-            <h5 *ngIf="getSelectedFolder()!='TRASH'" (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h5>
+          @if(getSelectedFolder()==='TRASH') {
+            <h3 (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h3>
+          } @else {
+            <h5 (click)="onTrashSelect()"><fa-icon [icon]="faTrash"></fa-icon> TRASH</h5>
+          }
         </div>
     </div>
     <div class="col-9">
-        <div *ngIf="getDisplayMessages().length === 0">
-            <h1>There are no messages in this folder.</h1>
+      @if(getDisplayMessages().length === 0 ) {
+        <div>
+          <h1>There are no messages in this folder.</h1>
         </div>
-        <div *ngFor="let message of getDisplayMessages(), let i = index">
+      }
+        @for (message of getDisplayMessages(); track message ) {
+          <div>
             <h2>{{message.getSubject()}}</h2>
-            <h6 *ngIf="message.getSender()">From: {{message.getSender()}}</h6>
-            <h6 *ngIf="message.getRecipient()">To: {{message.getRecipient()}}</h6>
+            @if(message.getSender()) {
+              <h6>From: {{message.getSender()}}</h6>
+            }
+            @if(message.getRecipient()) {
+              <h6>To: {{message.getRecipient()}}</h6>
+            }
             <h6>On: {{message.getDisplayDate()}}</h6>
             <p style="white-space: pre-wrap">{{message.getContent()}}</p>
-        </div>
+          </div>
+        }
     </div>
 </div>
 

@@ -3,7 +3,7 @@ import {Subject} from 'rxjs';
 import {Stop} from './stop.model';
 import {StopsResponse} from './stops-response.model';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class provides access to the list of stops from the server so that all stops or a single stop from the list can be returned
  * to the Frontend component.

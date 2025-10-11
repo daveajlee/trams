@@ -10,7 +10,10 @@
 <div class="form-group top-space m-5">
     <label for="routeNumberList" style="font-weight: bold;">Route Number:</label>
     <select class="form-control" [(ngModel)]="selectedRouteNumber" id="routeNumberList">
-        <option *ngFor="let item of this.getDefinedRouteNumbers()" [ngValue]="item">{{ item }}</option>
+      @for(item of this.getDefinedRouteNumbers(); track item) {
+        <option [ngValue]="item">{{ item }}</option>
+      }
+
     </select>
 </div>
 
@@ -18,7 +21,9 @@
 <div class="form-group top-space m-5">
     <label for="fleetNumberList" style="font-weight: bold;">Fleet Number:</label>
     <select class="form-control" [(ngModel)]="selectedFleetNumber" id="fleetNumberList">
-        <option *ngFor="let item of this.getDefinedFleetNumbers()" [ngValue]="item">{{ item }}</option>
+      @for(item of this.getDefinedFleetNumbers(); track item) {
+        <option [ngValue]="item">{{ item }}</option>
+      }
     </select>
 </div>
 
@@ -27,7 +32,9 @@
     <label for="tourNumberList" style="font-weight: bold;">Tour Number:</label>
     <select class="form-control" [(ngModel)]="selectedTourNumber" id="tourNumberList">
         <option value="" disabled selected>Select tour</option>
-        <option *ngFor="let item of this.tours" [ngValue]="item">{{ item }}</option>
+        @for(item of this.tours; track item) {
+          <option [ngValue]="item">{{ item }}</option>
+        }
     </select>
 </div>
 

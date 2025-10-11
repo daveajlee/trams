@@ -6,10 +6,14 @@ import {ServerService} from "../shared/server.service";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-scenarioinfo',
   templateUrl: './scenarioinfo.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./scenarioinfo.component.css']
 })
 /**
@@ -17,7 +21,7 @@ import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
  */
 export class ScenarioinfoComponent implements OnInit {
 
-  private scenarioName: string;
+  private scenarioName: string = "";
 
   /**
    * Constructor to create the screen
@@ -41,8 +45,8 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the company name
    */
   getCompanyName(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getCompanyName();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return this.gameService.getGame()!.getCompanyName();
     } else {
       return this.serverService.getCompanyName();
     }
@@ -53,8 +57,8 @@ export class ScenarioinfoComponent implements OnInit {
    * @returns the player name
    */
   getPlayerName(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getPlayerName();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame()) {
+      return this.gameService.getGame()!.getPlayerName();
     } else {
       return this.serverService.getPlayerName();
     }
@@ -67,13 +71,13 @@ export class ScenarioinfoComponent implements OnInit {
     this.router.navigate(['management']);
   }
 
-  /** 
+  /**
    * Retrieve the scenario based on the current scenario name
    * @returns the scenario object with all information about the selected scenario
    */
   getScenario(): Scenario {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getScenario();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return this.gameService.getGame()!.getScenario();
     } else {
       return this.loadScenario(this.scenarioName);
     }
@@ -90,10 +94,8 @@ export class ScenarioinfoComponent implements OnInit {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
       return SCENARIO_LONGTS;
-    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
-      return SCENARIO_MDORF;
     } else {
-      return null;
+      return SCENARIO_MDORF;
     }
   }
 

@@ -44,6 +44,14 @@ export class ScheduleModel {
         return this.routeNumber + ":" + this.scheduleId;
     }
 
+  /**
+   * Retrieve only the schedule id for this schedule.
+   * @return the schedule id as a String.
+   */
+  getScheduleId() {
+      return this.scheduleId;
+    }
+
     /**
      * Get the list of services that the schedule has.
      * @return the list of services as an array of ServiceModel objects.

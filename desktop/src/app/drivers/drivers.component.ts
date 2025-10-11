@@ -1,18 +1,24 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GameService} from "../shared/game.service";
-import {Router} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {Driver} from "./driver.model";
 import {ServerService} from "../shared/server.service";
 import {DriverResponse} from "./driver.response";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-drivers',
   templateUrl: './drivers.component.html',
+  imports: [
+    HeaderComponent,
+    RouterLink,
+    RouterOutlet
+  ],
   styleUrls: ['./drivers.component.css']
 })
 export class DriversComponent implements OnInit, OnDestroy {
 
-  private drivers: Driver[];
+  private drivers: Driver[] = [];
 
   /**
    * Create a new drivers component which currently uses game service since the server does not yet has this functionality.
@@ -27,7 +33,7 @@ export class DriversComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     if ( this.gameService.isOfflineMode() ) {
-      this.drivers = this.gameService.getGame().getDrivers();
+      this.drivers = this.gameService.getGame()!.getDrivers();
     } else {
       this.serverService.getDrivers().then((drivers) => {
         if ( drivers.count > 0 ) {

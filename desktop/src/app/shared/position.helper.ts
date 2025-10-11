@@ -17,7 +17,7 @@ export class PositionHelper {
      */
     static getCurrentPosition(routeTour: string, routes: Route[], game: Game): PositionModel {
         // Get the schedule based on the route and tour.
-        let schedule: ScheduleModel;
+        let schedule: ScheduleModel = new ScheduleModel("", "");
         for ( let i = 0; i < routes.length; i++ ) {
             if ( routes[i].getRouteNumber() === routeTour.split("/")[0] ) {
                 let schedules = routes[i].getSchedules();
@@ -38,7 +38,7 @@ export class PositionHelper {
         var currentDateTime = game.getCurrentDateTime();
         let currentTime = TimeHelper.formatTimeAsString(currentDateTime);
         let assignedFleetId = game.getAssignedVehicle(schedule.getRouteNumberAndScheduleId());
-        let delay = game.getVehicleByFleetNumber(assignedFleetId).getDelay();
+        let delay = game.getVehicleByFleetNumber(assignedFleetId)!.getDelay();
         // Decrease time.
         currentTime = TimeHelper.subtractTime(currentTime, delay);
         // Now find relevant service and position.
@@ -108,7 +108,7 @@ export class PositionHelper {
      * @param game the current game that we are playing.
      * @return the current service and next service as elements 0 and 1 in a ServiceModel array.
      */
-    static getCurrentAndNextService(schedule: ScheduleModel, game: Game): ServiceModel[] {
+    static getCurrentAndNextService(schedule: ScheduleModel, game: Game): ServiceModel[] | null {
         // If a schedule is not assigned then it cannot be shown in the live situation and it's position is depot.
         if ( game.retrieveDelayForAssignedTour(schedule.getRouteNumberAndScheduleId()) === -1 ) {
             return null;
@@ -116,7 +116,7 @@ export class PositionHelper {
         var currentDateTime = game.getCurrentDateTime();
         let currentTime = TimeHelper.formatTimeAsString(currentDateTime);
         let assignedFleetId = game.getAssignedVehicle(schedule.getRouteNumberAndScheduleId());
-        let delay = game.getVehicleByFleetNumber(assignedFleetId).getDelay();
+        let delay = game.getVehicleByFleetNumber(assignedFleetId)!.getDelay();
         // Decrease time.
         currentTime = TimeHelper.subtractTime(currentTime, delay);
         // Now find relevant service and position.

@@ -4,19 +4,23 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {Timetable} from "../shared/timetable.model";
 import {ServerService} from "../shared/server.service";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-routeeditor',
   templateUrl: './routeeditor.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./routeeditor.component.css']
 })
 export class RouteeditorComponent {
 
-  private routeNumber: string;
-  private startStop: string;
-  private endStop: string;
-  private stops: string[];
-  private timetables: Timetable[];
+  private routeNumber: string = "";
+  private startStop: string = "";
+  private endStop: string = "";
+  private stops: string[] = [];
+  private timetables: Timetable[] = [];
 
   private idSubscription: Subscription;
 
@@ -32,7 +36,7 @@ export class RouteeditorComponent {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
       if ( this.gameService.isOfflineMode() ) {
-        let route = this.gameService.getGame().getRoute(this.routeNumber);
+        let route = this.gameService.getGame()!.getRoute(this.routeNumber)!;
         this.startStop = route.getStartStop();
         this.endStop = route.getEndStop();
         this.stops = route.getStops();

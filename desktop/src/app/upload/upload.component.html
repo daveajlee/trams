@@ -1,3 +1,6 @@
+<!-- Show the header on the start page -->
+<app-header></app-header>
+
 <!-- Display a jumbotron component which explains how the upload of GTFS files work in TraMS -->
 <div class="jumbotron" >
   <h1 class="display-4">Upload Data File</h1>
@@ -7,10 +10,11 @@
   <p>In this preview edition you can only upload zip files which are a valid implementation of the <a href="https://developers.google.com/transit/gtfs">General Transit Feed Specification (GTFS)</a> or a valid implementation of the Comma Separated Value (CSV) file specification which will be published at a later date.</p>
 </div>
 
+<div class="container-fluid top-space">
 <!-- Display a heading for the file input area -->
 <h1>File</h1>
 <!-- Display a button with the name of the file or select if no file has been selected yet. -->
-<button class="btn-primary" (click)="fileInput.click()">
+<button class="btn btn-primary btn-lg button-margin" (click)="fileInput.click()">
   {{ file ? file.name : 'Select' }}
 </button>
 <!-- Set the file content to the server -->
@@ -32,12 +36,12 @@
 <!-- Show a date picker to choose valid from date -->
 <div class="form-group">
   <label for="validFromDate">Valid From Date:</label>
-  <input class="form-control" #validFromDate type="date" id="validFromDate" disabled=true/>
+  <input class="form-control" #validFromDate type="date" id="validFromDate" disabled="disabled"/>
 </div>
 <!-- Show a date picker to choose valid to date -->
 <div class="form-group">
   <label for="validToDate">Valid To Date:</label>
-  <input class="form-control" #validToDate type="date" id="validToDate" disabled=true/>
+  <input class="form-control" #validToDate type="date" id="validToDate" disabled="disabled"/>
 </div>
 
 <br/><br/>
@@ -46,8 +50,9 @@
 <button
   [disabled]="!file"
   type="submit"
-  class="btn-primary"
+  class="btn btn-primary btn-lg button-margin"
   (click)="onSubmit(routesImport.value, fileFormat.value, validFromDate.value, validToDate.value)"
 >
   Submit
 </button>
+</div>

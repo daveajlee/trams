@@ -7,6 +7,7 @@ import {Vehicle} from '../vehicle.model';
 import {GameService} from "../../shared/game.service";
 import {VehicleResponse} from "../vehicle.response";
 import {ServerService} from "../../shared/server.service";
+import {AdditionalTypeInformation} from '../additionalTypeInfo.model';
 
 @Component({
   selector: 'app-vehicle-detail',
@@ -19,10 +20,10 @@ import {ServerService} from "../../shared/server.service";
  */
 export class VehicleDetailComponent implements OnInit, OnDestroy {
 
-  private vehicle: Vehicle;
-  private fleetNumber: string;
-  private idSubscription: Subscription;
-  public vehiclePictureLink: string;
+  private vehicle: Vehicle | null = null;
+  private fleetNumber: string = "";
+  private idSubscription: Subscription | null = null;
+  public vehiclePictureLink: string = "";
 
   /**
    * Construct a new vehicle-detail component based on the supplied information.
@@ -41,8 +42,8 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.idSubscription = this.route.params.subscribe((params: Params) => {
       this.fleetNumber = params['id'];
-      if ( this.gameService.isOfflineMode() && this.gameService.getGame().doVehiclesExist() ) {
-        this.vehicle = this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber);
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame() && this.gameService.getGame()!.doVehiclesExist() ) {
+        this.vehicle = this.gameService.getGame()!.getVehicleByFleetNumber(this.fleetNumber);
         this.vehiclePictureLink = this.getVehiclePictureLink();
       } else {
         this.serverService.getVehicle(this.fleetNumber).then((foundVehicles) => {
@@ -70,29 +71,35 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
    * When destroying this component we should ensure that all subscriptions are cancelled.
    */
   ngOnDestroy(): void {
-    this.idSubscription.unsubscribe();
+    if ( this.idSubscription ) {
+      this.idSubscription.unsubscribe();
+    }
   }
 
   getVehiclePictureLink(): string {
-    if ( this.vehicle.getVehicleType() === 'Single Decker Bus') {
-      return 'assets/singledecker-bus-pixabay.png';
-    } else if ( this.vehicle.getVehicleType() === 'Double Decker Bus') {
-      return 'assets/doubledecker-bus-pixabay.png';
-    } else if ( this.vehicle.getVehicleType() === 'Bendy Bus') {
-      return 'assets/bendybus-albertstoynov-unsplash.jpg';
-    } else if ( this.vehicle.getVehicleType() === 'Tram') {
-      return 'assets/tram-pixabay.png';
-    }
-    else if ( this.vehicle.getVehicleType() === 'Train') {
-      return 'assets/' + this.vehicle.getVehicleType()+ '-' + this.vehicle.getPowerMode() + '.jpg';
+    if ( this.vehicle ) {
+      if ( this.vehicle.getVehicleType() === 'Single Decker Bus') {
+        return 'assets/singledecker-bus-pixabay.png';
+      } else if ( this.vehicle.getVehicleType() === 'Double Decker Bus') {
+        return 'assets/doubledecker-bus-pixabay.png';
+      } else if ( this.vehicle.getVehicleType() === 'Bendy Bus') {
+        return 'assets/bendybus-albertstoynov-unsplash.jpg';
+      } else if ( this.vehicle.getVehicleType() === 'Tram') {
+        return 'assets/tram-pixabay.png';
+      }
+      else if ( this.vehicle.getVehicleType() === 'Train') {
+        return 'assets/' + this.vehicle.getVehicleType()+ '-' + this.vehicle.getPowerMode() + '.jpg';
+      } else {
+        return 'assets/' + this.vehicle.getVehicleType() + '.jpg';
+      }
     } else {
-      return 'assets/' + this.vehicle.getVehicleType() + '.jpg';
+      return ""
     }
   }
 
   sellVehicle(vehicle: Vehicle): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.gameService.getGame().deleteVehicleByFleetNumber(vehicle.getFleetNumber());
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.gameService.getGame()!.deleteVehicleByFleetNumber(vehicle.getFleetNumber());
     } else {
       this.serverService.sellVehicle(vehicle.getFleetNumber()).then((sellVehicleResponse) => {
         if (sellVehicleResponse ) {
@@ -108,7 +115,10 @@ export class VehicleDetailComponent implements OnInit, OnDestroy {
    * @return the vehicle information as a Vehicle object.
    */
   getVehicle(): Vehicle {
-    return this.vehicle;
+    if ( this.vehicle ) {
+      return this.vehicle;
+    }
+    return new Vehicle("", "", "", "", "", 0 , new AdditionalTypeInformation());
   }
 
 }

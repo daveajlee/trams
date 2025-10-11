@@ -26,7 +26,7 @@ import {NewgameComponent} from "./newgame/newgame.component";
 import {RouteeditorComponent} from "./routeeditor/routeeditor.component";
 import {TimetableviewerComponent} from "./timetableviewer/timetableviewer.component";
 import {LoadgameComponent} from "./loadgame/loadgame.component";
-import {AppComponent} from "./app.component";
+import {App} from "./app";
 
 /**
  * Define the links which work in this application.
@@ -61,7 +61,7 @@ const appRoutes: Routes = [
       { path: ':id', component: VehicleDetailComponent}
     ]},
     { path: 'vehicleshowroom', component: VehicleshowroomComponent },
-    { path: '', component: AppComponent}
+    { path: '', component: App}
 ];
 
 @NgModule({

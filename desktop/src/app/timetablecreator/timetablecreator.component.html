@@ -28,12 +28,14 @@
 <div class="top-space m-5">
     <p class="h2 text-center">Frequency Patterns</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let frequencyPattern of getFrequencyPatterns()">
+      @for (frequencyPattern of getFrequencyPatterns(); track frequencyPattern.getName() ) {
+        <li class="list-group-item">
             <p class="lead text-center">{{frequencyPattern.getName()}}
                 <button type="button" class="btn btn-primary ms-5" data-bs-toggle="modal" data-bs-target="#frequencyPatternModal" (click)="onEditFrequencyPattern(frequencyPattern.getName())">Edit</button>
                 <button type="button" class="btn btn-danger ms-5" (click)="onDeleteFrequencyPattern(frequencyPattern.getName())">Delete</button>
             </p>
         </li>
+      }
     </ul>
 </div>
 
@@ -62,21 +64,28 @@
                 <!-- Show a set of checkboxes so that the user can choose the days of operation -->
                 <div class="form-group top-space m-2">
                     <label style="font-weight: bold;">Days of Operation:</label>
-                    <div class="col" *ngFor="let item of this.getDaysOfWeek() let i = index" >
-                        <input class="checkbox" type="checkbox" [id]="'checkbox-' + i"> {{item.split(':')[0]}}
-                    </div>
+                    @for (item of this.getDaysOfWeek(); track item; let idx = $index) {
+                      <div class="col">
+                        <input class="checkbox" type="checkbox" [id]="'checkbox-' + idx"> {{item.split(':')[0]}}
+                      </div>
+                    }
                 </div>
 
                 <div class="form-group top-space m-2">
                     <div class="row">
                         <div class="col">
                             Between: <select class="form-control" [(ngModel)]="frequencyPatternStartStop" id="frequencyPatternStartStop">
-                                <option *ngFor="let item of this.getFrequencyPatternStartStops()" [ngValue]="item">{{ item }}</option>
+                                @for(item of this.getFrequencyPatternStartStops(); track item) {
+                                  <option [ngValue]="item">{{ item }}</option>
+                                }
+
                             </select>
                         </div>
                         <div class="col">
                             and <select class="form-control" [(ngModel)]="frequencyPatternEndStop" id="frequencyPatternEndStop">
-                                <option *ngFor="let item of this.getFrequencyPatternEndStops()" [ngValue]="item">{{ item }}</option>
+                                @for(item of this.getFrequencyPatternEndStops(); track item) {
+                                  <option [ngValue]="item">{{ item }}</option>
+                                }
                             </select>
                         </div>
                     </div>

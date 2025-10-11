@@ -6,31 +6,31 @@ export class MessageResponse {
     /**
      * The company receiving this message.
      */
-    public company: string;
+    public company: string = "";
 
     /**
      * The subject of the message.
      */
-    public subject: string;
+    public subject: string = "";
 
     /**
      * The content of the message.
      */
-    public text: string;
+    public text: string = "";
 
     /**
      * The sender of this message.
      */
-    public sender: string;
+    public sender: string = "";
 
     /**
      * The folder where this message is located.
      */
-    public folder: string;
+    public folder: string = "";
 
     /**
      * The date and time that this message was sent.
      */
-    public dateTime: string;
+    public dateTime: string = "";
 
 }

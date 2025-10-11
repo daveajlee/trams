@@ -2,16 +2,20 @@ import { Component } from '@angular/core';
 import {Router} from "@angular/router";
 import {ServerService} from "../shared/server.service";
 import {CompanyResponse} from "../management/company.response";
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-loadgame',
   templateUrl: './loadgame.component.html',
+  imports: [
+    FormsModule
+  ],
   styleUrl: './loadgame.component.css'
 })
 export class LoadgameComponent {
 
-  playerName: string;
-  companies: CompanyResponse[];
+  playerName: string = "";
+  companies: CompanyResponse[] = [];
 
   /**
    * Create a new load game component to load games when using online mode.

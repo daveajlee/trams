@@ -6,8 +6,11 @@
 </div>
 
 <div class="container-fluid">
-    <h1 class="display-4 text-center" *ngIf="getScenarioName() === 'Custom'">No image file available</h1>
-    <h1 class="display-4 text-center" *ngIf="getScenarioName() != 'Custom'"><img src={{getScenarioImage()}} alt={{getScenarioName()}} class="img-responsive"></h1>
+  @if(getScenarioName() === 'Custom') {
+    <h1 class="display-4 text-center">No image file available</h1>
+  } @else {
+    <h1 class="display-4 text-center"><img src={{getScenarioImage()}} alt={{getScenarioName()}} class="img-responsive"></h1>
+  }
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToManagementScreen()">Back to Management Screen</button>
     </div>

@@ -3,13 +3,19 @@ import {Vehicle} from './vehicle.model';
 import {VehiclesService} from './vehicles.service';
 import {HttpClient} from '@angular/common/http';
 import {GameService} from "../shared/game.service";
-import {Router} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {ServerService} from "../shared/server.service";
 import {VehicleResponse} from "./vehicle.response";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-vehicles',
   templateUrl: './vehicles.component.html',
+  imports: [
+    HeaderComponent,
+    RouterOutlet,
+    RouterLink
+  ],
   styleUrls: ['./vehicles.component.css']
 })
 /**
@@ -18,8 +24,8 @@ import {VehicleResponse} from "./vehicle.response";
  */
 export class VehiclesComponent implements OnInit, OnDestroy {
 
-  private vehicles: Vehicle[];
-  private doVehiclesExist: boolean;
+  private vehicles: Vehicle[] = [];
+  private doVehiclesExist: boolean = false;
 
   /**
    * Create a new vehicles component which constructs a data service and a vehicle service to retrieve data from the server.
@@ -63,9 +69,9 @@ export class VehiclesComponent implements OnInit, OnDestroy {
    * Initialise a new vehicles component which maintains a list of vehicles that can be updated and set from the server calls.
    */
   ngOnInit(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      if ( this.gameService.getGame().doVehiclesExist() ) {
-        this.vehicles = this.gameService.getGame().getVehicles();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if ( this.gameService.getGame()!.doVehiclesExist() ) {
+        this.vehicles = this.gameService.getGame()!.getVehicles();
       }
     }
   }
@@ -83,12 +89,12 @@ export class VehiclesComponent implements OnInit, OnDestroy {
    * @param searchValue the value to search for.
    */
   searchByFleetNumber(searchValue: string): void {
-    if ( this.gameService.isOfflineMode() && this.gameService.getGame().doVehiclesExist() ) {
-      var foundVehicle = this.gameService.getGame().getVehicleByFleetNumber(searchValue);
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() && this.gameService.getGame()!.doVehiclesExist() ) {
+      var foundVehicle = this.gameService.getGame()!.getVehicleByFleetNumber(searchValue);
       if ( foundVehicle ) {
         this.vehicles = new Array(foundVehicle);
-      } else {
-        this.vehicles = this.gameService.getGame().getVehicles();
+      } else if ( this.gameService.getGame() ) {
+        this.vehicles = this.gameService.getGame()!.getVehicles();
       }
     } else if ( this.doVehiclesExist ) {
       this.serverService.getVehicle(searchValue).then((foundVehicles) => {

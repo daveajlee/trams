@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {GameService} from '../shared/game.service';
 import {Game} from '../game/game.model';
 import { Scenario } from '../shared/scenario.model';
-import { SCENARIOS } from 'src/data/scenario.data';
+import { SCENARIOS } from '../../data/scenario.data';
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
@@ -24,12 +24,12 @@ import {AddStopRequest} from "../stops/addstop.request";
 })
 export class ScenariolistComponent implements OnInit {
 
-  private company: string;
-  private playerName: string;
-  private difficultyLevel: string;
-  private startingDate: string;
+  private company: string = "";
+  private playerName: string = "";
+  private difficultyLevel: string = "";
+  private startingDate: string = "";
 
-  private scenarios: Scenario[];
+  private scenarios: Scenario[] = [];
 
   /**
    * Create a new scenario list component which displays a series of scenarios that the user can choose from.
@@ -48,10 +48,10 @@ export class ScenariolistComponent implements OnInit {
   ngOnInit(): void {
       this.route.queryParams
         .subscribe(params => {
-              this.company = params.company;
-              this.playerName = params.playerName;
-              this.difficultyLevel = params.difficultyLevel;
-              this.startingDate = params.startingDate;
+              this.company = params["company"];
+              this.playerName = params["playerName"];
+              this.difficultyLevel = params["difficultyLevel"];
+              this.startingDate = params["startingDate"];
             }
         );
       this.scenarios = SCENARIOS;
@@ -71,8 +71,8 @@ export class ScenariolistComponent implements OnInit {
         + "\nYour contract to run public transport services in " + scenario + " will be terminated if these targets are not met!"
         + "\n\nGood luck!", scenario + " Council", "INBOX",  TimeHelper.formatDateTimeAsString(new Date(this.startingDate)));
       // Now add it according to which version we are running.
-      if ( this.gameService.isOfflineMode() ) {
-          this.gameService.getGame().addMessage(welcomeMessage.getSubject(),
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+          this.gameService.getGame()!.addMessage(welcomeMessage.getSubject(),
               welcomeMessage.getContent(),
               welcomeMessage.getFolder(), new Date(this.startingDate), true, welcomeMessage.getSender());
       } else {
@@ -92,7 +92,7 @@ export class ScenariolistComponent implements OnInit {
                   additionalProps.setRegistrationNumber('' + this.loadScenario(scenario).getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  (i+j+1));
               }
               if ( this.gameService.isOfflineMode() ) {
-                  this.gameService.getGame().addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
+                  this.gameService.getGame()!.addVehicle(new Vehicle('' + (i+j+1), mySuppliedVehicles[i].getModel().getModelType(), '',
                       '', '', 0, additionalProps));
               } else {
                   this.serverService.addVehicle(new VehicleRequest('' + (i+j+1), this.company,
@@ -106,7 +106,7 @@ export class ScenariolistComponent implements OnInit {
       var mySuppliedDrivers = this.loadScenario(scenario).getSuppliedDrivers();
       for ( i = 0; i < mySuppliedDrivers.length; i++ ) {
           if ( this.gameService.isOfflineMode() ) {
-              this.gameService.getGame().addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
+              this.gameService.getGame()!.addDriver(new Driver(mySuppliedDrivers[i], 35, this.startingDate));
           } else {
               this.serverService.addDriver(new DriverRequest(mySuppliedDrivers[i], 35, TimeHelper.formatDateTimeAsString(new Date()), this.company));
           }
@@ -124,7 +124,7 @@ export class ScenariolistComponent implements OnInit {
               for ( let j = 0; j < splitStopDistances.length; j++ ) {
                   if ( j !== i ) {
                       otherStopNames.push(stopDistances[j].split(":")[0]);
-                      otherStopDistances.push(splitStopDistances[j]);
+                      otherStopDistances.push(parseInt(splitStopDistances[j]));
                   }
               }
               // Create request.
@@ -144,7 +144,7 @@ export class ScenariolistComponent implements OnInit {
      * This is a helper method to process the targets into a formatted string for adding to a message.
      * @param targets the targets array for the scenario.
      */
-    formatTargets(targets): string {
+    formatTargets(targets: string[]): string {
         var formattedTarget = "";
         for ( var i = 0; i < targets.length; i++ ) {
             formattedTarget += (i+1) + ". " + targets[i] + "\n";
@@ -162,10 +162,8 @@ export class ScenariolistComponent implements OnInit {
             return SCENARIO_LANDUFF;
         } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
             return SCENARIO_LONGTS;
-        } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
-            return SCENARIO_MDORF;
         } else {
-            return null;
+            return SCENARIO_MDORF;
         }
     }
 

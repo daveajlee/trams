@@ -8,9 +8,9 @@ import {MessageResponse} from "./message.response";
 export class MessagesResponse {
 
     //a count of the number of messages which were found by the server.
-    public count: number;
+    public count: number = 0;
 
     //an array of all messages found by the server.
-    public messageResponses: MessageResponse[];
+    public messageResponses: MessageResponse[] = [];
 
 }

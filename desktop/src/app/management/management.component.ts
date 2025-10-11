@@ -4,20 +4,24 @@ import {Router} from '@angular/router';
 import {TipService} from "../shared/tip.service";
 import {TimeHelper} from "../shared/time.helper";
 import {ServerService} from "../shared/server.service";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-management',
   templateUrl: './management.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./management.component.css']
 })
 export class ManagementComponent implements OnInit {
 
-  private dateTimeFromServer: string;
-  private balanceFromServer: number;
-  private satisfactionFromServer: number;
-  private doRoutesExist: boolean;
-  private doVehiclesExist: boolean;
-  private doAllocationsExist: boolean;
+  private dateTimeFromServer: string = "";
+  private balanceFromServer: number = 0;
+  private satisfactionFromServer: number = 0;
+  private doRoutesExist: boolean = false;
+  private doVehiclesExist: boolean = false;
+  private doAllocationsExist: boolean = false;
 
   constructor(private gameService: GameService, public router: Router, private tipService: TipService,
               private serverService: ServerService) {
@@ -61,34 +65,37 @@ export class ManagementComponent implements OnInit {
    * @return the current date and time in the format to display to the user.
    */
   getCurrentDate(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame()) {
+      return this.gameService.getGame()!.getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     } else {
       if ( this.dateTimeFromServer ) {
         let date = TimeHelper.formatStringAsDateObject(this.dateTimeFromServer);
         return date.toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
       }
     }
+    return "";
   }
 
   getBalance(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      return '' + this.gameService.getGame().getBalance();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return '' + this.gameService.getGame()!.getBalance();
     } else {
       if ( this.balanceFromServer ) {
         return '' + this.balanceFromServer;
       }
     }
+    return "";
   }
 
   getPassengerSatisfaction(): number {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getPassengerSatisfaction();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return this.gameService.getGame()!.getPassengerSatisfaction();
     } else {
       if ( this.satisfactionFromServer ) {
         return this.satisfactionFromServer;
       }
     }
+    return 0;
   }
 
   ngOnInit(): void {
@@ -102,12 +109,24 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['scenarioinfo']);
   }
 
+  onViewStops(): void {
+    this.router.navigate(['stops'])
+  }
+
   onLoadLiveSituation(): void {
     this.router.navigate(['livesituation'])
   }
 
   onCreateRoute(): void {
     this.router.navigate(['routecreator']);
+  }
+
+  onViewRoutes(): void {
+    this.router.navigate(['routes']);
+  }
+
+  onUploadData(): void {
+    this.router.navigate(['upload']);
   }
 
   onViewMessages(): void {
@@ -118,18 +137,30 @@ export class ManagementComponent implements OnInit {
     this.router.navigate(['drivercreator']);
   }
 
+  onViewDrivers(): void {
+    this.router.navigate(['drivers']);
+  }
+
   onPurchaseVehicle(): void {
     this.router.navigate(['vehicleshowroom']);
+  }
+
+  onViewDepot(): void {
+    this.router.navigate(['vehicles']);
   }
 
   onChangeAllocation(): void {
     this.router.navigate(['allocations']);
   }
 
+  onViewAllocations(): void {
+    this.router.navigate(['allocationsList']);
+  }
+
   onResign(): void {
     // If we are in offline mode then simply confirm and return to start page.
-    if ( this.gameService.isOfflineMode() ) {
-      if(confirm("Are you sure you want to resign from " + this.gameService.getGame().getCompanyName() + "? This will end " +
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if(confirm("Are you sure you want to resign from " + this.gameService.getGame()!.getCompanyName() + "? This will end " +
           "your game and any changes you have made will not be saved.")) {
         // Currently it is enough to redirect to the homepage since we do not save data in local storage yet.
         this.router.navigate([''])
@@ -147,16 +178,16 @@ export class ManagementComponent implements OnInit {
   }
 
   noRoutesExist(): boolean {
-    if ( this.gameService.isOfflineMode() ) {
-      return !this.gameService.getGame().doRoutesExist();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return !this.gameService.getGame()!.doRoutesExist();
     } else {
       return !this.doRoutesExist;
     }
   }
 
   noVehiclesExist(): boolean {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().doRoutesExist() && !this.gameService.getGame().doVehiclesExist();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return this.gameService.getGame()!.doRoutesExist() && !this.gameService.getGame()!.doVehiclesExist();
     } else {
       return this.doRoutesExist && !this.doVehiclesExist;
     }
@@ -164,9 +195,9 @@ export class ManagementComponent implements OnInit {
   }
 
   noAllocationsExist(): boolean {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().doRoutesExist() && this.gameService.getGame().doVehiclesExist()
-          && !this.gameService.getGame().doAllocationsExist();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      return this.gameService.getGame()!.doRoutesExist() && this.gameService.getGame()!.doVehiclesExist()
+          && !this.gameService.getGame()!.doAllocationsExist();
     } else {
       return this.doRoutesExist && this.doVehiclesExist && !this.doAllocationsExist;
     }

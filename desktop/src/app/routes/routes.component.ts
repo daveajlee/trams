@@ -4,11 +4,17 @@ import {RoutesService} from './routes.service';
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {ServerService} from "../shared/server.service";
+import {FormsModule} from '@angular/forms';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-routes',
   templateUrl: './routes.component.html',
-  styleUrls: ['./routes.component.css','./icofont.min.css']
+  imports: [
+    FormsModule,
+    HeaderComponent
+  ],
+  styleUrls: ['./routes.component.css', './icofont.min.css']
 })
 /**
  * This class implements the functionality for the routes component which retrieves route data from the server and sends it to the
@@ -16,9 +22,9 @@ import {ServerService} from "../shared/server.service";
  */
 export class RoutesComponent implements OnInit, OnDestroy {
 
-  private allRoutes: Route[];
-  private routes: Route[];
-  filteredRouteNumber: string;
+  private allRoutes: Route[] = [];
+  private routes: Route[] = [];
+  filteredRouteNumber: string = "";
 
   /**
    * Create a new routes component which constructs a data service and a route service to retreive data from the server.
@@ -29,8 +35,8 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   constructor(private serverService: ServerService, private routesService: RoutesService, private gameService: GameService,
               private router:Router) {
-    if ( this.gameService.isOfflineMode() ) {
-      this.allRoutes = this.gameService.getGame().getRoutes();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.allRoutes = this.gameService.getGame()!.getRoutes();
       this.routes = this.allRoutes;
     } else {
       this.serverService.getRoutes().then((routes) => {
@@ -96,8 +102,8 @@ export class RoutesComponent implements OnInit, OnDestroy {
    */
   deleteRoute(routeNumber: string) {
     if(confirm("Are you sure you want to delete route " + routeNumber + "?") == true) {
-      if ( this.gameService.isOfflineMode() ) {
-        this.gameService.getGame().deleteRoute(routeNumber);
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+        this.gameService.getGame()!.deleteRoute(routeNumber);
         this.router.navigate(['management']);
       } else {
         this.serverService.deleteRoute(routeNumber).then(() => {

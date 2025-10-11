@@ -11,28 +11,32 @@ import {Scenario} from "../shared/scenario.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-schedule-information',
   templateUrl: './schedule-information.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./schedule-information.component.css']
 })
 export class ScheduleInformationComponent implements OnInit, OnDestroy {
 
   private idSubscription: Subscription;
-  private id: string;
+  private id: string = "";
 
-  private selectedRoute: string;
-  private scheduleId: string;
-  private fleetNumber: string;
-  private stop: string;
-  private destination: string;
-  private delay: number;
-  private currentService: ServiceModel;
-  private nextService: ServiceModel;
-  private serviceTrip: ServiceTripResponse;
+  private selectedRoute: string = "";
+  private scheduleId: string = "";
+  private fleetNumber: string = "";
+  private stop: string = "";
+  private destination: string = "";
+  private delay: number = 0;
+  private currentService: ServiceModel | null = null;
+  private nextService: ServiceModel | null = null;
+  private serviceTrip: ServiceTripResponse | null = null;
 
-  private messages: string[];
+  private messages: string[] = [];
 
   /**
    * Create a new schedule information screen to display the schedule details to the user.
@@ -53,21 +57,21 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
       // If offline mode
       if ( this.gameService.isOfflineMode() ) {
         // Get the route and schedule objects.
-        let route = this.gameService.getGame().getRoute(this.selectedRoute);
+        let route = this.gameService.getGame()!.getRoute(this.selectedRoute)!;
         let schedules = route.getSchedules();
         for ( let i = 0; i < schedules.length; i++ ) {
           if ( schedules[i].getRouteNumberAndScheduleId().split("/")[1] === this.scheduleId ) {
             // Retrieve the stop and the destination.
             let positionModel = PositionHelper.getCurrentPosition(schedules[i].getRouteNumberAndScheduleId(),
-                this.gameService.getGame().getRoutes(), this.gameService.getGame());
+                this.gameService.getGame()!.getRoutes(), this.gameService.getGame()!);
             this.stop = positionModel.getStop();
             this.destination = positionModel.getDestination();
             this.delay = positionModel.getDelay();
-            let services = PositionHelper.getCurrentAndNextService(schedules[i], this.gameService.getGame() );
-            if ( services.length > 0 ) {
+            let services = PositionHelper.getCurrentAndNextService(schedules[i], this.gameService.getGame()! );
+            if ( services && services.length > 0 ) {
               this.currentService = services[0];
             }
-            if ( services.length > 1 ) {
+            if ( services && services.length > 1 ) {
               this.nextService = services[1];
             }
 
@@ -75,7 +79,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
         }
 
         // Retrieve the vehicle assigned to this schedule id.
-        this.fleetNumber = this.gameService.getGame().getAssignedVehicle(this.selectedRoute + "/" + this.scheduleId);
+        this.fleetNumber = this.gameService.getGame()!.getAssignedVehicle(this.selectedRoute + "/" + this.scheduleId);
 
         // Set messages to an empty array.
         this.messages = [];
@@ -85,7 +89,7 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
           this.serverService.getCurrentDateTime().then((date) => {
             // Retrieve the schedules or tours which can be done in parallel.
             this.serverService.getStopTimes(this.selectedRoute, date.split(" ")[0], routeResponse.startStop, "").then((stopTimes) => {
-               let tours = [];
+               let tours: string[] = [];
                for ( let i = 0; i < stopTimes.count; i++ ) {
                 if ( !tours.includes(this.selectedRoute + "/" + stopTimes.stopTimeResponses[i].scheduleNumber) ) {
                   tours.push(this.selectedRoute + "/" + stopTimes.stopTimeResponses[i].scheduleNumber);
@@ -147,10 +151,10 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
             this.delay = position.delay;
             this.serviceTrip = position.service;
             // Check out of service and shorten info and display if appropriate.
-            if ( this.serviceTrip.outOfService ) {
+            if ( this.serviceTrip!.outOfService ) {
               this.destination = "Out Of Service";
-            } else if ( this.serviceTrip.tempEndStopPos > 0 ) {
-              this.destination = this.serviceTrip.stopList[this.serviceTrip.tempEndStopPos];
+            } else if ( this.serviceTrip!.tempEndStopPos > 0 ) {
+              this.destination = this.serviceTrip!.stopList[this.serviceTrip!.tempEndStopPos];
             }
           } else {
             console.log('Position for ' + routeTour + ' is not allocated');
@@ -228,14 +232,14 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   shortenService(): void {
     if ( this.gameService.isOfflineMode() ) {
       // This is where we actually shorten the service.
-      this.currentService.setTempEndStop(this.stop);
+      this.currentService!.setTempEndStop(this.stop);
       // Also shorten the next service if it exists.
-      this.nextService.setTempStartStop(this.stop);
+      this.nextService!.setTempStartStop(this.stop);
       // Decrease the passenger satisfaction by 5%.
-      this.gameService.getGame().adjustPassengerSatisfaction(-5);
+      this.gameService.getGame()!.adjustPassengerSatisfaction(-5);
     } else {
       // This is where we actually shorten the service and shorten the next service if it exists.
-      this.serverService.shortenService(this.serviceTrip, this.stop).then(() => {
+      this.serverService.shortenService(this.serviceTrip!, this.stop).then(() => {
         // Decrease the passenger satisfaction by 5%.
         this.serverService.adjustPassengerSatisfaction(-5);
       });
@@ -254,18 +258,18 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
   outOfService(): void {
     if ( this.gameService.isOfflineMode() ) {
       // This is where we actually put the vehicle out of service.
-      this.currentService.setServiceToOutOfService();
+      this.currentService!.setServiceToOutOfService();
       // Reduce the delay by 10% of the duration.
-      this.gameService.getGame().getVehicleByFleetNumber(this.fleetNumber).adjustDelay(-(0.1 * this.routeService.getDuration(this.gameService.getGame().getScenario(), this.gameService.getGame().getRoute(this.selectedRoute).getStartStop(), this.gameService.getGame().getRoute(this.selectedRoute).getStops(), this.gameService.getGame().getRoute(this.selectedRoute).getEndStop())));
+      this.gameService.getGame()!.getVehicleByFleetNumber(this.fleetNumber)!.adjustDelay(-(0.1 * this.routeService.getDuration(this.gameService.getGame()!.getScenario(), this.gameService.getGame()!.getRoute(this.selectedRoute)!.getStartStop(), this.gameService.getGame()!.getRoute(this.selectedRoute)!.getStops(), this.gameService.getGame()!.getRoute(this.selectedRoute)!.getEndStop())));
       // Decrease the passenger satisfaction by 3%.
-      this.gameService.getGame().adjustPassengerSatisfaction(-3);
+      this.gameService.getGame()!.adjustPassengerSatisfaction(-3);
     } else {
       // Get the route object so that we can calculate distance.
       this.serverService.getRoute(this.selectedRoute).then((routeResponse) => {
         // Get the scenario we are running.
         this.serverService.getScenarioName().then((scenarioName) => {
           // This is where we actually put the vehicle out of service.
-          this.serverService.outOfService(this.serviceTrip).then(() => {
+          this.serverService.outOfService(this.serviceTrip!).then(() => {
             // Reduce the delay by 10% of the duration.
             this.serverService.adjustDelay(this.fleetNumber, -(0.1 * this.routeService.getDuration(this.loadScenario(scenarioName), routeResponse.startStop, routeResponse.stops, routeResponse.endStop))).then(() => {
               // Decrease the passenger satisfaction by 3%.
@@ -290,11 +294,8 @@ export class ScheduleInformationComponent implements OnInit, OnDestroy {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
       return SCENARIO_LONGTS;
-    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
-      return SCENARIO_MDORF;
-    } else {
-      return null;
     }
+      return SCENARIO_MDORF;
   }
 
   /**

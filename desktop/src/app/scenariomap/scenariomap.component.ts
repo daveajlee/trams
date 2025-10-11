@@ -6,15 +6,19 @@ import {Scenario} from "../shared/scenario.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-scenariomap',
   templateUrl: './scenariomap.component.html',
+  imports: [
+    HeaderComponent
+  ],
   styleUrls: ['./scenariomap.component.css']
 })
 export class ScenariomapComponent implements OnInit {
 
-  private scenarioName: string;
+  private scenarioName: string = "";
 
   constructor(private gameService: GameService, public router: Router, private serverService: ServerService) {
     if ( !this.gameService.isOfflineMode() ) {
@@ -29,17 +33,17 @@ export class ScenariomapComponent implements OnInit {
   }
 
   getScenarioName(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      return this.gameService.getGame().getScenario().getScenarioName();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame()) {
+      return this.gameService.getGame()!.getScenario().getScenarioName();
     } else {
       return this.scenarioName;
     }
   }
 
   getScenarioImage(): string {
-    if ( this.gameService.isOfflineMode() ) {
-      if ( this.gameService.getGame().getScenario().getImagePath() && this.gameService.getGame().getScenario().getImagePath() != 'assets/') {
-        return this.gameService.getGame().getScenario().getImagePath();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if ( this.gameService.getGame()!.getScenario().getImagePath() && this.gameService.getGame()!.getScenario().getImagePath() != 'assets/') {
+        return this.gameService.getGame()!.getScenario().getImagePath();
       } else {
         return '';
       }
@@ -63,10 +67,8 @@ export class ScenariomapComponent implements OnInit {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
       return SCENARIO_LONGTS;
-    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
-      return SCENARIO_MDORF;
     } else {
-      return null;
+      return SCENARIO_MDORF;
     }
   }
 

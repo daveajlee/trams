@@ -5,7 +5,7 @@ import {VehicleResponse} from "./vehicle.response";
 
 export class VehiclesResponse {
 
-    public count: number;
-    public vehicleResponses: VehicleResponse[];
+    public count: number = 0;
+    public vehicleResponses: VehicleResponse[] = [];
 
 }

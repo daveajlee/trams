@@ -1,8 +1,10 @@
 <!-- Show the stop name and the current time -->
-<h1 class="text-center">{{getStop().getName()}} - <app-clock></app-clock></h1>
+<h1 class="text-center">{{getStop()!.getName()}} - <app-clock></app-clock></h1>
 
 <!-- Show an iframe with the location of the stop through integration of OpenStreetMap -->
-<iframe *ngIf="getStop().getLatitude() != 0 && getStop().getLongitude() != 0" class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
+@if(getStop()!.getLatitude() != 0 && getStop()!.getLongitude() != 0) {
+  <iframe class="text-center iframe-border" width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="getOpenStreetMapUrl()"></iframe>
+}
 
 <!-- Show a heading with next departures -->
 <h3 class="text-center">Next Departures</h3>
@@ -17,11 +19,13 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let departureEl of getDepartures(), let i = index">
-    <td>{{departureEl.getDepartureTime()}}</td>
-    <td>{{departureEl.getRouteNumber()}}</td>
-    <td>{{departureEl.getDestination()}}</td>
-  </tr>
+    @for (departureEl of getDepartures(); track departureEl ) {
+      <tr>
+        <td>{{departureEl.getDepartureTime()}}</td>
+        <td>{{departureEl.getRouteNumber()}}</td>
+        <td>{{departureEl.getDestination()}}</td>
+      </tr>
+    }
   </tbody>
 </table>
 
@@ -38,11 +42,13 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let arrivalEl of getArrivals(), let i = index">
-    <td>{{arrivalEl.getArrivalTime()}}</td>
-    <td>{{arrivalEl.getRouteNumber()}}</td>
-    <td>{{arrivalEl.getDestination()}}</td>
-  </tr>
+    @for (arrivalEl of getArrivals(); track arrivalEl ) {
+      <tr>
+        <td>{{arrivalEl.getArrivalTime()}}</td>
+        <td>{{arrivalEl.getRouteNumber()}}</td>
+        <td>{{arrivalEl.getDestination()}}</td>
+      </tr>
+    }
   </tbody>
 </table>
 
@@ -59,20 +65,22 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let todayDeparturesEl of getDeparturesByDate(), let i = index">
-    <td [ngClass]="{
+    @for (todayDeparturesEl of getDeparturesByDate(); track todayDeparturesEl ) {
+      <tr>
+        <td [ngClass]="{
             'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
             'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
          }">{{todayDeparturesEl.getDepartureTime()}}</td>
-    <td [ngClass]="{
+        <td [ngClass]="{
             'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
             'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
          }">{{todayDeparturesEl.getRouteNumber()}}</td>
-    <td [ngClass]="{
+        <td [ngClass]="{
             'departureMissed' : todayDeparturesEl.getDepartureTime() < (this.getHours() + ':' + this.getMinutes()) ,
             'departureAvailable' : todayDeparturesEl.getDepartureTime() > (this.getHours() + ':' + this.getMinutes())
          }">{{todayDeparturesEl.getDestination()}}</td>
-  </tr>
+      </tr>
+    }
   </tbody>
 </table>
 
@@ -95,11 +103,13 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let specificDeparturesEl of getDeparturesForSpecificDate(), let i = index">
-        <td>{{specificDeparturesEl.getDepartureTime()}}</td>
-        <td>{{specificDeparturesEl.getRouteNumber()}}</td>
-        <td>{{specificDeparturesEl.getDestination()}}</td>
-    </tr>
+      @for (specificDeparturesEl of getDeparturesForSpecificDate(); track specificDeparturesEl ) {
+        <tr>
+          <td>{{specificDeparturesEl.getDepartureTime()}}</td>
+          <td>{{specificDeparturesEl.getRouteNumber()}}</td>
+          <td>{{specificDeparturesEl.getDestination()}}</td>
+        </tr>
+      }
     </tbody>
 </table>
 
