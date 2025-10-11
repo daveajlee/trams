@@ -7,20 +7,26 @@ import {Scenario} from "../shared/scenario.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {FormsModule} from '@angular/forms';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-routecreator',
   templateUrl: './routecreator.component.html',
+imports: [
+FormsModule ,
+HeaderComponent
+],
   styleUrls: ['./routecreator.component.css']
 })
 export class RoutecreatorComponent implements OnInit {
 
-  routeNumber: string;
-  startStop: string;
-  endStop: string;
-  private stops: string[];
-  nightRoute: boolean;
-  private scenarioName: string;
+  routeNumber: string = "";
+  startStop: string = "";
+  endStop: string = "";
+  private stops: string[] = [];
+  nightRoute: boolean = false;
+  private scenarioName: string = "";
 
   /**
    * Construct a new Route Creator component
@@ -57,9 +63,8 @@ export class RoutecreatorComponent implements OnInit {
   getScenarioName(): string {
     if ( !this.gameService.isOfflineMode() ) {
       return this.scenarioName;
-    } else {
-      return this.gameService.getGame().getScenario().getScenarioName();
     }
+    return this.gameService.getGame()!.getScenario().getScenarioName();
   }
 
   /**
@@ -70,10 +75,8 @@ export class RoutecreatorComponent implements OnInit {
       if ( this.scenarioName ) {
         return this.loadScenario(this.scenarioName).getStopDistances();
       }
-    } else {
-      return this.gameService.getGame().getScenario().getStopDistances();
     }
-
+    return this.gameService.getGame()!.getScenario().getStopDistances();
   }
 
   /**
@@ -94,10 +97,8 @@ export class RoutecreatorComponent implements OnInit {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {
       return SCENARIO_LONGTS;
-    } else if ( scenario === SCENARIO_MDORF.getScenarioName() ) {
-      return SCENARIO_MDORF;
     } else {
-      return null;
+      return SCENARIO_MDORF;
     }
   }
 
@@ -108,14 +109,14 @@ export class RoutecreatorComponent implements OnInit {
         this.stops.push(scenarioStops[i].split(":")[0]);
       }
     }
-    let companyName = this.gameService.isOfflineMode() ? this.gameService.getGame().getCompanyName() : this.serverService.getCompanyName();
+    let companyName = this.gameService.isOfflineMode() ? this.gameService.getGame()!.getCompanyName() : this.serverService.getCompanyName();
     var route = new Route(this.routeNumber, this.startStop, this.endStop, this.stops,
         companyName);
     if ( (document.getElementById('checkbox-night') as HTMLInputElement).checked ) {
       route.setNightRoute(true);
     }
     if ( this.gameService.isOfflineMode() ) {
-      this.gameService.getGame().addRoute(route);
+      this.gameService.getGame()!.addRoute(route);
       this.router.navigate(['timetablecreator'], { queryParams: { routeNumber: this.routeNumber } });
     } else {
       this.serverService.addRoute(route).then(() => {

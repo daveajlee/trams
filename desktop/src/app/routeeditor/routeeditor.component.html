@@ -10,9 +10,11 @@
 <div class="top-space m-5">
     <p class="h2 text-center">Intermediate Stops</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let stop of getStops()">
+      @for (stop of getStops(); track stop ) {
+        <li class="list-group-item">
             <p class="lead text-center">{{stop}}</p>
         </li>
+      }
     </ul>
 </div>
 
@@ -20,9 +22,11 @@
 <div class="top-space m-5">
     <p class="h2 text-center">Timetables</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let timetable of getTimetables()">
-            <p class="lead text-center">{{timetable.name}} <button type="button" class="btn btn-danger ms-5" (click)="onDeleteTimetable(timetable.name)">Delete</button></p>
-        </li>
+        @for (timetable of getTimetables(); track timetable ) {
+          <li class="list-group-item">
+            <p class="lead text-center">{{timetable.getName()}} <button type="button" class="btn btn-danger ms-5" (click)="onDeleteTimetable(timetable.getName())">Delete</button></p>
+          </li>
+        }
     </ul>
 </div>
 

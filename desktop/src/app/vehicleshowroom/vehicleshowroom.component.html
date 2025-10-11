@@ -42,7 +42,10 @@
         <div class="form-group top-space m-3">
             <label for="startStop" style="font-weight: bold;">Quantity:</label>
             <select class="form-control" [(ngModel)]="quantity" id="startStop">
-                <option *ngFor="let item of this.getPossibleQuantities()" [ngValue]="item">{{ item }}</option>
+              @for(item of this.getPossibleQuantities(); track item) {
+                <option [ngValue]="item">{{ item }}</option>
+              }
+
             </select>
         </div>
         <!-- Show the total price -->

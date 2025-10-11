@@ -1,10 +1,14 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {UploadService} from './upload.service';
+import {HeaderComponent} from "../header/header.component";
 
 @Component({
-  selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css']
+    selector: 'app-upload',
+    templateUrl: './upload.component.html',
+    imports: [
+        HeaderComponent
+    ],
+    styleUrls: ['./upload.component.css']
 })
 /**
  * This class implements the upload functionality where files can be uploaded to the server for further processing.

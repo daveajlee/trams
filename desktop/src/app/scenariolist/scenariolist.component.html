@@ -7,15 +7,19 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div *ngFor="let scenario of getScenarios()" class="col-sm-4 card-group">
-            <div *ngIf="scenario" class="card">
+      @for (scenario of getScenarios(); track scenario ) {
+        <div class="col-sm-4 card-group">
+          @if(scenario) {
+            <div class="card">
                 <div class="card-body">
-                    <img src={{scenario.getImagePath()}} class="card-img-top" alt={{scenario.scenarioName}}>
+                    <img src={{scenario.getImagePath()}} class="card-img-top" alt={{scenario.getScenarioName()}}>
                     <h5 class="card-title text-center top-space">{{scenario.getScenarioName()}}</h5>
                     <p class="card-text text-center">{{scenario.getDescription()}}</p>
                     <h5 class="text-center">Targets</h5>
                     <ol>
-                        <li *ngFor="let target of scenario.getTargets()">{{target}}</li>
+                      @for (target of scenario.getTargets(); track target ) {
+                        <li>{{target}}</li>
+                      }
                     </ol>
                     <!-- Show start button -->
                     <div class="col text-center">
@@ -23,6 +27,8 @@
                     </div>
                 </div>
             </div>
+          }
         </div>
+      }
     </div>
 </div>

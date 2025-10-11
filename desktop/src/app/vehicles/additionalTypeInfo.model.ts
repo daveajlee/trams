@@ -3,13 +3,13 @@
  */
 export class AdditionalTypeInformation {
 
-    private model: string;
-    private age: string;
-    private standingCapacity: string;
-    private seatingCapacity: string;
-    private value: string;
-    private registrationNumber: string;
-    private powerMode: string;
+    private model: string = "";
+    private age: string = "";
+    private standingCapacity: string = "";
+    private seatingCapacity: string = "";
+    private value: string = "";
+    private registrationNumber: string = "";
+    private powerMode: string = "";
 
     /**
      * Set the model of this vehicle.
@@ -73,6 +73,36 @@ export class AdditionalTypeInformation {
      */
     getPowerMode(): string {
         return this.powerMode;
+    }
+
+    /**
+     * Get the additional infos as a map.
+     * @return a map of the additional infos with the name of the field and value.
+     */
+    getAdditionalInfosMap(): Map<string, string> {
+      let map: Map<string, string> = new Map();
+      if ( this.model != "" ) {
+        map.set("model", this.model);
+      }
+      if ( this.age != "" ) {
+        map.set("age", this.age);
+      }
+      if ( this.standingCapacity != "" ) {
+        map.set("standingCapacity", this.standingCapacity);
+      }
+      if ( this.seatingCapacity != "" ) {
+        map.set("seatingCapacity", this.seatingCapacity);
+      }
+      if ( this.value != "" ) {
+        map.set("value", this.value);
+      }
+      if ( this.registrationNumber != "" ) {
+        map.set("registrationNumber", this.registrationNumber);
+      }
+      if ( this.powerMode != "" ) {
+        map.set("powerMode", this.powerMode);
+      }
+      return map;
     }
 
 }

@@ -5,8 +5,8 @@ import {Stop} from './stop.model';
 
 export class StopsResponse {
 
-    private count: number;
-    private stopResponses: Stop[];
+    private count: number = 0;
+    private stopResponses: Stop[] = [];
 
     /**
      * Get the stops that were included in the response.

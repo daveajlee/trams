@@ -6,14 +6,14 @@ import {ScheduleModel} from "../stops/stop-detail/schedule.model";
  */
 export class Route {
 
-  private routeNumber: string;
-  private company: string;
-  private startStop: string;
-  private endStop: string;
-  private stops: string[];
-  private timetables: Timetable[];
-  private schedules: ScheduleModel[];
-  private nightRoute: boolean;
+  private routeNumber: string = "";
+  private company: string = "";
+  private startStop: string = "";
+  private endStop: string = "";
+  private stops: string[] = [];
+  private timetables: Timetable[] = [];
+  private schedules: ScheduleModel[] = [];
+  private nightRoute: boolean = false;
 
   constructor( routeNumber: string, startStop: string, endStop: string, stops: string[], company: string) {
     this.routeNumber = routeNumber;

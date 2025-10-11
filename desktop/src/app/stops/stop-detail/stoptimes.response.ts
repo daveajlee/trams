@@ -5,7 +5,7 @@ import {StopTimeResponse} from "./stoptime.response";
 
 export class StopTimesResponse {
 
-    public count: number;
-    public stopTimeResponses: StopTimeResponse[];
+    public count: number = 0;
+    public stopTimeResponses: StopTimeResponse[] = [];
 
 }

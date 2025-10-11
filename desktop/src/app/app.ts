@@ -1,19 +1,24 @@
-import { Component } from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, Injectable} from '@angular/core';
+import {Router, RouterOutlet} from '@angular/router';
 import {DatePipe} from '@angular/common';
 import {LoadService} from "./shared/load.service";
 import {GameService} from "./shared/game.service";
+import {SwitchlocalComponent} from './switchlocal/switchlocal.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  templateUrl: './app.html',
+  styleUrls: ['./app.css'],
+  imports: [
+    RouterOutlet,
+    SwitchlocalComponent,
+  ],
   providers: [DatePipe]
 })
-export class AppComponent {
+export class App {
 
   private file: File | null = null;
-  private showOutlet: boolean;
+  private showOutlet: boolean = false;
 
   constructor(public router: Router, private datePipe: DatePipe, private loadService: LoadService,
               private gameService: GameService) {
@@ -26,12 +31,12 @@ export class AppComponent {
   async onFileInput(files: FileList | null): Promise<void> {
     if (files) {
       // Currently we only support tcs files.
-      if ( files.item(0).name.endsWith(".tcs") ) {
+      if ( files.item(0) != null && files.item(0)!.name.endsWith(".tcs") ) {
         console.log('We process this in the tcs file');
-        await this.loadService.onLoadTcsFile(files.item(0));
+        await this.loadService.onLoadTcsFile(files.item(0)!);
         await this.router.navigate(['management']);
-      } else if ( files.item(0).name.endsWith(".json") ) {
-        await this.loadService.onLoadJSONFile(files.item(0));
+      } else if ( files.item(0) != null && files.item(0)!.name.endsWith(".json") ) {
+        await this.loadService.onLoadJSONFile(files.item(0)!);
         await this.router.navigate(['management']);
       } else {
         alert('This file type is not supported. Please choose another file.');

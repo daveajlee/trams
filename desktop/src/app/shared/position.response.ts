@@ -8,26 +8,26 @@ export class PositionResponse {
     /**
      * The company running the tour.
      */
-    public company: string;
+    public company: string = "";
 
     /**
      * The current stop that the tour is at.
      */
-    public stop: string;
+    public stop: string = "";
 
     /**
      * The destination that the tour is heading to.
      */
-    public destination: string;
+    public destination: string = "";
 
     /**
      * The current delay of the vehicle.
      */
-    public delay: number;
+    public delay: number = 0;
 
     /**
      * The service trip that is associated with the current position.
      */
-    public service: ServiceTripResponse;
+    public service: ServiceTripResponse | null = null;
 
 }

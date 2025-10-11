@@ -4,12 +4,12 @@
 export class VehicleDelayResponse {
 
     //company that owns the vehicle
-    company: string;
+    company: string = "";
 
     //fleet number of the vehicle
-    fleetNumber: string;
+    fleetNumber: string = "";
 
     //delay of the vehicle in minutes (must be 0 or greater)
-    delayInMinutes: number;
+    delayInMinutes: number = 0;
 
 }

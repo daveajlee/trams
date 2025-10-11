@@ -10,9 +10,9 @@ import {GameService} from "../shared/game.service";
  * This class implements the functionality for the clock and ensures that it is updated on a regular basis.
  */
 export class ClockComponent implements OnInit, OnDestroy {
-  private hours: string;
-  private minutes: string;
-  private timerId = null;
+  private hours: string = "";
+  private minutes: string = "";
+  private timerId: number = 0;
 
   constructor(private gameService: GameService) {
   }
@@ -36,7 +36,7 @@ export class ClockComponent implements OnInit, OnDestroy {
    * Private helper method to set the current time in the format HH:mm
    */
   private setCurrentTime(): void {
-    const time = this.gameService.getGame().getCurrentDateTime();
+    const time = this.gameService.getGame()!.getCurrentDateTime();
     this.hours = this.leftPadZero(time.getHours());
     this.minutes = this.leftPadZero(time.getMinutes());
   }
@@ -44,8 +44,8 @@ export class ClockComponent implements OnInit, OnDestroy {
   /**
    * Private helper method to automatically update the time every 30 seconds.
    */
-  private updateTime(): void {
-    setInterval(() => {
+  private updateTime(): number {
+    return setInterval(() => {
       this.setCurrentTime();
     }, 30000);
   }

@@ -6,9 +6,9 @@ import {CompanyResponse} from "../management/company.response";
 export class CompaniesResponse {
 
     //a count of the number of companies which were found by the server.
-    count: number;
+    count: number = 0;
 
     //an array of all companies found by the server.
-    companyResponseList: CompanyResponse[];
+    companyResponseList: CompanyResponse[] = [];
 
 }

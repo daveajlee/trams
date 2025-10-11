@@ -24,9 +24,11 @@
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="outOfService()">Out of Service</button>
     </div>
 
-    <div *ngFor="let message of getMessages(), let i = index">
+    @for (message of getMessages(); track message ) {
+      <div>
         <p>{{message}}</p>
-    </div>
+      </div>
+    }
 
     <div class="col text-center">
         <button class="btn btn-primary btn-lg" style="margin: 10px;" type="submit" (click)="backToSimulationScreen()">Back to Simulation Screen</button>

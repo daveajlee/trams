@@ -3,12 +3,12 @@
  */
 export class Message {
 
-    private subject: string;
-    private content: string;
-    private folder: string;
-    private sender: string;
-    private recipient: string;
-    private date: Date;
+    private subject: string = "";
+    private content: string = "";
+    private folder: string = "";
+    private sender: string = "";
+    private recipient: string = "";
+    private date: Date = new Date();
 
     constructor(subject: string, content: string, folder: string, date: Date) {
         this.subject = subject;

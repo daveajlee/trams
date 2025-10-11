@@ -6,21 +6,21 @@ export class DriverResponse {
     /**
      * The name of this driver.
      */
-    public name: string;
+    public name: string = "";
 
     /**
      * The company that this timetable belongs to.
      */
-    public company: string;
+    public company: string = "";
 
     /**
      * The contracted hours that the driver works.
      */
-    public contractedHours: number;
+    public contractedHours: number = 0;
 
     /**
      * The date that the driver starts from in format dd-MM-yyyy HH:mm
      */
-    public startDate: string;
+    public startDate: string = "";
 
 }

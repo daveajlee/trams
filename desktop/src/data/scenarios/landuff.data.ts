@@ -1,4 +1,4 @@
-import { Scenario } from "src/app/shared/scenario.model";
+import { Scenario } from "../../app/shared/scenario.model";
 import {SuppliedVehicles} from "../../app/vehicles/suppliedvehicle.model";
 import {VehicleModel} from "../../app/vehicles/vehiclemodel.model";
 

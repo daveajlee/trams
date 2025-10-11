@@ -17,12 +17,14 @@
 <div class="top-space m-5">
     <p class="h2 text-center">Companies</p>
     <ul class="list-group">
-        <li class="list-group-item" *ngFor="let company of companies">
+      @for (company of companies; track company ) {
+        <li class="list-group-item">
             <p class="lead text-center">{{company.name}}
                 <button type="button" class="btn btn-primary ms-5" (click)="onLoadCompany(company.name)">Load</button>
                 <button type="button" class="btn btn-danger ms-5" (click)="onDeleteCompany(company.name)">Delete</button>
             </p>
         </li>
+      }
     </ul>
 </div>
 

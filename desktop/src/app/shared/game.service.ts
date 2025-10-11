@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import {Game} from '../game/game.model';
 import {ServerService} from "./server.service";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class stores either the local game (offline mode) or uses a separate service to contact the server (online version).
  */
 export class GameService {
 
-    private game: Game;
+    private game: Game | null = null;
     private offlineMode: boolean = true;
 
 
@@ -32,7 +32,7 @@ export class GameService {
 
     }
 
-    getGame(): Game {
+    getGame(): Game | null {
         return this.game;
     }
 

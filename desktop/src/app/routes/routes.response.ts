@@ -5,8 +5,8 @@ import {RouteResponse} from "./route.response";
 
 export class RoutesResponse {
 
-    public count: number;
+    public count: number = 0;
 
-    public routeResponses: RouteResponse[];
+    public routeResponses: RouteResponse[] = [];
 
 }

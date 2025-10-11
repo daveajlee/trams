@@ -39,15 +39,15 @@ import {ResetServiceRequest} from "../livesituation/resetService.request";
 import {ServiceTripResponse} from "../schedule-information/servicetrip.response";
 import {ServiceChangeRequest} from "../schedule-information/serviceChange.request";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class provides access via http calls to the server to collect data about stops and routes as necessary.
  */
 export class ServerService {
 
-    private serverUrl: string;
-    private company: string;
-    private playerName: string;
+    private serverUrl: string = "";
+    private company: string = "";
+    private playerName: string = "";
 
     /**
      * Construct a new ServerService object which calls the http calls and returns the data provided.
@@ -521,7 +521,7 @@ export class ServerService {
     async shortenService(serviceTrip: ServiceTripResponse, stop: string) {
         // Get the number for the end stop since we are shortening service.
         let stops = serviceTrip.stopList;
-        let stopPos;
+        let stopPos = 0;
         for ( let i = 0; i < stops.length; i++ ) {
             if ( stop === stops[i] ) {
                 stopPos = i;

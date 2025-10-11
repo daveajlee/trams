@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
-import { faInbox } from '@fortawesome/free-solid-svg-icons';
+import {faInbox} from '@fortawesome/free-solid-svg-icons';
 import { faEnvelopeCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { faShareFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {Message} from "./message.model";
 import {GameService} from "../shared/game.service";
 import {Router} from "@angular/router";
 import {ServerService} from "../shared/server.service";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html',
+  imports: [
+    HeaderComponent, FontAwesomeModule
+  ],
   styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent {
@@ -30,8 +35,8 @@ export class MessagesComponent {
   }
 
   onInboxSelect(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("INBOX");
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.displayMessages = this.gameService.getGame()!.filterMessagesByFolder("INBOX");
     } else {
       this.serverService.getMessagesByFolder("INBOX").then((messages) => {
         this.displayMessages = messages;
@@ -41,8 +46,8 @@ export class MessagesComponent {
   }
 
   onOutboxSelect(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("OUTBOX");
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.displayMessages = this.gameService.getGame()!.filterMessagesByFolder("OUTBOX");
     } else {
       this.serverService.getMessagesByFolder("OUTBOX").then((messages) => {
         this.displayMessages = messages;
@@ -52,8 +57,8 @@ export class MessagesComponent {
   }
 
   onSentSelect(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("SENT ITEMS");
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.displayMessages = this.gameService.getGame()!.filterMessagesByFolder("SENT ITEMS");
     } else {
       this.serverService.getMessagesByFolder("SENT ITEMS").then((messages) => {
         this.displayMessages = messages;
@@ -63,8 +68,8 @@ export class MessagesComponent {
   }
 
   onTrashSelect(): void {
-    if ( this.gameService.isOfflineMode() ) {
-      this.displayMessages = this.gameService.getGame().filterMessagesByFolder("TRASH");
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.displayMessages = this.gameService.getGame()!.filterMessagesByFolder("TRASH");
     } else {
       this.serverService.getMessagesByFolder("TRASH").then((messages) => {
         this.displayMessages = messages;

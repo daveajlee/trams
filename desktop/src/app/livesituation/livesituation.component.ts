@@ -1,27 +1,36 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {Router, RouterOutlet} from "@angular/router";
 import {GameService} from "../shared/game.service";
 import {Route} from "../routes/route.model";
 import {PositionHelper} from "../shared/position.helper";
 import {ServerService} from "../shared/server.service";
 import {TimeHelper} from "../shared/time.helper";
+import {FormsModule} from '@angular/forms';
+import {NgStyle} from '@angular/common';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-livesituation',
   templateUrl: './livesituation.component.html',
   styleUrls: ['./livesituation.component.css'],
+  imports: [
+    RouterOutlet,
+    FormsModule,
+    NgStyle,
+    HeaderComponent
+  ]
 })
 export class LivesituationComponent implements OnInit {
 
-  selectedRoute: string;
-  currentDate: string;
-  balance: string;
-  passengerSatisfaction: number;
-  routes: Route[];
-  tours: string[];
-  private simulationRunning: boolean;
-  private interval: any;
-  positions: Map<string, string>;
+  selectedRoute: string = "";
+  currentDate: string = "";
+  balance: string = "";
+  passengerSatisfaction: number = 0;
+  routes: Route[] = [];
+  tours: string[] = [];
+  private simulationRunning: boolean = false;
+  private interval: any = null;
+  positions: Map<string, string> = new Map();
 
   /**
    * Create a new live situation component to display the current live situation to the user.
@@ -30,12 +39,14 @@ export class LivesituationComponent implements OnInit {
    * @param router the router object to navigate to other screens where necessary.
    */
   constructor(private gameService: GameService, private serverService: ServerService, public router: Router) {
-    if ( this.gameService.isOfflineMode() ) {
-      this.selectedRoute = this.gameService.getGame().getRoutes()[0].getRouteNumber();
-      this.currentDate = this.gameService.getGame().getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-      this.balance = '' + this.gameService.getGame().getBalance();
-      this.passengerSatisfaction = this.gameService.getGame().getPassengerSatisfaction();
-      this.routes = this.gameService.getGame().getRoutes();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      if ( this.gameService.getGame()!.getRoutes().length > 0 ) {
+        this.selectedRoute = this.gameService.getGame()!.getRoutes()[0].getRouteNumber();
+      }
+      this.currentDate = this.gameService.getGame()!.getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      this.balance = '' + this.gameService.getGame()!.getBalance();
+      this.passengerSatisfaction = this.gameService.getGame()!.getPassengerSatisfaction();
+      this.routes = this.gameService.getGame()!.getRoutes();
       for ( let i = 0; i < this.routes.length; i++ ) {
         if ( this.selectedRoute == this.routes[i].getRouteNumber() ) {
           this.tours = [];
@@ -108,6 +119,7 @@ export class LivesituationComponent implements OnInit {
         }
       }
     }
+    return [];
   }
 
   /**
@@ -124,7 +136,7 @@ export class LivesituationComponent implements OnInit {
    */
   getCurrentPosition(routeTour: string): void {
     if ( this.gameService.isOfflineMode() ) {
-      this.positions.set(routeTour, PositionHelper.getCurrentPosition(routeTour, this.routes, this.gameService.getGame()).getStop());
+      this.positions.set(routeTour, PositionHelper.getCurrentPosition(routeTour, this.routes, this.gameService.getGame()!).getStop());
     } else {
       this.serverService.getCurrentDateTime().then((dateTime) => {
         this.serverService.getPosition(routeTour, dateTime, 'EASY').then((position) => {
@@ -147,10 +159,13 @@ export class LivesituationComponent implements OnInit {
    */
   setSimulationRunning(value: boolean) {
     this.simulationRunning = value;
-    if ( value === true ) {
+    if ( value ) {
       this.interval = setInterval(() => {
         if ( this.gameService.isOfflineMode() ) {
-          this.gameService.getGame().updateSimulationStep();
+          this.gameService.getGame()!.updateSimulationStep();
+          this.currentDate = this.gameService.getGame()!.getCurrentDateTime().toLocaleString('en-gb', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          this.balance = '' + this.gameService.getGame()!.getBalance();
+          this.passengerSatisfaction = this.gameService.getGame()!.getPassengerSatisfaction();
         } else {
           this.serverService.getSimulationInterval().then((simulationInterval) => {
             this.serverService.increaseTimeInMinutes().then(() => {

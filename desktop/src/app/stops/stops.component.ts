@@ -2,16 +2,22 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Stop} from './stop.model';
 import {Subscription} from 'rxjs';
 import {GameService} from "../shared/game.service";
-import {Router} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {ServerService} from "../shared/server.service";
 import {Scenario} from "../shared/scenario.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-stops',
   templateUrl: './stops.component.html',
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    HeaderComponent
+  ],
   styleUrls: ['./stops.component.css']
 })
 /**
@@ -20,10 +26,10 @@ import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
  */
 export class StopsComponent implements OnInit, OnDestroy {
 
-  private stops: Stop[];
-  private subscription: Subscription;
-  private alphabet: string[];
-  private scenarioName: string;
+  private stops: Stop[] = [];
+  private subscription: Subscription | null = null;
+  private alphabet: string[] = [];
+  private scenarioName: string = "";
 
   /**
    * Create a new stops component which constructs a data service and a stop service to retreive data from the server.
@@ -77,23 +83,22 @@ export class StopsComponent implements OnInit, OnDestroy {
    * Helper method to retrieve all stops.
    */
   retrieveAllStops(): Stop[] {
-    if ( this.gameService.isOfflineMode() ) {
-      let stops = [];
-      let allStops =  this.gameService.getGame().getScenario().getStopDistances();
+    let stops = [];
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      let allStops =  this.gameService.getGame()!.getScenario().getStopDistances();
       for ( let i = 0; i < allStops.length; i++ ) {
         stops.push(new Stop('' + i, allStops[i].split(":")[0], 0, 0));
       }
-      return stops;
     } else {
-      let stops = [];
       if ( this.scenarioName ) {
-        let retrievedStops = this.loadScenario(this.scenarioName).getStopDistances();
+        let retrievedStops = this.loadScenario(this.scenarioName)!.getStopDistances();
         for (let i = 0; i < retrievedStops.length; i++ ) {
           stops.push(new Stop('' + i, retrievedStops[i].split(":")[0], 0, 0));
         }
-        return stops;
+
       }
     }
+    return stops;
   }
 
   /**
@@ -111,7 +116,7 @@ export class StopsComponent implements OnInit, OnDestroy {
    * @param scenario which contains the name of the scenario that the user chose.
    * @returns the scenario object corresponding to the supplied name.
    */
-  loadScenario(scenario: string): Scenario {
+  loadScenario(scenario: string): Scenario | null {
     if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {

@@ -12,17 +12,23 @@ import {Scenario} from "../shared/scenario.model";
 import {SCENARIO_LANDUFF} from "../../data/scenarios/landuff.data";
 import {SCENARIO_LONGTS} from "../../data/scenarios/longts.data";
 import {SCENARIO_MDORF} from "../../data/scenarios/mdorf.data";
+import {HeaderComponent} from '../header/header.component';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-vehicleshowroom',
   templateUrl: './vehicleshowroom.component.html',
+  imports: [
+    HeaderComponent,
+    FormsModule
+  ],
   styleUrls: ['./vehicleshowroom.component.css']
 })
 export class VehicleshowroomComponent {
 
   private models: VehicleModel[];
   private currentDisplay: number;
-  private deliveryDate: Date
+  private deliveryDate: Date = new Date();
   quantity: number;
 
   /**
@@ -39,8 +45,8 @@ export class VehicleshowroomComponent {
         new VehicleModel('MyTram Tram 1', 'Tram',104, 83, 280000, 'assets/tram-pixabay.png')];
     this.currentDisplay = 0;
     this.quantity = 1;
-    if ( this.gameService.isOfflineMode() ) {
-      this.deliveryDate = this.gameService.getGame().getCurrentDateTime();
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      this.deliveryDate = this.gameService.getGame()!.getCurrentDateTime();
       this.deliveryDate.setDate(this.deliveryDate.getDate() + 5);
     } else {
       this.serverService.getCurrentDateTime().then((dateTime) => {
@@ -66,7 +72,7 @@ export class VehicleshowroomComponent {
     return this.models[this.currentDisplay].getStandingCapacity();
   }
 
-  getVehicleDeliveryDate(): string {
+  getVehicleDeliveryDate(): string | null  {
     return this.datePipe.transform(this.deliveryDate, 'yyyy-MM-dd');
   }
 
@@ -84,14 +90,14 @@ export class VehicleshowroomComponent {
 
   onPurchaseVehicle(): void {
     // First we determine the next fleet number.
-    if ( this.gameService.isOfflineMode() ) {
-      let highestFleetNumberSoFar = this.gameService.getGame().getHighestFleetNumber();
-      if ( this.getVehiclePurchasePrice() > this.gameService.getGame().getBalance() ) {
+    if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+      let highestFleetNumberSoFar = this.gameService.getGame()!.getHighestFleetNumber();
+      if ( this.getVehiclePurchasePrice() > this.gameService.getGame()!.getBalance() ) {
         alert('You need to earn more money before you can buy new vehicles!');
       } else {
-        this.gameService.getGame().addVehicle(new Vehicle('' + (highestFleetNumberSoFar + 1), this.models[this.currentDisplay].getModelType(), '',
-            '', '', 0, this.generateAdditionalProps(this.models[this.currentDisplay].getModelType(), (highestFleetNumberSoFar + 1), this.gameService.getGame().getScenario().getScenarioName())));
-        this.gameService.getGame().withdrawBalance(this.getVehiclePurchasePrice());
+        this.gameService.getGame()!.addVehicle(new Vehicle('' + (highestFleetNumberSoFar + 1), this.models[this.currentDisplay].getModelType(), '',
+            '', '', 0, this.generateAdditionalProps(this.models[this.currentDisplay].getModelType(), (highestFleetNumberSoFar + 1), this.gameService.getGame()!.getScenario().getScenarioName())));
+        this.gameService.getGame()!.withdrawBalance(this.getVehiclePurchasePrice());
       }
       this.router.navigate(['management']);
     } else {
@@ -125,8 +131,8 @@ export class VehicleshowroomComponent {
     additionalProps.setStandingCapacity('' + this.getVehicleStandingCapacity());
     additionalProps.setSeatingCapacity('' + this.getVehicleSeatingCapacity());
     additionalProps.setValue('' + this.getVehiclePurchasePrice());
-    if ( vehicleType.toUpperCase() == 'BUS' ) {
-      additionalProps.setRegistrationNumber('' + this.loadScenario(scenarioName).getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  fleetNumber);
+    if ( vehicleType.toUpperCase() == 'BUS' && this.loadScenario(scenarioName) ) {
+      additionalProps.setRegistrationNumber('' + this.loadScenario(scenarioName)!.getRegistrationShortCode() + "-" + new Date().getFullYear() + "-" +  fleetNumber);
     }
     return additionalProps;
   }
@@ -136,7 +142,7 @@ export class VehicleshowroomComponent {
    * @param scenario which contains the name of the scenario that the user chose.
    * @returns the scenario object corresponding to the supplied name.
    */
-  loadScenario(scenario: string): Scenario {
+  loadScenario(scenario: string): Scenario | null {
     if ( scenario === SCENARIO_LANDUFF.getScenarioName() ) {
       return SCENARIO_LANDUFF;
     } else if ( scenario === SCENARIO_LONGTS.getScenarioName()) {

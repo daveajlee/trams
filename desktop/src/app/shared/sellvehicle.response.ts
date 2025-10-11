@@ -6,11 +6,11 @@ export class SellVehicleResponse {
     /**
      * True if and only if the vehicle was sold successfully.
      */
-    public sold: boolean;
+    public sold: boolean = false;
 
     /**
      * The amount that the company got for selling the vehicle.
      */
-    public soldPrice: number;
+    public soldPrice: number = 0;
 
 }

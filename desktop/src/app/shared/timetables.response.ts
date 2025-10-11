@@ -6,9 +6,9 @@ import {TimetableResponse} from "./timetable.response";
 export class TimetablesResponse {
 
     //a count of the number of timetables which were found by the server.
-    public count: number;
+    public count: number = 0;
 
     //an array of all timetables found by the server.
-    public timetableResponses: TimetableResponse[];
+    public timetableResponses: TimetableResponse[] = [];
 
 }

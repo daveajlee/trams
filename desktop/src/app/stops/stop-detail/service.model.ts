@@ -5,14 +5,14 @@ import {StopTimeModel} from "./stoptime.model";
  */
 export class ServiceModel {
 
-    private serviceId: string;
-    private scheduleId: string;
-    private stopList: StopTimeModel[];
-    private outOfService: boolean;
+    private serviceId: string = "";
+    private scheduleId: string = "";
+    private stopList: StopTimeModel[] = [];
+    private outOfService: boolean = false;
 
     // These variables allow a service to either start or stop before normal to reduce delays etc.
-    private tempStartStopPos: number;
-    private tempEndStopPos: number;
+    private tempStartStopPos: number = 0;
+    private tempEndStopPos: number = 0;
 
     /**
      * Construct a new ServiceModel object based on the supplied information

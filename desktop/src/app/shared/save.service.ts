@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {GameService} from "./game.service";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 /**
  * This class saves a file containing game information.
  */

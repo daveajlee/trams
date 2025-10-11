@@ -53,7 +53,9 @@
   <div class="form-group top-space">
     <label for="helpContentList" style="font-weight: bold;">Choose a Help Topic...</label>
     <select class="form-control" [(ngModel)]="selectedHelpTopic" id="helpContentList">
-      <option *ngFor="let item of this.getHelpTopics()" [ngValue]="item">{{ item }}</option>
+      @for(item of this.getHelpTopics(); track item) {
+        <option [ngValue]="item">{{ item }}</option>
+      }
     </select>
     <hr/>
     <div [innerHTML]="this.getHelpContent(selectedHelpTopic)"></div>
@@ -71,7 +73,7 @@
   <div class="col text-center">
     <div class="jumbotron" style="margin-top: 10px;">
       <h4 class="text-center">Version: {{getVersion()}}</h4>
-      <h6 class="text-center">Copyright 2014-2023 Dr. David A J Lee. All rights reserved.</h6>
+      <h6 class="text-center">Copyright 2014-2025 Dr. David A J Lee. All rights reserved.</h6>
     </div>
     <button class="btn btn-primary btn-lg button-margin" (click)="aboutDialog.close()">
       Close

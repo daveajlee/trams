@@ -4,7 +4,7 @@ import {Vehicle} from './vehicle.model';
 import {VehiclesResponse} from './vehicles-response.model';
 import {AdditionalTypeInformation} from "./additionalTypeInfo.model";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 /**
  * This class provides access to the list of vehicles from the server so that all vehicles or a single vehicle from the list can be returned
  * to the Frontend component.
@@ -13,7 +13,7 @@ export class VehiclesService {
 
     private vehiclesChanged = new Subject<Vehicle[]>();
 
-    private vehicles: Vehicle[];
+    private vehicles: Vehicle[] = [];
 
     /**
      * Set the list of vehicles to new vehicles supplied from the server.

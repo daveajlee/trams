@@ -6,24 +6,30 @@ import {Route} from "../routes/route.model";
 import {StopTimeModel} from "../stops/stop-detail/stoptime.model";
 import {ServerService} from "../shared/server.service";
 import {RouteResponse} from "../routes/route.response";
+import {FormsModule} from '@angular/forms';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-timetableviewer',
   templateUrl: './timetableviewer.component.html',
+  imports: [
+    FormsModule,
+    HeaderComponent
+  ],
   styleUrls: ['./timetableviewer.component.css']
 })
 export class TimetableviewerComponent {
 
-  private routeNumber: string;
+  private routeNumber: string = "";
   private paramsSubscription: Subscription;
-  private route: Route;
-  private routeResponse: RouteResponse;
-  selectedSchedule: string;
-  selectedDate: string;
-  selectedStop: string;
-  schedules: string[];
-  stops: string[];
-  stopTimes: StopTimeModel[];
+  private route: Route | null = null;
+  private routeResponse: RouteResponse | null = null;
+  selectedSchedule: string = "";
+  selectedDate: string = "";
+  selectedStop: string = "";
+  schedules: string[] = [];
+  stops: string[] = [];
+  stopTimes: StopTimeModel[] | null = null;
 
   /**
    * Construct a new Timetable Viewer component
@@ -36,10 +42,10 @@ export class TimetableviewerComponent {
               private serverService: ServerService) {
     this.paramsSubscription = this.activatedRoute.params.subscribe((params: Params) => {
       this.routeNumber = params['routeNumber'];
-      if ( this.gameService.isOfflineMode() ) {
-        this.route = this.gameService.getGame().getRoute(this.routeNumber);
+      if ( this.gameService.isOfflineMode() && this.gameService.getGame() ) {
+        this.route = this.gameService.getGame()!.getRoute(this.routeNumber)!;
         this.selectedSchedule = this.route.getSchedules()[0].getRouteNumberAndScheduleId();
-        let currentDateTime = this.gameService.getGame().getCurrentDateTime();
+        let currentDateTime = this.gameService.getGame()!.getCurrentDateTime();
         this.selectedDate = currentDateTime.getFullYear() + "-" + (currentDateTime.getMonth() < 10 ? "0"
                 + currentDateTime.getMonth() : currentDateTime.getMonth() )  + "-" +
             (currentDateTime.getDate() < 10 ? "0"
@@ -100,7 +106,7 @@ export class TimetableviewerComponent {
    * Return a list of the stop times that are served by this schedule.
    */
   getStopTimes(): void {
-    if ( this.gameService.isOfflineMode() ) {
+    if ( this.gameService.isOfflineMode() && this.route ) {
       let stopTimeModels = [];
       for ( let i = 0; i < this.route.getSchedules().length; i++ ) {
         if ( this.selectedSchedule === "All" || (this.route.getSchedules()[i].getRouteNumberAndScheduleId()) == this.selectedSchedule ){

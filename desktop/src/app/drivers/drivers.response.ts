@@ -6,9 +6,9 @@ import {DriverResponse} from "./driver.response";
 export class DriversResponse {
 
     //a count of the number of drivers which were found by the server.
-    public count: number;
+    public count: number = 0;
 
     //an array of all drivers found by the server.
-    public driverResponses: DriverResponse[];
+    public driverResponses: DriverResponse[] = [];
 
 }
