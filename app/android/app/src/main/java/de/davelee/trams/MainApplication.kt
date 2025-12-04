@@ -1,4 +1,4 @@
-package com.TramsApp
+package de.davelee.trams
 
 import android.app.Application
 import com.facebook.react.PackageList
