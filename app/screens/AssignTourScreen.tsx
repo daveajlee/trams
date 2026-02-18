@@ -31,7 +31,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
     const [routeData, setRouteData] = useState<DropDownEntry[]>([]);
     const [vehicleData, setVehicleData] = useState<DropDownEntry[]>([]);
     const [routeDropdown, setRouteDropdown] = useState<string>();
-    const [tourNumber, setTourNumber] = useState<number>();
+    const [tourNumber, setTourNumber] = useState<string>();
     const [vehicleDropdown, setVehicleDropdown] = useState(null);
     const [disableAssignButton, setDisableAssignButton] = useState(true);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -55,14 +55,34 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
                 setRouteData(formatRouteData(LONGTS_ROUTES));
                 setVehicleData(await filterVehicleData(LONGTS_VEHICLES));
             }
+            setTourNumber("");
             // Perform random situation if more than 3 assignments.
             /*if ( assignments.length > 3 ) {
                 performRandomSituation();
             }*/
         }
 
+        async function filterVehicleData(scenarioVehicles: Vehicle[] ): Promise<DropDownEntry[]> {
+            var vehicleFilteredData = [];
+            for ( const vehicle of scenarioVehicles ) {
+                var vehicleAssigned = false;
+                var assignments = await fetchAssignments(route.params.company);
+                for ( const assignment of assignments ) {
+                    if ( assignment.fleetNumber === vehicle.fleetNumber ) {
+                        vehicleAssigned = true;
+                    }
+                }
+                if ( !vehicleAssigned ) {
+                    console.log('Adding vehicle ' + vehicle.fleetNumber);
+                    vehicleFilteredData.push({label: "" + vehicle.fleetNumber, value: "" + vehicle.fleetNumber});
+                }
+            }
+            console.log('Length: ' + vehicleFilteredData.length);
+            return vehicleFilteredData;
+        }
+
         loadVehicleAndRouteData();
-    }, []);
+    }, [route.params.scenarioName, route.params.company]);
 
     const scenarioName = route.params.scenarioName;
 
@@ -74,24 +94,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
         );
     };
 
-    async function filterVehicleData(scenarioVehicles: Vehicle[] ): Promise<DropDownEntry[]> {
-        var vehicleFilteredData = [];
-        for ( const vehicle of scenarioVehicles ) {
-            var vehicleAssigned = false;
-            var assignments = await fetchAssignments(route.params.company);
-            for ( const assignment of assignments ) {
-                if ( assignment.fleetNumber === vehicle.fleetNumber ) {
-                    vehicleAssigned = true;
-                }
-            }
-            if ( !vehicleAssigned ) {
-                console.log('Adding vehicle ' + vehicle.fleetNumber);
-                vehicleFilteredData.push({label: "" + vehicle.fleetNumber, value: "" + vehicle.fleetNumber});
-            }
-        }
-        console.log('Length: ' + vehicleFilteredData.length);
-        return vehicleFilteredData;
-    }
+    
 
     function formatRouteData(scenarioRoutes: Route[]): DropDownEntry[] {
         var routeData = [];
@@ -102,13 +105,13 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
     }
 
     async function onChangeTourNumber(tourNumber2: string) {
-        setTourNumber(parseInt(tourNumber2, 10));
+        setTourNumber(tourNumber2);
         // Calculate the number of tours for the selected route number based on route database.
         var numberTours = 0;
         if ( !routeDropdown ) {
             Alert.alert('Please select a route first before entering a tour number');
             setDisableAssignButton(true);
-            setTourNumber(0);
+            setTourNumber("");
         } else {
             if ( scenarioName === 'Landuff') {
                 numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown)!.numberTours
@@ -127,7 +130,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
                 }
             })
             // If the tour number was less than or equal to 0 or higher than the number of tours for the selected route number then show an alert and ask for a valid tour number.
-            if ( tourNumber && (tourNumber <= 0 || tourNumber > numberTours) ) {
+            if ( tourNumber && (parseInt(tourNumber, 10) <= 0 || parseInt(tourNumber, 10) > numberTours) ) {
                 Alert.alert('Please enter a valid tour number between 1 and ' +  numberTours);
                 setDisableAssignButton(true);
             } else {
@@ -138,7 +141,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
 
     async function assignTourHandler() {
         console.log('In assign tour handler...');
-        var assignment = new Assignment(routeDropdown!, tourNumber!, vehicleDropdown!, scenarioName, route.params.company);
+        var assignment = new Assignment(routeDropdown!, parseInt(tourNumber!, 10), vehicleDropdown!, scenarioName, route.params.company);
         insertAssignment(assignment).then(
             navigation.navigate("ChangeAssignmentScreen", {
                 company: route.params.company,
