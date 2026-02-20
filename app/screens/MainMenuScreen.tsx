@@ -1,5 +1,5 @@
 import { Alert, Appearance, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import IconButton from "../utilities/IconButton";
 import { deleteGame, fetchGames } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
@@ -18,24 +18,50 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
     const colorScheme = Appearance.getColorScheme();
     const navigation = useNavigation<NavigationStackParams>();
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         navigation.setOptions({
-            headerLeft: function (tintColor:any){
-              <IconButton
-                icon="trash-outline"
-                size={24}
-                color={tintColor}
-                onPress={onDeleteGame}
-              />;
-            },
-            headerRight: function(tintColor:any) {
-                <>
-                <IconButton icon="add" size={24} color={tintColor} onPress={onCreateGame}/>
-                <IconButton icon="apps" size={24} color={tintColor} onPress={onLoadGame}/>
-                </>
-            },
+            title: route.params.company,
+            headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
+                <IconButton icon="add" size={24} color="black" onPress={onCreateGame}/>
+                <IconButton icon="apps" size={24} color="black" onPress={onLoadGame}/>
+                <IconButton icon="trash-outline" size={24} color="black" onPress={onDeleteGame}/>
+                </View>,
         });
-      }, [navigation]); // pass method directly here
+
+        /**
+     * If the current game is the only game remaining then back to create game otherwise load game menu.
+     */
+    async function onDeleteGame() {
+        Alert.alert(
+            'Delete ' + route.params.company,
+            'Are you sure you want to delete this transport company?',
+            [
+              {text: 'Yes', onPress: async () => {
+                await deleteGame(route.params.company);
+                if ( (await fetchGames()).length > 0 ) {
+                    navigation.navigate("LoadGameScreen");
+                } else {
+                    navigation.navigate("CreateGameScreen");
+                }
+              }},
+              {text: 'No', onPress: async () => {
+                // Do nothing if no is clicked.
+              }},
+            ],
+            {cancelable: true},
+          );
+       
+    }
+
+    function onCreateGame() {
+        navigation.navigate("CreateGameScreen");
+    }
+
+    function onLoadGame() {
+        navigation.navigate("LoadGameScreen");
+    }
+
+      }, [navigation, route.params.company]); // pass method directly here
 
     function onAssignPress() {
         navigation.navigate("AssignTourScreen", {
@@ -72,44 +98,10 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
         });
     }
 
-    /**
-     * If the current game is the only game remaining then back to create game otherwise load game menu.
-     */
-    async function onDeleteGame() {
-        Alert.alert(
-            'Delete ' + route.params.company,
-            'Are you sure you want to delete this transport company?',
-            [
-              {text: 'Yes', onPress: async () => {
-                await deleteGame(route.params.company);
-                if ( (await fetchGames()).length > 0 ) {
-                    navigation.navigate("LoadGameScreen");
-                } else {
-                    navigation.navigate("CreateGameScreen");
-                }
-              }},
-              {text: 'No', onPress: async () => {
-                // Do nothing if no is clicked.
-              }},
-            ],
-            {cancelable: true},
-          );
-       
-    }
-
-    function onCreateGame() {
-        navigation.navigate("CreateGameScreen");
-    }
-
-    function onLoadGame() {
-        navigation.navigate("LoadGameScreen");
-    }
+    
 
     return (
         <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <View style={styles.headerContainer}>
-                <Text style={[styles.header, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company: {route.params.company}</Text>
-            </View>
             <View style={styles.bodyContainer}>
                 <TouchableOpacity style={styles.button} onPress={onAssignPress}>
                     <Text style={styles.buttonText}>Assign Allocation</Text>

@@ -83,12 +83,9 @@ function AppContent() {
         <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={() => ({
           headerShown: false
         })}/>
-        <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={({navigation}) => ({
-          title: 'Saved Games',
-          // eslint-disable-next-line react/no-unstable-nested-components
-          headerRight: ({tintColor}) => (
-            <IconButton icon="add" size={24} color={tintColor!} onPress={() => navigation.navigate('CreateGameScreen')}/>
-          ),})}/>
+        <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={() => ({
+          title: 'Saved Games'
+          })}/>
         <Stack.Screen name="ChooseScenarioScreen" component={ChooseScenarioScreen} options={() => ({
           title: 'Choose Scenario'
         })}/>
