@@ -1,8 +1,9 @@
-import { Alert, Appearance, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Appearance, StyleSheet, View } from "react-native";
 import { useEffect } from "react";
 import IconButton from "../utilities/IconButton";
 import { deleteGame, fetchGames } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
+import IconTextButton from "../components/IconTextButton";
 
 type MainMenuScreenProps = {
   route: any;
@@ -64,46 +65,35 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
       }, [navigation, route.params.company]); // pass method directly here
 
     function onAssignPress() {
-        navigation.navigate("AssignTourScreen", {
+        navigation.navigate("AllocateScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
     }
 
-    function onChangePress() {
-        navigation.navigate("ChangeAssignmentScreen", {
+    function onRoutePress() {
+        navigation.navigate("RouteScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
     }
 
-    function onSearchRoutePress() {
-        navigation.navigate("SearchRouteScreen", {
-            company: route.params.company,
-            scenarioName: route.params.scenarioName,
-        });
-    }
-
-    function onSearchFleetPress() {
+    function onFleetPress() {
         navigation.navigate("SearchFleetScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
     }
 
-    function onDisplayFleetPress() {
-        navigation.navigate("FleetScreen", {
-            company: route.params.company,
-            scenarioName: route.params.scenarioName,
-        });
-    }
-
-    
-
     return (
         <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.bodyContainer}>
-                <TouchableOpacity style={styles.button} onPress={onAssignPress}>
+                <View style={styles.row}>
+                    <IconTextButton icon="code" text="Allocate" onPress={onAssignPress}/>
+                    <IconTextButton icon="subway-sharp" text="Fleet" onPress={onFleetPress}/>
+                    <IconTextButton icon="swap-horizontal" text="Routes" onPress={onRoutePress}/>
+                </View>
+                {/*<TouchableOpacity style={styles.button} onPress={onAssignPress}>
                     <Text style={styles.buttonText}>Assign Allocation</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={onChangePress}>
@@ -117,7 +107,7 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={onDisplayFleetPress}>
                     <Text style={styles.buttonText}>Display Fleet Info</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>*/}
             </View>
         </View>
     )
@@ -170,5 +160,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center'
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
     }
 })

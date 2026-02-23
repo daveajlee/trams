@@ -16,13 +16,14 @@ import LoadGameScreen from './screens/LoadGameScreen';
 import IconButton from './utilities/IconButton';
 import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
-import SearchRouteScreen from './screens/SearchRouteScreen';
+import RouteScreen from './screens/overview/RouteScreen.tsx';
 import SearchFleetScreen from './screens/SearchFleetScreen';
-import RouteScreen from './screens/RouteScreen';
+import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
 import FleetScreen from './screens/FleetScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
+import AllocateScreen from './screens/overview/AllocateScreen.tsx';
 import { Game } from './models/game.ts';
 
 // Define stack navigation
@@ -93,15 +94,14 @@ function AppContent() {
           title: 'Game Menu',
           headerBackVisible: false,
           }}/>
-        <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{
-          title: 'Search by Route Number'
+        <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
+          title: 'Routes'
         }}/>
         <Stack.Screen name="SearchFleetScreen" component={SearchFleetScreen} options={{
           title: 'Search by Fleet Number'
         }}/>
-        <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
+        <Stack.Screen name="RouteDetailScreen" component={RouteDetailScreen} options={{
           title: 'Route Details',
-          headerBackVisible: false,
         }}/>
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
           title: 'Vehicle Details',
@@ -109,6 +109,9 @@ function AppContent() {
         }}/>
         <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
           title: 'Fleet Overview'
+        }}/>
+        <Stack.Screen name="AllocateScreen" component={AllocateScreen} options={{
+          title: 'Allocate'
         }}/>
         <Stack.Screen name="AssignTourScreen" component={AssignTourScreen} options={{
           title: 'Assign Routes and Vehicles'
