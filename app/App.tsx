@@ -17,10 +17,9 @@ import IconButton from './utilities/IconButton';
 import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import RouteScreen from './screens/overview/RouteScreen.tsx';
-import SearchFleetScreen from './screens/SearchFleetScreen';
+import FleetScreen from './screens/overview/FleetScreen.tsx';
 import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
-import FleetScreen from './screens/FleetScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
 import AllocateScreen from './screens/overview/AllocateScreen.tsx';
@@ -97,8 +96,8 @@ function AppContent() {
         <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
           title: 'Routes'
         }}/>
-        <Stack.Screen name="SearchFleetScreen" component={SearchFleetScreen} options={{
-          title: 'Search by Fleet Number'
+        <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
+          title: 'Fleet'
         }}/>
         <Stack.Screen name="RouteDetailScreen" component={RouteDetailScreen} options={{
           title: 'Route Details',
@@ -106,9 +105,6 @@ function AppContent() {
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
           title: 'Vehicle Details',
           headerBackVisible: false
-        }}/>
-        <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
-          title: 'Fleet Overview'
         }}/>
         <Stack.Screen name="AllocateScreen" component={AllocateScreen} options={{
           title: 'Allocate'

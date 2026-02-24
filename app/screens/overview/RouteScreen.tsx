@@ -18,6 +18,7 @@ type RouteScreenProps = {
 
 type NavigationStackParams = {
   navigate: Function;
+  setOptions: Function;
 }
 
 function RouteScreen({route}: RouteScreenProps) {

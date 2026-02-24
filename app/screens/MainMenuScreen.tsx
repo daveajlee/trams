@@ -79,7 +79,7 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
     }
 
     function onFleetPress() {
-        navigation.navigate("SearchFleetScreen", {
+        navigation.navigate("FleetScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
