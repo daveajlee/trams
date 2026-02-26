@@ -1,4 +1,6 @@
 import { Appearance, View, Text, StyleSheet } from "react-native"
+import { useEffect, useState } from "react";
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 
 type RouteDetailsProps = {
   number: string;
@@ -9,11 +11,44 @@ type RouteDetailsProps = {
 
 function RouteDetails({number, outwardTerminus, returnTerminus, numberTours}: RouteDetailsProps) {
 
+    const [assignments, setAssignments] = useState<string[]>([]);
+
+    useEffect(() => {
+
+        async function loadAssignments() {
+            let myAssignments: string[] = [];
+            for ( let i = 0; i < numberTours; i++) { 
+                myAssignments.push(number + "/" + (i+1));
+            }
+            setAssignments(myAssignments);
+        }
+    
+            loadAssignments();
+    }, [number, numberTours]);
+
     const colorScheme = Appearance.getColorScheme();
 
     return <View style={styles.details}>
-        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{number} - {outwardTerminus} &lt;&gt; {returnTerminus}</Text>
-        <Text style={[styles.tours, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Number of tours/vehicles required: {numberTours}</Text>
+        <Text style={[styles.routeNumber, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{number}</Text>
+        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{outwardTerminus} &lt;&gt; {returnTerminus}</Text>
+
+        <View style={styles.stopHeadingView}>
+            <Ionicons name="stop-circle" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
+            <Text style={[styles.stopHeading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Stops</Text>
+        </View>
+        
+        <Text style={[styles.stopText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Coming Soon...</Text>
+
+        <View style={styles.stopHeadingView}>
+            <Ionicons name="bus" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
+            <Text style={[styles.stopHeading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Tours</Text>
+        </View> 
+        {assignments.map((assignment) => (
+            <View style={styles.container}>
+                <Text style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
+                <Text style={[styles.value, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Unassigned</Text>
+            </View>
+        ))}
     </View>
 }
 
@@ -26,9 +61,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 8,
     },
-    heading: {
-        fontSize: 20,
+    stopHeadingView: {
+        flexDirection: 'row',
+        marginTop: 10
+    },
+    stopHeading: {
+        fontSize: 32,
         fontWeight: "bold",
+        marginLeft: 10
+    },
+    stopText: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 10
+    },
+    routeNumber: {
+        fontSize: 36,
+        fontWeight: "bold",
+    },
+    heading: {
+        fontSize: 28,
+        fontWeight: "bold",
+        marginBottom: 10,
     },
     tours: {
         fontSize: 14,
@@ -43,5 +97,20 @@ const styles = StyleSheet.create({
     },
     lightText: {
         color: 'black'
-    }
+    },
+    container: {
+        flexDirection: 'row',
+        marginTop: 10,
+    },
+    label: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        width: '50%',
+        textAlign: 'center'
+    },
+    value: {
+        fontSize: 18,
+        width: '50%',
+        textAlign: 'center'
+    },
 })

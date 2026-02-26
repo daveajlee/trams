@@ -22,6 +22,8 @@ function RouteDetailScreen({route}: RouteDetailScreenProps) {
 
     const navigation = useNavigation<NavigationStackParams>();
 
+    
+
     var selectedRoute;
     if ( route.params.scenarioName === LANDUFF_NAME) {
         selectedRoute = LANDUFF_ROUTES.find((route) => route.number === routeNumber)

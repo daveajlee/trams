@@ -1,4 +1,6 @@
-import { Appearance, View, Text, StyleSheet } from "react-native"
+import { Appearance, View, Text, StyleSheet } from "react-native";
+import { Ionicons } from '@react-native-vector-icons/ionicons';
+import VehicleDetailEntry from "./VehicleDetailEntry";
 
 type VehicleDetailsProps = {
   fleetNumber: number;
@@ -14,11 +16,13 @@ function VehicleDetails({fleetNumber, registrationNumber, chassisType, bodyType,
     const colorScheme = Appearance.getColorScheme();
 
     return <View style={styles.details}>
-        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{fleetNumber} - {registrationNumber}</Text>
-        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Chassis Type: {chassisType}</Text>
-        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Body Type: {bodyType}</Text>
-        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Special Features: {specialFeatures}</Text>
-        <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Livery: {livery}</Text>
+        <Ionicons name="bus" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
+        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{fleetNumber}</Text>
+        <VehicleDetailEntry label="Registration Number" value={registrationNumber}/>
+        <VehicleDetailEntry label="Chassis Type" value={chassisType}/>
+        <VehicleDetailEntry label="Body Type" value={bodyType}/>
+        <VehicleDetailEntry label="Special Features" value={specialFeatures} showAsList={true}/>
+        <VehicleDetailEntry label="Livery" value={livery}/>
     </View>
 }
 
@@ -34,7 +38,7 @@ const styles = StyleSheet.create({
     heading: {
         fontSize: 20,
         fontWeight: "bold",
-        marginBottom: 5
+        marginBottom: 20
     },
     detailText: {
         fontSize: 14,
