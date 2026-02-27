@@ -27,6 +27,7 @@ function RouteDetailScreen({route}: RouteDetailScreenProps) {
     var selectedRoute;
     if ( route.params.scenarioName === LANDUFF_NAME) {
         selectedRoute = LANDUFF_ROUTES.find((route) => route.number === routeNumber)
+        console.log(selectedRoute);
     }
     else if ( route.params.scenarioName === MDORF_NAME) {
         selectedRoute = MDORF_ROUTES.find((route) => route.number === routeNumber)
@@ -44,8 +45,7 @@ function RouteDetailScreen({route}: RouteDetailScreenProps) {
 
     if ( selectedRoute ) {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <RouteDetails number={selectedRoute.number} outwardTerminus={selectedRoute.outwardTerminus} returnTerminus={selectedRoute.returnTerminus}
-            numberTours={selectedRoute.numberTours}/>
+            <RouteDetails route={selectedRoute}/>
             <TouchableOpacity style={styles.button} onPress={routeOverviewPress}>
                 <Text style={styles.buttonText}>Routes</Text>
             </TouchableOpacity>

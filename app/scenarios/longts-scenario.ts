@@ -11,11 +11,11 @@ export const LONGTS_DESCRIPTION = "Longts City is a very large city. The city co
 export const LONGTS_TARGETS = "Serve all bus stops in Longts. // Ensure a very frequent service on all routes. // Ensure that passenger satisfaction remains above 50% at all times."
 
 export const LONGTS_ROUTES = [
-    new Route('1','North Link','Arrow Junction',8),
-    new Route('3','Crescent Avenue','Park North',7),
-    new Route('5','South Street','Park North',5),
-    new Route('7','Airport','South Square',6),
-    new Route('7A','Airport','Lake Junction',5),
+    new Route('1','North Link','Arrow Junction',8,['North Link', 'West Link', 'Crescent Avenue', 'South Street', 'Ring Road', 'Stadium', 'South Square', 'Arrow Junction']),
+    new Route('3','Crescent Avenue','Park North',7,['Crescent Avenue', 'West Link', 'North Link', 'North Road', 'Park North']),
+    new Route('5','South Street','Park North',5,['South Street', 'Crescent Junction', 'City Centre West', 'Centre Square', 'North Inn', 'East Street', 'East Avenue', 'Park North']),
+    new Route('7','Airport','South Square',6,['Airport', 'Airport Road', 'Airport Junction', 'Centre Square', 'South Road', 'X Junction', 'Crescent Road', 'South Square']),
+    new Route('7A','Airport','Lake Junction',5,['Airport', 'Airport Road', 'Airport Junction', 'Centre Square', 'Post Office', 'East Road', 'Park South', 'Lake Junction']),
 ];
 
 export const LONGTS_VEHICLES = [

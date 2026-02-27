@@ -1,15 +1,13 @@
-import { Appearance, View, Text, StyleSheet } from "react-native"
+import { Appearance, ScrollView, View, Text, StyleSheet } from "react-native"
 import { useEffect, useState } from "react";
 import { Ionicons } from '@react-native-vector-icons/ionicons';
+import Route from "../models/route";
 
 type RouteDetailsProps = {
-  number: string;
-  outwardTerminus: string;
-  returnTerminus: string;
-  numberTours: number;
+  route: Route;
 }
 
-function RouteDetails({number, outwardTerminus, returnTerminus, numberTours}: RouteDetailsProps) {
+function RouteDetails({route}: RouteDetailsProps) {
 
     const [assignments, setAssignments] = useState<string[]>([]);
 
@@ -17,27 +15,29 @@ function RouteDetails({number, outwardTerminus, returnTerminus, numberTours}: Ro
 
         async function loadAssignments() {
             let myAssignments: string[] = [];
-            for ( let i = 0; i < numberTours; i++) { 
-                myAssignments.push(number + "/" + (i+1));
+            for ( let i = 0; i < route.numberTours; i++) { 
+                myAssignments.push(route.number + "/" + (i+1));
             }
             setAssignments(myAssignments);
         }
     
             loadAssignments();
-    }, [number, numberTours]);
+    }, [route.number, route.numberTours]);
 
     const colorScheme = Appearance.getColorScheme();
 
-    return <View style={styles.details}>
-        <Text style={[styles.routeNumber, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{number}</Text>
-        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{outwardTerminus} &lt;&gt; {returnTerminus}</Text>
+    return <ScrollView contentContainerStyle={styles.details}>
+        <Text style={[styles.routeNumber, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{route.number}</Text>
+        <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{route.outwardTerminus} &lt;&gt; {route.returnTerminus}</Text>
 
         <View style={styles.stopHeadingView}>
             <Ionicons name="stop-circle" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
             <Text style={[styles.stopHeading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Stops</Text>
         </View>
         
-        <Text style={[styles.stopText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Coming Soon...</Text>
+        {route.stopList.map((stop)=> (
+            <Text key={stop} style={[styles.stopText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{stop}</Text>
+        ))}
 
         <View style={styles.stopHeadingView}>
             <Ionicons name="bus" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
@@ -45,11 +45,11 @@ function RouteDetails({number, outwardTerminus, returnTerminus, numberTours}: Ro
         </View> 
         {assignments.map((assignment) => (
             <View style={styles.container}>
-                <Text style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
+                <Text key={assignment}style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
                 <Text style={[styles.value, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Unassigned</Text>
             </View>
         ))}
-    </View>
+    </ScrollView>
 }
 
 export default RouteDetails;

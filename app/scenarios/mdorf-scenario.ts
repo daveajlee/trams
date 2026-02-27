@@ -11,11 +11,11 @@ export const MDORF_DESCRIPTION = "Millenium Dorf City is a small city. The city 
 export const MDORF_TARGETS = "Serve all bus stops in MDorf. // Ensure a frequent service on all routes. // Ensure that passenger satisfaction remains above 35% at all times."
 
 export const MDORF_ROUTES = [
-    new Route('1','City Park','Airport Road',6),
-    new Route('2','Leisure Avenue','Y Junction',5),
-    new Route('4','M Junction','Y Street',5),
-    new Route('4A','Stadium','Airport Terminal',6),
-    new Route('5','Expressway','Y Street',5),
+    new Route('1','City Park','Airport Road',6,['City Park', 'Park South', 'Sunnyside', 'Crescent Road', 'Airport North', 'Y Junction', 'Airport Road']),
+    new Route('2','Leisure Arena','Y Junction',5,['Leisure Arena', 'Park Street', 'Park South', 'Sunnyside', 'Crescent Road', 'Airport North', 'Y Junction']),
+    new Route('4','M Junction','Y Street',5,['M Junction', 'Ring Way East Junction', 'Forest', 'Expressway', 'Office Complex', 'Airport Road', 'Y Street']),
+    new Route('4A','Stadium','Airport Terminal',6,['Stadium', 'Park Street', 'Park South', 'City Circle', 'Airport West', 'Airport Runway', 'Airport Terminal']),
+    new Route('5','Expressway','Y Street',5,['Expressway', 'Office Complex', 'Airport Road', 'Y Street']),
 ];
 
 export const MDORF_VEHICLES = [
