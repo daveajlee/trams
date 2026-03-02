@@ -77,7 +77,6 @@ export default VehicleScreen;
 const styles = StyleSheet.create({
     rootContainer: {
         alignItems: "center",
-        marginBottom: 32,
         flex: 1,
         backgroundColor: '#f2ffe6',
     },

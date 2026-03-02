@@ -1,14 +1,22 @@
-import { Appearance, ScrollView, View, Text, StyleSheet } from "react-native"
+import { Appearance, ScrollView, View, Text, StyleSheet, Pressable } from "react-native"
 import { useEffect, useState } from "react";
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import Route from "../models/route";
+import { useNavigation } from "@react-navigation/native";
 
 type RouteDetailsProps = {
   route: Route;
+  companyName: string;
+  scenarioName: string;
 }
 
-function RouteDetails({route}: RouteDetailsProps) {
+type NavigationStackParams = {
+  navigate: Function;
+}
 
+function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
+
+    const navigation = useNavigation<NavigationStackParams>();
     const [assignments, setAssignments] = useState<string[]>([]);
 
     useEffect(() => {
@@ -23,6 +31,14 @@ function RouteDetails({route}: RouteDetailsProps) {
     
             loadAssignments();
     }, [route.number, route.numberTours]);
+
+    function displayAssignmentScreen(routeTourAssigment: string) {
+        navigation.navigate("AssignTourScreen", {
+                company: companyName,
+                scenarioName: scenarioName,
+                routeTourAssignment: routeTourAssigment
+            });
+    }
 
     const colorScheme = Appearance.getColorScheme();
 
@@ -44,9 +60,12 @@ function RouteDetails({route}: RouteDetailsProps) {
             <Text style={[styles.stopHeading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Tours</Text>
         </View> 
         {assignments.map((assignment) => (
-            <View style={styles.container}>
-                <Text key={assignment}style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
+            <View key={assignment} style={styles.container}>
+                <Text style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
                 <Text style={[styles.value, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Unassigned</Text>
+                <Pressable onPress={displayAssignmentScreen.bind(null,assignment)}>
+                    <Ionicons name="create-outline" size={24} color={colorScheme === 'dark' ? 'white' : 'black'}/>
+                </Pressable>
             </View>
         ))}
     </ScrollView>
@@ -105,12 +124,13 @@ const styles = StyleSheet.create({
     label: {
         fontWeight: 'bold',
         fontSize: 18,
-        width: '50%',
+        width: '40%',
         textAlign: 'center'
     },
     value: {
         fontSize: 18,
-        width: '50%',
-        textAlign: 'center'
+        width: '40%',
+        textAlign: 'center',
+        marginRight: 10
     },
 })

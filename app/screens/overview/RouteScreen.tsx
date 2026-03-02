@@ -72,7 +72,7 @@ function RouteScreen({route}: RouteScreenProps) {
             <View style={styles.bodyContainer}>
                 <View style={styles.row}>
                     {routes.map((route) => (
-                        <RouteButton routeNumber={route.number} from={route.outwardTerminus} to={route.returnTerminus} onPress={onSearchRoutePress.bind(null, route.number)}/>
+                        <RouteButton key={route.number} routeNumber={route.number} from={route.outwardTerminus} to={route.returnTerminus} onPress={onSearchRoutePress.bind(null, route.number)}/>
                     ))}
                 </View>
 

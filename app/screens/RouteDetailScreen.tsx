@@ -45,7 +45,7 @@ function RouteDetailScreen({route}: RouteDetailScreenProps) {
 
     if ( selectedRoute ) {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <RouteDetails route={selectedRoute}/>
+            <RouteDetails route={selectedRoute} companyName={route.params.company} scenarioName={route.params.scenarioName} />
             <TouchableOpacity style={styles.button} onPress={routeOverviewPress}>
                 <Text style={styles.buttonText}>Routes</Text>
             </TouchableOpacity>
@@ -65,7 +65,6 @@ export default RouteDetailScreen;
 
 const styles = StyleSheet.create({
     rootContainer: {
-        marginBottom: 32,
         flex: 1,
         alignItems: "center",
     },

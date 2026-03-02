@@ -13,7 +13,6 @@ import { fetchGames, init } from './utilities/sqlite';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoadGameScreen from './screens/LoadGameScreen';
-import IconButton from './utilities/IconButton';
 import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import RouteScreen from './screens/overview/RouteScreen.tsx';
@@ -22,7 +21,6 @@ import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
-import AllocateScreen from './screens/overview/AllocateScreen.tsx';
 import { Game } from './models/game.ts';
 
 // Define stack navigation
@@ -105,9 +103,6 @@ function AppContent() {
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
           title: 'Vehicle Details',
           headerBackVisible: false
-        }}/>
-        <Stack.Screen name="AllocateScreen" component={AllocateScreen} options={{
-          title: 'Allocate'
         }}/>
         <Stack.Screen name="AssignTourScreen" component={AssignTourScreen} options={{
           title: 'Assign Routes and Vehicles'

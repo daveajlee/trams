@@ -64,13 +64,6 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
 
       }, [navigation, route.params.company]); // pass method directly here
 
-    function onAssignPress() {
-        navigation.navigate("AllocateScreen", {
-            company: route.params.company,
-            scenarioName: route.params.scenarioName,
-        });
-    }
-
     function onRoutePress() {
         navigation.navigate("RouteScreen", {
             company: route.params.company,
@@ -89,25 +82,9 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
         <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.bodyContainer}>
                 <View style={styles.row}>
-                    <IconTextButton icon="code" text="Allocate" onPress={onAssignPress}/>
                     <IconTextButton icon="subway-sharp" text="Fleet" onPress={onFleetPress}/>
                     <IconTextButton icon="swap-horizontal" text="Routes" onPress={onRoutePress}/>
                 </View>
-                {/*<TouchableOpacity style={styles.button} onPress={onAssignPress}>
-                    <Text style={styles.buttonText}>Assign Allocation</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onChangePress}>
-                    <Text style={styles.buttonText}>Change / Remove Allocation</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onSearchRoutePress}>
-                    <Text style={styles.buttonText}>Search by Route</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onSearchFleetPress}>
-                    <Text style={styles.buttonText}>Search by Fleet</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={onDisplayFleetPress}>
-                    <Text style={styles.buttonText}>Display Fleet Info</Text>
-                </TouchableOpacity>*/}
             </View>
         </View>
     )

@@ -66,7 +66,7 @@ function FleetScreen({route}: FleetScreenProps) {
         <View style={styles.bodyContainer}>
             <View style={styles.row}>
                 {vehicles.map((vehicle) => (
-                    <IconTextButton icon="bus" text={"" + vehicle.fleetNumber} onPress={onSearchFleetPress.bind(null, vehicle.fleetNumber)}/>
+                    <IconTextButton key={vehicle.fleetNumber} icon="bus" text={"" + vehicle.fleetNumber} onPress={onSearchFleetPress.bind(null, vehicle.fleetNumber)}/>
                 ))}
             </View>
 
