@@ -126,11 +126,18 @@ export async function setScenarioNameForGame(companyName: string, scenarioName: 
  */
 export async function fetchAssignments(company: string): Promise<Assignment[]> {
   const assignments = <Assignment[]>[];
-  let result: QueryResult = await database.execute(`SELECT * FROM assignments where companyNane = ?`, [company]);
-  result.rows.forEach(assignment => {
-    assignments.push(new Assignment(assignment.routeNumber?.toString()!, parseInt(assignment.tourNumber?.toString()!, 10), parseInt(assignment.fleetNumber?.toString()!, 10), assignment.scenarioName?.toString()!, assignment.company?.toString()!));
-  });
-  return assignments;
+  try {
+    let result: QueryResult = await database.execute(`SELECT * FROM assignments where company = ?`, [company]);
+    result.rows.forEach(assignment => {
+      assignments.push(new Assignment(assignment.routeNumber?.toString()!, parseInt(assignment.tourNumber?.toString()!, 10), parseInt(assignment.fleetNumber?.toString()!, 10), assignment.scenarioName?.toString()!, assignment.company?.toString()!));
+    });
+    return assignments;
+  }
+  catch (error) {
+    console.error('Error retrieving assignments: ' + error);
+    return [];
+  }
+  
 }
 
 /**

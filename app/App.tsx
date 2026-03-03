@@ -13,14 +13,12 @@ import { fetchGames, init } from './utilities/sqlite';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoadGameScreen from './screens/LoadGameScreen';
-import IconButton from './utilities/IconButton';
 import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
-import SearchRouteScreen from './screens/SearchRouteScreen';
-import SearchFleetScreen from './screens/SearchFleetScreen';
-import RouteScreen from './screens/RouteScreen';
+import RouteScreen from './screens/overview/RouteScreen.tsx';
+import FleetScreen from './screens/overview/FleetScreen.tsx';
+import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
-import FleetScreen from './screens/FleetScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
 import { Game } from './models/game.ts';
@@ -83,12 +81,9 @@ function AppContent() {
         <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={() => ({
           headerShown: false
         })}/>
-        <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={({navigation}) => ({
-          title: 'Saved Games',
-          // eslint-disable-next-line react/no-unstable-nested-components
-          headerRight: ({tintColor}) => (
-            <IconButton icon="add" size={24} color={tintColor!} onPress={() => navigation.navigate('CreateGameScreen')}/>
-          ),})}/>
+        <Stack.Screen name="LoadGameScreen" component={LoadGameScreen} options={() => ({
+          title: 'Saved Games'
+          })}/>
         <Stack.Screen name="ChooseScenarioScreen" component={ChooseScenarioScreen} options={() => ({
           title: 'Choose Scenario'
         })}/>
@@ -96,22 +91,18 @@ function AppContent() {
           title: 'Game Menu',
           headerBackVisible: false,
           }}/>
-        <Stack.Screen name="SearchRouteScreen" component={SearchRouteScreen} options={{
-          title: 'Search by Route Number'
-        }}/>
-        <Stack.Screen name="SearchFleetScreen" component={SearchFleetScreen} options={{
-          title: 'Search by Fleet Number'
-        }}/>
         <Stack.Screen name="RouteScreen" component={RouteScreen} options={{
+          title: 'Routes'
+        }}/>
+        <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
+          title: 'Fleet'
+        }}/>
+        <Stack.Screen name="RouteDetailScreen" component={RouteDetailScreen} options={{
           title: 'Route Details',
-          headerBackVisible: false,
         }}/>
         <Stack.Screen name="VehicleScreen" component={VehicleScreen} options={{
           title: 'Vehicle Details',
           headerBackVisible: false
-        }}/>
-        <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
-          title: 'Fleet Overview'
         }}/>
         <Stack.Screen name="AssignTourScreen" component={AssignTourScreen} options={{
           title: 'Assign Routes and Vehicles'

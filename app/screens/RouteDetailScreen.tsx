@@ -6,7 +6,7 @@ import RouteDetails from "../components/RouteDetails";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
-type RouteScreenProps = {
+type RouteDetailScreenProps = {
   route: any;
 }
 
@@ -14,7 +14,7 @@ type NavigationStackParams = {
   navigate: Function;
 }
 
-function RouteScreen({route}: RouteScreenProps) {
+function RouteDetailScreen({route}: RouteDetailScreenProps) {
 
     const colorScheme = Appearance.getColorScheme();
 
@@ -22,9 +22,12 @@ function RouteScreen({route}: RouteScreenProps) {
 
     const navigation = useNavigation<NavigationStackParams>();
 
+    
+
     var selectedRoute;
     if ( route.params.scenarioName === LANDUFF_NAME) {
         selectedRoute = LANDUFF_ROUTES.find((route) => route.number === routeNumber)
+        console.log(selectedRoute);
     }
     else if ( route.params.scenarioName === MDORF_NAME) {
         selectedRoute = MDORF_ROUTES.find((route) => route.number === routeNumber)
@@ -33,8 +36,8 @@ function RouteScreen({route}: RouteScreenProps) {
         selectedRoute = LONGTS_ROUTES.find((route) => route.number === routeNumber)
     }
 
-    function mainMenuPress() {
-        navigation.navigate("MainMenuScreen", {
+    function routeOverviewPress() {
+        navigation.navigate("RouteScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
@@ -42,28 +45,26 @@ function RouteScreen({route}: RouteScreenProps) {
 
     if ( selectedRoute ) {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <RouteDetails number={selectedRoute.number} outwardTerminus={selectedRoute.outwardTerminus} returnTerminus={selectedRoute.returnTerminus}
-            numberTours={selectedRoute.numberTours}/>
-            <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
-                <Text style={styles.buttonText}>Main Menu</Text>
+            <RouteDetails route={selectedRoute} companyName={route.params.company} scenarioName={route.params.scenarioName} />
+            <TouchableOpacity style={styles.button} onPress={routeOverviewPress}>
+                <Text style={styles.buttonText}>Routes</Text>
             </TouchableOpacity>
         </ScrollView>
     }
     else {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <Text style={[styles.noRouteText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Did not find any route for the specified route number: {route.params.routeNumber}</Text>
-            <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
-                <Text style={styles.buttonText}>Main Menu</Text>
+            <TouchableOpacity style={styles.button} onPress={routeOverviewPress}>
+                <Text style={styles.buttonText}>Routes</Text>
             </TouchableOpacity>
         </ScrollView>
     }
 }
 
-export default RouteScreen;
+export default RouteDetailScreen;
 
 const styles = StyleSheet.create({
     rootContainer: {
-        marginBottom: 32,
         flex: 1,
         alignItems: "center",
     },

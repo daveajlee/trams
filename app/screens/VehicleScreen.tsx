@@ -30,10 +30,10 @@ function VehicleScreen({route}: VehicleScreenProps) {
     const navigation = useNavigation<NavigationStackParams>();
 
     /**
-     * Clicking on the main menu button moves the user back to the main menu screen.
+     * Clicking on the fleet button moves the user back to the fleet screen.
      */
-    function mainMenuPress() {
-        navigation.navigate("MainMenuScreen", {
+    function fleetScreenPress() {
+        navigation.navigate("FleetScreen", {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
@@ -57,16 +57,16 @@ function VehicleScreen({route}: VehicleScreenProps) {
             <VehicleDetails fleetNumber={selectedVehicle.fleetNumber} registrationNumber={selectedVehicle.registrationNumber} 
             chassisType={selectedVehicle.chassisType} bodyType={selectedVehicle.bodyType} specialFeatures={selectedVehicle.specialFeatures}
             livery={selectedVehicle.livery}/>
-            <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
-                <Text style={styles.buttonText}>Main Menu</Text>
+            <TouchableOpacity style={styles.button} onPress={fleetScreenPress}>
+                <Text style={styles.buttonText}>Fleet</Text>
             </TouchableOpacity>
         </ScrollView>
     }
     else {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <Text style={[styles.noVehicleText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Did not find any vehicle for the specified fleet number: {route.params.fleetNumber}</Text>
-            <TouchableOpacity style={styles.button} onPress={mainMenuPress}>
-                <Text style={styles.buttonText}>Main Menu</Text>
+            <TouchableOpacity style={styles.button} onPress={fleetScreenPress}>
+                <Text style={styles.buttonText}>Fleet</Text>
             </TouchableOpacity>
         </ScrollView>
     }
@@ -77,7 +77,6 @@ export default VehicleScreen;
 const styles = StyleSheet.create({
     rootContainer: {
         alignItems: "center",
-        marginBottom: 32,
         flex: 1,
         backgroundColor: '#f2ffe6',
     },

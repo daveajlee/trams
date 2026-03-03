@@ -11,11 +11,11 @@ export const LANDUFF_DESCRIPTION = "Landuff Town is a small town with a very fri
 export const LANDUFF_TARGETS = "Serve all bus stops in Landuff. // Ensure a frequent service on all routes. // Ensure that passenger satisfaction remains above 70% at all times."
 
 export const LANDUFF_ROUTES = [
-    new Route('1','Airport','Town Park',6),
-    new Route('1A','Airport','Uni Campus',4),
-    new Route('2','Town Park','Promenade',3),
-    new Route('3','Sea Village','Greenfield',4),
-    new Route('5','Promenade','T Junction',5),];
+    new Route('1','Airport','Town Park',6,['Airport', 'Airport Parking', 'Central Station', 'Town House', 'Town Hall', 'Straight Field', 'Park West', 'Park South', 'Town Park']),
+    new Route('1A','Airport','Uni Campus',4,['Airport', 'Airport Parking', 'Central Station', 'Tourist Info', 'Uni Campus']),
+    new Route('2','Town Park','Promenade',3,['Town Park', 'Park North', 'Central Station', 'Medical Clinic', 'College Campus', 'Ballroom', 'Pool', 'Promenade']),
+    new Route('3','Sea Village','Greenfield',4,['Sea Village', 'Straight Avenue', 'T Junction', 'South Station', 'Park South', 'Town Park', 'Greenfield']),
+    new Route('5','Promenade','T Junction',5,['Promenade', 'Hospital', 'Bank', 'Journals', 'T Junction']), ];
 
 export const LANDUFF_VEHICLES = [
     new Vehicle(101,'23-LATS-101','SimpleChassisBE','Easy Low Bendi','Low Floor, Electronic Display, Bendi-Bus','White'),

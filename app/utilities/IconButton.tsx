@@ -9,7 +9,7 @@ type IconButtonProps = {
 }
 
 function IconButton({icon, size, color, onPress}: IconButtonProps) {
-    return <Pressable style={({pressed}) => [styles.button, pressed && styles.pressed]} onPress={() => onPress}>
+    return <Pressable style={({pressed}) => [styles.button, pressed && styles.pressed]} onPress={onPress}>
         <Ionicons name={icon} size={size} color={color} />
     </Pressable>
 }

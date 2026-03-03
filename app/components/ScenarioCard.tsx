@@ -50,7 +50,7 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
             <Text style={[styles.scenarioTargets, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Targets</Text>
             <Text style={[styles.scenarioTarget, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{targets}</Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={selectScenarioHandler.bind(title)}>
+                <TouchableOpacity style={styles.button} onPress={selectScenarioHandler.bind(null, {title: title})}>
                     <Text style={styles.buttonText}>Select</Text>
                 </TouchableOpacity>
             </View>

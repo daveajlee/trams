@@ -1,200 +1,107 @@
-import { Appearance, StyleSheet, View, Text, TextInput, Alert } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
-import { LANDUFF_NAME, LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
-import { MDORF_NAME, MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
-import { LONGTS_NAME, LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
+import { Alert, Appearance, StyleSheet, View, Text } from "react-native";
+import { LANDUFF_NAME, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
+import { MDORF_NAME, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
+import { LONGTS_NAME, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import { useEffect, useState } from "react";
 import Assignment from "../models/assignment";
-import { fetchAdditionalTours, fetchAssignments, insertAssignment } from "../utilities/sqlite";
+import { fetchAssignments, insertAssignment } from "../utilities/sqlite";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import Route from '../models/route.ts';
 import Vehicle from '../models/vehicle.ts';
-import AdditionalTour from '../models/additionalTour.ts';
+import IconTextButton from "../components/IconTextButton.tsx";
 
 type AssignTourScreenProps = {
   route: any;
 }
 
-type DropDownEntry = {
-  label: string;
-  value: string;
-}
-
 type NavigationStackParams = {
   navigate: Function;
+  setOptions: Function;
 }
 
 function AssignTourScreen({route}: AssignTourScreenProps) {
 
     const navigation = useNavigation<NavigationStackParams>();
-    const [routeData, setRouteData] = useState<DropDownEntry[]>([]);
-    const [vehicleData, setVehicleData] = useState<DropDownEntry[]>([]);
-    const [routeDropdown, setRouteDropdown] = useState<string>();
-    const [tourNumber, setTourNumber] = useState<number>();
-    const [vehicleDropdown, setVehicleDropdown] = useState(null);
-    const [disableAssignButton, setDisableAssignButton] = useState(true);
+    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
 
     const colorScheme = Appearance.getColorScheme();
 
     useEffect(() => {
-        async function loadVehicleAndRouteData() {
-            // Retrieve any assignments that already exist.
-            setAssignments(await fetchAssignments(route.params.company));
-            // Retrieve routes and vehicles for the specified scenario.
-            if ( route.params.scenarioName === LANDUFF_NAME) {
-                setRouteData(formatRouteData(LANDUFF_ROUTES));
-                setVehicleData(await filterVehicleData(LANDUFF_VEHICLES));
+        navigation.setOptions({
+            title: 'Assign vehicle to ' + route.params.routeTourAssignment,
+        });
+
+        async function loadVehicles() {
+            switch (route.params.scenarioName) {
+                case LANDUFF_NAME:
+                    setVehicles(LANDUFF_VEHICLES);
+                    break;
+                case MDORF_NAME:
+                    setVehicles(MDORF_VEHICLES);
+                    break;
+                case LONGTS_NAME:
+                    setVehicles(LONGTS_VEHICLES);
+                    break;
+                default:
+                    Alert.alert('Error', 'Unknown scenario: ' + route.params.scenarioName);
             }
-            else if ( route.params.scenarioName === MDORF_NAME) {
-                setRouteData(formatRouteData(MDORF_ROUTES));
-                setVehicleData(await filterVehicleData(MDORF_VEHICLES));
-            }
-            else if ( route.params.scenarioName=== LONGTS_NAME) {
-                setRouteData(formatRouteData(LONGTS_ROUTES));
-                setVehicleData(await filterVehicleData(LONGTS_VEHICLES));
-            }
-            // Perform random situation if more than 3 assignments.
-            /*if ( assignments.length > 3 ) {
-                performRandomSituation();
-            }*/
         }
 
-        loadVehicleAndRouteData();
-    }, []);
+        async function loadAssignments() {
+            const fetchedAssignments = await fetchAssignments(route.params.company);
+            setAssignments(fetchedAssignments);
+        }
+            
+        loadVehicles();
+
+        loadAssignments();
+
+    }, [navigation, route.params.routeTourAssignment, route.params.scenarioName, route.params.company]);
 
     const scenarioName = route.params.scenarioName;
 
-    const _renderItem = (item: any) => {
-        return (
-            <View>
-                <Text style={styles.textItem}>{item.label}</Text>
-            </View>
-        );
-    };
+    async function assignTourHandler(fleetNumber: number) {
+        if ( isVehicleAssigned(fleetNumber) ) {
+            Alert.alert("Vehicle " + fleetNumber + " is already assigned to another tour.");
+            return;
+        }
+        var assignment = new Assignment(route.params.routeTourAssignment.split("/")[0], parseInt(route.params.routeTourAssignment.split("/")[1], 10), fleetNumber, scenarioName, route.params.company);
+        insertAssignment(assignment).then(routePress);
+    }
 
-    async function filterVehicleData(scenarioVehicles: Vehicle[] ): Promise<DropDownEntry[]> {
-        var vehicleFilteredData = [];
-        for ( const vehicle of scenarioVehicles ) {
-            var vehicleAssigned = false;
-            var assignments = await fetchAssignments(route.params.company);
-            for ( const assignment of assignments ) {
-                if ( assignment.fleetNumber === vehicle.fleetNumber ) {
-                    vehicleAssigned = true;
+    function isVehicleAssigned(fleetNumber: number) {
+        if ( fleetNumber === 101 ) {
+            for ( let i = 0; i < assignments.length; i++) {
+                if (assignments[i].fleetNumber === fleetNumber) {
+                    return true;
                 }
             }
-            if ( !vehicleAssigned ) {
-                console.log('Adding vehicle ' + vehicle.fleetNumber);
-                vehicleFilteredData.push({label: "" + vehicle.fleetNumber, value: "" + vehicle.fleetNumber});
-            }
         }
-        console.log('Length: ' + vehicleFilteredData.length);
-        return vehicleFilteredData;
+        return assignments.some((assignment) => assignment.fleetNumber === fleetNumber);
     }
 
-    function formatRouteData(scenarioRoutes: Route[]): DropDownEntry[] {
-        var routeData = [];
-        for ( const route of scenarioRoutes ) {
-            routeData.push({label: route.number, value: route.number});
-        }
-        return routeData;
-    }
-
-    async function onChangeTourNumber(tourNumber2: string) {
-        setTourNumber(parseInt(tourNumber2, 10));
-        // Calculate the number of tours for the selected route number based on route database.
-        var numberTours = 0;
-        if ( !routeDropdown ) {
-            Alert.alert('Please select a route first before entering a tour number');
-            setDisableAssignButton(true);
-            setTourNumber(0);
-        } else {
-            if ( scenarioName === 'Landuff') {
-                numberTours = LANDUFF_ROUTES.find((route) => route.number === routeDropdown)!.numberTours
-            }
-            else if ( scenarioName === 'MDorf') {
-                numberTours = MDORF_ROUTES.find((route) => route.number === routeDropdown)!.numberTours
-            }
-            else if ( scenarioName === 'Longts') {
-                numberTours = LONGTS_ROUTES.find((route) => route.number === routeDropdown)!.numberTours
-            }
-            // Don't forget to add any tours which were already automatically generated.
-            const additionalTours = await fetchAdditionalTours(route.params.company);
-            additionalTours.forEach((additionalTour: AdditionalTour) => {
-                if ( additionalTour.routeNumber === routeDropdown ) {
-                    numberTours++;
-                }
-            })
-            // If the tour number was less than or equal to 0 or higher than the number of tours for the selected route number then show an alert and ask for a valid tour number.
-            if ( tourNumber && (tourNumber <= 0 || tourNumber > numberTours) ) {
-                Alert.alert('Please enter a valid tour number between 1 and ' +  numberTours);
-                setDisableAssignButton(true);
-            } else {
-                setDisableAssignButton(false);
-            }
-        }
-    }
-
-    async function assignTourHandler() {
-        console.log('In assign tour handler...');
-        var assignment = new Assignment(routeDropdown!, tourNumber!, vehicleDropdown!, scenarioName, route.params.company);
-        insertAssignment(assignment).then(
-            navigation.navigate("ChangeAssignmentScreen", {
-                company: route.params.company,
-                scenarioName: route.params.scenarioName
-            }));
-        
+    async function routePress() {
+        navigation.navigate("RouteDetailScreen", {
+            routeNumber: route.params.routeTourAssignment.split("/")[0],
+            scenarioName: route.params.scenarioName,
+            company: route.params.company
+        });
     }
 
     return (
         <View style={[styles.bodyContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <View style={styles.routeField}>
-                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Route Number:</Text>
-                <Dropdown
-                    style={[styles.dropdown, colorScheme === 'dark' ? styles.dropdownDark : styles.dropdownLight]}
-                    data={routeData}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select item"
-                    value={routeDropdown}
-                    onChange={item => {
-                        setRouteDropdown(item.value);
-                        console.log('selected', item);                  
-                    }}
-                    renderItem={item => _renderItem(item)}
-                 />
+            <View style={styles.row}>
+                {vehicles.map((vehicle) => (
+                    <IconTextButton colour={isVehicleAssigned(vehicle.fleetNumber) ? 'red' : 'green'} key={vehicle.fleetNumber} icon="bus" text={"" + vehicle.fleetNumber} onPress={assignTourHandler.bind(null, vehicle.fleetNumber)}/>
+                ))}
             </View>
-            <View style={styles.vehicleField}>
-                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Fleet Number:</Text>
-                <Dropdown
-                    style={[styles.dropdown, colorScheme === 'dark' ? styles.dropdownDark : styles.dropdownLight]}
-                    data={vehicleData}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select item"
-                    value={vehicleDropdown}
-                    onChange={item => {
-                        setVehicleDropdown(item.value);
-                        console.log('selected', item);
-                    }}
-                    renderItem={item => _renderItem(item)}
-                />
-            </View>
-            <View style={styles.tourField}>
-                <Text style={[styles.formLabel, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Tour Number:</Text>
-                <TextInput
-                    style={[styles.tourInput, colorScheme === 'dark' ? styles.darkBorder : styles.lightBorder]}
-                    onChangeText={onChangeTourNumber}
-                    value={"" + tourNumber}
-                    keyboardType="numeric"
-                />
-            </View>
-            
-            <TouchableOpacity style={styles.button} onPress={assignTourHandler} disabled={disableAssignButton}>
-                <Text style={styles.buttonText}>Assign Tour</Text>
+
+            <TouchableOpacity style={styles.button} onPress={routePress}>
+                <Text style={styles.buttonText}>Route {route.params.routeTourAssignment.split("/")[0]}</Text>
             </TouchableOpacity>
         </View>
+
     )
 }
 
@@ -226,10 +133,6 @@ const styles = StyleSheet.create({
     lightText: {
         color: 'black'
     },
-    routeField: {
-        flexDirection: 'row',
-        marginTop: 80,
-    },
     formLabel: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -256,16 +159,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 120
     },
-    tourField: {
+    row: {
+        marginTop: 10,
         flexDirection: 'row',
-        marginTop: 120,
-        marginBottom: 30
-    },
-    tourInput: {
-        height: 40,
-        borderWidth: 1,
-        padding: 10,
-        marginLeft: 10
+        justifyContent: 'space-around',
+        width: '100%',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start'
     },
     button: {
         alignItems: "center",
