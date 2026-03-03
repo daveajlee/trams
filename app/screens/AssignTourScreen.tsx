@@ -14,11 +14,6 @@ type AssignTourScreenProps = {
   route: any;
 }
 
-type DropDownEntry = {
-  label: string;
-  value: string;
-}
-
 type NavigationStackParams = {
   navigate: Function;
   setOptions: Function;
@@ -28,6 +23,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
 
     const navigation = useNavigation<NavigationStackParams>();
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
 
     const colorScheme = Appearance.getColorScheme();
 
@@ -51,22 +47,38 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
                     Alert.alert('Error', 'Unknown scenario: ' + route.params.scenarioName);
             }
         }
+
+        async function loadAssignments() {
+            const fetchedAssignments = await fetchAssignments(route.params.company);
+            setAssignments(fetchedAssignments);
+        }
             
         loadVehicles();
+
+        loadAssignments();
 
     }, [navigation, route.params.routeTourAssignment, route.params.scenarioName, route.params.company]);
 
     const scenarioName = route.params.scenarioName;
 
     async function assignTourHandler(fleetNumber: number) {
-        console.log('In assign tour handler...');
+        if ( isVehicleAssigned(fleetNumber) ) {
+            Alert.alert("Vehicle " + fleetNumber + " is already assigned to another tour.");
+            return;
+        }
         var assignment = new Assignment(route.params.routeTourAssignment.split("/")[0], parseInt(route.params.routeTourAssignment.split("/")[1], 10), fleetNumber, scenarioName, route.params.company);
-        console.log('Assigning ' + fleetNumber + ' to route ' + route.params.routeTourAssignment.split("/")[0] + ' tour ' + route.params.routeTourAssignment.split("/")[1] + " - coming soon!");
-        /*insertAssignment(assignment).then(
-            navigation.navigate("ChangeAssignmentScreen", {
-                company: route.params.company,
-                scenarioName: route.params.scenarioName
-            }));*/
+        insertAssignment(assignment).then(routePress);
+    }
+
+    function isVehicleAssigned(fleetNumber: number) {
+        if ( fleetNumber === 101 ) {
+            for ( let i = 0; i < assignments.length; i++) {
+                if (assignments[i].fleetNumber === fleetNumber) {
+                    return true;
+                }
+            }
+        }
+        return assignments.some((assignment) => assignment.fleetNumber === fleetNumber);
     }
 
     async function routePress() {
@@ -81,7 +93,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
         <View style={[styles.bodyContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.row}>
                 {vehicles.map((vehicle) => (
-                    <IconTextButton key={vehicle.fleetNumber} icon="bus" text={"" + vehicle.fleetNumber} onPress={assignTourHandler.bind(null, vehicle.fleetNumber)}/>
+                    <IconTextButton colour={isVehicleAssigned(vehicle.fleetNumber) ? 'red' : 'green'} key={vehicle.fleetNumber} icon="bus" text={"" + vehicle.fleetNumber} onPress={assignTourHandler.bind(null, vehicle.fleetNumber)}/>
                 ))}
             </View>
 
@@ -148,6 +160,7 @@ const styles = StyleSheet.create({
         marginTop: 120
     },
     row: {
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-around',
         width: '100%',

@@ -5,11 +5,12 @@ type IconTextButtonProps = {
     icon: any;
     text: string;
     onPress: Event;
+    colour: string;
 }
 
-function IconTextButton({icon, text, onPress}: IconTextButtonProps) {
+function IconTextButton({icon, text, onPress, colour}: IconTextButtonProps) {
     return ( 
-        <TouchableOpacity style={styles.button} onPress={onPress}>
+        <TouchableOpacity style={colour === 'red' ? styles.redButton : styles.greenButton} onPress={onPress}>
             <Ionicons name={icon} size={24} color="white" />
             <Text style={styles.buttonText}>{text}</Text>
         </TouchableOpacity>
@@ -19,9 +20,16 @@ function IconTextButton({icon, text, onPress}: IconTextButtonProps) {
 export default IconTextButton;;
 
 const styles = StyleSheet.create({
-    button: {
+    greenButton: {
         alignItems: "center",
         backgroundColor: "#5e7947",
+        width: '30%',
+        padding: 20,
+        marginBottom: 20,
+    },
+    redButton: {
+        alignItems: "center",
+        backgroundColor: "red",
         width: '30%',
         padding: 20,
         marginBottom: 20,

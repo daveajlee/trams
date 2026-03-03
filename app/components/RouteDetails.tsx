@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 import Route from "../models/route";
 import { useNavigation } from "@react-navigation/native";
+import Assignment from "../models/assignment";
+import { fetchAssignments, deleteAssignment } from "../utilities/sqlite";
 
 type RouteDetailsProps = {
   route: Route;
@@ -17,20 +19,29 @@ type NavigationStackParams = {
 function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
 
     const navigation = useNavigation<NavigationStackParams>();
-    const [assignments, setAssignments] = useState<string[]>([]);
+    const [tours, setTours] = useState<string[]>([]);
+    const [assignments, setAssignments] = useState<Assignment[]>([]);
 
     useEffect(() => {
 
-        async function loadAssignments() {
-            let myAssignments: string[] = [];
+        async function loadTours() {
+            let myTours: string[] = [];
             for ( let i = 0; i < route.numberTours; i++) { 
-                myAssignments.push(route.number + "/" + (i+1));
+                myTours.push(route.number + "/" + (i+1));
             }
-            setAssignments(myAssignments);
+            setTours(myTours);
         }
     
-            loadAssignments();
-    }, [route.number, route.numberTours]);
+        loadTours();
+        
+        loadAssignments();
+
+        async function loadAssignments() {
+            const fetchedAssignments = await fetchAssignments(companyName);
+            setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));
+        }
+
+    }, [route.number, route.numberTours, companyName]);
 
     function displayAssignmentScreen(routeTourAssigment: string) {
         navigation.navigate("AssignTourScreen", {
@@ -38,6 +49,21 @@ function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
                 scenarioName: scenarioName,
                 routeTourAssignment: routeTourAssigment
             });
+    }
+
+    async function deleteAssignmentFromDB(routeTourAssigment: string) {
+        deleteAssignment(routeTourAssigment.split("/")[0], parseInt(routeTourAssigment.split("/")[1], 10), companyName);
+        const fetchedAssignments = await fetchAssignments(companyName);
+        setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));
+    }
+
+    function getAssignedVehicle(routeTourAssignment: string) {
+        for ( let i = 0; i < assignments.length; i++) {
+            if ((assignments[i].routeNumber + "/" + assignments[i].tourNumber) === routeTourAssignment) {
+                return assignments[i].fleetNumber;
+            }
+        }
+        return "Unassigned";
     }
 
     const colorScheme = Appearance.getColorScheme();
@@ -59,12 +85,15 @@ function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
             <Ionicons name="bus" size={48} color={colorScheme === 'dark' ? 'white' : 'black'} />
             <Text style={[styles.stopHeading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Tours</Text>
         </View> 
-        {assignments.map((assignment) => (
-            <View key={assignment} style={styles.container}>
-                <Text style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{assignment}:</Text>
-                <Text style={[styles.value, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Unassigned</Text>
-                <Pressable onPress={displayAssignmentScreen.bind(null,assignment)}>
-                    <Ionicons name="create-outline" size={24} color={colorScheme === 'dark' ? 'white' : 'black'}/>
+        {tours.map((tour) => (
+            <View key={tour} style={styles.container}>
+                <Text style={[styles.label, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{tour}:</Text>
+                <Text style={[styles.value, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{getAssignedVehicle(tour)}</Text>
+                <Pressable onPress={getAssignedVehicle(tour) === 'Unassigned' ? displayAssignmentScreen.bind(null,tour): deleteAssignmentFromDB.bind(null,tour)}>
+                    {getAssignedVehicle(tour) === 'Unassigned' ? 
+                        <Ionicons name="create-outline" size={24} color={colorScheme === 'dark' ? 'white' : 'black'}/> : 
+                        <Ionicons name="trash-bin-outline" size={24} color={colorScheme === 'dark' ? 'white' : 'black'}/> 
+                    }
                 </Pressable>
             </View>
         ))}
