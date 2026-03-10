@@ -10,6 +10,7 @@ import { LANDUFF_ROUTES } from "../../scenarios/landuff-scenario";
 import { MDORF_ROUTES } from "../../scenarios/mdorf-scenario";
 import { LONGTS_ROUTES } from "../../scenarios/longts-scenario";
 import RouteButton from "../../components/RouteButton";
+import IconButton from "../../utilities/IconButton";
 import { TouchableOpacity } from "react-native";
 
 type RouteScreenProps = {
@@ -31,7 +32,14 @@ function RouteScreen({route}: RouteScreenProps) {
     useEffect(() => {
         navigation.setOptions({
             title: route.params.company + ' - Routes',
+            headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
+                <IconButton icon="add" size={24} color="black" onPress={onCreateRoute}/>
+                </View>,
         });
+
+        async function onCreateRoute() {
+            Alert.alert("Coming Soon!", "Not yet available!");
+        }
 
         async function loadRoutes() {
             switch (route.params.scenarioName) {

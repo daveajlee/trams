@@ -5,7 +5,7 @@ type IconTextButtonProps = {
     icon: any;
     text: string;
     onPress: Event;
-    colour: string;
+    colour?: string;
 }
 
 function IconTextButton({icon, text, onPress, colour}: IconTextButtonProps) {

@@ -1,10 +1,13 @@
 import { LANDUFF_NAME, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { MDORF_NAME, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
 import { LONGTS_NAME, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
-import { Appearance, ScrollView, StyleSheet, Text } from "react-native";
+import { Alert, Appearance, ScrollView, StyleSheet, Text, View } from "react-native";
 import VehicleDetails from "../components/VehicleDetails";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from "react";
+import Vehicle from "../models/vehicle";
+import IconButton from "../utilities/IconButton";
 
 type VehicleScreenProps = {
   route: any;
@@ -12,6 +15,7 @@ type VehicleScreenProps = {
 
 type NavigationStackParams = {
   navigate: Function;
+  setOptions: Function;
 }
 
 /**
@@ -22,12 +26,41 @@ type NavigationStackParams = {
  */
 function VehicleScreen({route}: VehicleScreenProps) {
 
-    // Note the fleet number as an integer that the user provided.
-    const fleetNumber = parseInt(route.params.fleetNumber);
-
     const colorScheme = Appearance.getColorScheme();
-
     const navigation = useNavigation<NavigationStackParams>();
+    const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>();
+
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
+                <IconButton icon="trash" size={24} color="black" onPress={onDeleteVehicle}/>
+                </View>,
+        });
+
+        async function onDeleteVehicle() {
+            Alert.alert("Coming Soon!", "Not yet available!");
+        }
+
+        async function loadSelectedVehicle() {
+            switch (route.params.scenarioName) {
+                case LANDUFF_NAME:
+                    setSelectedVehicle(LANDUFF_VEHICLES.find((vehicle) => vehicle.fleetNumber === parseInt(route.params.fleetNumber)));
+                    break;
+                case MDORF_NAME:
+                    setSelectedVehicle(MDORF_VEHICLES.find((vehicle) => vehicle.fleetNumber === parseInt(route.params.fleetNumber)));
+                    break;
+                case LONGTS_NAME:
+                    setSelectedVehicle(LONGTS_VEHICLES.find((vehicle) => vehicle.fleetNumber === parseInt(route.params.fleetNumber)));
+                    break;
+                default:
+                    Alert.alert('Error', 'Unknown scenario: ' + route.params.scenarioName);
+            }
+        }
+
+        loadSelectedVehicle();
+
+    });
 
     /**
      * Clicking on the fleet button moves the user back to the fleet screen.
@@ -37,18 +70,6 @@ function VehicleScreen({route}: VehicleScreenProps) {
             company: route.params.company,
             scenarioName: route.params.scenarioName,
         });
-    }
-
-    // Search by scenario name and fleet number.
-    var selectedVehicle;
-    if ( route.params.scenarioName === LANDUFF_NAME) {
-        selectedVehicle = LANDUFF_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
-    }
-    else if ( route.params.scenarioName === MDORF_NAME) {
-        selectedVehicle = MDORF_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
-    }
-    else if ( route.params.scenarioName === LONGTS_NAME) {
-        selectedVehicle = LONGTS_VEHICLES.find((vehicle) => vehicle.fleetNumber === fleetNumber );
     }
 
     // Display the vehicle to the user or a message to the user if it could not be found.
