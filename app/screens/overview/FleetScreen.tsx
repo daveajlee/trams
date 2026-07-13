@@ -6,6 +6,7 @@ import { Alert, Appearance, StyleSheet, Text, TouchableOpacity, View } from "rea
 import Vehicle from "../../models/vehicle";
 import { useNavigation } from "@react-navigation/native";
 import IconTextButton from "../../components/IconTextButton";
+import IconButton from "../../utilities/IconButton";
 
 type FleetScreenProps = {
   route: any;
@@ -26,7 +27,14 @@ function FleetScreen({route}: FleetScreenProps) {
     useEffect(() => {
         navigation.setOptions({
             title: route.params.company + ' - Fleet',
+            headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
+                <IconButton icon="add" size={24} color="black" onPress={onCreateVehicle}/>
+                </View>,
         });
+
+        async function onCreateVehicle() {
+            Alert.alert("Coming Soon!", "Not yet available!");
+        }
     
         async function loadVehicles() {
             switch (route.params.scenarioName) {

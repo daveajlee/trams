@@ -5,7 +5,7 @@ type IconTextButtonProps = {
     icon: any;
     text: string;
     onPress: Event;
-    colour: string;
+    colour?: string;
 }
 
 function IconTextButton({icon, text, onPress, colour}: IconTextButtonProps) {
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#5e7947",
         width: '30%',
+        height: 100,
         padding: 20,
         marginBottom: 20,
     },
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
-        marginTop: 8
+        marginTop: 8,
+        textAlign: 'center'
     }
 })

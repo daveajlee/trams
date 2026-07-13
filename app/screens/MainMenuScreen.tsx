@@ -78,12 +78,39 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
         });
     }
 
+    async function onDriverPress() {
+        Alert.alert("Coming Soon!", "Not yet available!");
+    }
+
+    async function onMessagePress() {
+        Alert.alert("Coming Soon!", "Not yet available!");
+    }
+
+    async function onScenarioPress() {
+        Alert.alert("Coming Soon!", "Not yet available!");
+    }
+
+    async function onSimulationPress() {
+        Alert.alert("Coming Soon!", "Not yet available!");
+    }
+
     return (
         <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.bodyContainer}>
                 <View style={styles.row}>
+                    <IconTextButton icon="person-outline" text="Drivers" onPress={onDriverPress}/>
                     <IconTextButton icon="subway-sharp" text="Fleet" onPress={onFleetPress}/>
+                </View>
+                <View style={styles.break}></View>
+                <View style={styles.row}>
+                    <IconTextButton icon="film-outline" text="Live Situation" onPress={onSimulationPress}/>
+                    <IconTextButton icon="mail-outline" text="Messages" onPress={onMessagePress}/>
+                </View>
+                <View style={styles.break}></View>
+                <View style={styles.row}>
                     <IconTextButton icon="swap-horizontal" text="Routes" onPress={onRoutePress}/>
+                    <IconTextButton icon="location-outline" text="Scenario" onPress={onScenarioPress}/>
+                    
                 </View>
             </View>
         </View>
@@ -142,5 +169,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         width: '100%',
+    },
+    break: {
+        marginTop: 20
     }
 })
