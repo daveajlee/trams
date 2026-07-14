@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +70,7 @@ public class VehiclesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned vehicles"), @ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<VehiclesResponse> getVehiclesByCompanyAndFleetNumber (final String company, final Optional<String> fleetNumber, final Optional<String> routeNumber ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the vehicle based on whether the optional fleet number parameter was supplied.
@@ -127,7 +126,7 @@ public class VehiclesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted vehicles")})
     public ResponseEntity<Void> deleteVehicles (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete all vehicles for this company.

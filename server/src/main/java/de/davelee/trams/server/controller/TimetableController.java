@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ public class TimetableController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully created timetable"), @ApiResponse(responseCode = "409", description = "Timetable conflicted with a timetable that already exists")})
     public ResponseEntity<Void> createTimetable(@RequestBody CreateTimetableRequest createTimetableRequest) {
         //Check that the request is valid.
-        if (StringUtils.isBlank(createTimetableRequest.getCompany()) ) {
+        if (createTimetableRequest.getCompany().isBlank() ) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this timetable does not already exist.
@@ -80,7 +79,7 @@ public class TimetableController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted timetable")})
     public ResponseEntity<Void> deleteTimetable (final String company, final String routeNumber, final Optional<String> name ) {
         //First of all, check if the company field and/or name and/or route number fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
+        if (company.isBlank() || routeNumber.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete timetable matching the specified criteria.

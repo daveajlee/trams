@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +39,7 @@ public class CompaniesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned companies")})
     public ResponseEntity<CompaniesResponse> retrieveCompanies (final String playerName ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(playerName)) {
+        if (playerName.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Retrieve the companies. Return no content if 0 companies are found.

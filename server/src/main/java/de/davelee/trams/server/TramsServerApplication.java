@@ -1,6 +1,6 @@
 package de.davelee.trams.server;
 
-import com.netflix.discovery.EurekaClient;
+//import com.netflix.discovery.EurekaClient;
 import de.davelee.trams.server.service.FileSystemStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Lazy;
 @SpringBootApplication
 public class TramsServerApplication {
 
-    @Autowired
+    /*@Autowired
     @Lazy
-    private EurekaClient eurekaClient;
+    private EurekaClient eurekaClient;*/
 
     @Value("${spring.application.name}")
     private String appName;

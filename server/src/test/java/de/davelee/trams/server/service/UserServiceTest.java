@@ -2,13 +2,14 @@ package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.User;
 import de.davelee.trams.server.repository.UserRepository;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,8 +32,10 @@ public class UserServiceTest {
      */
     @BeforeEach
     public void setSpringProperties() throws Exception {
-        FieldUtils.writeField(userService, "timeoutInMinutes", 30, true);
-        FieldUtils.writeField(userService, "tokenLength", 10, true);
+        Field f1= userService.getClass().getDeclaredField("timeoutInMinutes");
+        f1.set(userService, 30);
+        Field f2 = userService.getClass().getDeclaredField("tokenLength");
+        f2.set(userService, 10);
     }
 
     /**

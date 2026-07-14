@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +47,7 @@ public class FeedbacksController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found feedback(s)"), @ApiResponse(responseCode = "204", description = "Successful but no feedbacks found")})
     public ResponseEntity<FeedbacksResponse> getFeedbacksByCompanyAndEmail(@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress, @RequestParam("token") final String token) {
         //First of all, check if the company field and/or email address field are empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
+        if (company.isBlank() || emailAddress.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Check that the user has logged in, otherwise forbidden.
@@ -84,7 +83,7 @@ public class FeedbacksController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found feedback(s)"), @ApiResponse(responseCode = "204", description = "Successful but no feedbacks found")})
     public ResponseEntity<FeedbacksResponse> getFeedbacksByCompany(@RequestParam("company") final String company, @RequestParam("token") final String token) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Check that the user has logged in, otherwise forbidden.

@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,7 @@ public class StopController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully add stop")})
     public ResponseEntity<Void> addStop ( @RequestBody final AddStopRequest stopRequest ) {
         //Check that the request is valid, otherwise bad request.
-        if (StringUtils.isBlank(stopRequest.getCompany()) || StringUtils.isBlank(stopRequest.getName())) {
+        if (stopRequest.getCompany().isBlank() || stopRequest.getName().isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         // Build the distances map from the two lists in the request.

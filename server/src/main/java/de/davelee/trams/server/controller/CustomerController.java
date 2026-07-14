@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +38,10 @@ public class CustomerController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created customer")})
     public ResponseEntity<Void> addCustomer (@RequestBody final CustomerRequest customerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(customerRequest.getFirstName()) || StringUtils.isBlank(customerRequest.getLastName())
-                || StringUtils.isBlank(customerRequest.getEmailAddress()) || StringUtils.isBlank(customerRequest.getTelephoneNumber())
-                || StringUtils.isBlank(customerRequest.getTitle()) || StringUtils.isBlank(customerRequest.getAddress())
-                || StringUtils.isBlank(customerRequest.getCompany()) || !Pattern.matches(".*@.*[.]?.*$", customerRequest.getEmailAddress()) ) {
+        if (customerRequest.getFirstName().isBlank() || customerRequest.getLastName().isBlank()
+                || customerRequest.getEmailAddress().isBlank() || customerRequest.getTelephoneNumber().isBlank()
+                || customerRequest.getTitle().isBlank() || customerRequest.getAddress().isBlank()
+                || customerRequest.getCompany().isBlank() || !Pattern.matches(".*@.*[.]?.*$", customerRequest.getEmailAddress()) ) {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to customer object.
@@ -62,7 +61,7 @@ public class CustomerController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully found customer"), @ApiResponse(responseCode="204",description="Successful but no customer found")})
     public ResponseEntity<CustomerResponse> getCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
+        if (company.isBlank() || emailAddress.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the customer based on company and email.
@@ -86,7 +85,7 @@ public class CustomerController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted customer"), @ApiResponse(responseCode="204",description="Successful but no customer found")})
     public ResponseEntity<Void> deleteCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(emailAddress)) {
+        if (company.isBlank() || emailAddress.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the customer based on the email address.

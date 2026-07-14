@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +56,7 @@ public class StopTimesController {
     @GetMapping(value="/position")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description="Successfully got the position of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<PositionResponse> getPosition(final String company, final String allocatedTour, final String dateTime, final String difficultyLevel ) {
-        if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour) || StringUtils.isBlank(dateTime)) {
+        if ( company.isBlank() || allocatedTour.isBlank() || dateTime.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         // Get the vehicle currently run - return no content if no vehicle is assigned.
@@ -115,12 +114,12 @@ public class StopTimesController {
                                                            final String date, final String endDate, final boolean departures, final boolean arrivals,
                                                            final Optional<String> scheduleNumber) {
         //First of all, check that all necessary parameters were filled and that at least one of departures or arrivals is true.
-        if (StringUtils.isBlank(stopName) || StringUtils.isBlank(company) || StringUtils.isBlank(date)
+        if (stopName.isBlank() || company.isBlank() || date.isBlank()
                 || (!departures && !arrivals)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //If end date is not empty or null, then set last date to the normal date to indicate no range otherwise end date.
-        LocalDate lastDate = StringUtils.isBlank(endDate) ? DateUtils.convertDateToLocalDate(date) : DateUtils.convertDateToLocalDate(endDate);
+        LocalDate lastDate = endDate.isBlank() ? DateUtils.convertDateToLocalDate(date) : DateUtils.convertDateToLocalDate(endDate);
         //Store the results of any service operations in a variable.
         List<StopTime> stopTimeList = new ArrayList<>();
         //Set the process date and start loop.
@@ -285,7 +284,7 @@ public class StopTimesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted stop times")})
     public ResponseEntity<Void> deleteStopTimes (final String company, final Optional<String> routeNumber ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete all stop times for this company.

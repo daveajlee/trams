@@ -14,7 +14,6 @@ import de.davelee.trams.server.utils.StopUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,7 +97,7 @@ public class ImportCSVDataService {
                                   final String validToDate ) {
         try {
             Reader reader = new FileReader(csvFilePath);
-            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withDelimiter(';').withTrim());
+            CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.builder().setDelimiter(";").setIgnoreEmptyLines(true).get());
             String destination = ""; ArrayList<OperatingDays> operatingDays = new ArrayList<>();
             LocalDateTime validFromLocalDate = DateUtils.convertBackwardDateToLocalDateTime(validFromDate);
             LocalDateTime validToLocalDate = DateUtils.convertBackwardDateToLocalDateTime(validToDate);
@@ -221,7 +220,7 @@ public class ImportCSVDataService {
         String[] operatingDaysCommaList = operatingDaysStr.split(",");
         //Go through comma separated list
         for ( String operatingDay : operatingDaysCommaList ) {
-            if (StringUtils.isBlank(operatingDay) ) continue;
+            if (operatingDay.isBlank() ) continue;
             OperatingDaysAbbreviations operatingDaysAbbreviations = OperatingDaysAbbreviations.valueOf(operatingDay);
             operatingDays.setOperatingDays(operatingDaysAbbreviations.getOperatingDaysOfWeek());
             operatingDays.setSpecialOperatingDays(operatingDaysAbbreviations.getSpecialOperatingDays(validFromDate, validToDate));

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +37,9 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created user")})
     public ResponseEntity<Void> addUser (@RequestBody final RegisterUserRequest registerUserRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(registerUserRequest.getFirstName()) || StringUtils.isBlank(registerUserRequest.getSurname())
-                || StringUtils.isBlank(registerUserRequest.getCompany()) || StringUtils.isBlank(registerUserRequest.getUsername())
-                || StringUtils.isBlank(registerUserRequest.getPassword())) {
+        if (registerUserRequest.getFirstName().isBlank() || registerUserRequest.getSurname().isBlank()
+                || registerUserRequest.getCompany().isBlank() || registerUserRequest.getUsername().isBlank()
+                || registerUserRequest.getPassword().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to user object.
@@ -187,7 +186,7 @@ public class UserController {
      */
     private HttpStatus validateAndAuthenticateRequest ( final String company, final String username, final String token ) {
         //First of all, check if the username field is empty or null, then return bad request.
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(company)) {
+        if (username.isBlank() || company.isBlank()) {
             return HttpStatus.BAD_REQUEST;
         }
         //Verify that user is logged in.

@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import net.glxn.qrgen.javase.QRCode;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,10 +55,10 @@ public class OrderController {
             @ApiResponse(responseCode="500",description="Payment could not be processed")})
     public ResponseEntity<PurchaseTicketResponse> orderTicket (@RequestBody final PurchaseTicketRequest purchaseTicketRequest ) {
         //First of all check that fields are not empty.
-        if (StringUtils.isBlank(purchaseTicketRequest.getTicketType()) || StringUtils.isBlank(purchaseTicketRequest.getCompany())
-                || StringUtils.isBlank(purchaseTicketRequest.getTicketTargetGroup()) || StringUtils.isBlank(purchaseTicketRequest.getCreditCardExpiryDate())
-                || StringUtils.isBlank(purchaseTicketRequest.getCreditCardNumber()) || StringUtils.isBlank(purchaseTicketRequest.getCreditCardType())
-                || StringUtils.isBlank(purchaseTicketRequest.getCreditCardSecurityCode())) {
+        if (purchaseTicketRequest.getTicketType().isBlank() || purchaseTicketRequest.getCompany().isBlank()
+                || purchaseTicketRequest.getTicketTargetGroup().isBlank() || purchaseTicketRequest.getCreditCardExpiryDate().isBlank()
+                || purchaseTicketRequest.getCreditCardNumber().isBlank() || purchaseTicketRequest.getCreditCardType().isBlank()
+                || purchaseTicketRequest.getCreditCardSecurityCode().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Second check that credit card is only 12 characters for data protection.

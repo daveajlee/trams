@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +38,8 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created company")})
     public ResponseEntity<Void> addCompany (@RequestBody final CompanyRequest companyRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(companyRequest.getName()) || StringUtils.isBlank(companyRequest.getPlayerName())
-                || StringUtils.isBlank(companyRequest.getStartingTime()) || companyRequest.getStartingBalance() <= 0) {
+        if (companyRequest.getName().isBlank() || companyRequest.getPlayerName().isBlank()
+                || companyRequest.getStartingTime().isBlank() || companyRequest.getStartingBalance() <= 0) {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to company object.
@@ -69,7 +68,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned company")})
     public ResponseEntity<CompanyResponse> retrieveCompany (final String name, final String playerName ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(name) || StringUtils.isBlank(playerName)) {
+        if (name.isBlank() || playerName.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Retrieve the company. Return no content if 0 or more than 1 companies are found.
@@ -100,7 +99,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted balance of company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<BalanceResponse> adjustBalance (@RequestBody AdjustBalanceRequest adjustBalanceRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(adjustBalanceRequest.getCompany())) {
+        if ( adjustBalanceRequest.getCompany().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this company exists otherwise the balance cannot be adjusted.
@@ -125,7 +124,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted satisfaction rate of company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<SatisfactionRateResponse> adjustSatisfaction (@RequestBody AdjustSatisfactionRequest adjustSatisfactionRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(adjustSatisfactionRequest.getCompany()) || adjustSatisfactionRequest.getSatisfactionRate() < -100 && adjustSatisfactionRequest.getSatisfactionRate() > 100) {
+        if ( adjustSatisfactionRequest.getCompany().isBlank() || adjustSatisfactionRequest.getSatisfactionRate() < -100 && adjustSatisfactionRequest.getSatisfactionRate() > 100) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this company exists otherwise the balance cannot be adjusted.
@@ -150,7 +149,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted satisfaction rate of company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<SimulationIntervalResponse> adjustSimulationInterval (@RequestBody AdjustSimulationIntervalRequest adjustSimulationIntervalRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(adjustSimulationIntervalRequest.getCompany()) || adjustSimulationIntervalRequest.getSimulationInterval() < 1) {
+        if ( adjustSimulationIntervalRequest.getCompany().isBlank() || adjustSimulationIntervalRequest.getSimulationInterval() < 1) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this company exists otherwise the simulation interval cannot be adjusted.
@@ -175,7 +174,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added the time in minutes to the company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<TimeResponse> addTime (@RequestBody AddTimeRequest addTimeRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(addTimeRequest.getCompany()) || (addTimeRequest.getMinutes() <= 0) ) {
+        if ( addTimeRequest.getCompany().isBlank() || (addTimeRequest.getMinutes() <= 0) ) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this company exists otherwise the time cannot be adjusted.
@@ -200,7 +199,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjust the difficulty level for the company"), @ApiResponse(responseCode="204",description="No company found")})
     public ResponseEntity<DifficultyLevelResponse> adjustDifficultyLevel (@RequestBody AdjustDifficultyLevelRequest difficultyLevelRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(difficultyLevelRequest.getCompany()) || StringUtils.isBlank(difficultyLevelRequest.getDifficultyLevel()) ) {
+        if (difficultyLevelRequest.getCompany().isBlank() || difficultyLevelRequest.getDifficultyLevel().isBlank() ) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this company exists otherwise the time cannot be adjusted.
@@ -226,7 +225,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully exported the company information"), @ApiResponse(responseCode="500",description="Export could not be generated")})
     public ResponseEntity<ExportCompanyResponse> exportCompany (@RequestBody ExportCompanyRequest exportCompanyRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(exportCompanyRequest.getCompany()) || StringUtils.isBlank(exportCompanyRequest.getPlayerName()) ) {
+        if ( exportCompanyRequest.getCompany().isBlank() || exportCompanyRequest.getPlayerName().isBlank() ) {
             return ResponseEntity.badRequest().build();
         }
         //Retrieve the company. Return no content if 0 or more than 1 companies are found.
@@ -263,7 +262,7 @@ public class CompanyController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted company")})
     public ResponseEntity<Void> deleteCompany (final String name, final String playerName ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(name) || StringUtils.isBlank(playerName)) {
+        if (name.isBlank() || playerName.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Now delete the companies found.

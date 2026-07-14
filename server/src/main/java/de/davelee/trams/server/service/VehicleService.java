@@ -5,7 +5,6 @@ import de.davelee.trams.server.constant.VehicleStatus;
 import de.davelee.trams.server.constant.VehicleType;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.VehicleRepository;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -184,7 +183,7 @@ public class VehicleService {
     private boolean validateVehicle ( final Vehicle vehicle ) {
         System.out.println(vehicle);
         //Vehicles always have a valid operator, delivery date and model.
-        if (StringUtils.isBlank(vehicle.getCompany()) || StringUtils.isBlank(vehicle.getModelName()) || vehicle.getDeliveryDate() == null ) {
+        if (vehicle.getCompany().isBlank() || vehicle.getModelName().isBlank() || vehicle.getDeliveryDate() == null ) {
             return false;
         }
         //The seating and standing capacities of a vehicle must be greater than or equal to 0.
