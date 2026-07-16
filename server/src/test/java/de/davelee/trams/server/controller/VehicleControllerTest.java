@@ -10,9 +10,11 @@ import de.davelee.trams.server.response.VehicleHoursResponse;
 import de.davelee.trams.server.service.VehicleService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import static org.mockito.ArgumentMatchers.*;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class VehicleControllerTest {
 
     @InjectMocks
@@ -57,7 +60,7 @@ public class VehicleControllerTest {
                         .livery("Green with red text")
                         .fleetNumber("213")
                         .build());
-        assertEquals(200, responseEntity.getStatusCodeValue());
+        assertEquals(200, responseEntity.getStatusCode().value());
         assertTrue(responseEntity.getBody().isPurchased());
         assertEquals(200000, responseEntity.getBody().getPurchasePrice());
         //Purchase valid train
@@ -71,7 +74,7 @@ public class VehicleControllerTest {
                 .livery("Green with red text")
                 .fleetNumber("2300")
                 .build());
-        assertEquals(200, responseEntity2.getStatusCodeValue());
+        assertEquals(200, responseEntity2.getStatusCode().value());
         assertTrue(responseEntity2.getBody().isPurchased());
         assertEquals(1000000, responseEntity2.getBody().getPurchasePrice());
         //Purchase valid tram
@@ -85,7 +88,7 @@ public class VehicleControllerTest {
         purchaseVehicleRequest.setLivery("Green with red text");
         purchaseVehicleRequest.setFleetNumber("3300");
         ResponseEntity<PurchaseVehicleResponse> responseEntity3 = vehicleController.purchaseVehicle(purchaseVehicleRequest);
-        assertEquals(200, responseEntity3.getStatusCodeValue());
+        assertEquals(200, responseEntity3.getStatusCode().value());
         assertTrue(responseEntity3.getBody().isPurchased());
         assertEquals(700000, responseEntity3.getBody().getPurchasePrice());
     }
@@ -118,7 +121,7 @@ public class VehicleControllerTest {
                 .livery("Green with red text")
                 .fleetNumber("213")
                 .build());
-        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals(400, responseEntity.getStatusCode().value());
         //Purchase bus which already exists.
         ResponseEntity<PurchaseVehicleResponse> responseEntity2 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
                 .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
@@ -130,7 +133,7 @@ public class VehicleControllerTest {
                 .company("Lee Buses")
                 .fleetNumber("213")
                 .build());
-        assertEquals(409, responseEntity2.getStatusCodeValue());
+        assertEquals(409, responseEntity2.getStatusCode().value());
         //Purchase bus which does not exist but does not validate and cannot be added to the database.
         ResponseEntity<PurchaseVehicleResponse> responseEntity3 = vehicleController.purchaseVehicle(PurchaseVehicleRequest.builder()
                 .additionalTypeInformationMap(Map.of("registrationNumber", "XXX2 BBB"))
@@ -142,7 +145,7 @@ public class VehicleControllerTest {
                 .company("Lee Buses")
                 .fleetNumber("214")
                 .build());
-        assertEquals(500, responseEntity3.getStatusCodeValue());
+        assertEquals(500, responseEntity3.getStatusCode().value());
     }
 
     /**
@@ -298,7 +301,7 @@ public class VehicleControllerTest {
                 .comment("Welcome to the company!")
                 .build();
         ResponseEntity<Void> responseEntity = vehicleController.addHistoryEntry(addHistoryEntryRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
         //Perform tests - fleet number missing
         AddHistoryEntryRequest addHistoryEntryRequest2 = AddHistoryEntryRequest.builder()
                 .fleetNumber("")
@@ -308,7 +311,7 @@ public class VehicleControllerTest {
                 .comment("Welcome to the company!")
                 .build();
         ResponseEntity<Void> responseEntity2 = vehicleController.addHistoryEntry(addHistoryEntryRequest2);
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Perform tests - no vehicle
         AddHistoryEntryRequest addHistoryEntryRequest3 = AddHistoryEntryRequest.builder()
                 .fleetNumber("210")
@@ -318,7 +321,7 @@ public class VehicleControllerTest {
                 .comment("Welcome to the company!")
                 .build();
         ResponseEntity<Void> responseEntity3 = vehicleController.addHistoryEntry(addHistoryEntryRequest3);
-        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
 
     /**

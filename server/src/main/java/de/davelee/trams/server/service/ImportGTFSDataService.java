@@ -82,15 +82,16 @@ public class ImportGTFSDataService {
                 }
             }
 
+            for (org.onebusaway.gtfs.model.Stop gtfsStop : store.getAllStops()) {
+                //Do not add duplicate stops to the database.
+                if (!StopUtils.hasStopAlreadyBeenImported(gtfsStop.getName(), store.getAgencyForId(gtfsStop.getId().getAgencyId()).getName(), stopRepository)) {
+                    importStop(gtfsStop, store.getAgencyForId(gtfsStop.getId().getAgencyId()).getName());
+                }
+            }
+
             //Import the stop time information.
             for (org.onebusaway.gtfs.model.StopTime gtfsStopTime : store.getAllStopTimes()) {
                 if ((!routesToImport.isEmpty() && shouldRouteBeImported(gtfsStopTime.getTrip().getRoute(), routesToImport))) {
-
-                    //Do not add duplicate stops to the database.
-                    if (!StopUtils.hasStopAlreadyBeenImported(gtfsStopTime.getStop().getName(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName(), stopRepository)) {
-                        importStop(gtfsStopTime.getStop(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName());
-                    }
-
                     //Add the StopTime information to the database.
                     List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(gtfsStopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
                     StopTime stopTime = StopTime.builder()

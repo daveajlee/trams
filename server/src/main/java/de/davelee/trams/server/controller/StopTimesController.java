@@ -119,7 +119,7 @@ public class StopTimesController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //If end date is not empty or null, then set last date to the normal date to indicate no range otherwise end date.
-        LocalDate lastDate = endDate.isBlank() ? DateUtils.convertDateToLocalDate(date) : DateUtils.convertDateToLocalDate(endDate);
+        LocalDate lastDate = (endDate == null || endDate.isBlank()) ? DateUtils.convertDateToLocalDate(date) : DateUtils.convertDateToLocalDate(endDate);
         //Store the results of any service operations in a variable.
         List<StopTime> stopTimeList = new ArrayList<>();
         //Set the process date and start loop.

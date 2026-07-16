@@ -4,9 +4,11 @@ import de.davelee.trams.server.request.ImportZipRequest;
 import de.davelee.trams.server.service.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UploadControllerTest {
 
     @InjectMocks
@@ -57,7 +60,7 @@ public class UploadControllerTest {
         Mockito.when(fileSystemStorageService.store(importGtfsZipBadRequest.getZipFile())).thenReturn("testBadFolder");
         Mockito.when(importGTFSDataService.readGTFSFile("testFolder", Lists.newArrayList("3C", "3D"))).thenReturn(false);
         ResponseEntity<Void> uploadBadResponse = controller.handleFileUpload(importGtfsZipBadRequest);
-        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uploadBadResponse.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, uploadBadResponse.getStatusCode());
         //Third test the case where a csv file is uploaded.
         ImportZipRequest importCsvZipRequest = new ImportZipRequest();
         try {

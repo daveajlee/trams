@@ -37,7 +37,9 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created user")})
     public ResponseEntity<Void> addUser (@RequestBody final RegisterUserRequest registerUserRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (registerUserRequest.getFirstName().isBlank() || registerUserRequest.getSurname().isBlank()
+        if (registerUserRequest.getFirstName() == null || registerUserRequest.getSurname() == null ||
+                registerUserRequest.getCompany() == null || registerUserRequest.getUsername() == null ||
+                registerUserRequest.getPassword() == null || registerUserRequest.getFirstName().isBlank() || registerUserRequest.getSurname().isBlank()
                 || registerUserRequest.getCompany().isBlank() || registerUserRequest.getUsername().isBlank()
                 || registerUserRequest.getPassword().isBlank()) {
             return ResponseEntity.badRequest().build();
@@ -186,7 +188,7 @@ public class UserController {
      */
     private HttpStatus validateAndAuthenticateRequest ( final String company, final String username, final String token ) {
         //First of all, check if the username field is empty or null, then return bad request.
-        if (username.isBlank() || company.isBlank()) {
+        if ( username == null || company == null || username.isBlank() || company.isBlank()) {
             return HttpStatus.BAD_REQUEST;
         }
         //Verify that user is logged in.

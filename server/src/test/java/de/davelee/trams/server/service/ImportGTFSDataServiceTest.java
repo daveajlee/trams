@@ -7,14 +7,17 @@ import de.davelee.trams.server.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ImportGTFSDataServiceTest {
 
     @InjectMocks
@@ -45,8 +49,6 @@ public class ImportGTFSDataServiceTest {
      */
     @Test
     public void testGTFSDataService ( ) {
-        Mockito.when(routeRepository.findAll()).thenReturn(Lists.emptyList());
-        Mockito.when(stopRepository.findAll()).thenReturn(Lists.emptyList());
         File file = new File("src/test/resources/sample-feed-1");
         assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), Lists.newArrayList()));
         assertTrue(importGTFSDataService.readGTFSFile(file.getAbsolutePath(), List.of("10", "20")));

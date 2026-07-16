@@ -4,9 +4,11 @@ import de.davelee.trams.server.model.User;
 import de.davelee.trams.server.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.Field;
@@ -18,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dave Lee
  */
 @SpringBootTest(properties = { "logout.minutes=30","token.length=10"})
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @InjectMocks

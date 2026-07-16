@@ -5,9 +5,11 @@ import de.davelee.trams.server.response.CustomerResponse;
 import de.davelee.trams.server.service.CustomerService;
 import de.davelee.trams.server.utils.CustomerUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomerControllerTest {
 
     @InjectMocks
@@ -41,7 +44,7 @@ public class CustomerControllerTest {
         CustomerRequest validCustomerRequest = generateValidCustomer();
         assertEquals("Max", validCustomerRequest.getFirstName());
         ResponseEntity<Void> responseEntity = customerController.addCustomer(validCustomerRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
 
     /**
@@ -50,15 +53,13 @@ public class CustomerControllerTest {
      */
     @Test
     public void testInvalidAdd() {
-        //Mock important methods in customer service.
-        Mockito.when(customerService.save(any())).thenReturn(true);
         //Add customer so that test is successfully.
         CustomerRequest validCustomerRequest = generateValidCustomer();
         //Make change so that request is invalid.
         validCustomerRequest.setFirstName("");
         assertEquals("", validCustomerRequest.getFirstName());
         ResponseEntity<Void> responseEntity = customerController.addCustomer(validCustomerRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -72,7 +73,7 @@ public class CustomerControllerTest {
                 .thenReturn(CustomerUtils.convertCustomerRequestToCustomer(generateValidCustomer()));
         //Perform tests
         ResponseEntity<CustomerResponse> responseEntity = customerController.getCustomer("Mustermann GmbH", "max@mustermann.de");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -85,10 +86,10 @@ public class CustomerControllerTest {
         Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "bob@mustermann.de")).thenReturn(null);
         //Perform tests
         ResponseEntity<CustomerResponse> responseEntity = customerController.getCustomer("Mustermann GmbH", "bob@mustermann.de");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
         //test with empty company.
         ResponseEntity<CustomerResponse> responseEntity2 = customerController.getCustomer("", "bob@mustermann.de");
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -102,7 +103,7 @@ public class CustomerControllerTest {
                 .thenReturn(CustomerUtils.convertCustomerRequestToCustomer(generateValidCustomer()));
         //Perform tests
         ResponseEntity<Void> responseEntity = customerController.deleteCustomer("Mustermann GmbH", "max@mustermann.de");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -116,7 +117,7 @@ public class CustomerControllerTest {
                 .thenReturn(null);
         //Perform tests
         ResponseEntity<Void> responseEntity = customerController.deleteCustomer("Mustermann GmbH", "bob@mustermann.de");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -126,7 +127,7 @@ public class CustomerControllerTest {
     @Test
     public void testInvalidDeleteCustomer() {
         ResponseEntity<Void> responseEntity = customerController.deleteCustomer(null, null);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**

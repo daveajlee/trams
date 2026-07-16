@@ -85,7 +85,7 @@ public class CustomerController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted customer"), @ApiResponse(responseCode="204",description="Successful but no customer found")})
     public ResponseEntity<Void> deleteCustomer (@RequestParam("company") final String company, @RequestParam("emailAddress") final String emailAddress) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (company.isBlank() || emailAddress.isBlank()) {
+        if (company == null || company.isBlank() || emailAddress == null || emailAddress.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the customer based on the email address.

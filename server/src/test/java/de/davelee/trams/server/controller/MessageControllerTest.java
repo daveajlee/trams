@@ -3,9 +3,11 @@ package de.davelee.trams.server.controller;
 import de.davelee.trams.server.request.MessageRequest;
 import de.davelee.trams.server.service.MessageService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class MessageControllerTest {
 
     @InjectMocks
@@ -46,7 +49,7 @@ public class MessageControllerTest {
                 .build();
         assertEquals("MessageRequest(company=Mustermann GmbH, subject=Feedback, text=Great transport company, sender=Local Authority, folder=INBOX, dateTime=28-11-2020 15:16)", messageRequest.toString());
         ResponseEntity<Void> responseEntity = messageController.addMessage(messageRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
 
     /**
@@ -63,11 +66,11 @@ public class MessageControllerTest {
         messageRequest.setFolder("INBOX");
         messageRequest.setSubject("Feedback");
         ResponseEntity<Void> responseEntity = messageController.addMessage(messageRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         messageRequest.setCompany("Mustermann GmbH");
         messageRequest.setDateTime("01-15-2021 56:43");
         ResponseEntity<Void> responseEntity2 = messageController.addMessage(messageRequest);
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 }

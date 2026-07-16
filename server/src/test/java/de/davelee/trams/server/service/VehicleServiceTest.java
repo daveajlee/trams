@@ -6,9 +6,11 @@ import de.davelee.trams.server.constant.VehicleType;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.VehicleRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class VehicleServiceTest {
 
     @InjectMocks
@@ -74,7 +77,6 @@ public class VehicleServiceTest {
                 .vehicleType(VehicleType.BUS)
                 .typeSpecificInfos(Map.of("registrationNumber", "HJK234D2"))
                 .build();
-        Mockito.when(vehicleRepository.insert(vehicle)).thenReturn(vehicle);
         assertFalse(vehicleService.addVehicle(vehicle));
         //Add delivery date but set seating capacity to -20.
         vehicle.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));

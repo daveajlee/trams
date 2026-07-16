@@ -45,7 +45,10 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully purchased vehicles"), @ApiResponse(responseCode="409",description="Vehicle conflicted with a vehicle that already exists")})
     public ResponseEntity<PurchaseVehicleResponse> purchaseVehicle (@RequestBody PurchaseVehicleRequest purchaseVehicleRequest) {
         //Check that the request is valid.
-        if ( purchaseVehicleRequest.getCompany().isBlank() || purchaseVehicleRequest.getFleetNumber().isBlank()
+        if ( purchaseVehicleRequest.getCompany() == null || purchaseVehicleRequest.getFleetNumber() == null ||
+                purchaseVehicleRequest.getVehicleType() == null || purchaseVehicleRequest.getLivery() == null ||
+                purchaseVehicleRequest.getModelName() == null ||
+                purchaseVehicleRequest.getCompany().isBlank() || purchaseVehicleRequest.getFleetNumber().isBlank()
         || purchaseVehicleRequest.getVehicleType().isBlank() || purchaseVehicleRequest.getLivery().isBlank()
         || purchaseVehicleRequest.getSeatingCapacity() <= 0 || purchaseVehicleRequest.getStandingCapacity() <= 0 ||
         purchaseVehicleRequest.getModelName().isBlank()) {
@@ -169,7 +172,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully sold vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<SellVehicleResponse> sellVehicle (@RequestBody SellVehicleRequest sellVehicleRequest) {
         //Check that the request is valid.
-        if ( sellVehicleRequest.getCompany().isBlank() || sellVehicleRequest.getFleetNumber().isBlank()) {
+        if ( sellVehicleRequest.getCompany() == null || sellVehicleRequest.getFleetNumber() == null ||
+                sellVehicleRequest.getCompany().isBlank() || sellVehicleRequest.getFleetNumber().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise it cannot be sold.
@@ -196,7 +200,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully inspected vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<InspectVehicleResponse> inspectVehicle (@RequestBody InspectVehicleRequest inspectVehicleRequest) {
         //Check that the request is valid.
-        if ( inspectVehicleRequest.getCompany().isBlank() || inspectVehicleRequest.getFleetNumber().isBlank()) {
+        if ( inspectVehicleRequest.getCompany() == null || inspectVehicleRequest.getFleetNumber() == null ||
+                inspectVehicleRequest.getCompany().isBlank() || inspectVehicleRequest.getFleetNumber().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise it cannot be inspected.
@@ -223,7 +228,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully allocated vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> allocateVehicle (@RequestBody AllocateVehicleRequest allocateVehicleRequest) {
         //Check that the request is valid.
-        if ( allocateVehicleRequest.getCompany().isBlank() || allocateVehicleRequest.getFleetNumber().isBlank()
+        if ( allocateVehicleRequest.getCompany() == null || allocateVehicleRequest.getFleetNumber() == null ||
+                allocateVehicleRequest.getAllocatedTour() == null || allocateVehicleRequest.getCompany().isBlank() || allocateVehicleRequest.getFleetNumber().isBlank()
                 || allocateVehicleRequest.getAllocatedTour().isBlank() ) {
             return ResponseEntity.badRequest().build();
         }

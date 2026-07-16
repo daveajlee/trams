@@ -41,7 +41,7 @@ public class CustomersController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found customer(s)"), @ApiResponse(responseCode = "204", description = "Successful but no customers found")})
     public ResponseEntity<CustomersResponse> getCustomers(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (company.isBlank()) {
+        if (company == null || company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the customers based on the company.

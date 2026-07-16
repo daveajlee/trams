@@ -4,9 +4,11 @@ import de.davelee.trams.server.model.Customer;
 import de.davelee.trams.server.response.CustomersResponse;
 import de.davelee.trams.server.service.CustomerService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomersControllerTest {
 
     @InjectMocks
@@ -38,7 +41,7 @@ public class CustomersControllerTest {
         Mockito.when(customerService.findByCompany("Mustermann GmbH")).thenReturn(List.of(generateValidCustomer()));
         //Perform tests
         ResponseEntity<CustomersResponse> responseEntity = customersController.getCustomers("Mustermann GmbH");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -51,7 +54,7 @@ public class CustomersControllerTest {
         Mockito.when(customerService.findByCompany("Mustermann Gmb")).thenReturn(List.of());
         //Perform tests
         ResponseEntity<CustomersResponse> responseEntity = customersController.getCustomers("Mustermann Gmb");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -62,7 +65,7 @@ public class CustomersControllerTest {
     public void testInvalidFindCustomers() {
         //Perform tests
         ResponseEntity<CustomersResponse> responseEntity = customersController.getCustomers(null);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**

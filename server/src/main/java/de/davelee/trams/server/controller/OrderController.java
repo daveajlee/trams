@@ -55,7 +55,10 @@ public class OrderController {
             @ApiResponse(responseCode="500",description="Payment could not be processed")})
     public ResponseEntity<PurchaseTicketResponse> orderTicket (@RequestBody final PurchaseTicketRequest purchaseTicketRequest ) {
         //First of all check that fields are not empty.
-        if (purchaseTicketRequest.getTicketType().isBlank() || purchaseTicketRequest.getCompany().isBlank()
+        if (purchaseTicketRequest.getTicketType() == null || purchaseTicketRequest.getCompany() == null ||
+                purchaseTicketRequest.getTicketTargetGroup() == null || purchaseTicketRequest.getCreditCardExpiryDate() == null ||
+                purchaseTicketRequest.getCreditCardNumber() == null || purchaseTicketRequest.getCreditCardType() == null ||
+                purchaseTicketRequest.getCreditCardSecurityCode() == null || purchaseTicketRequest.getTicketType().isBlank() || purchaseTicketRequest.getCompany().isBlank()
                 || purchaseTicketRequest.getTicketTargetGroup().isBlank() || purchaseTicketRequest.getCreditCardExpiryDate().isBlank()
                 || purchaseTicketRequest.getCreditCardNumber().isBlank() || purchaseTicketRequest.getCreditCardType().isBlank()
                 || purchaseTicketRequest.getCreditCardSecurityCode().isBlank()) {

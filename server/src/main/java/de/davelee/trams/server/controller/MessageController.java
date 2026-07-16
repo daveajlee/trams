@@ -37,7 +37,10 @@ public class MessageController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created message")})
     public ResponseEntity<Void> addMessage (@RequestBody final MessageRequest messageRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (messageRequest.getCompany().isBlank() || messageRequest.getDateTime().isBlank()
+        if (messageRequest.getCompany() == null || messageRequest.getDateTime() == null ||
+                messageRequest.getFolder() == null || messageRequest.getSender() == null ||
+                messageRequest.getSubject() == null || messageRequest.getText() == null ||
+                messageRequest.getCompany().isBlank() || messageRequest.getDateTime().isBlank()
                 || messageRequest.getFolder().isBlank() || messageRequest.getSender().isBlank()
                 || messageRequest.getSubject().isBlank() || messageRequest.getText().isBlank()) {
             return ResponseEntity.badRequest().build();

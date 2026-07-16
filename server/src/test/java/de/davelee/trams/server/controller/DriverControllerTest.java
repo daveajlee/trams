@@ -7,9 +7,11 @@ import de.davelee.trams.server.service.DriverService;
 import de.davelee.trams.server.utils.DateUtils;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
@@ -22,6 +24,7 @@ import static org.mockito.ArgumentMatchers.*;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class DriverControllerTest {
 
     @InjectMocks
@@ -62,8 +65,6 @@ public class DriverControllerTest {
                 .contractedHours(35)
                 .company("Lee Transport")
                 .build()));
-        Mockito.when(driverService.retrieveDriversByCompanyAndName("Lee Transport", "Maximus")).thenReturn(null);
-        Mockito.when(driverService.addDriver(any())).thenReturn(false);
         //Employ Driver with missing company.
         ResponseEntity<EmployDriverResponse> responseEntity = driverController.employDriver(EmployDriverRequest.builder()
                 .name("Max Mustermann")

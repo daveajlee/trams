@@ -8,9 +8,11 @@ import de.davelee.trams.server.service.StopService;
 import de.davelee.trams.server.service.StopTimeService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class StopTimesControllerTest {
 
     @InjectMocks
@@ -134,47 +137,6 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testGenerateEndpoint() {
-        //Mock data.
-        Mockito.when(stopService.getStop("Lee Transport", "Ferry Terminal")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Arena", 7))
-                        .waitingTime(0)
-                        .company("Lee Transport")
-                        .name("Ferry Terminal")
-                        .build()
-        );
-        Mockito.when(stopService.getStop("Lee Transport", "Arena")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Cathedral", 3, "Ferry Terminal", 7))
-                        .waitingTime(0)
-                        .company("Lee Transport")
-                        .name("Arena")
-                        .build()
-        );
-        Mockito.when(stopService.getStop("Lee Transport", "Cathedral")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Bus Station", 1, "Arena", 3))
-                        .waitingTime(1)
-                        .company("Lee Transport")
-                        .name("Cathedral")
-                        .build()
-        );
-        Mockito.when(stopService.getStop("Lee Transport", "Bus Station")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Airport", 5, "Cathedral", 1))
-                        .waitingTime(0)
-                        .company("Lee Transport")
-                        .name("Bus Station")
-                        .build()
-        );
-        Mockito.when(stopService.getStop("Lee Transport", "Airport")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Bus Station", 5))
-                        .waitingTime(0)
-                        .company("Lee Transport")
-                        .name("Airport")
-                        .build()
-        );
         Mockito.when(companyService.getTime("Lee Transport")).thenReturn(LocalDateTime.now());
         //1st test
         GenerateStopTimesRequest generateStopTimesRequest = GenerateStopTimesRequest.builder()
@@ -190,23 +152,6 @@ public class StopTimesControllerTest {
                 .build();
         assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, startStop=null, endStop=null, frequency=90, numTours=0, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022, stopDistances=null)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
-        //Mocks for 2nd test
-        Mockito.when(stopService.getStop("Lee Transport", "Bus Station")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Country Park", 40))
-                        .waitingTime(2)
-                        .company("Lee Transport")
-                        .name("Bus Station")
-                        .build()
-        );
-        Mockito.when(stopService.getStop("Lee Transport", "Country Park")).thenReturn(
-                Stop.builder()
-                        .distances(Map.of("Bus Station", 40))
-                        .waitingTime(2)
-                        .company("Lee Transport")
-                        .name("Bus Station")
-                        .build()
-        );
         //2nd test
         GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();
         generateStopTimesRequest2.setCompany("Lee Transport");

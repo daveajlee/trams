@@ -4,9 +4,11 @@ import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.request.AddRouteRequest;
 import de.davelee.trams.server.service.RouteService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -21,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RouteControllerTest {
 
     @InjectMocks
@@ -47,7 +50,7 @@ public class RouteControllerTest {
         AddRouteRequest addRouteRequest2 = new AddRouteRequest();
         addRouteRequest2.setCompany("Example Company");
         addRouteRequest2.setRouteNumber("1B");
-        assertEquals(500, routeController.addRoute(addRouteRequest2).getStatusCodeValue());
+        assertEquals(500, routeController.addRoute(addRouteRequest2).getStatusCode().value());
         //Test missing company and name.
         addRouteRequest2.setCompany(""); addRouteRequest2.setRouteNumber("");
         assertEquals(HttpStatus.BAD_REQUEST, routeController.addRoute(addRouteRequest2).getStatusCode());

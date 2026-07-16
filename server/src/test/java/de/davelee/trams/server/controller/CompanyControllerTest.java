@@ -6,9 +6,11 @@ import de.davelee.trams.server.response.ExportCompanyResponse;
 import de.davelee.trams.server.service.CompanyService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import static org.mockito.ArgumentMatchers.eq;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CompanyControllerTest {
 
     @InjectMocks
@@ -54,7 +57,7 @@ public class CompanyControllerTest {
                 .build();
         assertEquals("CompanyRequest(name=Mustermann GmbH, startingBalance=10000.0, playerName=Max Mustermann, startingTime=28-11-2020 15:16, scenarioName=Intermediate's Scenario, difficultyLevel=MEDIUM)", companyRequest.toString());
         ResponseEntity<Void> responseEntity = companyController.addCompany(companyRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
 
     /**
@@ -70,11 +73,11 @@ public class CompanyControllerTest {
         companyRequest.setStartingBalance(-10000.0);
         companyRequest.setStartingTime("28-11-2020 15:16");
         ResponseEntity<Void> responseEntity = companyController.addCompany(companyRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         companyRequest.setStartingBalance(10000.0);
         companyRequest.setStartingTime("50-11-2020 15:90");
         ResponseEntity<Void> responseEntity2 = companyController.addCompany(companyRequest);
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     /**

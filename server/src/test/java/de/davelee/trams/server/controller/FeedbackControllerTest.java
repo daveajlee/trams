@@ -9,9 +9,11 @@ import de.davelee.trams.server.service.CustomerService;
 import de.davelee.trams.server.service.FeedbackService;
 import de.davelee.trams.server.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class FeedbackControllerTest {
 
     @InjectMocks
@@ -57,7 +60,7 @@ public class FeedbackControllerTest {
                 .extraInfos(Map.of("Punctuality","10"))
                 .build();
         ResponseEntity<Void> responseEntity = feedbackController.addFeedback(feedbackRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
 
     /**
@@ -76,10 +79,10 @@ public class FeedbackControllerTest {
                 .extraInfos(Map.of("Punctuality","10"))
                 .build();
         ResponseEntity<Void> responseEntity = feedbackController.addFeedback(feedbackRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         feedbackRequest.setEmailAddress("max@mustermann.de");
         ResponseEntity<Void> responseEntity2 = feedbackController.addFeedback(feedbackRequest);
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -90,7 +93,6 @@ public class FeedbackControllerTest {
     public void testValidAddAnswer() {
         //Mock important methods in customer & feedback service.
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(true);
-        Mockito.when(feedbackService.save(any())).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Add answer so that test is successfully.
         AnswerRequest answerRequest = AnswerRequest.builder()
@@ -98,7 +100,7 @@ public class FeedbackControllerTest {
                 .objectId("63645gjg4t996")
                 .token("mmustermann-ghgkg").build();
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -110,7 +112,6 @@ public class FeedbackControllerTest {
         //Mock important methods in customer & feedback service.
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(false);
         Mockito.when(feedbackService.save(any())).thenReturn(true);
-        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Add answer so that test is successfully.
         AnswerRequest answerRequest = AnswerRequest.builder()
@@ -118,15 +119,15 @@ public class FeedbackControllerTest {
                 .objectId("")
                 .token("mmustermann-ghgkg").build();
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Set object id to test 204.
         answerRequest.setObjectId("63645gjg4t996");
         ResponseEntity<Void> responseEntity2 = feedbackController.addAnswer(answerRequest);
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
         //Use a different token to ensure forbidden.
         answerRequest.setToken("mmustermann-djkf");
         ResponseEntity<Void> responseEntity3 = feedbackController.addAnswer(answerRequest);
-        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }
 
 

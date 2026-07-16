@@ -40,7 +40,8 @@ public class DriverController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully employed driver"), @ApiResponse(responseCode = "409", description = "Driver conflicted with a driver that already exists")})
     public ResponseEntity<EmployDriverResponse> employDriver(@RequestBody EmployDriverRequest employDriverRequest) {
         //Check that the request is valid.
-        if (employDriverRequest.getCompany().isBlank() || employDriverRequest.getName().isBlank()
+        if (employDriverRequest.getCompany() == null || employDriverRequest.getName() == null ||
+                employDriverRequest.getStartDate() == null || employDriverRequest.getCompany().isBlank() || employDriverRequest.getName().isBlank()
                 || employDriverRequest.getStartDate().isBlank() || employDriverRequest.getContractedHours() <= 0) {
             return ResponseEntity.badRequest().build();
         }
