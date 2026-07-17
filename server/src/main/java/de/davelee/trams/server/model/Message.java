@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,11 +10,6 @@ import java.time.LocalDateTime;
  * Class to represent messages that are sent or received within TraMS Server.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Document
 public class Message {
 
@@ -55,4 +49,72 @@ public class Message {
      */
     private LocalDateTime dateTime;
 
+    public Message() {
+    }
+
+    public Message(ObjectId id, String company, String subject, String text, String sender, String folder, LocalDateTime dateTime) {
+        this.id = id;
+        this.company = company;
+        this.subject = subject;
+        this.text = text;
+        this.sender = sender;
+        this.folder = folder;
+        this.dateTime = dateTime;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 }

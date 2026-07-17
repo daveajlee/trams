@@ -1,18 +1,10 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a response containing
  * a single message returned from the server.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class MessageResponse {
 
     /**
@@ -45,4 +37,75 @@ public class MessageResponse {
      */
     private String dateTime;
 
+    public MessageResponse() {
+    }
+
+    public MessageResponse(String company, String subject, String text, String sender, String folder, String dateTime) {
+        this.company = company;
+        this.subject = subject;
+        this.text = text;
+        this.sender = sender;
+        this.folder = folder;
+        this.dateTime = dateTime;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageResponse{" +
+                "company='" + company + '\'' +
+                ", subject='" + subject + '\'' +
+                ", text='" + text + '\'' +
+                ", sender='" + sender + '\'' +
+                ", folder='" + folder + '\'' +
+                ", dateTime='" + dateTime + '\'' +
+                '}';
+    }
 }

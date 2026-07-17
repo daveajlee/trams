@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,11 +10,6 @@ import java.util.Map;
  * Class to represent feedback messages sent by customers and answered by a company in TraMS Server.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Document
 public class Feedback {
 
@@ -55,4 +49,72 @@ public class Feedback {
      */
     private String answer;
 
+    public Feedback() {
+    }
+
+    public Feedback(ObjectId id, Customer customer, String emailAddress, String company, String message, Map<String, String> extraInfos, String answer) {
+        this.id = id;
+        this.customer = customer;
+        this.emailAddress = emailAddress;
+        this.company = company;
+        this.message = message;
+        this.extraInfos = extraInfos;
+        this.answer = answer;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, String> getExtraInfos() {
+        return extraInfos;
+    }
+
+    public void setExtraInfos(Map<String, String> extraInfos) {
+        this.extraInfos = extraInfos;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
 }

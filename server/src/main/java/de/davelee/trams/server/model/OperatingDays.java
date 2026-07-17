@@ -1,7 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,12 +10,6 @@ import java.util.List;
  * An operating day can consist of either a day of the week or calendar dates or both.
  * @author Dave Lee
  */
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@ToString
 public class OperatingDays {
 
     /**
@@ -48,4 +40,45 @@ public class OperatingDays {
         return operatingDays.contains(currentDateTime.getDayOfWeek()) || specialOperatingDays.contains(currentDateTime);
     }
 
+    public OperatingDays() {
+    }
+
+    public OperatingDays(List<DayOfWeek> operatingDays, List<LocalDateTime> specialOperatingDays, List<LocalDateTime> disruptedOperatingDays) {
+        this.operatingDays = operatingDays;
+        this.specialOperatingDays = specialOperatingDays;
+        this.disruptedOperatingDays = disruptedOperatingDays;
+    }
+
+    public List<DayOfWeek> getOperatingDays() {
+        return operatingDays;
+    }
+
+    public void setOperatingDays(List<DayOfWeek> operatingDays) {
+        this.operatingDays = operatingDays;
+    }
+
+    public List<LocalDateTime> getSpecialOperatingDays() {
+        return specialOperatingDays;
+    }
+
+    public void setSpecialOperatingDays(List<LocalDateTime> specialOperatingDays) {
+        this.specialOperatingDays = specialOperatingDays;
+    }
+
+    public List<LocalDateTime> getDisruptedOperatingDays() {
+        return disruptedOperatingDays;
+    }
+
+    public void setDisruptedOperatingDays(List<LocalDateTime> disruptedOperatingDays) {
+        this.disruptedOperatingDays = disruptedOperatingDays;
+    }
+
+    @Override
+    public String toString() {
+        return "OperatingDays{" +
+                "operatingDays=" + operatingDays +
+                ", specialOperatingDays=" + specialOperatingDays +
+                ", disruptedOperatingDays=" + disruptedOperatingDays +
+                '}';
+    }
 }

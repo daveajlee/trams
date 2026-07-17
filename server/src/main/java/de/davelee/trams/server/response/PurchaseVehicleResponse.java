@@ -1,17 +1,10 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a response to a request to purchase a vehicle
  * and contains the price for which the vehicle was purchased.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class PurchaseVehicleResponse {
 
     /**
@@ -24,4 +17,27 @@ public class PurchaseVehicleResponse {
      */
     private double purchasePrice;
 
+    public PurchaseVehicleResponse() {
+    }
+
+    public PurchaseVehicleResponse(boolean purchased, double purchasePrice) {
+        this.purchased = purchased;
+        this.purchasePrice = purchasePrice;
+    }
+
+    public boolean isPurchased() {
+        return purchased;
+    }
+
+    public void setPurchased(boolean purchased) {
+        this.purchased = purchased;
+    }
+
+    public double getPurchasePrice() {
+        return purchasePrice;
+    }
+
+    public void setPurchasePrice(double purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
 }
