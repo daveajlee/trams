@@ -111,13 +111,13 @@ public class FeedbackControllerTest {
     public void testInvalidAddAnswer() {
         //Mock important methods in customer & feedback service.
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(false);
-        Mockito.when(feedbackService.save(any())).thenReturn(true);
-        Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
+        Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(true);
+        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(false);
         //Add answer so that test is successfully.
         AnswerRequest answerRequest = AnswerRequest.builder()
                 .answer("Thanks for the feedback")
                 .objectId("")
-                .token("mmustermann-ghgkg").build();
+                .token("mmustermann-djkf").build();
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Set object id to test 204.
@@ -125,7 +125,7 @@ public class FeedbackControllerTest {
         ResponseEntity<Void> responseEntity2 = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
         //Use a different token to ensure forbidden.
-        answerRequest.setToken("mmustermann-djkf");
+        answerRequest.setToken("mmustermann-ghgkg");
         ResponseEntity<Void> responseEntity3 = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }

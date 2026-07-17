@@ -58,9 +58,9 @@ public class UploadControllerTest {
         importGtfsZipBadRequest.setRoutesToImport("3C,4D");
         importGtfsZipBadRequest.setFileFormat("General Transit Feed Specification (GTFS)");
         Mockito.when(fileSystemStorageService.store(importGtfsZipBadRequest.getZipFile())).thenReturn("testBadFolder");
-        Mockito.when(importGTFSDataService.readGTFSFile("testFolder", Lists.newArrayList("3C", "3D"))).thenReturn(false);
+        Mockito.when(importGTFSDataService.readGTFSFile("testBadFolder", Lists.newArrayList("3C", "4D"))).thenReturn(false);
         ResponseEntity<Void> uploadBadResponse = controller.handleFileUpload(importGtfsZipBadRequest);
-        assertEquals(HttpStatus.UNPROCESSABLE_CONTENT, uploadBadResponse.getStatusCode());
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, uploadBadResponse.getStatusCode());
         //Third test the case where a csv file is uploaded.
         ImportZipRequest importCsvZipRequest = new ImportZipRequest();
         try {
