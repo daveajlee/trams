@@ -50,21 +50,18 @@ public class CompaniesController {
         CompanyResponse[] companyResponseList = new CompanyResponse[companies.size()];
         // Go through the company list.
         for ( int i = 0; i < companyResponseList.length; i++ ) {
-            companyResponseList[i] = (CompanyResponse.builder()
-                    .name(companies.get(i).getName())
-                    .playerName(companies.get(i).getPlayerName())
-                    .balance(companies.get(i).getBalance().doubleValue())
-                    .satisfactionRate(companies.get(i).getSatisfactionRate().doubleValue())
-                    .time(DateUtils.convertLocalDateTimeToDate(companies.get(i).getTime()))
-                    .scenarioName(companies.get(i).getScenarioName())
-                    .difficultyLevel(companies.get(i).getDifficultyLevel())
-                    .build());
+            CompanyResponse companyResponse = new CompanyResponse();
+            companyResponse.setName(companies.get(i).getName());
+            companyResponse.setPlayerName(companies.get(i).getPlayerName());
+            companyResponse.setBalance(companies.get(i).getBalance().doubleValue());
+            companyResponse.setSatisfactionRate(companies.get(i).getSatisfactionRate().doubleValue());
+            companyResponse.setTime(DateUtils.convertLocalDateTimeToDate(companies.get(i).getTime()));
+            companyResponse.setScenarioName(companies.get(i).getScenarioName());
+            companyResponse.setDifficultyLevel(companies.get(i).getDifficultyLevel());
+            companyResponseList[i] = companyResponse;
         }
         //Now convert to companies response object.
-        return ResponseEntity.ok(CompaniesResponse.builder()
-                .companyResponseList(companyResponseList)
-                .count((long) companyResponseList.length)
-                .build());
+        return ResponseEntity.ok(new CompaniesResponse((long) companyResponseList.length, companyResponseList));
     }
 
 }

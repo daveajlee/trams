@@ -147,14 +147,14 @@ public class UserServiceTest {
      * @return a <code>User</code> object containing valid test data.
      */
     private User generateValidUser( ) {
-        return User.builder()
-                .company("Example Company")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .userName("max.mustermann")
-                .password("test")
-                .role("Employee")
-                .build();
+        User user = new User();
+        user.setCompany("Example Company");
+        user.setFirstName("Max");
+        user.setLastName("Mustermann");
+        user.setUserName("max.mustermann");
+        user.setPassword("test");
+        user.setRole("Employee");
+        return user;
     }
 
 }

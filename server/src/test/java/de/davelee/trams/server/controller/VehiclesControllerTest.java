@@ -49,43 +49,45 @@ public class VehiclesControllerTest {
      */
     @Test
     public void testGetVehiclesEndpoint() {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLivery("Green with red text");
+        vehicle.setFleetNumber("213");
+        vehicle.setAllocatedRoute("1");
+        vehicle.setAllocatedTour("1");
+        vehicle.setVehicleType(VehicleType.BUS);
+        vehicle.setTypeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"));
+        vehicle.setDeliveryDate(LocalDateTime.of(2017,3,25,0,0));
+        vehicle.setInspectionDate(LocalDateTime.of(2017,4,25,0,0));
+        vehicle.setCompany("Lee Buses");
+        vehicle.setVehicleStatus(VehicleStatus.DELIVERED);
+        // Train
+        Vehicle vehicleTrain = new Vehicle();
+        vehicleTrain.setLivery("Red with green text");
+        vehicleTrain.setFleetNumber("2134");
+        vehicleTrain.setAllocatedRoute("RE1");
+        vehicleTrain.setAllocatedTour("1");
+        vehicleTrain.setVehicleType(VehicleType.TRAIN);
+        vehicleTrain.setTypeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"));
+        vehicleTrain.setDeliveryDate(LocalDateTime.of(2009,3,25,0,0));
+        vehicleTrain.setInspectionDate(LocalDateTime.of(2009,4,25,0,0));
+        vehicleTrain.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicleTrain.setCompany("Lee Buses");
+        // Tram
+        Vehicle vehicleTram = new Vehicle();
+        vehicleTram.setLivery("Red with blue text");
+        vehicleTram.setFleetNumber("4213");
+        vehicleTram.setAllocatedRoute("121");
+        vehicleTram.setAllocatedTour("1");
+        vehicleTram.setVehicleType(VehicleType.TRAM);
+        vehicleTram.setTypeSpecificInfos(Collections.singletonMap("Bidirectional", "false"));
+        vehicleTram.setDeliveryDate(LocalDateTime.of(2010,3,25,0,0));
+        vehicleTram.setInspectionDate(LocalDateTime.of(2010,4,25,0,0));
+        vehicleTram.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicleTram.setCompany("Lee Buses");
         //First test is for only retrieving by company
-        Mockito.when(vehicleService.retrieveVehiclesByCompany("Lee Buses")).thenReturn(Lists.newArrayList(Vehicle.builder()
-                .livery("Green with red text")
-                .fleetNumber("213")
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
-                .deliveryDate(LocalDateTime.of(2017,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2017,4,25,0,0))
-                .company("Lee Buses")
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .build(),
-                Vehicle.builder()
-                .livery("Red with green text")
-                .fleetNumber("2134")
-                .allocatedRoute("RE1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.TRAIN)
-                .typeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"))
-                .deliveryDate(LocalDateTime.of(2009,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2009,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .company("Lee Buses")
-                .build(),
-                Vehicle.builder()
-                .livery("Red with blue text")
-                .fleetNumber("4213")
-                .allocatedRoute("121")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.TRAM)
-                .typeSpecificInfos(Collections.singletonMap("Bidirectional", "false"))
-                .deliveryDate(LocalDateTime.of(2010,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2010,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .company("Lee Buses")
-                .build()));
+        Mockito.when(vehicleService.retrieveVehiclesByCompany("Lee Buses")).thenReturn(Lists.newArrayList(vehicle,
+                vehicleTrain,
+                vehicleTram));
         ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());

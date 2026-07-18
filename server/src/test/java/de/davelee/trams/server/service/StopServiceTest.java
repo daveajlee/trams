@@ -34,20 +34,14 @@ public class StopServiceTest {
      */
     @Test
     public void testAddStop() {
-        Mockito.when(stopRepository.save(any())).thenReturn(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build());
-        assertTrue(stopService.addStop(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        stop.setCompany("Mustermann Bus GmbH");
+        Mockito.when(stopRepository.save(any())).thenReturn(stop);
+        assertTrue(stopService.addStop(stop));
     }
 
     /**
@@ -55,13 +49,13 @@ public class StopServiceTest {
      */
     @Test
     public void testService ( ) {
-        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        stop.setCompany("Mustermann Bus GmbH");
+        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(stop));
         assertEquals(1, stopService.getStopsByCompany("Mustermann Bus GmbH").size());
         assertEquals("123", stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getId());
         assertEquals("Greenfield", stopService.getStopsByCompany("Mustermann Bus GmbH").get(0).getName());
@@ -74,13 +68,13 @@ public class StopServiceTest {
      */
     @Test
     public void testGetStop ( ) {
-        Mockito.when(stopRepository.findByCompanyAndName("Mustermann Bus GmbH", "Greenfield")).thenReturn(Lists.newArrayList(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        stop.setCompany("Mustermann Bus GmbH");
+        Mockito.when(stopRepository.findByCompanyAndName("Mustermann Bus GmbH", "Greenfield")).thenReturn(Lists.newArrayList(stop));
         assertEquals("Greenfield", stopService.getStop("Mustermann Bus GmbH", "Greenfield").getName());
     }
 
@@ -89,14 +83,14 @@ public class StopServiceTest {
      */
     @Test
     public void testDeleteStop ( ) {
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        stop.setCompany("Mustermann Bus GmbH");
         //Mock important method in repository.
-        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Mockito.when(stopRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(stop));
         //Do test.
         stopService.deleteStops("Mustermann Bus GmbH");
     }

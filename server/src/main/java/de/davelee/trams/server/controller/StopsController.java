@@ -64,18 +64,15 @@ public class StopsController {
         //Otherwise convert to stops response and return.
         StopResponse[] stopResponses = new StopResponse[stops.size()];
         for ( int i = 0; i < stopResponses.length; i++ ) {
-            stopResponses[i] = StopResponse.builder()
-                    .company(stops.get(i).getCompany())
-                    .latitude(stops.get(i).getLatitude())
-                    .longitude(stops.get(i).getLongitude())
-                    .waitingTime(stops.get(i).getWaitingTime())
-                    .distances(stops.get(i).getDistances())
-                    .name(stops.get(i).getName())
-                    .build();
+            stopResponses[i] = new StopResponse();
+            stopResponses[i].setCompany(stops.get(i).getCompany());
+            stopResponses[i].setLatitude(stops.get(i).getLatitude());
+            stopResponses[i].setLongitude(stops.get(i).getLongitude());
+            stopResponses[i].setWaitingTime(stops.get(i).getWaitingTime());
+            stopResponses[i].setDistances(stops.get(i).getDistances());
+            stopResponses[i].setName(stops.get(i).getName());
         }
-        return ResponseEntity.ok(StopsResponse.builder()
-                .count((long) stopResponses.length)
-                .stopResponses(stopResponses).build());
+        return ResponseEntity.ok(new StopsResponse((long) stopResponses.length, stopResponses));
     }
 
     /**

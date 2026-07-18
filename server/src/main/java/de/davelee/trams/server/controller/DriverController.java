@@ -49,21 +49,20 @@ public class DriverController {
         List<Driver> drivers = driverService.retrieveDriversByCompanyAndName(employDriverRequest.getCompany(), employDriverRequest.getName());
         System.out.println(drivers);
         if (drivers != null && !drivers.isEmpty()) {
-            return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(409).build();
+            return ResponseEntity.of(Optional.of(new EmployDriverResponse(false, 0))).status(409).build();
         }
         //Construct the driver and add it to the database.
-        Driver driver = Driver.builder()
-                .company(employDriverRequest.getCompany())
-                .name(employDriverRequest.getName())
-                .contractedHours(employDriverRequest.getContractedHours())
-                .startDate(DateUtils.convertDateToLocalDateTime(employDriverRequest.getStartDate()))
-                .build();
+        Driver driver = new Driver();
+        driver.setCompany(employDriverRequest.getCompany());
+        driver.setName(employDriverRequest.getName());
+        driver.setContractedHours(employDriverRequest.getContractedHours());
+        driver.setStartDate(DateUtils.convertDateToLocalDateTime(employDriverRequest.getStartDate()));
         if (driverService.addDriver(driver)) {
             //Return the hiring costs for the driver if they were employed successfully.
-            return ResponseEntity.ok(EmployDriverResponse.builder().employed(true).employmentCost(500).build());
+            return ResponseEntity.ok(new EmployDriverResponse(true, 500));
         }
         //Otherwise return an empty 500 response.
-        return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(500).build();
+        return ResponseEntity.of(Optional.of(new EmployDriverResponse(false, 0))).status(500).build();
     }
 
     /**

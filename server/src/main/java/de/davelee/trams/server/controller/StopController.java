@@ -53,14 +53,13 @@ public class StopController {
             }
         }
         //Convert the StopRequest to the Stop object.
-        Stop stop = Stop.builder()
-                .company(stopRequest.getCompany())
-                .name(stopRequest.getName())
-                .waitingTime(stopRequest.getWaitingTime())
-                .distances(distances)
-                .latitude(stopRequest.getLatitude())
-                .longitude(stopRequest.getLongitude())
-                .build();
+        Stop stop = new Stop();
+        stop.setCompany(stopRequest.getCompany());
+        stop.setName(stopRequest.getName());
+        stop.setWaitingTime(stopRequest.getWaitingTime());
+        stop.setDistances(distances);
+        stop.setLatitude(stopRequest.getLatitude());
+        stop.setLongitude(stopRequest.getLongitude());
         //Attempt to add the stop to the database.
         return stopService.addStop(stop) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }

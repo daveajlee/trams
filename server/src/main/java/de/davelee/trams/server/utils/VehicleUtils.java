@@ -49,11 +49,11 @@ public class VehicleUtils {
         List<VehicleHistoryResponse> vehicleHistoryResponseList = new ArrayList<>();
         if ( vehicleHistoryEntryList != null ) {
             for (VehicleHistoryEntry vehicleHistoryEntry : vehicleHistoryEntryList) {
-                vehicleHistoryResponseList.add(VehicleHistoryResponse.builder()
-                        .comment(vehicleHistoryEntry.getComment())
-                        .vehicleHistoryReason(vehicleHistoryEntry.getVehicleHistoryReason().getText())
-                        .date(DateUtils.convertLocalDateTimeToDate(vehicleHistoryEntry.getDate()))
-                        .build());
+                VehicleHistoryResponse vehicleHistoryResponse = new VehicleHistoryResponse();
+                vehicleHistoryResponse.setComment(vehicleHistoryEntry.getComment());
+                vehicleHistoryResponse.setVehicleHistoryReason(vehicleHistoryEntry.getVehicleHistoryReason().getText());
+                vehicleHistoryResponse.setDate(DateUtils.convertLocalDateTimeToDate(vehicleHistoryEntry.getDate()));
+                vehicleHistoryResponseList.add(vehicleHistoryResponse);
             }
         }
         return vehicleHistoryResponseList;
@@ -68,11 +68,11 @@ public class VehicleUtils {
         List<VehicleHistoryEntry> vehicleHistoryEntryList = new ArrayList<>();
         if ( vehicleHistoryRequestList != null ) {
             for (VehicleHistoryRequest vehicleHistoryRequest : vehicleHistoryRequestList) {
-                vehicleHistoryEntryList.add(VehicleHistoryEntry.builder()
-                        .comment(vehicleHistoryRequest.getComment())
-                        .vehicleHistoryReason(VehicleHistoryReason.valueOf(vehicleHistoryRequest.getVehicleHistoryReason()))
-                        .date(DateUtils.convertDateToLocalDateTime(vehicleHistoryRequest.getDate()))
-                        .build());
+                VehicleHistoryEntry vehicleHistoryEntry = new VehicleHistoryEntry();
+                vehicleHistoryEntry.setComment(vehicleHistoryRequest.getComment());
+                vehicleHistoryEntry.setVehicleHistoryReason(VehicleHistoryReason.valueOf(vehicleHistoryRequest.getVehicleHistoryReason()));
+                vehicleHistoryEntry.setDate(DateUtils.convertDateToLocalDateTime(vehicleHistoryRequest.getDate()));
+                vehicleHistoryEntryList.add(vehicleHistoryEntry);
             }
         }
         return vehicleHistoryEntryList;
@@ -118,22 +118,22 @@ public class VehicleUtils {
      * @return a <code>Vehicle</code> object which has been converted.
      */
     public static Vehicle convertToVehicle(final LoadVehicleRequest loadVehicleRequest) {
-        return Vehicle.builder()
-                .modelName(loadVehicleRequest.getModelName())
-                .standingCapacity(loadVehicleRequest.getStandingCapacity())
-                .seatingCapacity(loadVehicleRequest.getSeatingCapacity())
-                .vehicleType(VehicleType.getVehicleTypeFromName(loadVehicleRequest.getVehicleType()))
-                .typeSpecificInfos(loadVehicleRequest.getAdditionalTypeInformationMap())
-                .livery(loadVehicleRequest.getLivery())
-                .fleetNumber(loadVehicleRequest.getFleetNumber())
-                .deliveryDate(DateUtils.convertDateToLocalDateTime(loadVehicleRequest.getDeliveryDate()))
-                .company(loadVehicleRequest.getCompany())
-                .inspectionDate(loadVehicleRequest.getInspectionDate() != null ? DateUtils.convertDateToLocalDateTime(loadVehicleRequest.getInspectionDate()) : null)
-                .vehicleStatus(loadVehicleRequest.getVehicleStatus() != null ? VehicleStatus.valueOf(loadVehicleRequest.getVehicleStatus()) : null)
-                .allocatedTour(loadVehicleRequest.getAllocatedTour())
-                .vehicleHistoryEntryList(VehicleUtils.convertHistoryRequestToEntries(loadVehicleRequest.getUserHistory()))
-                .timesheet(VehicleUtils.convertRequestToTimesheet(loadVehicleRequest.getTimesheet()))
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setModelName(loadVehicleRequest.getModelName());
+        vehicle.setStandingCapacity(loadVehicleRequest.getStandingCapacity());
+        vehicle.setSeatingCapacity(loadVehicleRequest.getSeatingCapacity());
+        vehicle.setVehicleType(VehicleType.getVehicleTypeFromName(loadVehicleRequest.getVehicleType()));
+        vehicle.setTypeSpecificInfos(loadVehicleRequest.getAdditionalTypeInformationMap());
+        vehicle.setLivery(loadVehicleRequest.getLivery());
+        vehicle.setFleetNumber(loadVehicleRequest.getFleetNumber());
+        vehicle.setDeliveryDate(DateUtils.convertDateToLocalDateTime(loadVehicleRequest.getDeliveryDate()));
+        vehicle.setCompany(loadVehicleRequest.getCompany());
+        vehicle.setInspectionDate(loadVehicleRequest.getInspectionDate() != null ? DateUtils.convertDateToLocalDateTime(loadVehicleRequest.getInspectionDate()) : null);
+        vehicle.setVehicleStatus(loadVehicleRequest.getVehicleStatus() != null ? VehicleStatus.valueOf(loadVehicleRequest.getVehicleStatus()) : null);
+        vehicle.setAllocatedTour(loadVehicleRequest.getAllocatedTour());
+        vehicle.setVehicleHistoryEntryList(VehicleUtils.convertHistoryRequestToEntries(loadVehicleRequest.getUserHistory()));
+        vehicle.setTimesheet(VehicleUtils.convertRequestToTimesheet(loadVehicleRequest.getTimesheet()));
+        return vehicle;
     }
 
 }

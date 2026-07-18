@@ -17,16 +17,16 @@ public class UserUtils {
      * @return a <code>User</code> object.
      */
     public static User convertRegisterUserRequestToUser (final RegisterUserRequest registerUserRequest ) {
-        return User.builder()
-                .id(new ObjectId())
-                .firstName(registerUserRequest.getFirstName())
-                .lastName(registerUserRequest.getSurname())
-                .userName(registerUserRequest.getUsername())
-                .password(registerUserRequest.getPassword())
-                .company(registerUserRequest.getCompany())
-                .role(registerUserRequest.getRole())
-                .accountStatus(UserAccountStatus.ACTIVE)
-                .build();
+        User user = new User();
+        user.setId(new ObjectId());
+        user.setFirstName(registerUserRequest.getFirstName());
+        user.setLastName(registerUserRequest.getSurname());
+        user.setUserName(registerUserRequest.getUsername());
+        user.setPassword(registerUserRequest.getPassword());
+        user.setCompany(registerUserRequest.getCompany());
+        user.setRole(registerUserRequest.getRole());
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        return user;
     }
 
 }

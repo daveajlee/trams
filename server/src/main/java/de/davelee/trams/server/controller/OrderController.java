@@ -87,23 +87,16 @@ public class OrderController {
             }
         }
 
-        Order order = Order.builder()
-                .ticketType(purchaseTicketRequest.getTicketType())
-                .ticketTargetGroup(purchaseTicketRequest.getTicketTargetGroup())
-                .quantity(purchaseTicketRequest.getQuantity())
-                .paymentType("Credit Card")
-                .confirmationId(UUID.randomUUID().toString())
-                .qrCodeText(generateQRCode(purchaseTicketRequest))
-                .build();
+        Order order = new Order();
+        order.setTicketType(purchaseTicketRequest.getTicketType());
+        order.setTicketTargetGroup(purchaseTicketRequest.getTicketTargetGroup());
+        order.setQuantity(purchaseTicketRequest.getQuantity());
+        order.setPaymentType("Credit Card");
+        order.setConfirmationId(UUID.randomUUID().toString());
+        order.setQrCodeText(generateQRCode(purchaseTicketRequest));
         boolean result = orderService.save(order);
-        return result ? ResponseEntity.ok(PurchaseTicketResponse.builder()
-                .success(true)
-                .qrCode(encodeQRCode(generateQRCode(purchaseTicketRequest)))
-                .build()) :
-                ResponseEntity.internalServerError().body(PurchaseTicketResponse.builder()
-                        .success(false)
-                        .errorMessage("Could not save in database")
-                        .build());
+        return result ? ResponseEntity.ok(new PurchaseTicketResponse(true, encodeQRCode(generateQRCode(purchaseTicketRequest)), "")) :
+                ResponseEntity.internalServerError().body(new PurchaseTicketResponse(false, null, "Could not save in database"));
     }
 
     /**

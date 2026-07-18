@@ -51,15 +51,15 @@ public class TicketController {
             return ResponseEntity.status(403).build();
         }
         //Now create ticket object and save to ticket service. Return 201 if saved successfully.
-        return ticketService.save(Ticket.builder()
-                .shortId(ticketRequest.getShortId())
-                .type(ticketRequest.getType())
-                .company(ticketRequest.getCompany())
-                .description(ticketRequest.getDescription())
-                .sortOrder(ticketRequest.getSortOrder())
-                .priceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()))
-                .company(ticketRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Ticket ticket = new Ticket();
+        ticket.setShortId(ticketRequest.getShortId());
+        ticket.setType(ticketRequest.getType());
+        ticket.setCompany(ticketRequest.getCompany());
+        ticket.setDescription(ticketRequest.getDescription());
+        ticket.setSortOrder(ticketRequest.getSortOrder());
+        ticket.setPriceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()));
+        ticket.setCompany(ticketRequest.getCompany());
+        return ticketService.save(ticket) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
 }

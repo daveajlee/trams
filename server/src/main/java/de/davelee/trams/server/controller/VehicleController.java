@@ -57,27 +57,26 @@ public class VehicleController {
         //Check that this vehicle does not already exist.
         List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(purchaseVehicleRequest.getCompany(), purchaseVehicleRequest.getFleetNumber());
         if ( vehicles != null && vehicles.size() != 0 ) {
-            return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(409).build();
+            return ResponseEntity.of(Optional.of(new PurchaseVehicleResponse(false, 0))).status(409).build();
         }
         //Construct the vehicle and add it to the database.
-        Vehicle vehicle = Vehicle.builder()
-                .company(purchaseVehicleRequest.getCompany())
-                .deliveryDate(LocalDateTime.now().plusDays(7))
-                .fleetNumber(purchaseVehicleRequest.getFleetNumber())
-                .vehicleType(VehicleType.valueOf(purchaseVehicleRequest.getVehicleType()))
-                .livery(purchaseVehicleRequest.getLivery())
-                .typeSpecificInfos(purchaseVehicleRequest.getAdditionalTypeInformationMap())
-                .seatingCapacity(purchaseVehicleRequest.getSeatingCapacity())
-                .standingCapacity(purchaseVehicleRequest.getStandingCapacity())
-                .modelName(purchaseVehicleRequest.getModelName())
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setCompany(purchaseVehicleRequest.getCompany());
+        vehicle.setDeliveryDate(LocalDateTime.now().plusDays(7));
+        vehicle.setFleetNumber(purchaseVehicleRequest.getFleetNumber());
+        vehicle.setVehicleType(VehicleType.valueOf(purchaseVehicleRequest.getVehicleType()));
+        vehicle.setLivery(purchaseVehicleRequest.getLivery());
+        vehicle.setTypeSpecificInfos(purchaseVehicleRequest.getAdditionalTypeInformationMap());
+        vehicle.setSeatingCapacity(purchaseVehicleRequest.getSeatingCapacity());
+        vehicle.setStandingCapacity(purchaseVehicleRequest.getStandingCapacity());
+        vehicle.setModelName(purchaseVehicleRequest.getModelName());
         vehicle.addVehicleHistoryEntry(LocalDateTime.now(), VehicleHistoryReason.PURCHASED, "Vehicle Purchased for " + vehicle.getVehicleType().getPurchasePrice());
         if ( vehicleService.addVehicle(vehicle) ) {
             //Return the purchase price for the bus if it was purchased successfully.
-            return ResponseEntity.ok(PurchaseVehicleResponse.builder().purchased(true).purchasePrice(vehicle.getVehicleType().getPurchasePrice().doubleValue()).build());
+            return ResponseEntity.ok(new PurchaseVehicleResponse(true, vehicle.getVehicleType().getPurchasePrice().doubleValue()));
         }
         //Otherwise return an empty 500 response.
-        return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(500).build();
+        return ResponseEntity.of(Optional.of(new PurchaseVehicleResponse(false, 0))).status(500).build();
     }
 
     /**
@@ -129,11 +128,11 @@ public class VehicleController {
         }
         //Otherwise retrieve the hours and build response.
         int numberOfHoursSoFar = vehicles.get(0).getHoursForDate(DateUtils.convertDateToLocalDateTime(date));
-        return ResponseEntity.ok(VehicleHoursResponse.builder()
-                        .maximumHoursReached(numberOfHoursSoFar >= vehicles.get(0).getVehicleType().getMaximumHoursPerDay())
-                        .numberOfHoursAvailable(vehicles.get(0).getVehicleType().getMaximumHoursPerDay()-numberOfHoursSoFar)
-                        .numberOfHoursSoFar(numberOfHoursSoFar)
-                .build());
+        VehicleHoursResponse vehicleHoursResponse = new VehicleHoursResponse();
+        vehicleHoursResponse.setMaximumHoursReached(numberOfHoursSoFar >= vehicles.get(0).getVehicleType().getMaximumHoursPerDay());
+        vehicleHoursResponse.setNumberOfHoursAvailable(vehicles.get(0).getVehicleType().getMaximumHoursPerDay()-numberOfHoursSoFar);
+        vehicleHoursResponse.setNumberOfHoursSoFar(numberOfHoursSoFar);
+        return ResponseEntity.ok(vehicleHoursResponse);
     }
 
     /**
@@ -184,10 +183,7 @@ public class VehicleController {
         //Now sell the vehicle.
         BigDecimal soldPrice = vehicleService.sellVehicle(vehicles.get(0));
         //Return response of selling the vehicle with sold price that is 0 if vehicle could not be sold.
-        return ResponseEntity.ok(SellVehicleResponse.builder()
-                .sold(soldPrice.doubleValue() > 0)
-                .soldPrice(soldPrice.doubleValue())
-                .build());
+        return ResponseEntity.ok(new SellVehicleResponse(soldPrice.doubleValue() > 0, soldPrice.doubleValue()));
     }
 
     /**
@@ -212,10 +208,7 @@ public class VehicleController {
         //Now inspect the vehicle.
         BigDecimal inspectionPrice = vehicleService.inspectVehicle(vehicles.get(0));
         //Return response of inspecting the vehicle with price that is 0 if vehicle could not be inspected.
-        return ResponseEntity.ok(InspectVehicleResponse.builder()
-                .inspected(inspectionPrice.doubleValue() > 0)
-                .inspectionPrice(inspectionPrice.doubleValue())
-                .build());
+        return ResponseEntity.ok(new InspectVehicleResponse(inspectionPrice.doubleValue() > 0, inspectionPrice.doubleValue()));
     }
 
     /**
@@ -264,25 +257,25 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Return the vehicle information.
-        return ResponseEntity.ok(VehicleResponse.builder()
-                .allocatedRoute(vehicles.get(0).getAllocatedRoute())
-                .allocatedTour(vehicles.get(0).getAllocatedTour())
-                .delayInMinutes(vehicles.get(0).getDelayInMinutes())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .livery(vehicles.get(0).getLivery())
-                .company(vehicles.get(0).getCompany())
-                .additionalTypeInformationMap(vehicles.get(0).getTypeSpecificInfos())
-                .vehicleType(vehicles.get(0).getVehicleType().getTypeName())
-                .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()))
-                .modelName(vehicles.get(0).getModelName())
-                .purchasePrice(vehicles.get(0).getVehicleType().getPurchasePrice().doubleValue())
-                .seatingCapacity(vehicles.get(0).getSeatingCapacity())
-                .standingCapacity(vehicles.get(0).getStandingCapacity())
-                .deliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getDeliveryDate()))
-                .inspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getInspectionDate()))
-                .vehicleStatus(vehicles.get(0).getVehicleStatus() != null ? vehicles.get(0).getVehicleStatus().name() : null)
-                .timesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(0).getTimesheet()))
-                .build());
+        VehicleResponse vehicleResponse = new VehicleResponse();
+        vehicleResponse.setAllocatedRoute(vehicles.get(0).getAllocatedRoute());
+        vehicleResponse.setAllocatedTour(vehicles.get(0).getAllocatedTour());
+        vehicleResponse.setDelayInMinutes(vehicles.get(0).getDelayInMinutes());
+        vehicleResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleResponse.setLivery(vehicles.get(0).getLivery());
+        vehicleResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleResponse.setAdditionalTypeInformationMap(vehicles.get(0).getTypeSpecificInfos());
+        vehicleResponse.setVehicleType(vehicles.get(0).getVehicleType().getTypeName());
+        vehicleResponse.setUserHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()));
+        vehicleResponse.setModelName(vehicles.get(0).getModelName());
+        vehicleResponse.setPurchasePrice(vehicles.get(0).getVehicleType().getPurchasePrice().doubleValue());
+        vehicleResponse.setSeatingCapacity(vehicles.get(0).getSeatingCapacity());
+        vehicleResponse.setStandingCapacity(vehicles.get(0).getStandingCapacity());
+        vehicleResponse.setDeliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getDeliveryDate()));
+        vehicleResponse.setInspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getInspectionDate()));
+        vehicleResponse.setVehicleStatus(vehicles.get(0).getVehicleStatus() != null ? vehicles.get(0).getVehicleStatus().name() : null);
+        vehicleResponse.setTimesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(0).getTimesheet()));
+        return ResponseEntity.ok(vehicleResponse);
     }
 
     /**
@@ -328,11 +321,11 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Now adjust the delay of the vehicle and return current delay.
-        return ResponseEntity.ok(VehicleDelayResponse.builder()
-                .company(vehicles.get(0).getCompany())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .delayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()))
-                .build());
+        VehicleDelayResponse vehicleDelayResponse = new VehicleDelayResponse();
+        vehicleDelayResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleDelayResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleDelayResponse.setDelayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()));
+        return ResponseEntity.ok(vehicleDelayResponse);
     }
 
     /**
@@ -362,11 +355,11 @@ public class VehicleController {
         //A value below 0 is not allowed.
         value = value < 0 ? 0.0 : value;
         //Now adjust the delay of the vehicle and return current delay.
-        return ResponseEntity.ok(VehicleValueResponse.builder()
-                .company(vehicles.get(0).getCompany())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .value(value)
-                .build());
+        VehicleValueResponse vehicleValueResponse = new VehicleValueResponse();
+        vehicleValueResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleValueResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleValueResponse.setValue(value);
+        return ResponseEntity.ok(vehicleValueResponse);
     }
 
 }

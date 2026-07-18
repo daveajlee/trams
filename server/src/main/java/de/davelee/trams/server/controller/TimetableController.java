@@ -46,17 +46,16 @@ public class TimetableController {
         //Check that this timetable does not already exist.
         List<Timetable> timetables = timetableService.retrieveTimetablesByCompanyAndRouteNumberAndName(createTimetableRequest.getCompany(), createTimetableRequest.getRouteNumber(), createTimetableRequest.getName());
         if (timetables != null && !timetables.isEmpty()) {
-            return ResponseEntity.of(Optional.of(CreateTimetableResponse.builder().build())).status(409).build();
+            return ResponseEntity.of(Optional.of(new CreateTimetableResponse())).status(409).build();
         }
         //Construct the timetable and add it to the database.
-        Timetable timetable = Timetable.builder()
-                .company(createTimetableRequest.getCompany())
-                .name(createTimetableRequest.getName())
-                .frequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternRequestsToFrequencyPatterns(createTimetableRequest.getFrequencyPatterns()))
-                .routeNumber(createTimetableRequest.getRouteNumber())
-                .validFromDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidFromDate()))
-                .validToDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidToDate()))
-                .build();
+        Timetable timetable = new Timetable();
+        timetable.setCompany(createTimetableRequest.getCompany());
+        timetable.setName(createTimetableRequest.getName());
+        timetable.setFrequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternRequestsToFrequencyPatterns(createTimetableRequest.getFrequencyPatterns()));
+        timetable.setRouteNumber(createTimetableRequest.getRouteNumber());
+        timetable.setValidFromDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidFromDate()));
+        timetable.setValidToDate(DateUtils.convertDateToLocalDateTime(createTimetableRequest.getValidToDate()));
         System.out.println(timetable);
         if (timetableService.addTimetable(timetable)) {
             //Return ok if it was added successfully.

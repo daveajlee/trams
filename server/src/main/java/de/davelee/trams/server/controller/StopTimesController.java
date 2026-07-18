@@ -68,18 +68,20 @@ public class StopTimesController {
         Position position = stopTimeService.retrievePositionForAllocatedTour(company, allocatedTour, DateUtils.convertDateToLocalDateTime(dateTime),
                 vehicles.getFirst().getDelayInMinutes());
         // Return the position.
-        return ResponseEntity.ok(PositionResponse.builder()
-                .stop(position.getStop())
-                .destination(position.getDestination())
-                .delay(position.getDelay())
-                .service(ServiceTripResponse.builder()
-                        .tempStartStopPos(position.getService().getTempStartStopPos())
-                        .tempEndStopPos(position.getService().getTempEndStopPos())
-                        .stopList(translateStopsToStringArray(position.getService().getStopList()))
-                        .outOfService(position.getService().isOutOfService())
-                        .scheduleId(position.getService().getRouteSchedule().getRouteNumberAndScheduleId())
-                        .serviceId(position.getService().getServiceId()).build())
-                .company(position.getCompany()).build());
+        PositionResponse positionResponse = new PositionResponse();
+        positionResponse.setStop(position.getStop());
+        positionResponse.setDestination(position.getDestination());
+        positionResponse.setDelay(position.getDelay());
+        ServiceTripResponse serviceTripResponse = new ServiceTripResponse();
+        serviceTripResponse.setTempStartStopPos(position.getService().getTempStartStopPos());
+        serviceTripResponse.setTempEndStopPos(position.getService().getTempEndStopPos());
+        serviceTripResponse.setStopList(translateStopsToStringArray(position.getService().getStopList()));
+        serviceTripResponse.setOutOfService(position.getService().isOutOfService());
+        serviceTripResponse.setScheduleId(position.getService().getRouteSchedule().getRouteNumberAndScheduleId());
+        serviceTripResponse.setServiceId(position.getService().getServiceId());
+        positionResponse.setService(serviceTripResponse);
+        positionResponse.setCompany(position.getCompany());
+        return ResponseEntity.ok(positionResponse);
     }
 
     /**
@@ -148,23 +150,21 @@ public class StopTimesController {
         //Now do the proessing into correct Response objects and return.
         StopTimeResponse[] stopTimeResponses = new StopTimeResponse[stopTimeList.size()];
         for ( int i = 0; i < stopTimeResponses.length; i++ ) {
-            stopTimeResponses[i] = StopTimeResponse.builder()
-                    .arrivalTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getArrivalTime()))
-                    .departureTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getDepartureTime()))
-                    .destination(stopTimeList.get(i).getDestination())
-                    .company(stopTimeList.get(i).getCompany())
-                    .journeyNumber(stopTimeList.get(i).getJourneyNumber())
-                    .operatingDays(StopTimeUtils.convertOperatingDaysToString(stopTimeList.get(i).getOperatingDays()))
-                    .routeNumber(stopTimeList.get(i).getRouteNumber())
-                    .scheduleNumber(Integer.parseInt(stopTimeList.get(i).getService().getRouteSchedule().getScheduleId()))
-                    .validFromDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidFromDate()))
-                    .validToDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidToDate()))
-                    .stopName(stopTimeList.get(i).getStopName())
-                    .build();
+            StopTimeResponse stopTimeResponse = new StopTimeResponse();
+            stopTimeResponse.setArrivalTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getArrivalTime()));
+            stopTimeResponse.setDepartureTime(DateUtils.convertLocalTimeToTime(stopTimeList.get(i).getDepartureTime()));
+            stopTimeResponse.setDestination(stopTimeList.get(i).getDestination());
+            stopTimeResponse.setCompany(stopTimeList.get(i).getCompany());
+            stopTimeResponse.setJourneyNumber(stopTimeList.get(i).getJourneyNumber());
+            stopTimeResponse.setOperatingDays(StopTimeUtils.convertOperatingDaysToString(stopTimeList.get(i).getOperatingDays()));
+            stopTimeResponse.setRouteNumber(stopTimeList.get(i).getRouteNumber());
+            stopTimeResponse.setScheduleNumber(Integer.parseInt(stopTimeList.get(i).getService().getRouteSchedule().getScheduleId()));
+            stopTimeResponse.setValidFromDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidFromDate()));
+            stopTimeResponse.setValidToDate(DateUtils.convertLocalDateTimeToDate(stopTimeList.get(i).getValidToDate()));
+            stopTimeResponse.setStopName(stopTimeList.get(i).getStopName());
+            stopTimeResponses[i] = stopTimeResponse;
         }
-        return ResponseEntity.ok(StopTimesResponse.builder()
-                .count((long) stopTimeResponses.length)
-                .stopTimeResponses(stopTimeResponses).build());
+        return ResponseEntity.ok(new StopTimesResponse((long) stopTimeResponses.length, stopTimeResponses));
     }
 
     /**

@@ -59,17 +59,14 @@ public class FeedbacksController {
         //Convert to FeedbackResponse object and return 200.
         FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
         for (int i = 0; i < feedbacks.size(); i++) {
-            feedbackResponses[i] = FeedbackResponse.builder()
-                    .id(feedbacks.get(i).getId().toString())
-                    .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()))
-                    .extraInfos(feedbacks.get(i).getExtraInfos())
-                    .message(feedbacks.get(i).getMessage())
-                    .build();
+            FeedbackResponse feedbackResponse = new FeedbackResponse();
+            feedbackResponse.setId(feedbacks.get(i).getId().toString());
+            feedbackResponse.setCustomerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()));
+            feedbackResponse.setExtraInfos(feedbacks.get(i).getExtraInfos());
+            feedbackResponse.setMessage(feedbacks.get(i).getMessage());
+            feedbackResponses[i] = feedbackResponse;
         }
-        return ResponseEntity.ok(FeedbacksResponse.builder()
-                .count((long) feedbackResponses.length)
-                .feedbackResponses(feedbackResponses)
-                .build());
+        return ResponseEntity.ok(new FeedbacksResponse((long) feedbackResponses.length, feedbackResponses));
     }
 
     /**
@@ -95,17 +92,14 @@ public class FeedbacksController {
         //Convert to FeedbackResponse object and return 200.
         FeedbackResponse[] feedbackResponses = new FeedbackResponse[feedbacks.size()];;
         for (int i = 0; i < feedbacks.size(); i++) {
-            feedbackResponses[i] = FeedbackResponse.builder()
-                    .id(feedbacks.get(i).getId().toString())
-                    .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()))
-                    .extraInfos(feedbacks.get(i).getExtraInfos())
-                    .message(feedbacks.get(i).getMessage())
-                    .build();
+            FeedbackResponse feedbackResponse = new FeedbackResponse();
+            feedbackResponse.setId(feedbacks.get(i).getId().toString());
+            feedbackResponse.setCustomerResponse(CustomerUtils.convertCustomerToCustomerResponse(feedbacks.get(i).getCustomer()));
+            feedbackResponse.setExtraInfos(feedbacks.get(i).getExtraInfos());
+            feedbackResponse.setMessage(feedbacks.get(i).getMessage());
+            feedbackResponses[i] = feedbackResponse;
         }
-        return ResponseEntity.ok(FeedbacksResponse.builder()
-                .count((long) feedbackResponses.length)
-                .feedbackResponses(feedbackResponses)
-                .build());
+        return ResponseEntity.ok(new FeedbacksResponse((long) feedbackResponses.length, feedbackResponses));
     }
 
 }

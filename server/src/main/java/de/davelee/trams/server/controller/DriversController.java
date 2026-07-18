@@ -58,16 +58,14 @@ public class DriversController {
         //Otherwise convert to drivers response and return.
         DriverResponse[] driverResponses = new DriverResponse[drivers.size()];
         for ( int i = 0; i < driverResponses.length; i++ ) {
-            driverResponses[i] = DriverResponse.builder()
-                    .company(drivers.get(i).getCompany())
-                    .name(drivers.get(i).getName())
-                    .contractedHours(drivers.get(i).getContractedHours())
-                    .startDate(DateUtils.convertLocalDateTimeToDate(drivers.get(i).getStartDate()))
-                    .build();
+            DriverResponse driverResponse = new DriverResponse();
+            driverResponse.setName(drivers.get(i).getName());
+            driverResponse.setContractedHours(drivers.get(i).getContractedHours());
+            driverResponse.setStartDate(DateUtils.convertLocalDateTimeToDate(drivers.get(i).getStartDate()));
+            driverResponse.setCompany(drivers.get(i).getCompany());
+            driverResponses[i] = driverResponse;
         }
-        return ResponseEntity.ok(DriversResponse.builder()
-                .count((long) driverResponses.length)
-                .driverResponses(driverResponses).build());
+        return ResponseEntity.ok(new DriversResponse((long) driverResponses.length, driverResponses));
     }
 
     /**

@@ -135,15 +135,15 @@ public class CustomerControllerTest {
      * @return a <code>CustomerRequest</code> object containing valid test data.
      */
     private CustomerRequest generateValidCustomer( ) {
-        return CustomerRequest.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        CustomerRequest customerRequest = new CustomerRequest();
+        customerRequest.setTitle("Mr");
+        customerRequest.setFirstName("Max");
+        customerRequest.setLastName("Mustermann");
+        customerRequest.setEmailAddress("max@mustermann.de");
+        customerRequest.setTelephoneNumber("01234 567890");
+        customerRequest.setAddress("1 Max Way, Musterdorf");
+        customerRequest.setCompany("Mustermann GmbH");
+        return customerRequest;
     }
 
 }

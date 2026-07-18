@@ -12,13 +12,13 @@ public class RoutesResponseTest {
 
     @Test
     public void testSetters() {
+        RouteResponse routeResponse = new RouteResponse();
+        routeResponse.setCompany("Mustermann Bus GmbH");
+        routeResponse.setRouteNumber("405");
         RoutesResponse routesResponse = new RoutesResponse();
         routesResponse.setCount(1L);
         routesResponse.setRouteResponses(new RouteResponse[] {
-                RouteResponse.builder()
-                        .company("Mustermann Bus GmbH")
-                        .routeNumber("405")
-                        .build()
+                routeResponse
         });
         assertEquals(1L, routesResponse.getCount());
         assertEquals("Mustermann Bus GmbH", routesResponse.getRouteResponses()[0].getCompany());

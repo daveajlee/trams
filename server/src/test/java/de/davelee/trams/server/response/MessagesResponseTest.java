@@ -18,14 +18,13 @@ public class MessagesResponseTest {
     @Test
     public void testGettersAndSetters() {
         MessageResponse[] messageResponses = new MessageResponse[1];
-        messageResponses[0] = MessageResponse.builder()
-                .company("Mustermann GmbH")
-                .folder("INBOX")
-                .sender("Local Authority")
-                .text("This is a test message")
-                .subject("Test")
-                .dateTime("28-12-2020 12:22")
-                .build();
+        messageResponses[0] = new MessageResponse();
+        messageResponses[0].setCompany("Mustermann GmbH");
+        messageResponses[0].setFolder("INBOX");
+        messageResponses[0].setSender("Local Authority");
+        messageResponses[0].setText("This is a test message");
+        messageResponses[0].setSubject("Test");
+        messageResponses[0].setDateTime("28-12-2020 12:22");
         MessagesResponse messagesResponse = new MessagesResponse();
         messagesResponse.setCount(1L);
         messagesResponse.setMessageResponses(messageResponses);

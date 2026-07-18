@@ -139,11 +139,11 @@ public class UserController {
     public ResponseEntity<LoginResponse> login (@RequestBody final LoginRequest loginRequest) {
         User user = userService.findByCompanyAndUserName(loginRequest.getCompany(), loginRequest.getUsername());
         if ( user != null && user.getAccountStatus()== UserAccountStatus.ACTIVE && user.getPassword().contentEquals(loginRequest.getPassword()) ) {
-            return ResponseEntity.ok().body(LoginResponse.builder().token(userService.generateAuthToken(loginRequest.getUsername())).build());
+            return ResponseEntity.ok().body(new LoginResponse("", userService.generateAuthToken(loginRequest.getUsername())));
         } else if ( user != null ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(LoginResponse.builder().errorMessage("Password was incorrect!").build());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("Password was incorrect!", null));
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(LoginResponse.builder().errorMessage("User was not found").build());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("User was not found", null));
     }
 
     /**

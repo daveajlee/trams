@@ -43,16 +43,15 @@ public class CompanyController {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to company object.
-        Company company = Company.builder()
-                .name(companyRequest.getName())
-                .playerName(companyRequest.getPlayerName())
-                .balance(BigDecimal.valueOf(companyRequest.getStartingBalance()))
-                .satisfactionRate(BigDecimal.valueOf(100.0))
-                .time(DateUtils.convertDateToLocalDateTime(companyRequest.getStartingTime()))
-                .scenarioName(companyRequest.getScenarioName())
-                .difficultyLevel(companyRequest.getDifficultyLevel())
-                .simulationInterval(100)
-                .build();
+        Company company = new Company();
+        company.setName(companyRequest.getName());
+        company.setPlayerName(companyRequest.getPlayerName());
+        company.setBalance(BigDecimal.valueOf(companyRequest.getStartingBalance()));
+        company.setSatisfactionRate(BigDecimal.valueOf(100.0));
+        company.setTime(DateUtils.convertDateToLocalDateTime(companyRequest.getStartingTime()));
+        company.setScenarioName(companyRequest.getScenarioName());
+        company.setDifficultyLevel(companyRequest.getDifficultyLevel());
+        company.setSimulationInterval(100);
         //Return 201 if saved successfully.
         return companyService.save(company) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
@@ -77,16 +76,16 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now convert to company response object.
-        return ResponseEntity.ok(CompanyResponse.builder()
-                .name(companies.getFirst().getName())
-                .playerName(companies.getFirst().getPlayerName())
-                .balance(companies.getFirst().getBalance().doubleValue())
-                .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
-                .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
-                .scenarioName(companies.getFirst().getScenarioName())
-                .difficultyLevel(companies.getFirst().getDifficultyLevel())
-                .simulationInterval(companies.getFirst().getSimulationInterval())
-                .build());
+        CompanyResponse companyResponse = new CompanyResponse();
+        companyResponse.setName(companies.getFirst().getName());
+        companyResponse.setPlayerName(companies.getFirst().getPlayerName());
+        companyResponse.setBalance(companies.getFirst().getBalance().doubleValue());
+        companyResponse.setSatisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue());
+        companyResponse.setTime(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()));
+        companyResponse.setScenarioName(companies.getFirst().getScenarioName());
+        companyResponse.setDifficultyLevel(companies.getFirst().getDifficultyLevel());
+        companyResponse.setSimulationInterval(companies.getFirst().getSimulationInterval());
+        return ResponseEntity.ok(companyResponse);
     }
 
     /**
@@ -108,10 +107,7 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now adjust the balance and return the current balance after adjustment.
-        return ResponseEntity.ok(BalanceResponse.builder()
-                .company(companies.getFirst().getName())
-                .balance(companyService.adjustBalance(companies.getFirst(), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue())
-                .build());
+        return ResponseEntity.ok(new BalanceResponse(companies.getFirst().getName(), companyService.adjustBalance(companies.getFirst(), BigDecimal.valueOf(adjustBalanceRequest.getValue())).doubleValue()));
     }
 
     /**
@@ -133,10 +129,7 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now adjust the satisfaction rate and return the current satisfaction rate after adjustment.
-        return ResponseEntity.ok(SatisfactionRateResponse.builder()
-                .company(companies.getFirst().getName())
-                .satisfactionRate(companyService.adjustSatisfactionRate(companies.getFirst(), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue())
-                .build());
+        return ResponseEntity.ok(new SatisfactionRateResponse(companies.getFirst().getName(), companyService.adjustSatisfactionRate(companies.getFirst(), BigDecimal.valueOf(adjustSatisfactionRequest.getSatisfactionRate())).doubleValue()));
     }
 
     /**
@@ -158,10 +151,7 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now adjust the simulation interval and return the current simulation interval after adjustment.
-        return ResponseEntity.ok(SimulationIntervalResponse.builder()
-                .company(companies.getFirst().getName())
-                .simulationInterval(companyService.adjustSimulationInterval(companies.getFirst(), adjustSimulationIntervalRequest.getSimulationInterval()))
-                .build());
+        return ResponseEntity.ok(new SimulationIntervalResponse(companies.getFirst().getName(), companyService.adjustSimulationInterval(companies.getFirst(), adjustSimulationIntervalRequest.getSimulationInterval())));
     }
 
     /**
@@ -183,10 +173,7 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now add the time and return the current time after adjustment.
-        return ResponseEntity.ok(TimeResponse.builder()
-                .company(companies.getFirst().getName())
-                .time(DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.getFirst(), addTimeRequest.getMinutes())))
-                .build());
+        return ResponseEntity.ok(new TimeResponse(companies.getFirst().getName(), DateUtils.convertLocalDateTimeToDate(companyService.addTime(companies.getFirst(), addTimeRequest.getMinutes()))));
     }
 
     /**
@@ -208,10 +195,7 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         //Now add the time and return the current time after adjustment.
-        return ResponseEntity.ok(DifficultyLevelResponse.builder()
-                .company(companies.getFirst().getName())
-                .difficultyLevel(companyService.adjustDifficultyLevel(companies.getFirst(), difficultyLevelRequest.getDifficultyLevel()))
-                .build());
+        return ResponseEntity.ok(new DifficultyLevelResponse(companies.getFirst().getName(), companyService.adjustDifficultyLevel(companies.getFirst(), difficultyLevelRequest.getDifficultyLevel())));
     }
 
     /**
@@ -234,20 +218,19 @@ public class CompanyController {
             return ResponseEntity.noContent().build();
         }
         // Return the export.
-        return ResponseEntity.ok(
-                ExportCompanyResponse.builder()
-                        .name(companies.getFirst().getName())
-                        .balance(companies.getFirst().getBalance().doubleValue())
-                        .playerName(companies.getFirst().getPlayerName())
-                        .satisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue())
-                        .time(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()))
-                        .scenarioName(companies.getFirst().getScenarioName())
-                        .difficultyLevel(companies.getFirst().getDifficultyLevel())
-                        .routes(exportCompanyRequest.getRoutes())
-                        .drivers(exportCompanyRequest.getDrivers())
-                        .vehicles(exportCompanyRequest.getVehicles())
-                        .messages(exportCompanyRequest.getMessages())
-                        .build());
+        ExportCompanyResponse exportCompanyResponse = new ExportCompanyResponse();
+        exportCompanyResponse.setName(companies.getFirst().getName());
+        exportCompanyResponse.setBalance(companies.getFirst().getBalance().doubleValue());
+        exportCompanyResponse.setPlayerName(companies.getFirst().getPlayerName());
+        exportCompanyResponse.setSatisfactionRate(companies.getFirst().getSatisfactionRate().doubleValue());
+        exportCompanyResponse.setTime(DateUtils.convertLocalDateTimeToDate(companies.getFirst().getTime()));
+        exportCompanyResponse.setScenarioName(companies.getFirst().getScenarioName());
+        exportCompanyResponse.setDifficultyLevel(companies.getFirst().getDifficultyLevel());
+        exportCompanyResponse.setRoutes(exportCompanyRequest.getRoutes());
+        exportCompanyResponse.setDrivers(exportCompanyRequest.getDrivers());
+        exportCompanyResponse.setVehicles(exportCompanyRequest.getVehicles());
+        exportCompanyResponse.setMessages(exportCompanyRequest.getMessages());
+        return ResponseEntity.ok(exportCompanyResponse);
     }
 
     /**

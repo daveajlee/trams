@@ -290,17 +290,17 @@ public class StopTimeService {
                 Stop stop = new Stop();
                 stop.setName(generateStopTimesRequest.getStopNames()[k]);
                 stopList.add(stop);
-                stopTimeList.add(StopTime.builder()
-                                .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
-                                .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
-                                .destination(generateStopTimesRequest.getEndStop())
-                                .stopName(generateStopTimesRequest.getStopNames()[k])
-                                .company(generateStopTimesRequest.getCompany())
-                                .operatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")))
-                                .validFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()))
-                                .validToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()))
-                                .routeNumber(generateStopTimesRequest.getRouteNumber())
-                                .build());
+                StopTime stopTime = new StopTime();
+                stopTime.setArrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)));
+                stopTime.setDepartureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)));
+                stopTime.setDestination(generateStopTimesRequest.getEndStop());
+                stopTime.setStopName(generateStopTimesRequest.getStopNames()[k]);
+                stopTime.setCompany(generateStopTimesRequest.getCompany());
+                stopTime.setOperatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")));
+                stopTime.setValidFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()));
+                stopTime.setValidToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()));
+                stopTime.setRouteNumber(generateStopTimesRequest.getRouteNumber());
+                stopTimeList.add(stopTime);
             }
         } else {
             for ( int m = generateStopTimesRequest.getStopNames().length - 1; m >= 0; m-- ) {
@@ -310,17 +310,17 @@ public class StopTimeService {
                 Stop stop = new Stop();
                 stop.setName(generateStopTimesRequest.getStopNames()[m]);
                 stopList.add(stop);
-                stopTimeList.add(StopTime.builder()
-                                .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
-                                .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
-                                .destination(generateStopTimesRequest.getStartStop())
-                                .stopName(generateStopTimesRequest.getStopNames()[m])
-                                .company(generateStopTimesRequest.getCompany())
-                                .operatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")))
-                                .validFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()))
-                                .validToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()))
-                                .routeNumber(generateStopTimesRequest.getRouteNumber())
-                                .build());
+                StopTime stopTime = new StopTime();
+                stopTime.setArrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)));
+                stopTime.setDepartureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)));
+                stopTime.setDestination(generateStopTimesRequest.getStartStop());
+                stopTime.setStopName(generateStopTimesRequest.getStopNames()[m]);
+                stopTime.setCompany(generateStopTimesRequest.getCompany());
+                stopTime.setOperatingDays(FrequencyPatternUtils.convertDaysOfOperation(generateStopTimesRequest.getOperatingDays().split(",")));
+                stopTime.setValidFromDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidFromDate()));
+                stopTime.setValidToDate(DateUtils.convertDateToLocalDateTime(generateStopTimesRequest.getValidToDate()));
+                stopTime.setRouteNumber(generateStopTimesRequest.getRouteNumber());
+                stopTimeList.add(stopTime);
             }
         }
         // Now we need to do the end stop.

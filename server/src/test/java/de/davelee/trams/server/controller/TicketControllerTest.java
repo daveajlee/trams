@@ -45,15 +45,14 @@ public class TicketControllerTest {
         Mockito.when(ticketService.save(any())).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Add ticket so that test is successfully.
-        TicketRequest ticket = TicketRequest.builder()
-                .shortId("single")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .token("mmustermann-ghgkg")
-                .type("Single Ticket")
-                .sortOrder(1)
-                .priceList(Map.of("adult", 0.80))
-                .build();
+        TicketRequest ticket = new TicketRequest();
+        ticket.setShortId("single");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setToken("mmustermann-ghgkg");
+        ticket.setType("Single Ticket");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", 0.80));
         ResponseEntity<Void> responseEntity = ticketController.addTicket(ticket);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
@@ -67,15 +66,14 @@ public class TicketControllerTest {
         //Mock important methods in user service.
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkf")).thenReturn(false);
         //Add ticket so that test is successfully.
-        TicketRequest ticket = TicketRequest.builder()
-                .shortId("")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .type("Single Ticket")
-                .token("mmustermann-ghgkf")
-                .sortOrder(1)
-                .priceList(Map.of("adult", 0.80))
-                .build();
+        TicketRequest ticket = new TicketRequest();
+        ticket.setShortId("");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setType("Single Ticket");
+        ticket.setToken("mmustermann-ghgkf");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", 0.80));
         ResponseEntity<Void> responseEntity = ticketController.addTicket(ticket);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         ticket.setShortId("single");

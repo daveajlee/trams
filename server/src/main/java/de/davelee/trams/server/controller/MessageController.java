@@ -46,14 +46,14 @@ public class MessageController {
             return ResponseEntity.badRequest().build();
         }
         //Now create message object and save to message service. Return 201 if saved successfully.
-        return messageService.save(Message.builder()
-                .folder(messageRequest.getFolder())
-                .dateTime(DateUtils.convertDateToLocalDateTime(messageRequest.getDateTime()))
-                .sender(messageRequest.getSender())
-                .subject(messageRequest.getSubject())
-                .text(messageRequest.getText())
-                .company(messageRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Message message = new Message();
+        message.setFolder(messageRequest.getFolder());
+        message.setDateTime(DateUtils.convertDateToLocalDateTime(messageRequest.getDateTime()));
+        message.setSender(messageRequest.getSender());
+        message.setSubject(messageRequest.getSubject());
+        message.setText(messageRequest.getText());
+        message.setCompany(messageRequest.getCompany());
+        return messageService.save(message) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
 }

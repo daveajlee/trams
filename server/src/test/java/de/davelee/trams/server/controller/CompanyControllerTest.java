@@ -47,14 +47,13 @@ public class CompanyControllerTest {
         //Mock important methods in compan< service.
         Mockito.when(companyService.save(any())).thenReturn(true);
         //Add company so that test is successfully.
-        CompanyRequest companyRequest = CompanyRequest.builder()
-                .name("Mustermann GmbH")
-                .playerName("Max Mustermann")
-                .startingBalance(10000.0)
-                .startingTime("28-11-2020 15:16")
-                .scenarioName("Intermediate's Scenario")
-                .difficultyLevel("MEDIUM")
-                .build();
+        CompanyRequest companyRequest = new CompanyRequest();
+        companyRequest.setName("Mustermann GmbH");
+        companyRequest.setPlayerName("Max Mustermann");
+        companyRequest.setStartingBalance(10000.0);
+        companyRequest.setStartingTime("28-11-2020 15:16");
+        companyRequest.setScenarioName("Intermediate's Scenario");
+        companyRequest.setDifficultyLevel("MEDIUM");
         assertEquals("CompanyRequest(name=Mustermann GmbH, startingBalance=10000.0, playerName=Max Mustermann, startingTime=28-11-2020 15:16, scenarioName=Intermediate's Scenario, difficultyLevel=MEDIUM)", companyRequest.toString());
         ResponseEntity<Void> responseEntity = companyController.addCompany(companyRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
@@ -111,8 +110,7 @@ public class CompanyControllerTest {
         Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
         Mockito.when(companyService.adjustBalance(any(), eq(BigDecimal.valueOf(10000.0)))).thenReturn(BigDecimal.valueOf(50000.0));
         //Attempt to adjust balance.
-        assertEquals(HttpStatus.OK, companyController.adjustBalance(AdjustBalanceRequest.builder()
-                .company("Mustermann GmbH").value(10000.0).build()).getStatusCode());
+        assertEquals(HttpStatus.OK, companyController.adjustBalance(new AdjustBalanceRequest("Mustermann GmbH", 10000.0)).getStatusCode());
         AdjustBalanceRequest adjustBalanceRequest = new AdjustBalanceRequest();
         adjustBalanceRequest.setCompany("Mustermann GmbH und Co");
         adjustBalanceRequest.setValue(1000.0);
@@ -132,8 +130,7 @@ public class CompanyControllerTest {
         Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
         Mockito.when(companyService.adjustSatisfactionRate(any(), eq(BigDecimal.valueOf(-20.0)))).thenReturn(BigDecimal.valueOf(80.0));
         //Attempt to adjust satisfaction rate.
-        assertEquals(HttpStatus.OK, companyController.adjustSatisfaction(AdjustSatisfactionRequest.builder()
-                .company("Mustermann GmbH").satisfactionRate(-20.0).build()).getStatusCode());
+        assertEquals(HttpStatus.OK, companyController.adjustSatisfaction(new AdjustSatisfactionRequest("Mustermann GmbH", -20.0)).getStatusCode());
         AdjustSatisfactionRequest adjustSatisfactionRequest = new AdjustSatisfactionRequest();
         adjustSatisfactionRequest.setCompany("Mustermann GmbH und Co");
         adjustSatisfactionRequest.setSatisfactionRate(10.0);
@@ -153,8 +150,7 @@ public class CompanyControllerTest {
         Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
         Mockito.when(companyService.addTime(any(), eq(20))).thenReturn(LocalDateTime.of(2020,12,3,8,20));
         //Attempt to adjust satisfaction rate.
-        assertEquals(HttpStatus.OK, companyController.addTime(AddTimeRequest.builder()
-                .company("Mustermann GmbH").minutes(20).build()).getStatusCode());
+        assertEquals(HttpStatus.OK, companyController.addTime(new AddTimeRequest("Mustermann GmbH", 20)).getStatusCode());
         AddTimeRequest addTimeRequest = new AddTimeRequest();
         addTimeRequest.setCompany("Mustermann GmbH und Co");
         addTimeRequest.setMinutes(10);
@@ -174,8 +170,7 @@ public class CompanyControllerTest {
         Mockito.when(companyService.retrieveCompanyByName("Mustermann GmbH")).thenReturn(List.of(generateValidCompany()));
         Mockito.when(companyService.adjustDifficultyLevel(any(), eq("EASY"))).thenReturn("EASY");
         //Attempt to adjust balance.
-        assertEquals(HttpStatus.OK, companyController.adjustDifficultyLevel(AdjustDifficultyLevelRequest.builder()
-                .company("Mustermann GmbH").difficultyLevel("EASY").build()).getStatusCode());
+        assertEquals(HttpStatus.OK, companyController.adjustDifficultyLevel(new AdjustDifficultyLevelRequest("Mustermann GmbH", "EASY")).getStatusCode());
         AdjustDifficultyLevelRequest adjustDifficultyLevelRequest = new AdjustDifficultyLevelRequest();
         adjustDifficultyLevelRequest.setCompany("Mustermann GmbH und Co");
         adjustDifficultyLevelRequest.setDifficultyLevel("HARD");
@@ -194,28 +189,28 @@ public class CompanyControllerTest {
         //Mock the important methods in company service.
         Mockito.when(companyService.retrieveCompanyByNameAndPlayerName("Mustermann GmbH", "Max Mustermann")).thenReturn(List.of(generateValidCompany()));
         //Attempt to export information.
-        ResponseEntity<ExportCompanyResponse> exportCompanyResponseResponseEntity = companyController.exportCompany(
-                ExportCompanyRequest.builder()
-                        .company("Mustermann GmbH")
-                        .playerName("Max Mustermann")
-                        .drivers("{name=\"Max Mustermann\"}")
-                        .messages("{subject=\"Test\"}")
-                        .routes("{number=\"1A\"}")
-                        .vehicles("{Type=\"Bus\"}")
-                        .build());
-        assertEquals(HttpStatus.OK, exportCompanyResponseResponseEntity.getStatusCode());
-        assertEquals("28-12-2020 14:22", exportCompanyResponseResponseEntity.getBody().getTime());
         ExportCompanyRequest exportCompanyRequest = new ExportCompanyRequest();
-        exportCompanyRequest.setCompany("Mustermann GmbH und Co");
+        exportCompanyRequest.setCompany("Mustermann GmbH");
         exportCompanyRequest.setPlayerName("Max Mustermann");
         exportCompanyRequest.setDrivers("{name=\"Max Mustermann\"}");
         exportCompanyRequest.setMessages("{subject=\"Test\"}");
         exportCompanyRequest.setRoutes("{number=\"1A\"}");
         exportCompanyRequest.setVehicles("{Type=\"Bus\"}");
-        assertEquals("ExportCompanyRequest(company=Mustermann GmbH und Co, playerName=Max Mustermann, routes={number=\"1A\"}, drivers={name=\"Max Mustermann\"}, vehicles={Type=\"Bus\"}, messages={subject=\"Test\"})", exportCompanyRequest.toString());
-        assertEquals(HttpStatus.NO_CONTENT, companyController.exportCompany(exportCompanyRequest).getStatusCode());
-        exportCompanyRequest.setCompany("");
-        assertEquals(HttpStatus.BAD_REQUEST, companyController.exportCompany(exportCompanyRequest).getStatusCode());
+        ResponseEntity<ExportCompanyResponse> exportCompanyResponseResponseEntity = companyController.exportCompany(
+                exportCompanyRequest);
+        assertEquals(HttpStatus.OK, exportCompanyResponseResponseEntity.getStatusCode());
+        assertEquals("28-12-2020 14:22", exportCompanyResponseResponseEntity.getBody().getTime());
+        ExportCompanyRequest exportCompanyRequest2 = new ExportCompanyRequest();
+        exportCompanyRequest2.setCompany("Mustermann GmbH und Co");
+        exportCompanyRequest2.setPlayerName("Max Mustermann");
+        exportCompanyRequest2.setDrivers("{name=\"Max Mustermann\"}");
+        exportCompanyRequest2.setMessages("{subject=\"Test\"}");
+        exportCompanyRequest2.setRoutes("{number=\"1A\"}");
+        exportCompanyRequest2.setVehicles("{Type=\"Bus\"}");
+        assertEquals("ExportCompanyRequest(company=Mustermann GmbH und Co, playerName=Max Mustermann, routes={number=\"1A\"}, drivers={name=\"Max Mustermann\"}, vehicles={Type=\"Bus\"}, messages={subject=\"Test\"})", exportCompanyRequest2.toString());
+        assertEquals(HttpStatus.NO_CONTENT, companyController.exportCompany(exportCompanyRequest2).getStatusCode());
+        exportCompanyRequest2.setCompany("");
+        assertEquals(HttpStatus.BAD_REQUEST, companyController.exportCompany(exportCompanyRequest2).getStatusCode());
     }
 
     /**

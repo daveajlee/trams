@@ -39,14 +39,13 @@ public class MessageControllerTest {
         //Mock important methods in message service.
         Mockito.when(messageService.save(any())).thenReturn(true);
         //Add message so that test is successfully.
-        MessageRequest messageRequest = MessageRequest.builder()
-                .company("Mustermann GmbH")
-                .text("Great transport company")
-                .sender("Local Authority")
-                .dateTime("28-11-2020 15:16")
-                .folder("INBOX")
-                .subject("Feedback")
-                .build();
+        MessageRequest messageRequest = new MessageRequest();
+        messageRequest.setCompany("Mustermann GmbH");
+        messageRequest.setText("Great transport company");
+        messageRequest.setSender("Local Authority");
+        messageRequest.setDateTime("28-11-2020 15:16");
+        messageRequest.setFolder("INBOX");
+        messageRequest.setSubject("Feedback");
         assertEquals("MessageRequest(company=Mustermann GmbH, subject=Feedback, text=Great transport company, sender=Local Authority, folder=INBOX, dateTime=28-11-2020 15:16)", messageRequest.toString());
         ResponseEntity<Void> responseEntity = messageController.addMessage(messageRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());

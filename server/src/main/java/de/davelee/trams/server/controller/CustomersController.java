@@ -55,9 +55,6 @@ public class CustomersController {
         for (int i = 0; i < customers.size(); i++) {
             customerResponses[i] = CustomerUtils.convertCustomerToCustomerResponse(customers.get(i));
         }
-        return ResponseEntity.ok(CustomersResponse.builder()
-                .count((long) customerResponses.length)
-                .customerResponses(customerResponses)
-                .build());
+        return ResponseEntity.ok(new CustomersResponse((long) customerResponses.length, customerResponses));
     }
 }

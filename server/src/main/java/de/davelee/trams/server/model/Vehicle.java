@@ -101,6 +101,9 @@ public class Vehicle {
      */
     private List<VehicleHistoryEntry> vehicleHistoryEntryList;
 
+    public Vehicle() {
+    }
+
     /**
      * Add a number of hours for a particular day to the timesheet.
      * @param hours a <code>int</code> with the number of hours to add.

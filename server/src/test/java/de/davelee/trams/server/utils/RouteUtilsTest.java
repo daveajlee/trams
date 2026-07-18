@@ -30,11 +30,11 @@ public class RouteUtilsTest {
      */
     @Test
     public void testDuplicates() {
-        Mockito.when(routeRepository.findByCompanyAndRouteNumber("Mustermann Bus GmbH", "405")).thenReturn(List.of(Route.builder()
-                .company("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .build()));
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setId("123");
+        route.setRouteNumber("405");
+        Mockito.when(routeRepository.findByCompanyAndRouteNumber("Mustermann Bus GmbH", "405")).thenReturn(List.of(route));
         assertTrue(RouteUtils.hasRouteAlreadyBeenImported("405", "Mustermann Bus GmbH", routeRepository));
         assertFalse(RouteUtils.hasRouteAlreadyBeenImported("406", "Mustermann Bus GmbH", routeRepository));
     }

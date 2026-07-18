@@ -16,15 +16,14 @@ public class RouteTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        Route route = Route.builder()
-                .company("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .startStop("Beach")
-                .stops(new String[] { "City Centre", "Hospital"})
-                .endStop("Airport")
-                .nightRoute(false)
-                .build();
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setId("123");
+        route.setRouteNumber("405");
+        route.setStartStop("Beach");
+        route.setStops(new String[] { "City Centre", "Hospital"});
+        route.setEndStop("Airport");
+        route.setNightRoute(false);
         //Verify the builder functionality through getter methods
         assertEquals("Mustermann Bus GmbH", route.getCompany());
         assertEquals("123", route.getId());
