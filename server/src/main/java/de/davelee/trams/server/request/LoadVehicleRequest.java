@@ -1,7 +1,5 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +8,6 @@ import java.util.Map;
  * company.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class LoadVehicleRequest {
 
     /**
@@ -87,4 +80,135 @@ public class LoadVehicleRequest {
      */
     private Map<String, Integer> timesheet;
 
+    public LoadVehicleRequest() {
+    }
+
+    public LoadVehicleRequest(String fleetNumber, String company, String deliveryDate, String inspectionDate, String vehicleType, String vehicleStatus, int seatingCapacity, int standingCapacity, String modelName, String livery, String allocatedTour, Map<String, String> additionalTypeInformationMap, List<VehicleHistoryRequest> userHistory, Map<String, Integer> timesheet) {
+        this.fleetNumber = fleetNumber;
+        this.company = company;
+        this.deliveryDate = deliveryDate;
+        this.inspectionDate = inspectionDate;
+        this.vehicleType = vehicleType;
+        this.vehicleStatus = vehicleStatus;
+        this.seatingCapacity = seatingCapacity;
+        this.standingCapacity = standingCapacity;
+        this.modelName = modelName;
+        this.livery = livery;
+        this.allocatedTour = allocatedTour;
+        this.additionalTypeInformationMap = additionalTypeInformationMap;
+        this.userHistory = userHistory;
+        this.timesheet = timesheet;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public String getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(String inspectionDate) {
+        this.inspectionDate = inspectionDate;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getVehicleStatus() {
+        return vehicleStatus;
+    }
+
+    public void setVehicleStatus(String vehicleStatus) {
+        this.vehicleStatus = vehicleStatus;
+    }
+
+    public int getSeatingCapacity() {
+        return seatingCapacity;
+    }
+
+    public void setSeatingCapacity(int seatingCapacity) {
+        this.seatingCapacity = seatingCapacity;
+    }
+
+    public int getStandingCapacity() {
+        return standingCapacity;
+    }
+
+    public void setStandingCapacity(int standingCapacity) {
+        this.standingCapacity = standingCapacity;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getLivery() {
+        return livery;
+    }
+
+    public void setLivery(String livery) {
+        this.livery = livery;
+    }
+
+    public String getAllocatedTour() {
+        return allocatedTour;
+    }
+
+    public void setAllocatedTour(String allocatedTour) {
+        this.allocatedTour = allocatedTour;
+    }
+
+    public Map<String, String> getAdditionalTypeInformationMap() {
+        return additionalTypeInformationMap;
+    }
+
+    public void setAdditionalTypeInformationMap(Map<String, String> additionalTypeInformationMap) {
+        this.additionalTypeInformationMap = additionalTypeInformationMap;
+    }
+
+    public List<VehicleHistoryRequest> getUserHistory() {
+        return userHistory;
+    }
+
+    public void setUserHistory(List<VehicleHistoryRequest> userHistory) {
+        this.userHistory = userHistory;
+    }
+
+    public Map<String, Integer> getTimesheet() {
+        return timesheet;
+    }
+
+    public void setTimesheet(Map<String, Integer> timesheet) {
+        this.timesheet = timesheet;
+    }
 }

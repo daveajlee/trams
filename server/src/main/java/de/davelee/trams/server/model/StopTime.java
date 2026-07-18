@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,12 +13,6 @@ import java.time.LocalTime;
  * takes place and the journey number.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-@Setter
-@ToString
 @Document
 public class StopTime {
 
@@ -102,4 +95,143 @@ public class StopTime {
         }
     }
 
+    public StopTime() {
+    }
+
+    public StopTime(String stopName, String company, LocalTime arrivalTime, LocalTime departureTime, String destination, String routeNumber, LocalDateTime validFromDate, LocalDateTime validToDate, OperatingDays operatingDays, String journeyNumber, String footnote) {
+        this.stopName = stopName;
+        this.company = company;
+        this.arrivalTime = arrivalTime;
+        this.departureTime = departureTime;
+        this.destination = destination;
+        this.routeNumber = routeNumber;
+        this.validFromDate = validFromDate;
+        this.validToDate = validToDate;
+        this.operatingDays = operatingDays;
+        this.journeyNumber = journeyNumber;
+        this.footnote = footnote;
+    }
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    public String getStopName() {
+        return stopName;
+    }
+
+    public void setStopName(String stopName) {
+        this.stopName = stopName;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public LocalTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public LocalTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getRouteNumber() {
+        return routeNumber;
+    }
+
+    public void setRouteNumber(String routeNumber) {
+        this.routeNumber = routeNumber;
+    }
+
+    public ServiceTrip getService() {
+        return service;
+    }
+
+    public void setService(ServiceTrip service) {
+        this.service = service;
+    }
+
+    public LocalDateTime getValidFromDate() {
+        return validFromDate;
+    }
+
+    public void setValidFromDate(LocalDateTime validFromDate) {
+        this.validFromDate = validFromDate;
+    }
+
+    public LocalDateTime getValidToDate() {
+        return validToDate;
+    }
+
+    public void setValidToDate(LocalDateTime validToDate) {
+        this.validToDate = validToDate;
+    }
+
+    public OperatingDays getOperatingDays() {
+        return operatingDays;
+    }
+
+    public void setOperatingDays(OperatingDays operatingDays) {
+        this.operatingDays = operatingDays;
+    }
+
+    public String getJourneyNumber() {
+        return journeyNumber;
+    }
+
+    public void setJourneyNumber(String journeyNumber) {
+        this.journeyNumber = journeyNumber;
+    }
+
+    public String getFootnote() {
+        return footnote;
+    }
+
+    public void setFootnote(String footnote) {
+        this.footnote = footnote;
+    }
+
+    @Override
+    public String toString() {
+        return "StopTime{" +
+                "id=" + id +
+                ", stopName='" + stopName + '\'' +
+                ", company='" + company + '\'' +
+                ", arrivalTime=" + arrivalTime +
+                ", departureTime=" + departureTime +
+                ", destination='" + destination + '\'' +
+                ", routeNumber='" + routeNumber + '\'' +
+                ", service=" + service +
+                ", validFromDate=" + validFromDate +
+                ", validToDate=" + validToDate +
+                ", operatingDays=" + operatingDays +
+                ", journeyNumber='" + journeyNumber + '\'' +
+                ", footnote='" + footnote + '\'' +
+                '}';
+    }
 }

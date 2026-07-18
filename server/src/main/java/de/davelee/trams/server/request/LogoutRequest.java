@@ -1,16 +1,9 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request for a logout with a token to invalidate.
  * @author Dave Lee
  */
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class LogoutRequest {
 
     /**
@@ -18,4 +11,18 @@ public class LogoutRequest {
      */
     private String token;
 
+    public LogoutRequest() {
+    }
+
+    public LogoutRequest(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

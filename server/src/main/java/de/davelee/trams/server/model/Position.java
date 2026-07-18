@@ -1,18 +1,9 @@
 package de.davelee.trams.server.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * This class represents a position where a vehicle / tour is currently at.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@ToString
 public class Position {
 
     /**
@@ -40,4 +31,57 @@ public class Position {
      */
     private ServiceTrip service;
 
+    public Position() {
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getStop() {
+        return stop;
+    }
+
+    public void setStop(String stop) {
+        this.stop = stop;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    public ServiceTrip getService() {
+        return service;
+    }
+
+    public void setService(ServiceTrip service) {
+        this.service = service;
+    }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "company='" + company + '\'' +
+                ", stop='" + stop + '\'' +
+                ", destination='" + destination + '\'' +
+                ", delay=" + delay +
+                ", service=" + service +
+                '}';
+    }
 }

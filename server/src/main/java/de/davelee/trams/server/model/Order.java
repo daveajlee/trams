@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,11 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Class to represent orders made by customers for tickets for particular companies in TraMS Server.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Document
 public class Order {
 
@@ -53,5 +47,72 @@ public class Order {
      */
     private String qrCodeText;
 
+    public Order() {
+    }
 
+    public Order(ObjectId id, String ticketType, String ticketTargetGroup, int quantity, String paymentType, String confirmationId, String qrCodeText) {
+        this.id = id;
+        this.ticketType = ticketType;
+        this.ticketTargetGroup = ticketTargetGroup;
+        this.quantity = quantity;
+        this.paymentType = paymentType;
+        this.confirmationId = confirmationId;
+        this.qrCodeText = qrCodeText;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
+    }
+
+    public String getTicketTargetGroup() {
+        return ticketTargetGroup;
+    }
+
+    public void setTicketTargetGroup(String ticketTargetGroup) {
+        this.ticketTargetGroup = ticketTargetGroup;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getConfirmationId() {
+        return confirmationId;
+    }
+
+    public void setConfirmationId(String confirmationId) {
+        this.confirmationId = confirmationId;
+    }
+
+    public String getQrCodeText() {
+        return qrCodeText;
+    }
+
+    public void setQrCodeText(String qrCodeText) {
+        this.qrCodeText = qrCodeText;
+    }
 }

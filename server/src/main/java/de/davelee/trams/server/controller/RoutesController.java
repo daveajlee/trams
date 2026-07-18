@@ -56,17 +56,17 @@ public class RoutesController {
         //Otherwise convert to routes response and return.
         RouteResponse[] routeResponses = new RouteResponse[routes.size()];
         for ( int i = 0; i < routeResponses.length; i++ ) {
-            routeResponses[i] = RouteResponse.builder()
-                    .company(routes.get(i).getCompany())
-                    .routeNumber(routes.get(i).getRouteNumber())
-                    .startStop(routes.get(i).getStartStop())
-                    .stops(routes.get(i).getStops())
-                    .endStop(routes.get(i).getEndStop())
-                    .build();
+            routeResponses[i] = new RouteResponse();
+            routeResponses[i].setCompany(routes.get(i).getCompany());
+            routeResponses[i].setRouteNumber(routes.get(i).getRouteNumber());
+            routeResponses[i].setStartStop(routes.get(i).getStartStop());
+            routeResponses[i].setStops(routes.get(i).getStops());
+            routeResponses[i].setEndStop(routes.get(i).getEndStop());
         }
-        return ResponseEntity.ok(RoutesResponse.builder()
-                .count((long) routeResponses.length)
-                .routeResponses(routeResponses).build());
+        RoutesResponse routesResponse = new RoutesResponse();
+        routesResponse.setCount((long) routeResponses.length);
+        routesResponse.setRouteResponses(routeResponses);
+        return ResponseEntity.ok(routesResponse);
     }
 
 
@@ -95,14 +95,14 @@ public class RoutesController {
         //Otherwise convert to routes response and return.
         RouteResponse[] routeResponses = new RouteResponse[routes.size()];
         for ( int i = 0; i < routeResponses.length; i++ ) {
-            routeResponses[i] = RouteResponse.builder()
-                    .company(routes.get(i).getCompany())
-                    .routeNumber(routes.get(i).getRouteNumber())
-                    .build();
+            routeResponses[i] = new RouteResponse();
+            routeResponses[i].setCompany(routes.get(i).getCompany());
+            routeResponses[i].setRouteNumber(routes.get(i).getRouteNumber());
         }
-        return ResponseEntity.ok(RoutesResponse.builder()
-                .count((long) routeResponses.length)
-                .routeResponses(routeResponses).build());
+        RoutesResponse routesResponse = new RoutesResponse();
+        routesResponse.setCount((long) routeResponses.length);
+        routesResponse.setRouteResponses(routeResponses);
+        return ResponseEntity.ok(routesResponse);
     }
 
     /**

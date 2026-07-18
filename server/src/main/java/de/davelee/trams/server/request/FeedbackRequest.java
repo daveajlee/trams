@@ -1,7 +1,5 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 import java.util.Map;
 
 /**
@@ -9,12 +7,6 @@ import java.util.Map;
  * containing customer (via email address &amp; company), message and extraInfos (key/value pair).
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class FeedbackRequest {
 
     /**
@@ -37,4 +29,55 @@ public class FeedbackRequest {
      */
     private Map<String, String> extraInfos;
 
+    public FeedbackRequest() {
+    }
+
+    public FeedbackRequest(String emailAddress, String company, String message, Map<String, String> extraInfos) {
+        this.emailAddress = emailAddress;
+        this.company = company;
+        this.message = message;
+        this.extraInfos = extraInfos;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Map<String, String> getExtraInfos() {
+        return extraInfos;
+    }
+
+    public void setExtraInfos(Map<String, String> extraInfos) {
+        this.extraInfos = extraInfos;
+    }
+
+    @Override
+    public String toString() {
+        return "FeedbackRequest{" +
+                "emailAddress='" + emailAddress + '\'' +
+                ", company='" + company + '\'' +
+                ", message='" + message + '\'' +
+                ", extraInfos=" + extraInfos +
+                '}';
+    }
 }

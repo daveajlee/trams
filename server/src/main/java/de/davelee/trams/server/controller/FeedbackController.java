@@ -55,13 +55,13 @@ public class FeedbackController {
             return ResponseEntity.badRequest().build();
         }
         //Now create feedback object and save to feedback service. Return 201 if saved successfully.
-        return feedbackService.save(Feedback.builder()
-                .customer(customer)
-                .message(feedbackRequest.getMessage())
-                .extraInfos(feedbackRequest.getExtraInfos())
-                .emailAddress(customer.getEmailAddress())
-                .company(feedbackRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Feedback feedback = new Feedback();
+        feedback.setCustomer(customer);
+        feedback.setMessage(feedbackRequest.getMessage());
+        feedback.setExtraInfos(feedbackRequest.getExtraInfos());
+        feedback.setEmailAddress(customer.getEmailAddress());
+        feedback.setCompany(feedbackRequest.getCompany());
+        return feedbackService.save(feedback) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
     /**

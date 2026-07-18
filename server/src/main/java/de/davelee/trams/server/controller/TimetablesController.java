@@ -75,18 +75,18 @@ public class TimetablesController {
         //Otherwise convert to timetables response and return.
         TimetableResponse[] timetableResponses = new TimetableResponse[timetables.size()];
         for ( int i = 0; i < timetableResponses.length; i++ ) {
-            timetableResponses[i] = TimetableResponse.builder()
-                    .company(timetables.get(i).getCompany())
-                    .name(timetables.get(i).getName())
-                    .routeNumber(timetables.get(i).getRouteNumber())
-                    .validFromDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidFromDate()))
-                    .validToDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidToDate()))
-                    .frequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternsToFrequencyPatternResponses(timetables.get(i).getFrequencyPatterns()))
-                    .build();
+            timetableResponses[i] = new TimetableResponse();
+            timetableResponses[i].setCompany(timetables.get(i).getCompany());
+            timetableResponses[i].setName(timetables.get(i).getName());
+            timetableResponses[i].setRouteNumber(timetables.get(i).getRouteNumber());
+            timetableResponses[i].setValidFromDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidFromDate()));
+            timetableResponses[i].setValidToDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidToDate()));
+            timetableResponses[i].setFrequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternsToFrequencyPatternResponses(timetables.get(i).getFrequencyPatterns()));
         }
-        return ResponseEntity.ok(TimetablesResponse.builder()
-                .count((long) timetableResponses.length)
-                .timetableResponses(timetableResponses).build());
+        TimetablesResponse timetablesResponse = new TimetablesResponse();
+        timetablesResponse.setCount((long) timetableResponses.length);
+        timetablesResponse.setTimetableResponses(timetableResponses);
+        return ResponseEntity.ok(timetablesResponse);
     }
 
 }

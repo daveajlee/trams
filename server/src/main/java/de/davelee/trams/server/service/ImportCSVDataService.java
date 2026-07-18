@@ -134,32 +134,15 @@ public class ImportCSVDataService {
                         if ( record.get(i).isEmpty() ) continue;
                         StopTime stopTime = null;
                         if ( record.get(i).length() > 5 ) {
-                            stopTime = StopTime.builder()
-                                    .company(operatorName)
-                                    .departureTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
-                                    .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)))
-                                    .stopName(record.get(0))
-                                    .destination(destination)
-                                    .routeNumber(routeNumberList.get(i - 1))
-                                    .validFromDate(validFromLocalDate)
-                                    .validToDate(validToLocalDate)
-                                    .operatingDays(operatingDays.get(i - 1))
-                                    .journeyNumber("" + i)
-                                    .footnote(footnotes.get(record.get(i).substring(6)))
-                                    .build();
+                            stopTime = new StopTime(record.get(0), operatorName, DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)),
+                                    DateUtils.convertTimeToLocalTime(record.get(i).substring(0,5)), destination,
+                                    routeNumberList.get(i - 1), validFromLocalDate, validToLocalDate, operatingDays.get(i - 1),
+                                    "" + i, footnotes.get(record.get(i).substring(6)));
                         } else {
-                            stopTime = StopTime.builder()
-                                    .company(operatorName)
-                                    .departureTime(DateUtils.convertTimeToLocalTime(record.get(i)))
-                                    .arrivalTime(DateUtils.convertTimeToLocalTime(record.get(i)))
-                                    .stopName(record.get(0))
-                                    .destination(destination)
-                                    .routeNumber(routeNumberList.get(i - 1))
-                                    .validFromDate(validFromLocalDate)
-                                    .validToDate(validToLocalDate)
-                                    .operatingDays(operatingDays.get(i - 1))
-                                    .journeyNumber("" + i)
-                                    .build();
+                            stopTime = new StopTime(record.get(0), operatorName, DateUtils.convertTimeToLocalTime(record.get(i)),
+                                    DateUtils.convertTimeToLocalTime(record.get(i)), destination,
+                                    routeNumberList.get(i - 1), validFromLocalDate, validToLocalDate, operatingDays.get(i - 1),
+                                    "" + i, footnotes.get(record.get(i).substring(6)));
                         }
                         if ( stopTime != null ) {
                             stopTimeRepository.insert(stopTime);
@@ -182,11 +165,10 @@ public class ImportCSVDataService {
      */
     private void importRoute (final String routeNumber, final String operatorName ) {
         if ( !RouteUtils.hasRouteAlreadyBeenImported(routeNumber, operatorName, routeRepository) ) {
-            Route route = Route.builder()
-                    .routeNumber(routeNumber)
-                    .id(UUID.randomUUID().toString())
-                    .company(operatorName)
-                    .build();
+            Route route = new Route();
+            route.setRouteNumber(routeNumber);
+            route.setId(UUID.randomUUID().toString());
+            route.setCompany(operatorName);
             routeRepository.insert(route);
         }
     }
@@ -197,11 +179,10 @@ public class ImportCSVDataService {
      * @param company a <code>String</code> object containing the name of the company serving the stop.
      */
     private void importStop ( final String stopName, final String company ) {
-        Stop stop = Stop.builder()
-                .id(UUID.randomUUID().toString())
-                .name(stopName)
-                .company(company)
-                .build();
+        Stop stop = new Stop();
+        stop.setId(UUID.randomUUID().toString());
+        stop.setName(stopName);
+        stop.setCompany(company);
         stopRepository.insert(stop);
     }
 

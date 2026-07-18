@@ -287,7 +287,9 @@ public class StopTimeService {
                 // Get the distance between this stop and the last stop.
                 distance += (k == 0 ) ? getDistanceBetweenStop(generateStopTimesRequest.getStartStop(), generateStopTimesRequest.getStopNames()[k], generateStopTimesRequest.getStopDistances())
                         : getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[k-1], generateStopTimesRequest.getStopNames()[k], generateStopTimesRequest.getStopDistances());
-                stopList.add(Stop.builder().name(generateStopTimesRequest.getStopNames()[k]).build());
+                Stop stop = new Stop();
+                stop.setName(generateStopTimesRequest.getStopNames()[k]);
+                stopList.add(stop);
                 stopTimeList.add(StopTime.builder()
                                 .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
                                 .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
@@ -305,7 +307,9 @@ public class StopTimeService {
                 // Get the distance between this stop and the last stop.
                 distance += ( m == generateStopTimesRequest.getStopNames().length - 1 ) ? getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[m], generateStopTimesRequest.getEndStop(), generateStopTimesRequest.getStopDistances())
                         : getDistanceBetweenStop(generateStopTimesRequest.getStopNames()[m], generateStopTimesRequest.getStopNames()[m+1], generateStopTimesRequest.getStopDistances());
-                stopList.add(Stop.builder().name(generateStopTimesRequest.getStopNames()[m]).build());
+                Stop stop = new Stop();
+                stop.setName(generateStopTimesRequest.getStopNames()[m]);
+                stopList.add(stop);
                 stopTimeList.add(StopTime.builder()
                                 .arrivalTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
                                 .departureTime(startTime.plusMinutes(((tourNumber * generateStopTimesRequest.getFrequency()) + distance)))
@@ -320,11 +324,10 @@ public class StopTimeService {
             }
         }
         // Now we need to do the end stop.
-        ServiceTrip serviceTrip = ServiceTrip.builder()
-                .serviceId(serviceId)
-                .stopList(stopList)
-                .routeSchedule(routeSchedule)
-                .build();
+        ServiceTrip serviceTrip = new ServiceTrip();
+        serviceTrip.setServiceId(serviceId);
+        serviceTrip.setStopList(stopList);
+        serviceTrip.setRouteSchedule(routeSchedule);
         for ( StopTime stopTime : stopTimeList ) {
             stopTime.setService(serviceTrip);
             stopTimeRepository.save(stopTime);
@@ -381,28 +384,29 @@ public class StopTimeService {
             if ( stopTimes.get(i).getDepartureTime().isAfter(currentDateTime.toLocalTime().minusMinutes(delay)) ) {
                 // If i is 0, then we are still at depot since we have not started.
                 if ( i == 0  ) {
-                    return Position.builder()
-                            .stop("Depot")
-                            .destination("N/A")
-                            .delay(delay)
-                            .service(null)
-                            .company(company).build();
+                    Position position = new Position();
+                    position.setStop("Depot");
+                    position.setDestination("N/A");
+                    position.setDelay(delay);
+                    position.setCompany(company);
+                    return position;
                 }
                 // Otherwise we have the position.
-                return Position.builder()
-                        .stop(stopTimes.get(i-1).getStopName())
-                        .destination(stopTimes.get(i-1).getDestination())
-                        .delay(delay)
-                        .service(stopTimes.get(i-1).getService())
-                        .company(stopTimes.get(i-1).getCompany()).build();
+                Position position = new Position();
+                position.setStop(stopTimes.get(i-1).getStopName());
+                position.setDestination(stopTimes.get(i-1).getDestination());
+                position.setDelay(delay);
+                position.setService(stopTimes.get(i-1).getService());
+                position.setCompany(stopTimes.get(i-1).getCompany());
+                return position;
             }
         }
-        return Position.builder()
-                .stop("Depot")
-                .destination("N/A")
-                .delay(delay)
-                .service(null)
-                .company(company).build();
+        Position position = new Position();
+        position.setStop("Depot");
+        position.setDestination("N/A");
+        position.setDelay(delay);
+        position.setCompany(company);
+        return position;
     }
 
     /**

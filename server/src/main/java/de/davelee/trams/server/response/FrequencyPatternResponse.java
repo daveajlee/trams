@@ -1,18 +1,12 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
+import java.util.Arrays;
 
 /**
  * This class is part of the TraMS Server REST API. It represents a response with
  * a frequency pattern for a particular timetable.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class FrequencyPatternResponse {
 
     /**
@@ -55,4 +49,95 @@ public class FrequencyPatternResponse {
      */
     private int numTours;
 
+    public FrequencyPatternResponse() {
+    }
+
+    public FrequencyPatternResponse(String name, String[] daysOfOperation, String startStop, String endStop, String startTime, String endTime, int frequencyInMinutes, int numTours) {
+        this.name = name;
+        this.daysOfOperation = daysOfOperation;
+        this.startStop = startStop;
+        this.endStop = endStop;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.frequencyInMinutes = frequencyInMinutes;
+        this.numTours = numTours;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String[] getDaysOfOperation() {
+        return daysOfOperation;
+    }
+
+    public void setDaysOfOperation(String[] daysOfOperation) {
+        this.daysOfOperation = daysOfOperation;
+    }
+
+    public String getStartStop() {
+        return startStop;
+    }
+
+    public void setStartStop(String startStop) {
+        this.startStop = startStop;
+    }
+
+    public String getEndStop() {
+        return endStop;
+    }
+
+    public void setEndStop(String endStop) {
+        this.endStop = endStop;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getFrequencyInMinutes() {
+        return frequencyInMinutes;
+    }
+
+    public void setFrequencyInMinutes(int frequencyInMinutes) {
+        this.frequencyInMinutes = frequencyInMinutes;
+    }
+
+    public int getNumTours() {
+        return numTours;
+    }
+
+    public void setNumTours(int numTours) {
+        this.numTours = numTours;
+    }
+
+    @Override
+    public String toString() {
+        return "FrequencyPatternResponse{" +
+                "name='" + name + '\'' +
+                ", daysOfOperation=" + Arrays.toString(daysOfOperation) +
+                ", startStop='" + startStop + '\'' +
+                ", endStop='" + endStop + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", frequencyInMinutes=" + frequencyInMinutes +
+                ", numTours=" + numTours +
+                '}';
+    }
 }

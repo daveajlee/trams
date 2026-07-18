@@ -1,10 +1,5 @@
 package de.davelee.trams.server.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.util.List;
 
 /**
@@ -12,10 +7,6 @@ import java.util.List;
  * of a single stop time with departure and arrival information for a stop in a particular direction.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@ToString
 public class StopTimeResponse {
 
     /**
@@ -73,4 +64,108 @@ public class StopTimeResponse {
      */
     private String journeyNumber;
 
+    public String getStopName() {
+        return stopName;
+    }
+
+    public void setStopName(String stopName) {
+        this.stopName = stopName;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getRouteNumber() {
+        return routeNumber;
+    }
+
+    public void setRouteNumber(String routeNumber) {
+        this.routeNumber = routeNumber;
+    }
+
+    public int getScheduleNumber() {
+        return scheduleNumber;
+    }
+
+    public void setScheduleNumber(int scheduleNumber) {
+        this.scheduleNumber = scheduleNumber;
+    }
+
+    public String getValidFromDate() {
+        return validFromDate;
+    }
+
+    public void setValidFromDate(String validFromDate) {
+        this.validFromDate = validFromDate;
+    }
+
+    public String getValidToDate() {
+        return validToDate;
+    }
+
+    public void setValidToDate(String validToDate) {
+        this.validToDate = validToDate;
+    }
+
+    public List<String> getOperatingDays() {
+        return operatingDays;
+    }
+
+    public void setOperatingDays(List<String> operatingDays) {
+        this.operatingDays = operatingDays;
+    }
+
+    public String getJourneyNumber() {
+        return journeyNumber;
+    }
+
+    public void setJourneyNumber(String journeyNumber) {
+        this.journeyNumber = journeyNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "StopTimeResponse{" +
+                "stopName='" + stopName + '\'' +
+                ", company='" + company + '\'' +
+                ", arrivalTime='" + arrivalTime + '\'' +
+                ", departureTime='" + departureTime + '\'' +
+                ", destination='" + destination + '\'' +
+                ", routeNumber='" + routeNumber + '\'' +
+                ", scheduleNumber=" + scheduleNumber +
+                ", validFromDate='" + validFromDate + '\'' +
+                ", validToDate='" + validToDate + '\'' +
+                ", operatingDays=" + operatingDays +
+                ", journeyNumber='" + journeyNumber + '\'' +
+                '}';
+    }
 }

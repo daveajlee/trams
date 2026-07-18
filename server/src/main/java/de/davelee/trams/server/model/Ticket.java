@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,11 +12,6 @@ import java.util.Map;
  * Each ticket is assigned to a company.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Document
 public class Ticket {
 
@@ -57,4 +51,72 @@ public class Ticket {
      */
     private String company;
 
+    public Ticket() {
+    }
+
+    public Ticket(ObjectId id, String shortId, String type, String description, int sortOrder, Map<String, BigDecimal> priceList, String company) {
+        this.id = id;
+        this.shortId = shortId;
+        this.type = type;
+        this.description = description;
+        this.sortOrder = sortOrder;
+        this.priceList = priceList;
+        this.company = company;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getShortId() {
+        return shortId;
+    }
+
+    public void setShortId(String shortId) {
+        this.shortId = shortId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public Map<String, BigDecimal> getPriceList() {
+        return priceList;
+    }
+
+    public void setPriceList(Map<String, BigDecimal> priceList) {
+        this.priceList = priceList;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 }

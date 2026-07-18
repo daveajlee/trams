@@ -1,18 +1,10 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to add an answer to a specific feedback
  * which already exists on the server.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class AnswerRequest {
 
     /**
@@ -30,4 +22,45 @@ public class AnswerRequest {
      */
     private String token;
 
+    public AnswerRequest() {
+    }
+
+    public AnswerRequest(String objectId, String answer, String token) {
+        this.objectId = objectId;
+        this.answer = answer;
+        this.token = token;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "AnswerRequest{" +
+                "objectId='" + objectId + '\'' +
+                ", answer='" + answer + '\'' +
+                ", token='" + token + '\'' +
+                '}';
+    }
 }

@@ -1,16 +1,9 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to adjust the delay of a vehicle in minutes.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class AdjustVehicleDelayRequest {
 
     //company that owns the vehicle
@@ -22,4 +15,36 @@ public class AdjustVehicleDelayRequest {
     //delay of the vehicle in minutes (a negative number indicates the delay should be reduced)
     private int delayInMinutes;
 
+    public AdjustVehicleDelayRequest() {
+    }
+
+    public AdjustVehicleDelayRequest(String company, String fleetNumber, int delayInMinutes) {
+        this.company = company;
+        this.fleetNumber = fleetNumber;
+        this.delayInMinutes = delayInMinutes;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public int getDelayInMinutes() {
+        return delayInMinutes;
+    }
+
+    public void setDelayInMinutes(int delayInMinutes) {
+        this.delayInMinutes = delayInMinutes;
+    }
 }

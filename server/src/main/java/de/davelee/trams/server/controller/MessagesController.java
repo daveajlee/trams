@@ -57,18 +57,11 @@ public class MessagesController {
         //Otherwise convert to messages response and return.
         MessageResponse[] messageResponses = new MessageResponse[messages.size()];
         for ( int i = 0; i < messageResponses.length; i++ ) {
-            messageResponses[i] = MessageResponse.builder()
-                    .company(messages.get(i).getCompany())
-                    .dateTime(DateUtils.convertLocalDateTimeToDate(messages.get(i).getDateTime()))
-                    .subject(messages.get(i).getSubject())
-                    .text(messages.get(i).getText())
-                    .sender(messages.get(i).getSender())
-                    .folder(messages.get(i).getFolder())
-                    .build();
+            messageResponses[i] = new MessageResponse(messages.get(i).getCompany(), messages.get(i).getSubject(),
+                    messages.get(i).getText(), messages.get(i).getSender(), messages.get(i).getFolder(),
+                    DateUtils.convertLocalDateTimeToDate(messages.get(i).getDateTime()));
         }
-        return ResponseEntity.ok(MessagesResponse.builder()
-                .count((long) messageResponses.length)
-                .messageResponses(messageResponses).build());
+        return ResponseEntity.ok(new MessagesResponse((long) messageResponses.length, messageResponses));
     }
 
     /**

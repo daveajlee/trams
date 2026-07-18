@@ -1,17 +1,10 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to add a number of hours to a particular date
  * to a particular vehicle (identified by fleet number and company).
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class AddVehicleHoursRequest {
 
     //company that the vehicle belongs to
@@ -26,4 +19,45 @@ public class AddVehicleHoursRequest {
     //the number of hours to add
     private int hours;
 
+    public AddVehicleHoursRequest() {
+    }
+
+    public AddVehicleHoursRequest(String company, String fleetNumber, String date, int hours) {
+        this.company = company;
+        this.fleetNumber = fleetNumber;
+        this.date = date;
+        this.hours = hours;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public void setHours(int hours) {
+        this.hours = hours;
+    }
 }

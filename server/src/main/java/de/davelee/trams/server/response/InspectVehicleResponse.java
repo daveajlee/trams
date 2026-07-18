@@ -1,17 +1,10 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a response to a request to inspect a vehicle
  * and contains the price for which the vehicle was inspected.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class InspectVehicleResponse {
 
     /**
@@ -24,4 +17,27 @@ public class InspectVehicleResponse {
      */
     private double inspectionPrice;
 
+    public InspectVehicleResponse() {
+    }
+
+    public InspectVehicleResponse(boolean inspected, double inspectionPrice) {
+        this.inspected = inspected;
+        this.inspectionPrice = inspectionPrice;
+    }
+
+    public boolean isInspected() {
+        return inspected;
+    }
+
+    public void setInspected(boolean inspected) {
+        this.inspected = inspected;
+    }
+
+    public double getInspectionPrice() {
+        return inspectionPrice;
+    }
+
+    public void setInspectionPrice(double inspectionPrice) {
+        this.inspectionPrice = inspectionPrice;
+    }
 }
