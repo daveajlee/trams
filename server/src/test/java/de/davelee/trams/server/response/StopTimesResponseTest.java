@@ -14,21 +14,21 @@ public class StopTimesResponseTest {
 
     @Test
     public void testSetters() {
+        StopTimeResponse stopTimeResponse = new StopTimeResponse();
+        stopTimeResponse.setCompany("Mustermann Bus GmbH");
+        stopTimeResponse.setStopName("Greenfield");
+        stopTimeResponse.setRouteNumber("101");
+        stopTimeResponse.setJourneyNumber("102");
+        stopTimeResponse.setDestination("Lakeside");
+        stopTimeResponse.setArrivalTime("22:10");
+        stopTimeResponse.setDepartureTime("22:11");
+        stopTimeResponse.setOperatingDays(List.of("Friday","Saturday"));
+        stopTimeResponse.setValidFromDate("23-04-2021");
+        stopTimeResponse.setValidToDate("23-10-2021");
         StopTimesResponse stopTimesResponse = new StopTimesResponse();
         stopTimesResponse.setCount(1L);
         stopTimesResponse.setStopTimeResponses(new StopTimeResponse[] {
-                StopTimeResponse.builder()
-                        .company("Mustermann Bus GmbH")
-                        .stopName("Greenfield")
-                        .routeNumber("101")
-                        .journeyNumber("102")
-                        .destination("Lakeside")
-                        .arrivalTime("22:10")
-                        .departureTime("22:11")
-                        .operatingDays(List.of("Friday","Saturday"))
-                        .validFromDate("23-04-2021")
-                        .validToDate("23-10-2021")
-                        .build()
+                stopTimeResponse
         });
         assertEquals(1L, stopTimesResponse.getCount());
         assertEquals("Mustermann Bus GmbH", stopTimesResponse.getStopTimeResponses()[0].getCompany());

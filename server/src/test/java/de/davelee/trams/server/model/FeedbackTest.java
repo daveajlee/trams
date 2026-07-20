@@ -21,15 +21,14 @@ public class FeedbackTest {
      */
     @Test
     public void testBuilderToString() {
-        Feedback feedback = Feedback.builder()
-                .id(ObjectId.get())
-                .customer(generateValidCustomer())
-                .company("Mustermann GmbH")
-                .message("Best transport company ever.")
-                .extraInfos(Map.of("Punctuality", "10"))
-                .answer("Thanks for the feedback")
-                .emailAddress("max@mustermann.de")
-                .build();
+        Feedback feedback = new Feedback();
+        feedback.setId(ObjectId.get());
+        feedback.setCustomer(generateValidCustomer());
+        feedback.setCompany("Mustermann GmbH");
+        feedback.setMessage("Best transport company ever.");
+        feedback.setExtraInfos(Map.of("Punctuality", "10"));
+        feedback.setAnswer("Thanks for the feedback");
+        feedback.setEmailAddress("max@mustermann.de");
         assertNotNull(feedback.getId());
         assertNotNull(feedback.getCustomer());
         assertEquals("max@mustermann.de", feedback.getCustomer().getEmailAddress());
@@ -70,15 +69,15 @@ public class FeedbackTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }

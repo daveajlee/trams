@@ -79,15 +79,15 @@ public class TicketServiceTest {
      * @return a <code>Ticket</code> object containing valid test data.
      */
     private Ticket generateValidTicket( ) {
-        return Ticket.builder()
-                .id(ObjectId.get())
-                .shortId("single")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .type("Single Ticket")
-                .sortOrder(1)
-                .priceList(Map.of("adult", new BigDecimal("0.80")))
-                .build();
+        Ticket ticket = new Ticket();
+        ticket.setId(ObjectId.get());
+        ticket.setShortId("single");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setType("Single Ticket");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", new BigDecimal("0.80")));
+        return ticket;
     }
 
 }

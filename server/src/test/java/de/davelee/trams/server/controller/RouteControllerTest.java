@@ -1,5 +1,6 @@
 package de.davelee.trams.server.controller;
 
+import com.beust.ah.A;
 import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.request.AddRouteRequest;
 import de.davelee.trams.server.service.RouteService;
@@ -40,10 +41,9 @@ public class RouteControllerTest {
         //Mock important method.
         Mockito.when(routeService.addRoute(any())).thenReturn(true);
         //Test success route.
-        AddRouteRequest addRouteRequest = AddRouteRequest.builder()
-                .company("Example Company")
-                .routeNumber("1A")
-                .build();
+        AddRouteRequest addRouteRequest = new AddRouteRequest();
+        addRouteRequest.setCompany("Example Company");
+        addRouteRequest.setRouteNumber("1A");
         assertEquals(HttpStatus.CREATED, routeController.addRoute(addRouteRequest).getStatusCode());
         //Test unsuccessful route.
         Mockito.when(routeService.addRoute(any())).thenReturn(false);
@@ -62,8 +62,11 @@ public class RouteControllerTest {
     @Test
     public void testGetRouteEndpoint() {
         //Mock important method.
+        Route route = new Route();
+        route.setCompany("Example Company");
+        route.setRouteNumber("1A");
         Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
-                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+                List.of(route));
         //Test successfully retrieve.
         assertEquals(HttpStatus.OK, routeController.getRoute("Example Company", "1A").getStatusCode());
         //Test unsuccessful retrieve.
@@ -79,9 +82,12 @@ public class RouteControllerTest {
      */
     @Test
     public void testDeleteRouteEndpoint() {
+        Route route = new Route();
+        route.setCompany("Example Company");
+        route.setRouteNumber("1A");
         //Mock important method.
         Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
-                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+                List.of(route));
         //Test successfully retrieve.
         assertEquals(HttpStatus.OK, routeController.deleteRoute("Example Company", "1A").getStatusCode());
         //Test unsuccessful retrieve.

@@ -17,18 +17,17 @@ public class StopTimeResponseTest {
      */
     @Test
     public void testCreateResponse() {
-        StopTimeResponse stopTimeResponse = StopTimeResponse.builder()
-                .company("Mustermann Bus GmbH")
-                .stopName("Greenfield")
-                .routeNumber("101")
-                .journeyNumber("102")
-                .destination("Lakeside")
-                .arrivalTime("22:10")
-                .departureTime("22:11")
-                .operatingDays(List.of("Friday","Saturday"))
-                .validFromDate("23-04-2021")
-                .validToDate("23-10-2021")
-                .build();
+        StopTimeResponse stopTimeResponse = new StopTimeResponse();
+        stopTimeResponse.setCompany("Mustermann Bus GmbH");
+        stopTimeResponse.setStopName("Greenfield");
+        stopTimeResponse.setRouteNumber("101");
+        stopTimeResponse.setJourneyNumber("102");
+        stopTimeResponse.setDestination("Lakeside");
+        stopTimeResponse.setArrivalTime("22:10");
+        stopTimeResponse.setDepartureTime("22:11");
+        stopTimeResponse.setOperatingDays(List.of("Friday","Saturday"));
+        stopTimeResponse.setValidFromDate("23-04-2021");
+        stopTimeResponse.setValidToDate("23-10-2021");
         assertEquals("Greenfield", stopTimeResponse.getStopName());
         assertEquals("Mustermann Bus GmbH", stopTimeResponse.getCompany());
         assertEquals("101", stopTimeResponse.getRouteNumber());

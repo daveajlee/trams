@@ -22,22 +22,21 @@ public class VehicleTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        Vehicle vehicle = Vehicle.builder()
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .modelName("BendyBus 2000")
-                .livery("Green with black slide")
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Map.of("registrationNumber", "W234 DFFKD"))
-                .timesheet(Map.of(LocalDateTime.of(2021,10,29,0,0), 16))
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setFleetNumber("213");
+        vehicle.setCompany("Lee Buses");
+        vehicle.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        vehicle.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
+        vehicle.setSeatingCapacity(50);
+        vehicle.setStandingCapacity(80);
+        vehicle.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicle.setModelName("BendyBus 2000");
+        vehicle.setLivery("Green with black slide");
+        vehicle.setAllocatedRoute("1");
+        vehicle.setAllocatedTour("1");
+        vehicle.setVehicleType(VehicleType.BUS);
+        vehicle.setTypeSpecificInfos(Map.of("registrationNumber", "W234 DFFKD"));
+        vehicle.setTimesheet(Map.of(LocalDateTime.of(2021,10,29,0,0), 16));
         //Verify the builder functionality through getter methods
         assertEquals("BendyBus 2000", vehicle.getModelName());
         assertEquals(LocalDateTime.of(2021,3,25,0,0), vehicle.getDeliveryDate());

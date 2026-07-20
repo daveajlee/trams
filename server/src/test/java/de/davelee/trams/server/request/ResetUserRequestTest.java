@@ -26,12 +26,11 @@ public class ResetUserRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder() {
-        ResetUserRequest resetUserRequest = ResetUserRequest.builder()
-                .company("MyCompany")
-                .username("dlee")
-                .password("test123")
-                .token("dlee-ghgkg")
-                .build();
+        ResetUserRequest resetUserRequest = new ResetUserRequest();
+        resetUserRequest.setCompany("MyCompany");
+        resetUserRequest.setUsername("dlee");
+        resetUserRequest.setPassword("test123");
+        resetUserRequest.setToken("dlee-ghgkg");
         assertEquals("MyCompany", resetUserRequest.getCompany());
         assertEquals("dlee", resetUserRequest.getUsername());
         assertEquals("test123", resetUserRequest.getPassword());

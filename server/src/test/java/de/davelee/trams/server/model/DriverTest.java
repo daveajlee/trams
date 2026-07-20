@@ -18,12 +18,11 @@ public class DriverTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        Driver driver = Driver.builder()
-                .name("Max Mustermann")
-                .company("Lee Buses")
-                .startDate(LocalDateTime.of(2021,3,25,0,0))
-                .contractedHours(35)
-                .build();
+        Driver driver = new Driver();
+        driver.setName("Max Mustermann");
+        driver.setCompany("Lee Buses");
+        driver.setStartDate(LocalDateTime.of(2021,3,25,0,0));
+        driver.setContractedHours(35);
         //Verify the builder functionality through getter methods
         assertEquals("Max Mustermann", driver.getName());
         assertEquals(LocalDateTime.of(2021,3,25,0,0), driver.getStartDate());

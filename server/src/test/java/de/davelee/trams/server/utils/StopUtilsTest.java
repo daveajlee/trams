@@ -30,13 +30,13 @@ public class StopUtilsTest {
      */
     @Test
     public void testDuplicates() {
-        Mockito.when(stopRepository.findByCompanyAndName("Mustermann Bus GmbH", "Greenfield")).thenReturn(List.of(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .latitude(50.03)
-                .longitude(123.04)
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        stop.setCompany("Mustermann Bus GmbH");
+        Mockito.when(stopRepository.findByCompanyAndName("Mustermann Bus GmbH", "Greenfield")).thenReturn(List.of(stop));
         assertTrue(StopUtils.hasStopAlreadyBeenImported("Greenfield", "Mustermann Bus GmbH", stopRepository));
         assertFalse(StopUtils.hasStopAlreadyBeenImported("Bus Depot", "Mustermann Bus GmbH", stopRepository));
     }

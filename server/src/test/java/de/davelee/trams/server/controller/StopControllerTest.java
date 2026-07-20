@@ -37,12 +37,7 @@ public class StopControllerTest {
         //Mock important method.
         Mockito.when(stopService.addStop(any())).thenReturn(true);
         //Test success stop.
-        AddStopRequest addStopRequest = AddStopRequest.builder()
-                .company("Example Company")
-                .name("Park Avenue")
-                .latitude(53.821067)
-                .longitude(14.106563)
-                .build();
+        AddStopRequest addStopRequest = new AddStopRequest("Park Avenue", "Example Company", 0 , null, null, 53.821067, 14.106563);
         assertEquals(HttpStatus.CREATED, stopController.addStop(addStopRequest).getStatusCode());
         //Test unsuccessful stop.
         Mockito.when(stopService.addStop(any())).thenReturn(false);

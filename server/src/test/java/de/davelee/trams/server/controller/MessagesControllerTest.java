@@ -38,16 +38,14 @@ public class MessagesControllerTest {
     @Test
     public void testDelete() {
         //Add mock data.
-        Mockito.when(messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.empty(), Optional.empty())).thenReturn(List.of(
-                Message.builder()
-                    .company("Mustermann GmbH")
-                    .folder("INBOX")
-                    .dateTime(LocalDateTime.of(2020,12,28,14,22))
-                    .sender("Local Authority")
-                    .subject("Test message")
-                    .text("My Test Message")
-                    .build()
-        ));
+        Message message = new Message();
+        message.setCompany("Mustermann GmbH");
+        message.setFolder("INBOX");
+        message.setDateTime(LocalDateTime.of(2020,12,28,14,22));
+        message.setSender("Local Authority");
+        message.setSubject("Test message");
+        message.setText("My Test Message");
+        Mockito.when(messageService.getMessagesByCompany("Mustermann GmbH", Optional.empty(), Optional.empty(), Optional.empty())).thenReturn(List.of(message));
         //Do actual test.
         assertEquals(HttpStatus.OK, messagesController.deleteMessagesByCompany("Mustermann GmbH").getStatusCode());
         assertEquals(HttpStatus.NO_CONTENT, messagesController.deleteMessagesByCompany("Lee Transport").getStatusCode());
@@ -61,23 +59,22 @@ public class MessagesControllerTest {
     @Test
     public void testRetrieveMessages() {
         //Add mock data.
+        Message message = new Message();
+        message.setCompany("Mustermann GmbH");
+        message.setFolder("INBOX");
+        message.setDateTime(LocalDateTime.of(2020,12,28,14,22));
+        message.setSender("Local Authority");
+        message.setSubject("Test message");
+        message.setText("My Test Message");
+        Message message2 = new Message();
+        message2.setCompany("Mustermann GmbH");
+        message2.setFolder("INBOX");
+        message2.setSender("Local Authority");
+        message2.setSubject("Test message");
+        message2.setText("My Test Message");
         Mockito.when(messageService.getMessagesByCompany("Mustermann GmbH", Optional.of("INBOX"), Optional.of("Local Authority"), Optional.of("28-12-2020 14:22"))).thenReturn(List.of(
-                Message.builder()
-                        .company("Mustermann GmbH")
-                        .folder("INBOX")
-                        .dateTime(LocalDateTime.of(2020,12,28,14,22))
-                        .sender("Local Authority")
-                        .subject("Test message")
-                        .text("My Test Message")
-                        .build(),
-                Message.builder()
-                        .company("Mustermann GmbH")
-                        .folder("INBOX")
-                        .dateTime(null)
-                        .sender("Local Authority")
-                        .subject("Test message")
-                        .text("My Test Message")
-                        .build()
+                message,
+                message2
         ));
         //Do actual test.
         assertEquals(HttpStatus.OK, messagesController.getMessages("Mustermann GmbH",  Optional.of("INBOX"), Optional.of("Local Authority"), Optional.of("28-12-2020 14:22")).getStatusCode());

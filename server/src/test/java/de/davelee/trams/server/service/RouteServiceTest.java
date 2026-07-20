@@ -34,16 +34,12 @@ public class RouteServiceTest {
      */
     @Test
     public void testAddRoute() {
-        Mockito.when(routeRepository.save(any())).thenReturn(Route.builder()
-                .routeNumber("1A")
-                .id("1")
-                .company("Mustermann Bus GmbH")
-                .build());
-        assertTrue(routeService.addRoute(Route.builder()
-                .routeNumber("1A")
-                .id("1")
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Route route = new Route();
+        route.setRouteNumber("1A");
+        route.setId("1");
+        route.setCompany("Mustermann Bus GmbH");
+        Mockito.when(routeRepository.save(any())).thenReturn(route);
+        assertTrue(routeService.addRoute(route));
     }
 
     /**
@@ -51,21 +47,17 @@ public class RouteServiceTest {
      */
     @Test
     public void testService ( ) {
-        Mockito.when(routeRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Route.builder()
-                .routeNumber("1A")
-                .id("1")
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Route route = new Route();
+        route.setRouteNumber("1A");
+        route.setId("1");
+        route.setCompany("Mustermann Bus GmbH");
+        Mockito.when(routeRepository.findByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(route));
         assertEquals(1, routeService.getRoutesByCompany("Mustermann Bus GmbH").size());
         assertEquals("1A", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getRouteNumber());
         assertEquals("1", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getId());
         assertEquals("Mustermann Bus GmbH", routeService.getRoutesByCompany("Mustermann Bus GmbH").get(0).getCompany());
         //Test retrieval of single route.
-        Mockito.when(routeRepository.findByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C")).thenReturn(Lists.newArrayList(Route.builder()
-                .routeNumber("1A")
-                .id("1")
-                .company("Mustermann Bus GmbH")
-                .build()));
+        Mockito.when(routeRepository.findByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C")).thenReturn(Lists.newArrayList(route));
         assertEquals(1, routeService.getRoutesByCompanyAndRouteNumber("Mustermann Bus GmbH", "1C").size());
     }
 
@@ -74,7 +66,10 @@ public class RouteServiceTest {
      */
     @Test
     public void testDeleteRoutes ( ) {
-        routeService.deleteRoute(Route.builder().company("Mustermann Bus Gmbh").routeNumber("1C").build());
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setRouteNumber("1C");
+        routeService.deleteRoute(route);
     }
 
 }

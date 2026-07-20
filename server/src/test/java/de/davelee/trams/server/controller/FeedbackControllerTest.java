@@ -53,12 +53,7 @@ public class FeedbackControllerTest {
         Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(generateValidCustomer());
         Mockito.when(feedbackService.save(any())).thenReturn(true);
         //Add feedback so that test is successfully.
-        FeedbackRequest feedbackRequest = FeedbackRequest.builder()
-                .emailAddress("max@mustermann.de")
-                .company("Mustermann GmbH")
-                .message("Great transport company")
-                .extraInfos(Map.of("Punctuality","10"))
-                .build();
+        FeedbackRequest feedbackRequest = new FeedbackRequest("max@mustermann.de", "Mustermann GmbH", "Great transport company", Map.of("Punctuality","10"));
         ResponseEntity<Void> responseEntity = feedbackController.addFeedback(feedbackRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
@@ -72,12 +67,7 @@ public class FeedbackControllerTest {
         //Mock important methods in customer & feedback service.
         Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(null);
         //Add feedback so that test is successfully.
-        FeedbackRequest feedbackRequest = FeedbackRequest.builder()
-                .emailAddress("")
-                .company("Mustermann GmbH")
-                .message("Great transport company")
-                .extraInfos(Map.of("Punctuality","10"))
-                .build();
+        FeedbackRequest feedbackRequest = new FeedbackRequest("", "Mustermann GmbH", "Great transport company", Map.of("Punctuality","10"));
         ResponseEntity<Void> responseEntity = feedbackController.addFeedback(feedbackRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         feedbackRequest.setEmailAddress("max@mustermann.de");
@@ -95,10 +85,7 @@ public class FeedbackControllerTest {
         Mockito.when(feedbackService.addAnswerToFeedback("Thanks for the feedback", "63645gjg4t996")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Add answer so that test is successfully.
-        AnswerRequest answerRequest = AnswerRequest.builder()
-                .answer("Thanks for the feedback")
-                .objectId("63645gjg4t996")
-                .token("mmustermann-ghgkg").build();
+        AnswerRequest answerRequest = new AnswerRequest("63645gjg4t996", "Thanks for the feedback", "mmustermann-ghgkg");
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
@@ -114,10 +101,7 @@ public class FeedbackControllerTest {
         Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(false);
         //Add answer so that test is successfully.
-        AnswerRequest answerRequest = AnswerRequest.builder()
-                .answer("Thanks for the feedback")
-                .objectId("")
-                .token("mmustermann-djkf").build();
+        AnswerRequest answerRequest = new AnswerRequest("", "Thanks for the feedback", "mmustermann-djkf");
         ResponseEntity<Void> responseEntity = feedbackController.addAnswer(answerRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Set object id to test 204.
@@ -136,15 +120,15 @@ public class FeedbackControllerTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }
