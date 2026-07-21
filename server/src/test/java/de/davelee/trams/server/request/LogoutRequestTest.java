@@ -14,9 +14,7 @@ public class LogoutRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder ( ) {
-        LogoutRequest logoutRequest = LogoutRequest.builder()
-                .token("max.mustermann-ghgkg")
-                .build();
+        LogoutRequest logoutRequest = new LogoutRequest("max.mustermann-ghgkg");
     }
 
     @Test

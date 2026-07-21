@@ -19,17 +19,16 @@ public class FeedbackRequestTest {
      */
     @Test
     public void testBuilderToString() {
-        FeedbackRequest feedbackRequest = FeedbackRequest.builder()
-                .company("Mustermann GmbH")
-                .emailAddress("max@mustermann.de")
-                .message("Best transport company ever.")
-                .extraInfos(Map.of("Punctuality", "10"))
-                .build();
+        FeedbackRequest feedbackRequest = new FeedbackRequest();
+        feedbackRequest.setCompany("Mustermann GmbH");
+        feedbackRequest.setEmailAddress("max@mustermann.de");
+        feedbackRequest.setMessage("Best transport company ever.");
+        feedbackRequest.setExtraInfos(Map.of("Punctuality", "10"));
         assertEquals("Best transport company ever.", feedbackRequest.getMessage());
         assertEquals(1, feedbackRequest.getExtraInfos().size());
         assertEquals("max@mustermann.de", feedbackRequest.getEmailAddress());
         assertEquals("Mustermann GmbH", feedbackRequest.getCompany());
-        assertEquals("FeedbackRequest(emailAddress=max@mustermann.de, company=Mustermann GmbH, message=Best transport company ever., extraInfos={Punctuality=10})", feedbackRequest.toString());
+        assertEquals("FeedbackRequest{emailAddress='max@mustermann.de', company='Mustermann GmbH', message='Best transport company ever.', extraInfos={Punctuality=10}}", feedbackRequest.toString());
     }
 
     /**

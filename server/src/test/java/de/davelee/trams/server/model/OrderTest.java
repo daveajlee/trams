@@ -18,15 +18,14 @@ public class OrderTest {
      */
     @Test
     public void testBuilderToString() {
-        Order order = Order.builder()
-                .id(ObjectId.get())
-                .confirmationId("feko04o24")
-                .paymentType("Credit Card")
-                .quantity(1)
-                .ticketTargetGroup("Adult")
-                .ticketType("Single")
-                .qrCodeText("Adult Single 10.10.2021 12:30")
-                .build();
+        Order order = new Order();
+        order.setId(ObjectId.get());
+        order.setConfirmationId("feko04o24");
+        order.setPaymentType("Credit Card");
+        order.setQuantity(1);
+        order.setTicketTargetGroup("Adult");
+        order.setTicketType("Single");
+        order.setQrCodeText("Adult Single 10.10.2021 12:30");
         assertEquals("feko04o24", order.getConfirmationId());
         assertEquals("Credit Card", order.getPaymentType());
         assertEquals(1, order.getQuantity());

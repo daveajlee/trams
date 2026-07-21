@@ -1,6 +1,5 @@
 package de.davelee.trams.server.request;
 
-import de.davelee.trams.server.response.PurchaseTicketResponse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,17 +14,16 @@ public class PurchaseTicketRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder ( ) {
-        PurchaseTicketRequest purchaseTicketRequest = PurchaseTicketRequest.builder()
-                .company("Mustermann GmbH")
-                .creditCardExpiryDate("01/2021")
-                .creditCardNumber("123456780910")
-                .creditCardType("VISA")
-                .creditCardSecurityCode("12")
-                .price(0.80)
-                .quantity(1)
-                .ticketTargetGroup("Adult")
-                .ticketType("Single")
-                .build();
+        PurchaseTicketRequest purchaseTicketRequest = new PurchaseTicketRequest();
+        purchaseTicketRequest.setCompany("Mustermann GmbH");
+        purchaseTicketRequest.setCreditCardExpiryDate("01/2021");
+        purchaseTicketRequest.setCreditCardNumber("123456780910");
+        purchaseTicketRequest.setCreditCardType("VISA");
+        purchaseTicketRequest.setCreditCardSecurityCode("12");
+        purchaseTicketRequest.setPrice(0.80);
+        purchaseTicketRequest.setQuantity(1);
+        purchaseTicketRequest.setTicketTargetGroup("Adult");
+        purchaseTicketRequest.setTicketType("Single");
         assertEquals("Mustermann GmbH", purchaseTicketRequest.getCompany());
         assertEquals("01/2021", purchaseTicketRequest.getCreditCardExpiryDate());
         assertEquals("123456780910", purchaseTicketRequest.getCreditCardNumber());

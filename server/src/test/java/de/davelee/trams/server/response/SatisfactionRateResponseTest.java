@@ -20,7 +20,7 @@ public class SatisfactionRateResponseTest {
         satisfactionRateResponse.setCompany("Lee Transport");
         assertEquals(15.0, satisfactionRateResponse.getSatisfactionRate());
         assertEquals("Lee Transport", satisfactionRateResponse.getCompany());
-        assertEquals("SatisfactionRateResponse(company=Lee Transport, satisfactionRate=15.0)", satisfactionRateResponse.toString());
+        assertEquals("SatisfactionRateResponse{company='Lee Transport', satisfactionRate=15.0}", satisfactionRateResponse.toString());
     }
 
 }

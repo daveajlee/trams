@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 public class VehicleServiceTest {
 
+    @Autowired
     @InjectMocks
     private VehicleService vehicleService;
 
@@ -42,19 +44,18 @@ public class VehicleServiceTest {
     @Test
     public void testAddVehicle() {
         //Test tram
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .vehicleType(VehicleType.TRAM)
-                .typeSpecificInfos(Map.of("bidirectional", "true"))
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setModelName("Tram 2000 Bi");
+        vehicle.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        vehicle.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
+        vehicle.setLivery("Green with black slide");
+        vehicle.setSeatingCapacity(50);
+        vehicle.setStandingCapacity(80);
+        vehicle.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicle.setFleetNumber("213");
+        vehicle.setCompany("Lee Buses");
+        vehicle.setVehicleType(VehicleType.TRAM);
+        vehicle.setTypeSpecificInfos(Map.of("bidirectional", "true"));
         Mockito.when(vehicleRepository.insert(vehicle)).thenReturn(vehicle);
         assertTrue(vehicleService.addVehicle(vehicle));
     }
@@ -65,18 +66,17 @@ public class VehicleServiceTest {
     @Test
     public void testAddInvalidVehicle() {
         //Test bus without delivery date.
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Bus 2025 Plus")
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Map.of("registrationNumber", "HJK234D2"))
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setModelName("Bus 2025 Plus");
+        vehicle.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
+        vehicle.setLivery("Green with black slide");
+        vehicle.setSeatingCapacity(50);
+        vehicle.setStandingCapacity(80);
+        vehicle.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicle.setFleetNumber("213");
+        vehicle.setCompany("Lee Buses");
+        vehicle.setVehicleType(VehicleType.BUS);
+        vehicle.setTypeSpecificInfos(Map.of("registrationNumber", "HJK234D2"));
         assertFalse(vehicleService.addVehicle(vehicle));
         //Add delivery date but set seating capacity to -20.
         vehicle.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
@@ -87,19 +87,18 @@ public class VehicleServiceTest {
         vehicle.setTypeSpecificInfos(Map.of("Feedback", "Bus is great"));
         assertFalse(vehicleService.addVehicle(vehicle));
         //Test train without operating mode.
-        Vehicle train = Vehicle.builder()
-                .modelName("Elec Train Plus")
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .livery("Green with black slide")
-                .seatingCapacity(200)
-                .standingCapacity(380)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("613")
-                .company("Lee Transport")
-                .vehicleType(VehicleType.TRAIN)
-                .typeSpecificInfos(Map.of("Depot Number", "HJK234D2"))
-                .build();
+        Vehicle train = new Vehicle();
+        train.setModelName("Elec Train Plus");
+        train.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        train.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
+        train.setLivery("Green with black slide");
+        train.setSeatingCapacity(200);
+        train.setStandingCapacity(380);
+        train.setVehicleStatus(VehicleStatus.DELIVERED);
+        train.setFleetNumber("613");
+        train.setCompany("Lee Tranport");
+        train.setVehicleType(VehicleType.TRAIN);
+        train.setTypeSpecificInfos(Map.of("Depot Number", "HJK234D2"));
         assertFalse(vehicleService.addVehicle(train));
     }
 
@@ -109,19 +108,18 @@ public class VehicleServiceTest {
     @Test
     public void testRetrieveByCompany() {
         //Test data.
-        Vehicle tram = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         Mockito.when(vehicleRepository.findByCompany("Lee Buses")).thenReturn(List.of(tram));
         //Now do actual test.
         List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompany("Lee Buses");
@@ -135,20 +133,19 @@ public class VehicleServiceTest {
     @Test
     public void testRetrieveVehiclesByCompanyAndFleetNumber() {
         //Test data.
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
-        Mockito.when(vehicleRepository.findByCompanyAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(vehicle));
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+                tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
+        Mockito.when(vehicleRepository.findByCompanyAndFleetNumberStartsWith("Lee", "21")).thenReturn(List.of(tram));
         //Now do actual test.
         List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee", "21");
         assertEquals(VehicleType.TRAM, vehicles.get(0).getVehicleType());
@@ -161,19 +158,18 @@ public class VehicleServiceTest {
     @Test
     public void testRetrieveVehiclesByFleetNumber() {
         //Test data.
-        Vehicle tram = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         tram.addVehicleHistoryEntry(LocalDateTime.of(2021,3,1,0,0), VehicleHistoryReason.PURCHASED, "Purchased!" );
         tram.addVehicleHistoryEntry(LocalDateTime.of(2021,3,25,0,0), VehicleHistoryReason.DELIVERED, "Delivered!");
         tram.addVehicleHistoryEntry(LocalDateTime.of(2021,4,1,0,0), VehicleHistoryReason.INSPECTED, "Inspected!");
@@ -198,24 +194,23 @@ public class VehicleServiceTest {
     @Test
     public void testAddHoursForDate() {
         //Test data
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(tram);
         //do actual test.
-        assertTrue(vehicleService.addHoursForDate(vehicle, 8, LocalDateTime.of(2020,3,1,0,0) ));
-        assertTrue(vehicleService.addHoursForDate(vehicle, 1, LocalDateTime.of(2020,3,1,0,0) ));
+        assertTrue(vehicleService.addHoursForDate(tram, 8, LocalDateTime.of(2020,3,1,0,0) ));
+        assertTrue(vehicleService.addHoursForDate(tram, 1, LocalDateTime.of(2020,3,1,0,0) ));
     }
 
     /**
@@ -225,24 +220,23 @@ public class VehicleServiceTest {
     @Test
     public void testAddUserHistoryEntry() {
         //Test data
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(tram);
         //do actual test.
-        assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDateTime.of(2020,3,1,0,0), VehicleHistoryReason.PURCHASED, "Welcome to the company!"));
-        assertTrue(vehicleService.addVehicleHistoryEntry(vehicle, LocalDateTime.of(2020,3,31,0,0), VehicleHistoryReason.DELIVERED, "Vehicle has been delivered!"));
+        assertTrue(vehicleService.addVehicleHistoryEntry(tram, LocalDateTime.of(2020,3,1,0,0), VehicleHistoryReason.PURCHASED, "Welcome to the company!"));
+        assertTrue(vehicleService.addVehicleHistoryEntry(tram, LocalDateTime.of(2020,3,31,0,0), VehicleHistoryReason.DELIVERED, "Vehicle has been delivered!"));
     }
 
     /**
@@ -252,27 +246,26 @@ public class VehicleServiceTest {
     @Test
     public void testSellVehicle () {
         //Test data
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important methods in Mockito.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(tram);
         //Do actual test.
-        BigDecimal sellingPrice = vehicleService.sellVehicle(vehicle);
-        assertEquals(vehicle.getVehicleType().getPurchasePrice(), sellingPrice);
+        BigDecimal sellingPrice = vehicleService.sellVehicle(tram);
+        assertEquals(tram.getVehicleType().getPurchasePrice(), sellingPrice);
         //Now mock an error and perform test again.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(null);
-        BigDecimal sellingPrice2 = vehicleService.sellVehicle(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(null);
+        BigDecimal sellingPrice2 = vehicleService.sellVehicle(tram);
         assertEquals(BigDecimal.ZERO, sellingPrice2);
     }
 
@@ -283,27 +276,26 @@ public class VehicleServiceTest {
     @Test
     public void testInspectVehicle () {
         //Test data
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important methods in Mockito.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(tram);
         //Do actual test.
-        BigDecimal inspectionPrice = vehicleService.inspectVehicle(vehicle);
-        assertEquals(vehicle.getVehicleType().getInspectionPrice(), inspectionPrice);
+        BigDecimal inspectionPrice = vehicleService.inspectVehicle(tram);
+        assertEquals(tram.getVehicleType().getInspectionPrice(), inspectionPrice);
         //Now mock an error and perform test again.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(null);
-        BigDecimal inspectionPrice2 = vehicleService.inspectVehicle(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(null);
+        BigDecimal inspectionPrice2 = vehicleService.inspectVehicle(tram);
         assertEquals(BigDecimal.ZERO, inspectionPrice2);
     }
 
@@ -314,23 +306,22 @@ public class VehicleServiceTest {
     @Test
     public void testAllocateVehicle () {
         //Test data
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusDays(7))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusDays(7));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important methods in Mockito.
-        Mockito.when(vehicleRepository.save(vehicle)).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(tram)).thenReturn(tram);
         //Do actual test.
-        assertTrue(vehicleService.allocateTourToVehicle(vehicle, "1", "1"));
+        assertTrue(vehicleService.allocateTourToVehicle(tram, "1", "1"));
     }
 
     /**
@@ -339,19 +330,19 @@ public class VehicleServiceTest {
     @Test
     public void testDeleteVehicles( ) {
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.findByCompany("Lee Buses")).thenReturn(List.of(Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build()));
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
+        Mockito.when(vehicleRepository.findByCompany("Lee Buses")).thenReturn(List.of(tram));
         //Do test.
         vehicleService.deleteVehicles("Lee Buses");
     }
@@ -361,37 +352,37 @@ public class VehicleServiceTest {
      */
     @Test
     public void testRetrieveAllocatedVehiclesForRoute ( ) {
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setAllocatedRoute("1");
+        tram.setAllocatedTour("2");
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
+        Vehicle tram2 = new Vehicle();
+        tram2.setModelName("Tram 2000 Bi");
+        tram2.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram2.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram2.setLivery("Green with black slide");
+        tram2.setSeatingCapacity(50);
+        tram2.setStandingCapacity(80);
+        tram2.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram2.setFleetNumber("214");
+        tram2.setCompany("Lee Buses");
+        tram2.setVehicleType(VehicleType.TRAM);
+        tram2.setAllocatedRoute("1");
+        tram2.setAllocatedTour("1");
+        tram2.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(List.of(Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .allocatedRoute("1")
-                .allocatedTour("2")
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build(),
-                Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("214")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build()));
+        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(List.of(tram,
+                tram2));
         //Do test.
         assertEquals(2, vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1").size());
     }
@@ -401,22 +392,22 @@ public class VehicleServiceTest {
      */
     @Test
     public void testRetrieveAllocatedVehicle ( ) {
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setAllocatedRoute("1");
+        tram.setAllocatedTour("2");
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRouteAndAllocatedTour("Lee Buses", "1", "2")).thenReturn(List.of(Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .allocatedRoute("1")
-                .allocatedTour("2")
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build()));
+        Mockito.when(vehicleRepository.findByCompanyAndAllocatedRouteAndAllocatedTour("Lee Buses", "1", "2")).thenReturn(List.of(tram));
         //Do test.
         assertEquals(1, vehicleService.retrieveVehiclesByCompanyAndAllocatedRouteAndAllocatedTour("Lee Buses", "1", "2").size());
     }
@@ -426,31 +417,29 @@ public class VehicleServiceTest {
      */
     @Test
     public void testAdjustDelayVehicle ( ) {
-        //Create test data.
-        Vehicle vehicle = Vehicle.builder()
-                .modelName("Tram 2000 Bi")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.now().minusYears(10))
-                .livery("Green with black slide")
-                .seatingCapacity(50)
-                .allocatedTour("1/2")
-                .delayInMinutes(4)
-                .standingCapacity(80)
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .fleetNumber("213")
-                .company("Lee Buses")
-                .typeSpecificInfos(Map.of("Bidirectional", "true"))
-                .vehicleType(VehicleType.TRAM)
-                .build();
+        Vehicle tram = new Vehicle();
+        tram.setModelName("Tram 2000 Bi");
+        tram.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        tram.setInspectionDate(LocalDateTime.now().minusYears(10));
+        tram.setLivery("Green with black slide");
+        tram.setSeatingCapacity(50);
+        tram.setStandingCapacity(80);
+        tram.setVehicleStatus(VehicleStatus.DELIVERED);
+        tram.setFleetNumber("213");
+        tram.setCompany("Lee Buses");
+        tram.setVehicleType(VehicleType.TRAM);
+        tram.setAllocatedRoute("1");
+        tram.setAllocatedTour("2");
+        tram.setTypeSpecificInfos(Map.of("Bidirectional", "true"));
         //Mock important method in repository.
-        Mockito.when(vehicleRepository.save(any())).thenReturn(vehicle);
+        Mockito.when(vehicleRepository.save(any())).thenReturn(tram);
         //Do test.
-        assertEquals(6, vehicleService.adjustVehicleDelay(vehicle, 2));
-        assertEquals(3, vehicleService.adjustVehicleDelay(vehicle, -3));
-        assertEquals(0, vehicleService.adjustVehicleDelay(vehicle, -4));
+        assertEquals(6, vehicleService.adjustVehicleDelay(tram, 2));
+        assertEquals(3, vehicleService.adjustVehicleDelay(tram, -3));
+        assertEquals(0, vehicleService.adjustVehicleDelay(tram, -4));
         //Do test if database does not work.
         Mockito.when(vehicleRepository.save(any())).thenReturn(null);
-        assertEquals(Integer.MIN_VALUE, vehicleService.adjustVehicleDelay(vehicle, -1));
+        assertEquals(Integer.MIN_VALUE, vehicleService.adjustVehicleDelay(tram, -1));
     }
 
 }

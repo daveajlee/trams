@@ -1,6 +1,7 @@
 package de.davelee.trams.server.response;
 
 import de.davelee.trams.server.model.Customer;
+import de.davelee.trams.server.request.CustomerRequest;
 import de.davelee.trams.server.utils.CustomerUtils;
 import org.junit.jupiter.api.Test;
 
@@ -22,11 +23,11 @@ public class FeedbackResponseTest {
      */
     @Test
     public void testBuilderToString() {
-        FeedbackResponse feedbackResponse = FeedbackResponse.builder()
-                .id("63645gjg4t996")
-                .customerResponse(CustomerUtils.convertCustomerToCustomerResponse(generateValidCustomer()))
-                .message("Great transport company")
-                .extraInfos(Map.of("Punctuality", "10")).build();
+        FeedbackResponse feedbackResponse = new FeedbackResponse();
+        feedbackResponse.setId("63645gjg4t996");
+        feedbackResponse.setCustomerResponse(CustomerUtils.convertCustomerToCustomerResponse(generateValidCustomer()));
+        feedbackResponse.setMessage("Great transport company");
+        feedbackResponse.setExtraInfos(Map.of("Punctuality", "10"));
         assertNotNull(feedbackResponse.getCustomerResponse());
         assertEquals("63645gjg4t996", feedbackResponse.getId());
         assertEquals("Great transport company", feedbackResponse.getMessage());
@@ -56,15 +57,15 @@ public class FeedbackResponseTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }

@@ -1,5 +1,6 @@
 package de.davelee.trams.server.request;
 
+import de.davelee.trams.server.model.Ticket;
 import org.junit.jupiter.api.Test;
 import java.util.Map;
 
@@ -18,14 +19,13 @@ public class TicketRequestTest {
      */
     @Test
     public void testBuilderToString() {
-        TicketRequest ticket = TicketRequest.builder()
-                .shortId("single")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .type("Single Ticket")
-                .sortOrder(1)
-                .priceList(Map.of("adult", 0.80))
-                .build();
+        TicketRequest ticket = new TicketRequest();
+        ticket.setShortId("single");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setType("Single Ticket");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", 0.80));
         assertEquals("single", ticket.getShortId());
         assertEquals("Mustermann GmbH", ticket.getCompany());
         assertEquals("Valid for 1 hour", ticket.getDescription());

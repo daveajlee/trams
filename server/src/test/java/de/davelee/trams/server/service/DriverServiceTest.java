@@ -33,12 +33,11 @@ public class DriverServiceTest {
      */
     @Test
     public void testAddDriver() {
-        Driver driver = Driver.builder()
-                .name("Max Mustermann")
-                .startDate(LocalDateTime.of(2021, 3, 25, 0, 0))
-                .contractedHours(35)
-                .company("Lee Buses")
-                .build();
+        Driver driver = new Driver();
+        driver.setName("Max Mustermann");
+        driver.setStartDate(LocalDateTime.of(2021, 3, 25, 0, 0));
+        driver.setContractedHours(35);
+        driver.setCompany("Lee Buses");
         Mockito.when(driverRepository.insert(driver)).thenReturn(driver);
         assertTrue(driverService.addDriver(driver));
     }

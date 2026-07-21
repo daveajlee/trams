@@ -42,19 +42,19 @@ public class StopsControllerTest {
      */
     @Test
     public void testStopsEndpoint() {
-        Mockito.when(stopService.getStopsByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .company("Mustermann Bus GmbH")
-                .latitude(50.03)
-                .longitude(123.04)
-                .build(), Stop.builder()
-                .id("123")
-                .name("City Centre")
-                .company("Mustermann Bus GmbH")
-                .latitude(50.03)
-                .longitude(123.04)
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setCompany("Mustermann Bus GmbH");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        Stop stop2 = new Stop();
+        stop2.setId("124");
+        stop.setName("City Centre");
+        stop.setCompany("Mustermann Bus GmbH");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        Mockito.when(stopService.getStopsByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(stop, stop2));
         ResponseEntity<StopsResponse> responseEntity = stopsController.getStops("Mustermann Bus GmbH", Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(2, responseEntity.getBody().getStopResponses().length);

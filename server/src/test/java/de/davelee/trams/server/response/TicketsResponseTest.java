@@ -30,14 +30,14 @@ public class TicketsResponseTest {
      * @return a <code>Ticket</code> object containing valid test data.
      */
     private TicketResponse generateValidTicketResponse( ) {
-        return TicketResponse.builder()
-                .shortId("single")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .type("Single Ticket")
-                .sortOrder(1)
-                .priceList(Map.of("adult", 0.80))
-                .build();
+        TicketResponse ticketResponse = new TicketResponse();
+        ticketResponse.setShortId("single");
+        ticketResponse.setCompany("Mustermann GmbH");
+        ticketResponse.setDescription("Valid for 1 hour");
+        ticketResponse.setType("Single Ticket");
+        ticketResponse.setSortOrder(1);
+        ticketResponse.setPriceList(Map.of("adult", 0.80));
+        return ticketResponse;
     }
 
 }

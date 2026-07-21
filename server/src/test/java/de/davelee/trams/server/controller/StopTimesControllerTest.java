@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.security.Provider;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -53,22 +54,22 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testDeparturesEndpoints() {
-        Mockito.when(stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "22:00", "")).thenReturn(Lists.newArrayList(StopTime.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .company("Mustermann Bus GmbH")
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .journeyNumber("101")
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                        .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)))
-                        .build())
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build()));
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(LocalTime.of(22,11));
+        stopTime.setCompany("Mustermann Bus GmbH");
+        stopTime.setDepartureTime(LocalTime.of(22,13));
+        stopTime.setDestination("Greenfield");
+        stopTime.setJourneyNumber("101");
+        stopTime.setOperatingDays(new OperatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                        Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)), null));
+        stopTime.setRouteNumber("405A");
+        stopTime.setStopName("Lakeside");
+        ServiceTrip serviceTrip = new ServiceTrip();
+        serviceTrip.setRouteSchedule(new RouteSchedule("405A", "1"));
+        stopTime.setService(serviceTrip);
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
+        Mockito.when(stopTimeService.getDepartures("Lakeside", "Mustermann Bus GmbH", "22:00", "")).thenReturn(Lists.newArrayList(stopTime));
         ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null,true, false, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
@@ -84,22 +85,22 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testArrivalsEndpoints() {
-        Mockito.when(stopTimeService.getArrivals(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .company("Mustermann Bus GmbH")
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .journeyNumber("101")
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                        .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)))
-                        .build())
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build()));
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(LocalTime.of(22,11));
+        stopTime.setCompany("Mustermann Bus GmbH");
+        stopTime.setDepartureTime(LocalTime.of(22,13));
+        stopTime.setDestination("Greenfield");
+        stopTime.setJourneyNumber("101");
+        stopTime.setOperatingDays(new OperatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)), null));
+        stopTime.setRouteNumber("405A");
+        stopTime.setStopName("Lakeside");
+        ServiceTrip serviceTrip = new ServiceTrip();
+        serviceTrip.setRouteSchedule(new RouteSchedule("405A", "1"));
+        stopTime.setService(serviceTrip);
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
+        Mockito.when(stopTimeService.getArrivals(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(stopTime));
         ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.of("22:00"), "15-03-2020", null, false, true, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
@@ -111,21 +112,22 @@ public class StopTimesControllerTest {
      */
     @Test
     public void testDeparturesDateEndpoints() {
-        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(StopTime.builder()
-                .arrivalTime(LocalTime.of(22,11))
-                .departureTime(LocalTime.of(22,13))
-                .destination("Greenfield")
-                .journeyNumber("101")
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                        .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)))
-                        .build())
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .service(ServiceTrip.builder().routeSchedule(RouteSchedule.builder().routeNumber("405A").scheduleId("1").build()).build())
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build()));
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(LocalTime.of(22,11));
+        stopTime.setCompany("Mustermann Bus GmbH");
+        stopTime.setDepartureTime(LocalTime.of(22,13));
+        stopTime.setDestination("Greenfield");
+        stopTime.setJourneyNumber("101");
+        stopTime.setOperatingDays(new OperatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                Arrays.asList(LocalDateTime.of(2020,12,25,0,0), LocalDateTime.of(2021,1,1,0,0)), null));
+        stopTime.setRouteNumber("405A");
+        stopTime.setStopName("Lakeside");
+        ServiceTrip serviceTrip = new ServiceTrip();
+        serviceTrip.setRouteSchedule(new RouteSchedule("405A", "1"));
+        stopTime.setService(serviceTrip);
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
+        Mockito.when(stopTimeService.getDeparturesByDate(anyString(), anyString(), anyString(), anyString())).thenReturn(Lists.newArrayList(stopTime));
         ResponseEntity<StopTimesResponse> responseEntity = stopTimesController.getStopTimes("Lakeside", "Mustermann Bus GmbH", Optional.empty(), "10-04-2021", null, true, false, Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1L, responseEntity.getBody().getCount());
@@ -139,17 +141,16 @@ public class StopTimesControllerTest {
     public void testGenerateEndpoint() {
         Mockito.when(companyService.getTime("Lee Transport")).thenReturn(LocalDateTime.now());
         //1st test
-        GenerateStopTimesRequest generateStopTimesRequest = GenerateStopTimesRequest.builder()
-                .company("Lee Transport")
-                .stopNames(new String[]{ "Ferry Terminal", "Arena", "Cathedral", "Bus Station", "Airport"})
-                .routeNumber("TravelExpress")
-                .startTime("05:00")
-                .endTime("23:00")
-                .frequency(90)
-                .validFromDate("11-12-2021")
-                .validToDate("10-12-2022")
-                .operatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022")
-                .build();
+        GenerateStopTimesRequest generateStopTimesRequest = new GenerateStopTimesRequest();
+        generateStopTimesRequest.setCompany("Lee Transport");
+        generateStopTimesRequest.setStopNames(new String[]{ "Ferry Terminal", "Arena", "Cathedral", "Bus Station", "Airport"});
+        generateStopTimesRequest.setRouteNumber("TravelExpress");
+        generateStopTimesRequest.setStartTime("05:00");
+        generateStopTimesRequest.setEndTime("23:00");
+        generateStopTimesRequest.setFrequency(90);
+        generateStopTimesRequest.setValidFromDate("11-12-2021");
+        generateStopTimesRequest.setValidToDate("10-12-2022");
+        generateStopTimesRequest.setOperatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022");
         assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, startStop=null, endStop=null, frequency=90, numTours=0, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022, stopDistances=null)", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
         //2nd test

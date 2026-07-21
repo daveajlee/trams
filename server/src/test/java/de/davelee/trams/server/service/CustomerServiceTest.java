@@ -89,15 +89,15 @@ public class CustomerServiceTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }

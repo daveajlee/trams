@@ -13,20 +13,14 @@ public class PurchaseTicketResponseTest {
 
     @Test
     public void testGoodPurchase( ) {
-        PurchaseTicketResponse purchaseTicketResponse = PurchaseTicketResponse.builder()
-                .success(true)
-                .qrCode("Adult Single 10.10.2021 12:30")
-                .build();
+        PurchaseTicketResponse purchaseTicketResponse = new PurchaseTicketResponse(true, "Adult Single 10.10.2021 12:30", "");
         assertEquals(true, purchaseTicketResponse.isSuccess());
         assertNotNull(purchaseTicketResponse.getQrCode());
     }
 
     @Test
     public void testBadPurchase( ) {
-        PurchaseTicketResponse purchaseTicketResponse = PurchaseTicketResponse.builder()
-                .success(false)
-                .errorMessage("Payment method was not valid")
-                .build();
+        PurchaseTicketResponse purchaseTicketResponse = new PurchaseTicketResponse(false, "", "Payment method was not valid");
         assertEquals(false, purchaseTicketResponse.isSuccess());
         assertEquals("Payment method was not valid", purchaseTicketResponse.getErrorMessage());
     }

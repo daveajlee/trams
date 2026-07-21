@@ -22,7 +22,7 @@ public class VehicleHistoryResponseTest {
         assertEquals("Purchased", vehicleHistoryResponse.getVehicleHistoryReason());
         assertEquals("Purchased!", vehicleHistoryResponse.getComment());
         assertEquals("01-03-2021", vehicleHistoryResponse.getDate());
-        assertEquals("VehicleHistoryResponse(date=01-03-2021, vehicleHistoryReason=Purchased, comment=Purchased!)", vehicleHistoryResponse.toString());
+        assertEquals("VehicleHistoryResponse{date='01-03-2021', vehicleHistoryReason='Purchased', comment='Purchased!'}", vehicleHistoryResponse.toString());
     }
 
 }

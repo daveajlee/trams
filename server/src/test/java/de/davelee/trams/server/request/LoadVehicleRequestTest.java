@@ -31,8 +31,7 @@ public class LoadVehicleRequestTest {
         loadVehicleRequest.setLivery("Blue with orange text");
         loadVehicleRequest.setAllocatedTour("1/2");
         loadVehicleRequest.setAdditionalTypeInformationMap(Map.of("Bidirectional", "true"));
-        loadVehicleRequest.setUserHistory(List.of(VehicleHistoryRequest.builder().vehicleHistoryReason("PURCHASED")
-                        .comment("Love on first sight").date("25-04-2021").build()));
+        loadVehicleRequest.setUserHistory(List.of(new VehicleHistoryRequest("25-04-2021", "PURCHASED", "Love on first sight")));
         loadVehicleRequest.setTimesheet(Map.of("01-11-2021", 8));
         assertEquals("1213", loadVehicleRequest.getFleetNumber());
         assertEquals("Lee Buses", loadVehicleRequest.getCompany());
