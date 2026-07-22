@@ -25,7 +25,7 @@ public class MessageResponseTest {
         messageResponse.setText("This is a test message");
         messageResponse.setSubject("Test");
         messageResponse.setDateTime("28-12-2020 12:22");
-        assertEquals("MessageResponse(company=Mustermann GmbH, subject=Test, text=This is a test message, sender=Local Authority, folder=INBOX, dateTime=28-12-2020 12:22)", messageResponse.toString());
+        assertEquals("MessageResponse{company='Mustermann GmbH', subject='Test', text='This is a test message', sender='Local Authority', folder='INBOX', dateTime='28-12-2020 12:22'}", messageResponse.toString());
     }
 
 }

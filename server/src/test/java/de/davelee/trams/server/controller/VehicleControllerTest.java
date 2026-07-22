@@ -108,8 +108,8 @@ public class VehicleControllerTest {
         vehicle.setCompany("Lee Buses");
         vehicle.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
         vehicle.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "213")).thenReturn(Lists.newArrayList(vehicle));
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "214")).thenReturn(null);
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "213")).thenReturn(Lists.newArrayList(vehicle));
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "214")).thenReturn(null);
         Mockito.when(vehicleService.addVehicle(any())).thenReturn(false);
         //Purchase bus with missing company.
         PurchaseVehicleRequest purchaseVehicleRequest = new PurchaseVehicleRequest();
@@ -122,7 +122,7 @@ public class VehicleControllerTest {
         purchaseVehicleRequest.setLivery("Green with red text");
         purchaseVehicleRequest.setFleetNumber("213");
         ResponseEntity<PurchaseVehicleResponse> responseEntity = vehicleController.purchaseVehicle(purchaseVehicleRequest);
-        assertEquals(400, responseEntity.getStatusCode().value());
+        assertEquals(409, responseEntity.getStatusCode().value());
         //Purchase bus which already exists.
         ResponseEntity<PurchaseVehicleResponse> responseEntity2 = vehicleController.purchaseVehicle(purchaseVehicleRequest);
         assertEquals(409, responseEntity2.getStatusCode().value());
@@ -302,10 +302,10 @@ public class VehicleControllerTest {
         //Perform tests - no vehicle
         AddHistoryEntryRequest addHistoryEntryRequest3 = new AddHistoryEntryRequest();
         addHistoryEntryRequest3.setFleetNumber("210");
-        addHistoryEntryRequest.setCompany("Example Company");
-        addHistoryEntryRequest.setDate("01-03-2020");
-        addHistoryEntryRequest.setReason("JOINED");
-        addHistoryEntryRequest.setComment("Welcome to the company!");
+        addHistoryEntryRequest3.setCompany("Example Company");
+        addHistoryEntryRequest3.setDate("01-03-2020");
+        addHistoryEntryRequest3.setReason("JOINED");
+        addHistoryEntryRequest3.setComment("Welcome to the company!");
         ResponseEntity<Void> responseEntity3 = vehicleController.addHistoryEntry(addHistoryEntryRequest3);
         assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
@@ -480,7 +480,7 @@ public class VehicleControllerTest {
         vehicle3.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
         vehicle3.setTimesheet(Map.of(LocalDateTime.of(2021,10,21,0,0), 14));
         //Mock the important methods in vehicle service.
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Transport", "223")).thenReturn(Lists.newArrayList(vehicle3));
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("223", "Lee Transport")).thenReturn(Lists.newArrayList(vehicle3));
         //Attempt to adjust delay.
         assertEquals(HttpStatus.OK, vehicleController.adjustVehicleDelay(new AdjustVehicleDelayRequest("223", "Lee Transport", -3)).getStatusCode());
         AdjustVehicleDelayRequest adjustVehicleDelayRequest = new AdjustVehicleDelayRequest();

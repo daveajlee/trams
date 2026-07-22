@@ -142,7 +142,7 @@ public class ImportCSVDataService {
                             stopTime = new StopTime(record.get(0), operatorName, DateUtils.convertTimeToLocalTime(record.get(i)),
                                     DateUtils.convertTimeToLocalTime(record.get(i)), destination,
                                     routeNumberList.get(i - 1), validFromLocalDate, validToLocalDate, operatingDays.get(i - 1),
-                                    "" + i, footnotes.get(record.get(i).substring(6)));
+                                    "" + i, record.get(i).length() > 6 ? footnotes.get(record.get(i).substring(6)) : "");
                         }
                         if ( stopTime != null ) {
                             stopTimeRepository.insert(stopTime);

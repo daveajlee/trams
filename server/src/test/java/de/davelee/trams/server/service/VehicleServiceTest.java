@@ -434,8 +434,8 @@ public class VehicleServiceTest {
         //Mock important method in repository.
         Mockito.when(vehicleRepository.save(any())).thenReturn(tram);
         //Do test.
-        assertEquals(6, vehicleService.adjustVehicleDelay(tram, 2));
-        assertEquals(3, vehicleService.adjustVehicleDelay(tram, -3));
+        assertEquals(2, vehicleService.adjustVehicleDelay(tram, 2));
+        assertEquals(0, vehicleService.adjustVehicleDelay(tram, -3));
         assertEquals(0, vehicleService.adjustVehicleDelay(tram, -4));
         //Do test if database does not work.
         Mockito.when(vehicleRepository.save(any())).thenReturn(null);

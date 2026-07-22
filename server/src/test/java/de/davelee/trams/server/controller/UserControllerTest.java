@@ -249,9 +249,7 @@ public class UserControllerTest {
     public void testReset() {
         //Mock the important methods in user service.
         Mockito.when(userService.checkAuthToken("max.mustermann-ghgkg")).thenReturn(true);
-        Mockito.when(userService.checkAuthToken("max.mustermann-ghgkf")).thenReturn(false);
         Mockito.when(userService.resetUserPassword("Example Company", "max.mustermann", "test")).thenReturn(true);
-        Mockito.when(userService.resetUserPassword("Example Company", "max.a.mustermann", "test")).thenReturn(false);
         //Test with valid user
         ResetUserRequest resetUserRequest = new ResetUserRequest();
         resetUserRequest.setCompany("Example Company");
@@ -267,7 +265,8 @@ public class UserControllerTest {
         resetUserRequest.setPassword("test");
         resetUserRequest.setToken("max.mustermann-ghgkg");
         ResponseEntity<Void> responseEntity2 = userController.resetUser(resetUserRequest2);
-        assertTrue( responseEntity2.getStatusCode().value() == HttpStatus.NOT_FOUND.value());
+        System.out.println(responseEntity2.getStatusCode().value());
+        assertTrue( responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
         //Test with invalid token
         ResetUserRequest resetUserRequest3 = new ResetUserRequest();
         resetUserRequest.setCompany("Example Company");

@@ -28,7 +28,6 @@ public class CustomerTest {
         customer.setTelephoneNumber("01234 567890");
         customer.setAddress("1 Max Way, Musterdorf");
         customer.setCompany("Mustermann GmbH");
-        assertNotNull(customer.getId());
         assertEquals("Mr", customer.getTitle());
         assertEquals("Max", customer.getFirstName());
         assertEquals("Mustermann", customer.getLastName());

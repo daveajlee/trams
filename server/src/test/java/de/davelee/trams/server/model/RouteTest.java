@@ -32,13 +32,13 @@ public class RouteTest {
         assertEquals("Airport", route.getEndStop());
         assertEquals(2, route.getStops().length);
         //Verify the toString method
-        assertEquals("Route(id=123, routeNumber=405, company=Mustermann Bus GmbH, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital], nightRoute=false)", route.toString());
+        assertEquals("Route{id='123', routeNumber='405', company='Mustermann Bus GmbH', startStop='Beach', endStop='Airport', stops=[City Centre, Hospital], nightRoute=false}", route.toString());
         //Now use the setter methods
         route.setCompany("Max Mustermann Buses");
         route.setId("1234");
         route.setRouteNumber("405A");
         //And verify again through the toString methods
-        assertEquals("Route(id=1234, routeNumber=405A, company=Max Mustermann Buses, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital], nightRoute=false)", route.toString());
+        assertEquals("Route{id='1234', routeNumber='405A', company='Max Mustermann Buses', startStop='Beach', endStop='Airport', stops=[City Centre, Hospital], nightRoute=false}", route.toString());
     }
 
 }

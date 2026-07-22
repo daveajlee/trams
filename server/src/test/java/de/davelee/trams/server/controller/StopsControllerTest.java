@@ -50,10 +50,10 @@ public class StopsControllerTest {
         stop.setLongitude(123.04);
         Stop stop2 = new Stop();
         stop2.setId("124");
-        stop.setName("City Centre");
-        stop.setCompany("Mustermann Bus GmbH");
-        stop.setLatitude(50.03);
-        stop.setLongitude(123.04);
+        stop2.setName("City Centre");
+        stop2.setCompany("Mustermann Bus GmbH");
+        stop2.setLatitude(50.03);
+        stop2.setLongitude(123.04);
         Mockito.when(stopService.getStopsByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(stop, stop2));
         ResponseEntity<StopsResponse> responseEntity = stopsController.getStops("Mustermann Bus GmbH", Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

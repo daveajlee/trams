@@ -60,7 +60,7 @@ public class StopTimeResponseTest {
         assertEquals(3, stopTimeResponse.getOperatingDays().size());
         assertEquals("23-04-2020", stopTimeResponse.getValidFromDate());
         assertEquals("23-10-2020", stopTimeResponse.getValidToDate());
-        assertEquals("StopTimeResponse{stopName='Greenerfield', company='Mustermann Buses GmbH', arrivalTime='22:11', departureTime='22:12', destination='Lakeside Central', routeNumber='11', scheduleNumber=1, validFromDate='23-04-2020', validToDate='23-10-2020', operatingDays=[Friday, Saturday, Sunday], journeyNumber=101}", stopTimeResponse.toString());
+        assertEquals("StopTimeResponse{stopName='Greenerfield', company='Mustermann Buses GmbH', arrivalTime='22:11', departureTime='22:12', destination='Lakeside Central', routeNumber='11', scheduleNumber=1, validFromDate='23-04-2020', validToDate='23-10-2020', operatingDays=[Friday, Saturday, Sunday], journeyNumber='101'}", stopTimeResponse.toString());
     }
 
 }

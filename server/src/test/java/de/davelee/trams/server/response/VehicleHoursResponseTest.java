@@ -20,6 +20,6 @@ public class VehicleHoursResponseTest {
         assertEquals(0, vehicleHoursResponse.getNumberOfHoursAvailable());
         assertEquals(16, vehicleHoursResponse.getNumberOfHoursSoFar());
         assertTrue(vehicleHoursResponse.isMaximumHoursReached());
-        assertEquals("VehicleHoursResponse(numberOfHoursSoFar=16, numberOfHoursAvailable=0, maximumHoursReached=true)", vehicleHoursResponse.toString());
+        assertEquals("VehicleHoursResponse{numberOfHoursSoFar=16, numberOfHoursAvailable=0, maximumHoursReached=true}", vehicleHoursResponse.toString());
     }
 }

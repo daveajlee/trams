@@ -33,7 +33,7 @@ public class TicketResponseTest {
         assertEquals("Single Ticket", ticket.getType());
         assertEquals(1, ticket.getSortOrder());
         assertEquals(1, ticket.getPriceList().size());
-        assertEquals("TicketResponse(shortId=single, type=Single Ticket, description=Valid for 1 hour, sortOrder=1, priceList={adult=0.8}, company=Mustermann GmbH)", ticket.toString());
+        assertEquals("TicketResponse{shortId='single', type='Single Ticket', description='Valid for 1 hour', sortOrder=1, priceList={adult=0.8}, company='Mustermann GmbH'}", ticket.toString());
     }
 
     /**

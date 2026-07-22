@@ -36,7 +36,7 @@ public class StopResponseTest {
         assertEquals("Mustermann Buses GmbH", stopResponse.getCompany());
         assertEquals(50.04, stopResponse.getLatitude());
         assertEquals(122.04, stopResponse.getLongitude());
-        assertEquals("StopResponse(name=Greenerfield, company=Mustermann Buses GmbH, waitingTime=1, distances={City Centre=20}, latitude=50.04, longitude=122.04)", stopResponse.toString());
+        assertEquals("StopResponse{name='Greenerfield', company='Mustermann Buses GmbH', waitingTime=1, distances={City Centre=20}, latitude=50.04, longitude=122.04}", stopResponse.toString());
     }
 
 }

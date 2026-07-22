@@ -151,7 +151,7 @@ public class StopTimesControllerTest {
         generateStopTimesRequest.setValidFromDate("11-12-2021");
         generateStopTimesRequest.setValidToDate("10-12-2022");
         generateStopTimesRequest.setOperatingDays("Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022");
-        assertEquals("GenerateStopTimesRequest(company=Lee Transport, stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber=TravelExpress, startTime=05:00, endTime=23:00, startStop=null, endStop=null, frequency=90, numTours=0, validFromDate=11-12-2021, validToDate=10-12-2022, operatingDays=Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022, stopDistances=null)", generateStopTimesRequest.toString());
+        assertEquals("GenerateStopTimesRequest{company='Lee Transport', stopNames=[Ferry Terminal, Arena, Cathedral, Bus Station, Airport], routeNumber='TravelExpress', startTime='05:00', endTime='23:00', startStop='null', endStop='null', frequency=90, numTours=0, validFromDate='11-12-2021', validToDate='10-12-2022', operatingDays='Monday,Tuesday,Wednesday,Thursday,Friday,25-12-2021,01-01-2022', stopDistances=null}", generateStopTimesRequest.toString());
         stopTimesController.generateStopTimes(generateStopTimesRequest);
         //2nd test
         GenerateStopTimesRequest generateStopTimesRequest2 = new GenerateStopTimesRequest();

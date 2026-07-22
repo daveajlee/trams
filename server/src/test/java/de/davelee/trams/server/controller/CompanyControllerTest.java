@@ -54,7 +54,7 @@ public class CompanyControllerTest {
         companyRequest.setStartingTime("28-11-2020 15:16");
         companyRequest.setScenarioName("Intermediate's Scenario");
         companyRequest.setDifficultyLevel("MEDIUM");
-        assertEquals("CompanyRequest(name=Mustermann GmbH, startingBalance=10000.0, playerName=Max Mustermann, startingTime=28-11-2020 15:16, scenarioName=Intermediate's Scenario, difficultyLevel=MEDIUM)", companyRequest.toString());
+        assertEquals("CompanyRequest{name='Mustermann GmbH', startingBalance=10000.0, playerName='Max Mustermann', startingTime='28-11-2020 15:16', scenarioName='Intermediate's Scenario', difficultyLevel='MEDIUM'}", companyRequest.toString());
         ResponseEntity<Void> responseEntity = companyController.addCompany(companyRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
@@ -114,7 +114,7 @@ public class CompanyControllerTest {
         AdjustBalanceRequest adjustBalanceRequest = new AdjustBalanceRequest();
         adjustBalanceRequest.setCompany("Mustermann GmbH und Co");
         adjustBalanceRequest.setValue(1000.0);
-        assertEquals("AdjustBalanceRequest(company=Mustermann GmbH und Co, value=1000.0)", adjustBalanceRequest.toString());
+        assertEquals("AdjustBalanceRequest{company='Mustermann GmbH und Co', value=1000.0}", adjustBalanceRequest.toString());
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
         adjustBalanceRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustBalance(adjustBalanceRequest).getStatusCode());
@@ -134,7 +134,7 @@ public class CompanyControllerTest {
         AdjustSatisfactionRequest adjustSatisfactionRequest = new AdjustSatisfactionRequest();
         adjustSatisfactionRequest.setCompany("Mustermann GmbH und Co");
         adjustSatisfactionRequest.setSatisfactionRate(10.0);
-        assertEquals("AdjustSatisfactionRequest(company=Mustermann GmbH und Co, satisfactionRate=10.0)", adjustSatisfactionRequest.toString());
+        assertEquals("AdjustSatisfactionRequest{company='Mustermann GmbH und Co', satisfactionRate=10.0}", adjustSatisfactionRequest.toString());
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
         adjustSatisfactionRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustSatisfaction(adjustSatisfactionRequest).getStatusCode());
@@ -154,7 +154,7 @@ public class CompanyControllerTest {
         AddTimeRequest addTimeRequest = new AddTimeRequest();
         addTimeRequest.setCompany("Mustermann GmbH und Co");
         addTimeRequest.setMinutes(10);
-        assertEquals("AddTimeRequest(company=Mustermann GmbH und Co, minutes=10)", addTimeRequest.toString());
+        assertEquals("AddTimeRequest{company='Mustermann GmbH und Co', minutes=10}", addTimeRequest.toString());
         assertEquals(HttpStatus.NO_CONTENT, companyController.addTime(addTimeRequest).getStatusCode());
         addTimeRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.addTime(addTimeRequest).getStatusCode());
@@ -174,7 +174,7 @@ public class CompanyControllerTest {
         AdjustDifficultyLevelRequest adjustDifficultyLevelRequest = new AdjustDifficultyLevelRequest();
         adjustDifficultyLevelRequest.setCompany("Mustermann GmbH und Co");
         adjustDifficultyLevelRequest.setDifficultyLevel("HARD");
-        assertEquals("AdjustDifficultyLevelRequest(company=Mustermann GmbH und Co, difficultyLevel=HARD)", adjustDifficultyLevelRequest.toString());
+        assertEquals("AdjustDifficultyLevelRequest{company='Mustermann GmbH und Co', difficultyLevel='HARD'}", adjustDifficultyLevelRequest.toString());
         assertEquals(HttpStatus.NO_CONTENT, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
         adjustDifficultyLevelRequest.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.adjustDifficultyLevel(adjustDifficultyLevelRequest).getStatusCode());
@@ -207,7 +207,7 @@ public class CompanyControllerTest {
         exportCompanyRequest2.setMessages("{subject=\"Test\"}");
         exportCompanyRequest2.setRoutes("{number=\"1A\"}");
         exportCompanyRequest2.setVehicles("{Type=\"Bus\"}");
-        assertEquals("ExportCompanyRequest(company=Mustermann GmbH und Co, playerName=Max Mustermann, routes={number=\"1A\"}, drivers={name=\"Max Mustermann\"}, vehicles={Type=\"Bus\"}, messages={subject=\"Test\"})", exportCompanyRequest2.toString());
+        assertEquals("ExportCompanyRequest{company='Mustermann GmbH und Co', playerName='Max Mustermann', routes='{number=\"1A\"}', drivers='{name=\"Max Mustermann\"}', vehicles='{Type=\"Bus\"}', messages='{subject=\"Test\"}'}", exportCompanyRequest2.toString());
         assertEquals(HttpStatus.NO_CONTENT, companyController.exportCompany(exportCompanyRequest2).getStatusCode());
         exportCompanyRequest2.setCompany("");
         assertEquals(HttpStatus.BAD_REQUEST, companyController.exportCompany(exportCompanyRequest2).getStatusCode());

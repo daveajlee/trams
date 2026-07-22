@@ -32,7 +32,7 @@ public class FeedbackResponseTest {
         assertEquals("63645gjg4t996", feedbackResponse.getId());
         assertEquals("Great transport company", feedbackResponse.getMessage());
         assertEquals(1, feedbackResponse.getExtraInfos().size());
-        assertEquals("FeedbackResponse(id=63645gjg4t996, customerResponse=CustomerResponse(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH), message=Great transport company, extraInfos={Punctuality=10})", feedbackResponse.toString());
+        assertEquals("FeedbackResponse{id='63645gjg4t996', customerResponse=CustomerResponse{title='Mr', firstName='Max', lastName='Mustermann', emailAddress='max@mustermann.de', telephoneNumber='01234 567890', address='1 Max Way, Musterdorf', company='Mustermann GmbH'}, message='Great transport company', extraInfos={Punctuality=10}}", feedbackResponse.toString());
     }
 
     /**

@@ -46,7 +46,7 @@ public class MessageControllerTest {
         messageRequest.setDateTime("28-11-2020 15:16");
         messageRequest.setFolder("INBOX");
         messageRequest.setSubject("Feedback");
-        assertEquals("MessageRequest(company=Mustermann GmbH, subject=Feedback, text=Great transport company, sender=Local Authority, folder=INBOX, dateTime=28-11-2020 15:16)", messageRequest.toString());
+        assertEquals("MessageRequest{company='Mustermann GmbH', subject='Feedback', text='Great transport company', sender='Local Authority', folder='INBOX', dateTime='28-11-2020 15:16'}", messageRequest.toString());
         ResponseEntity<Void> responseEntity = messageController.addMessage(messageRequest);
         assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }

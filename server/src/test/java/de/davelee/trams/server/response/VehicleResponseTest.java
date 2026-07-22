@@ -56,7 +56,7 @@ public class VehicleResponseTest {
         vehicleResponse.setUserHistory(List.of(new VehicleHistoryResponse("25-04-2021", "PURCHASED", "Love on first sight")));
         vehicleResponse.setTimesheet(Map.of("01-11-2021", 8));
         assertEquals(1, VehicleUtils.convertTimesheetToResponse(Map.of(LocalDateTime.of(2021,11,1,0,0), 8)).size());
-        assertEquals("VehicleResponse(fleetNumber=1213, company=Lee Buses, deliveryDate=25-04-2021, inspectionDate=25-05-2021, vehicleType=Tram, purchasePrice=700000.0, vehicleStatus=DELIVERED, seatingCapacity=0, standingCapacity=0, modelName=Bendy Bus 2000, livery=Blue with orange text, allocatedRoute=1, allocatedTour=2, delayInMinutes=0, inspectionStatus=Inspection Due!, nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true}, userHistory=[VehicleHistoryResponse(date=25-04-2021, vehicleHistoryReason=PURCHASED, comment=Love on first sight)], timesheet={01-11-2021=8})", vehicleResponse.toString());
+        assertEquals("VehicleResponse{fleetNumber='1213', company='Lee Buses', deliveryDate='25-04-2021', inspectionDate='25-05-2021', vehicleType='Tram', purchasePrice=700000.0, vehicleStatus='DELIVERED', seatingCapacity=0, standingCapacity=0, modelName='Bendy Bus 2000', livery='Blue with orange text', allocatedRoute='1', allocatedTour='2', delayInMinutes=0, inspectionStatus='Inspection Due!', nextInspectionDueInDays=0, additionalTypeInformationMap={Bidirectional=true}, userHistory=[VehicleHistoryResponse{date='25-04-2021', vehicleHistoryReason='PURCHASED', comment='Love on first sight'}], timesheet={01-11-2021=8}}", vehicleResponse.toString());
     }
 
 }

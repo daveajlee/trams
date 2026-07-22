@@ -21,7 +21,7 @@ public class AnswerRequestTest {
         assertEquals("615824bd6d0c882034e85964", answerRequest.getObjectId());
         assertEquals("Thanks for the answer", answerRequest.getAnswer());
         assertEquals("mmustermann-ghgkg", answerRequest.getToken());
-        assertEquals("AnswerRequest(objectId=615824bd6d0c882034e85964, answer=Thanks for the answer, token=mmustermann-ghgkg)", answerRequest.toString());
+        assertEquals("AnswerRequest{objectId='615824bd6d0c882034e85964', answer='Thanks for the answer', token='mmustermann-ghgkg'}", answerRequest.toString());
     }
 
     /**

@@ -145,9 +145,9 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added history entry"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> addHistoryEntry (@RequestBody AddHistoryEntryRequest addHistoryEntryRequest) {
         //Check valid request
-        if (addHistoryEntryRequest.getCompany().isBlank() || addHistoryEntryRequest.getFleetNumber().isBlank() ||
-                addHistoryEntryRequest.getComment().isBlank() || addHistoryEntryRequest.getReason().isBlank() ||
-                addHistoryEntryRequest.getDate().isBlank()) {
+        if (isBlankString(addHistoryEntryRequest.getCompany()) || isBlankString(addHistoryEntryRequest.getFleetNumber()) ||
+                isBlankString(addHistoryEntryRequest.getComment()) || isBlankString(addHistoryEntryRequest.getReason()) ||
+                isBlankString(addHistoryEntryRequest.getDate())) {
             return ResponseEntity.badRequest().build();
         }
         //Now retrieve the vehicle based on company and fleet number.
@@ -159,6 +159,10 @@ public class VehicleController {
         return vehicleService.addVehicleHistoryEntry(vehicles.get(0), DateUtils.convertDateToLocalDateTime(addHistoryEntryRequest.getDate()),
                 VehicleHistoryReason.valueOf(addHistoryEntryRequest.getReason()), addHistoryEntryRequest.getComment()) ?
                 ResponseEntity.status(200).build() : ResponseEntity.status(500).build();
+    }
+
+    private boolean isBlankString(String string) {
+        return string == null || string.isBlank();
     }
 
     /**

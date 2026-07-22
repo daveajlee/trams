@@ -14,14 +14,14 @@ public class LoginResponseTest {
     public void testGoodLogin( ) {
         LoginResponse loginResponse = new LoginResponse("", "dlee-ghgkg");
         assertEquals("dlee-ghgkg", loginResponse.getToken());
-        assertNull(loginResponse.getErrorMessage());
+        assertEquals(loginResponse.getErrorMessage(), "");
     }
 
     @Test
     public void testBadLogin( ) {
         LoginResponse loginResponse = new LoginResponse("Password was incorrect!", "");
         assertEquals("Password was incorrect!", loginResponse.getErrorMessage());
-        assertNull(loginResponse.getToken());
+        assertEquals(loginResponse.getToken(), "");
     }
 
     @Test

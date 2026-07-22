@@ -130,6 +130,31 @@ public class VehicleResponse {
         this.timesheet = timesheet;
     }
 
+    @Override
+    public String toString() {
+        return "VehicleResponse{" +
+                "fleetNumber='" + fleetNumber + '\'' +
+                ", company='" + company + '\'' +
+                ", deliveryDate='" + deliveryDate + '\'' +
+                ", inspectionDate='" + inspectionDate + '\'' +
+                ", vehicleType='" + vehicleType + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", vehicleStatus='" + vehicleStatus + '\'' +
+                ", seatingCapacity=" + seatingCapacity +
+                ", standingCapacity=" + standingCapacity +
+                ", modelName='" + modelName + '\'' +
+                ", livery='" + livery + '\'' +
+                ", allocatedRoute='" + allocatedRoute + '\'' +
+                ", allocatedTour='" + allocatedTour + '\'' +
+                ", delayInMinutes=" + delayInMinutes +
+                ", inspectionStatus='" + inspectionStatus + '\'' +
+                ", nextInspectionDueInDays=" + nextInspectionDueInDays +
+                ", additionalTypeInformationMap=" + additionalTypeInformationMap +
+                ", userHistory=" + userHistory +
+                ", timesheet=" + timesheet +
+                '}';
+    }
+
     public String getFleetNumber() {
         return fleetNumber;
     }
