@@ -20,7 +20,7 @@ public class TimeResponseTest {
         timeResponse.setCompany("Lee Transport");
         assertEquals("03-12-2020 08:20", timeResponse.getTime());
         assertEquals("Lee Transport", timeResponse.getCompany());
-        assertEquals("TimeResponse(company=Lee Transport, time=03-12-2020 08:20)", timeResponse.toString());
+        assertEquals("TimeResponse{company='Lee Transport', time='03-12-2020 08:20'}", timeResponse.toString());
     }
 
 }

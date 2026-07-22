@@ -1,18 +1,10 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a response containing the company
  * and its current balance.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class BalanceResponse {
 
     /**
@@ -25,4 +17,35 @@ public class BalanceResponse {
      */
     private double balance;
 
+    public BalanceResponse() {
+    }
+
+    public BalanceResponse(String company, double balance) {
+        this.company = company;
+        this.balance = balance;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "BalanceResponse{" +
+                "company='" + company + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

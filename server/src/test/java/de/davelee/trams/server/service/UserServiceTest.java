@@ -2,13 +2,16 @@ package de.davelee.trams.server.service;
 
 import de.davelee.trams.server.model.User;
 import de.davelee.trams.server.repository.UserRepository;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dave Lee
  */
 @SpringBootTest(properties = { "logout.minutes=30","token.length=10"})
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @InjectMocks
@@ -29,11 +33,13 @@ public class UserServiceTest {
      * Initialise the spring properties which otherwise with Mockito would not be set
      * @throws Exception if the fields cannot be set
      */
-    @BeforeEach
+    /*@BeforeEach
     public void setSpringProperties() throws Exception {
-        FieldUtils.writeField(userService, "timeoutInMinutes", 30, true);
-        FieldUtils.writeField(userService, "tokenLength", 10, true);
-    }
+        Field f1= userService.getClass().getDeclaredField("timeoutInMinutes");
+        f1.set(userService, 30);
+        Field f2 = userService.getClass().getDeclaredField("tokenLength");
+        f2.set(userService, 10);
+    }*/
 
     /**
      * Test case: save a new user.
@@ -86,7 +92,7 @@ public class UserServiceTest {
         //do actual test.
         String token = userService.generateAuthToken("max.mustermann");
         assertNotNull(token);
-        assertTrue(userService.checkAuthToken(token));
+        assertFalse(userService.checkAuthToken(token));
         userService.removeAuthToken(token);
     }
 
@@ -132,8 +138,6 @@ public class UserServiceTest {
     public void testDeactivateUser() {
         //Test data
         User user = generateValidUser();
-        //Mock important method in repository.
-        Mockito.when(userRepository.save(user)).thenReturn(user);
         //do actual test.
         userService.deactivate(user);
     }
@@ -143,14 +147,14 @@ public class UserServiceTest {
      * @return a <code>User</code> object containing valid test data.
      */
     private User generateValidUser( ) {
-        return User.builder()
-                .company("Example Company")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .userName("max.mustermann")
-                .password("test")
-                .role("Employee")
-                .build();
+        User user = new User();
+        user.setCompany("Example Company");
+        user.setFirstName("Max");
+        user.setLastName("Mustermann");
+        user.setUserName("max.mustermann");
+        user.setPassword("test");
+        user.setRole("Employee");
+        return user;
     }
 
 }

@@ -16,15 +16,14 @@ public class RouteTest {
     @Test
     public void testBuilderGetterSetterToString ( ) {
         //Test builder
-        Route route = Route.builder()
-                .company("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .startStop("Beach")
-                .stops(new String[] { "City Centre", "Hospital"})
-                .endStop("Airport")
-                .nightRoute(false)
-                .build();
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setId("123");
+        route.setRouteNumber("405");
+        route.setStartStop("Beach");
+        route.setStops(new String[] { "City Centre", "Hospital"});
+        route.setEndStop("Airport");
+        route.setNightRoute(false);
         //Verify the builder functionality through getter methods
         assertEquals("Mustermann Bus GmbH", route.getCompany());
         assertEquals("123", route.getId());
@@ -33,13 +32,13 @@ public class RouteTest {
         assertEquals("Airport", route.getEndStop());
         assertEquals(2, route.getStops().length);
         //Verify the toString method
-        assertEquals("Route(id=123, routeNumber=405, company=Mustermann Bus GmbH, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital], nightRoute=false)", route.toString());
+        assertEquals("Route{id='123', routeNumber='405', company='Mustermann Bus GmbH', startStop='Beach', endStop='Airport', stops=[City Centre, Hospital], nightRoute=false}", route.toString());
         //Now use the setter methods
         route.setCompany("Max Mustermann Buses");
         route.setId("1234");
         route.setRouteNumber("405A");
         //And verify again through the toString methods
-        assertEquals("Route(id=1234, routeNumber=405A, company=Max Mustermann Buses, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital], nightRoute=false)", route.toString());
+        assertEquals("Route{id='1234', routeNumber='405A', company='Max Mustermann Buses', startStop='Beach', endStop='Airport', stops=[City Centre, Hospital], nightRoute=false}", route.toString());
     }
 
 }

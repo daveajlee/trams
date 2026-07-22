@@ -1,12 +1,15 @@
 package de.davelee.trams.server.controller;
 
+import com.beust.ah.A;
 import de.davelee.trams.server.model.Route;
 import de.davelee.trams.server.request.AddRouteRequest;
 import de.davelee.trams.server.service.RouteService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
@@ -21,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RouteControllerTest {
 
     @InjectMocks
@@ -37,17 +41,16 @@ public class RouteControllerTest {
         //Mock important method.
         Mockito.when(routeService.addRoute(any())).thenReturn(true);
         //Test success route.
-        AddRouteRequest addRouteRequest = AddRouteRequest.builder()
-                .company("Example Company")
-                .routeNumber("1A")
-                .build();
+        AddRouteRequest addRouteRequest = new AddRouteRequest();
+        addRouteRequest.setCompany("Example Company");
+        addRouteRequest.setRouteNumber("1A");
         assertEquals(HttpStatus.CREATED, routeController.addRoute(addRouteRequest).getStatusCode());
         //Test unsuccessful route.
         Mockito.when(routeService.addRoute(any())).thenReturn(false);
         AddRouteRequest addRouteRequest2 = new AddRouteRequest();
         addRouteRequest2.setCompany("Example Company");
         addRouteRequest2.setRouteNumber("1B");
-        assertEquals(500, routeController.addRoute(addRouteRequest2).getStatusCodeValue());
+        assertEquals(500, routeController.addRoute(addRouteRequest2).getStatusCode().value());
         //Test missing company and name.
         addRouteRequest2.setCompany(""); addRouteRequest2.setRouteNumber("");
         assertEquals(HttpStatus.BAD_REQUEST, routeController.addRoute(addRouteRequest2).getStatusCode());
@@ -59,8 +62,11 @@ public class RouteControllerTest {
     @Test
     public void testGetRouteEndpoint() {
         //Mock important method.
+        Route route = new Route();
+        route.setCompany("Example Company");
+        route.setRouteNumber("1A");
         Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
-                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+                List.of(route));
         //Test successfully retrieve.
         assertEquals(HttpStatus.OK, routeController.getRoute("Example Company", "1A").getStatusCode());
         //Test unsuccessful retrieve.
@@ -76,9 +82,12 @@ public class RouteControllerTest {
      */
     @Test
     public void testDeleteRouteEndpoint() {
+        Route route = new Route();
+        route.setCompany("Example Company");
+        route.setRouteNumber("1A");
         //Mock important method.
         Mockito.when(routeService.getRoutesByCompanyAndRouteNumber("Example Company", "1A")).thenReturn(
-                List.of(Route.builder().routeNumber("1A").company("Example Company").build()));
+                List.of(route));
         //Test successfully retrieve.
         assertEquals(HttpStatus.OK, routeController.deleteRoute("Example Company", "1A").getStatusCode());
         //Test unsuccessful retrieve.

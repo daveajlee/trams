@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +47,7 @@ public class ExportController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned data"),@ApiResponse(responseCode="204",description="Successful but no data found")})
     public ResponseEntity<ExportResponse> getExport (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the routes for this company.
@@ -61,39 +60,33 @@ public class ExportController {
         }
         RouteResponse[] routeResponses = new RouteResponse[routes.size()];
         for ( int i = 0; i < routeResponses.length; i++ ) {
-            routeResponses[i] = RouteResponse.builder()
-                    .company(routes.get(i).getCompany())
-                    .routeNumber(routes.get(i).getRouteNumber())
-                    .build();
+            routeResponses[i] = new RouteResponse();
+            routeResponses[i].setCompany(routes.get(i).getCompany());
+            routeResponses[i].setRouteNumber(routes.get(i).getRouteNumber());
         }
         VehicleResponse[] vehicleResponses = new VehicleResponse[vehicles.size()];
         for ( int i = 0; i < vehicleResponses.length; i++ ) {
-            vehicleResponses[i] = VehicleResponse.builder()
-                    .allocatedTour(vehicles.get(i).getAllocatedTour())
-                    .delayInMinutes(vehicles.get(i).getDelayInMinutes())
-                    .fleetNumber(vehicles.get(i).getFleetNumber())
-                    .livery(vehicles.get(i).getLivery())
-                    .company(vehicles.get(i).getCompany())
-                    .additionalTypeInformationMap(vehicles.get(i).getTypeSpecificInfos())
-                    .vehicleType(vehicles.get(i).getVehicleType().getTypeName())
-                    .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(i).getVehicleHistoryEntryList()))
-                    .modelName(vehicles.get(i).getModelName())
-                    .purchasePrice(vehicles.get(i).getVehicleType().getPurchasePrice().doubleValue())
-                    .seatingCapacity(vehicles.get(i).getSeatingCapacity())
-                    .standingCapacity(vehicles.get(i).getStandingCapacity())
-                    .deliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(i).getDeliveryDate()))
-                    .inspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(i).getInspectionDate()))
-                    .vehicleStatus(vehicles.get(i).getVehicleStatus() != null ? vehicles.get(i).getVehicleStatus().name() : null)
-                    .timesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(i).getTimesheet()))
-                    .build();
+            vehicleResponses[i] = new VehicleResponse();
+            vehicleResponses[i].setAllocatedTour(vehicles.get(i).getAllocatedTour());
+            vehicleResponses[i].setDelayInMinutes(vehicles.get(i).getDelayInMinutes());
+            vehicleResponses[i].setFleetNumber(vehicles.get(i).getFleetNumber());
+            vehicleResponses[i].setLivery(vehicles.get(i).getLivery());
+            vehicleResponses[i].setCompany(vehicles.get(i).getCompany());
+            vehicleResponses[i].setAdditionalTypeInformationMap(vehicles.get(i).getTypeSpecificInfos());
+            vehicleResponses[i].setVehicleType(vehicles.get(i).getVehicleType().getTypeName());
+            vehicleResponses[i].setUserHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(i).getVehicleHistoryEntryList()));
+            vehicleResponses[i].setModelName(vehicles.get(i).getModelName());
+            vehicleResponses[i].setPurchasePrice(vehicles.get(i).getVehicleType().getPurchasePrice().doubleValue());
+            vehicleResponses[i].setSeatingCapacity(vehicles.get(i).getSeatingCapacity());
+            vehicleResponses[i].setStandingCapacity(vehicles.get(i).getStandingCapacity());
+            vehicleResponses[i].setDeliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(i).getDeliveryDate()));
+            vehicleResponses[i].setInspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(i).getInspectionDate()));
+            vehicleResponses[i].setVehicleStatus(vehicles.get(i).getVehicleStatus() != null ? vehicles.get(i).getVehicleStatus().name() : null);
+            vehicleResponses[i].setTimesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(i).getTimesheet()));
             VehicleUtils.processInspectionDate(vehicleResponses[i], vehicles.get(i).getInspectionDate(), vehicles.get(i).getVehicleType().getInspectionPeriod());
         }
         //Return export data.
-        return ResponseEntity.ok(ExportResponse
-                .builder()
-                        .routeResponses(routeResponses)
-                        .vehicleResponses(vehicleResponses)
-                .build());
+        return ResponseEntity.ok(new ExportResponse(routeResponses, vehicleResponses));
     }
 
 }

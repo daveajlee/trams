@@ -54,7 +54,10 @@ public class StopTimeUtils {
             }
         }
         //Return the OperatingDays object.
-        return OperatingDays.builder().operatingDays(operatingDaysList).specialOperatingDays(specialOperatingDaysList).build();
+        OperatingDays operatingDays = new OperatingDays();
+        operatingDays.setOperatingDays(operatingDaysList);
+        operatingDays.setSpecialOperatingDays(specialOperatingDaysList);
+        return operatingDays;
     }
 
 }

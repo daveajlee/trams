@@ -3,7 +3,6 @@ package de.davelee.trams.server.model;
 import de.davelee.trams.server.constant.VehicleHistoryReason;
 import de.davelee.trams.server.constant.VehicleStatus;
 import de.davelee.trams.server.constant.VehicleType;
-import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +14,6 @@ import java.util.Map;
  * a livery and a status.
  * @author Dave Lee
  */
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@ToString
 public class Vehicle {
 
     /**
@@ -107,6 +101,9 @@ public class Vehicle {
      */
     private List<VehicleHistoryEntry> vehicleHistoryEntryList;
 
+    public Vehicle() {
+    }
+
     /**
      * Add a number of hours for a particular day to the timesheet.
      * @param hours a <code>int</code> with the number of hours to add.
@@ -143,14 +140,192 @@ public class Vehicle {
      * @param comment a <code>String</code> containing the comment about the entry/event.
      */
     public void addVehicleHistoryEntry (final LocalDateTime date, final VehicleHistoryReason vehicleHistoryReason, final String comment ) {
-        if ( vehicleHistoryEntryList == null ) {
+        if (vehicleHistoryEntryList == null) {
             vehicleHistoryEntryList = new ArrayList<>();
         }
-        vehicleHistoryEntryList.add(VehicleHistoryEntry.builder()
-                .date(date)
-                .vehicleHistoryReason(vehicleHistoryReason)
-                .comment(comment)
-                .build());
+        VehicleHistoryEntry vehicleHistoryEntry = new VehicleHistoryEntry();
+        vehicleHistoryEntry.setDate(date);
+        vehicleHistoryEntry.setVehicleHistoryReason(vehicleHistoryReason);
+        vehicleHistoryEntry.setComment(comment);
+        vehicleHistoryEntryList.add(vehicleHistoryEntry);
     }
 
+    public Vehicle(String id, String fleetNumber, String company, LocalDateTime deliveryDate, LocalDateTime inspectionDate, int seatingCapacity, int standingCapacity, String modelName, String livery, VehicleStatus vehicleStatus, String allocatedRoute, String allocatedTour, int delayInMinutes, VehicleType vehicleType, Map<String, String> typeSpecificInfos, Map<LocalDateTime, Integer> timesheet, List<VehicleHistoryEntry> vehicleHistoryEntryList) {
+        this.id = id;
+        this.fleetNumber = fleetNumber;
+        this.company = company;
+        this.deliveryDate = deliveryDate;
+        this.inspectionDate = inspectionDate;
+        this.seatingCapacity = seatingCapacity;
+        this.standingCapacity = standingCapacity;
+        this.modelName = modelName;
+        this.livery = livery;
+        this.vehicleStatus = vehicleStatus;
+        this.allocatedRoute = allocatedRoute;
+        this.allocatedTour = allocatedTour;
+        this.delayInMinutes = delayInMinutes;
+        this.vehicleType = vehicleType;
+        this.typeSpecificInfos = typeSpecificInfos;
+        this.timesheet = timesheet;
+        this.vehicleHistoryEntryList = vehicleHistoryEntryList;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public LocalDateTime getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDateTime deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public LocalDateTime getInspectionDate() {
+        return inspectionDate;
+    }
+
+    public void setInspectionDate(LocalDateTime inspectionDate) {
+        this.inspectionDate = inspectionDate;
+    }
+
+    public int getSeatingCapacity() {
+        return seatingCapacity;
+    }
+
+    public void setSeatingCapacity(int seatingCapacity) {
+        this.seatingCapacity = seatingCapacity;
+    }
+
+    public int getStandingCapacity() {
+        return standingCapacity;
+    }
+
+    public void setStandingCapacity(int standingCapacity) {
+        this.standingCapacity = standingCapacity;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getLivery() {
+        return livery;
+    }
+
+    public void setLivery(String livery) {
+        this.livery = livery;
+    }
+
+    public VehicleStatus getVehicleStatus() {
+        return vehicleStatus;
+    }
+
+    public void setVehicleStatus(VehicleStatus vehicleStatus) {
+        this.vehicleStatus = vehicleStatus;
+    }
+
+    public String getAllocatedRoute() {
+        return allocatedRoute;
+    }
+
+    public void setAllocatedRoute(String allocatedRoute) {
+        this.allocatedRoute = allocatedRoute;
+    }
+
+    public String getAllocatedTour() {
+        return allocatedTour;
+    }
+
+    public void setAllocatedTour(String allocatedTour) {
+        this.allocatedTour = allocatedTour;
+    }
+
+    public int getDelayInMinutes() {
+        return delayInMinutes;
+    }
+
+    public void setDelayInMinutes(int delayInMinutes) {
+        this.delayInMinutes = delayInMinutes;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public Map<String, String> getTypeSpecificInfos() {
+        return typeSpecificInfos;
+    }
+
+    public void setTypeSpecificInfos(Map<String, String> typeSpecificInfos) {
+        this.typeSpecificInfos = typeSpecificInfos;
+    }
+
+    public Map<LocalDateTime, Integer> getTimesheet() {
+        return timesheet;
+    }
+
+    public void setTimesheet(Map<LocalDateTime, Integer> timesheet) {
+        this.timesheet = timesheet;
+    }
+
+    public List<VehicleHistoryEntry> getVehicleHistoryEntryList() {
+        return vehicleHistoryEntryList;
+    }
+
+    public void setVehicleHistoryEntryList(List<VehicleHistoryEntry> vehicleHistoryEntryList) {
+        this.vehicleHistoryEntryList = vehicleHistoryEntryList;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id='" + id + '\'' +
+                ", fleetNumber='" + fleetNumber + '\'' +
+                ", company='" + company + '\'' +
+                ", deliveryDate=" + deliveryDate +
+                ", inspectionDate=" + inspectionDate +
+                ", seatingCapacity=" + seatingCapacity +
+                ", standingCapacity=" + standingCapacity +
+                ", modelName='" + modelName + '\'' +
+                ", livery='" + livery + '\'' +
+                ", vehicleStatus=" + vehicleStatus +
+                ", allocatedRoute='" + allocatedRoute + '\'' +
+                ", allocatedTour='" + allocatedTour + '\'' +
+                ", delayInMinutes=" + delayInMinutes +
+                ", vehicleType=" + vehicleType +
+                ", typeSpecificInfos=" + typeSpecificInfos +
+                ", timesheet=" + timesheet +
+                ", vehicleHistoryEntryList=" + vehicleHistoryEntryList +
+                '}';
+    }
 }

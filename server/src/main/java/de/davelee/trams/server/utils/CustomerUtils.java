@@ -17,16 +17,9 @@ public class CustomerUtils {
      * @return a <code>Customer</code> object.
      */
     public static Customer convertCustomerRequestToCustomer (final CustomerRequest customerRequest ) {
-        return Customer.builder()
-                .id(new ObjectId())
-                .title(customerRequest.getTitle())
-                .firstName(customerRequest.getFirstName())
-                .lastName(customerRequest.getLastName())
-                .emailAddress(customerRequest.getEmailAddress())
-                .telephoneNumber(customerRequest.getTelephoneNumber())
-                .address(customerRequest.getAddress())
-                .company(customerRequest.getCompany())
-                .build();
+        return new Customer(new ObjectId(), customerRequest.getTitle(), customerRequest.getFirstName(),
+                customerRequest.getLastName(), customerRequest.getEmailAddress(), customerRequest.getTelephoneNumber(),
+                customerRequest.getAddress(), customerRequest.getCompany());
     }
 
     /**
@@ -35,15 +28,9 @@ public class CustomerUtils {
      * @return a <code>CustomerResponse</code> object.
      */
     public static CustomerResponse convertCustomerToCustomerResponse (final Customer customer ) {
-        return CustomerResponse.builder()
-                .title(customer.getTitle())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .emailAddress(customer.getEmailAddress())
-                .telephoneNumber(customer.getTelephoneNumber())
-                .address(customer.getAddress())
-                .company(customer.getCompany())
-                .build();
+        return new CustomerResponse(customer.getTitle(), customer.getFirstName(),
+                customer.getLastName(), customer.getEmailAddress(), customer.getTelephoneNumber(),
+                customer.getAddress(), customer.getCompany());
     }
 
 }

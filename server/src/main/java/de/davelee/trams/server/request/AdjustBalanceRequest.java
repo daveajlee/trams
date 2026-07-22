@@ -1,18 +1,10 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to adjust the balance
  * by either crediting or withdrawing money for a particular company.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class AdjustBalanceRequest {
 
     /**
@@ -25,4 +17,35 @@ public class AdjustBalanceRequest {
      */
     private double value;
 
+    public AdjustBalanceRequest() {
+    }
+
+    public AdjustBalanceRequest(String company, double value) {
+        this.company = company;
+        this.value = value;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "AdjustBalanceRequest{" +
+                "company='" + company + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

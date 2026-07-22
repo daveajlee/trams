@@ -1,5 +1,6 @@
 package de.davelee.trams.server.response;
 
+import de.davelee.trams.server.request.CustomerRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,15 +16,15 @@ public class CustomersResponseTest {
     @Test
     public void testGettersAndSetters() {
         CustomerResponse[] customerResponses = new CustomerResponse[1];
-        customerResponses[0] = CustomerResponse.builder()
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .emailAddress("max@mustermann.de")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .title("Mr")
-                .telephoneNumber("01234 567890")
-                .build();
+        CustomerResponse customerResponse = new CustomerResponse();
+        customerResponse.setTitle("Mr");
+        customerResponse.setFirstName("Max");
+        customerResponse.setLastName("Mustermann");
+        customerResponse.setEmailAddress("max@mustermann.de");
+        customerResponse.setTelephoneNumber("01234 567890");
+        customerResponse.setAddress("1 Max Way, Musterdorf");
+        customerResponse.setCompany("Mustermann GmbH");
+        customerResponses[0] = customerResponse;
         CustomersResponse customersResponse = new CustomersResponse();
         customersResponse.setCount(1L);
         customersResponse.setCustomerResponses(customerResponses);

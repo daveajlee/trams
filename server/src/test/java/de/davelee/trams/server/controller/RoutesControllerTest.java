@@ -5,9 +5,11 @@ import de.davelee.trams.server.response.RoutesResponse;
 import de.davelee.trams.server.service.RouteService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class RoutesControllerTest {
 
     @InjectMocks
@@ -33,11 +36,11 @@ public class RoutesControllerTest {
      */
     @Test
     public void testRoutesEndpoint() {
-        Mockito.when(routeService.getRoutesByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Route.builder()
-                .company("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .build()));
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setId("123");
+        route.setRouteNumber("405");
+        Mockito.when(routeService.getRoutesByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(route));
         ResponseEntity<RoutesResponse> responseEntity = routesController.getRoutesByCompany("Mustermann Bus GmbH");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1, responseEntity.getBody().getCount());
@@ -55,11 +58,11 @@ public class RoutesControllerTest {
      */
     @Test
     public void testDeleteRoutesEndpoint() {
-        Mockito.when(routeService.getRoutesByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Route.builder()
-                .company("Mustermann Bus GmbH")
-                .id("123")
-                .routeNumber("405")
-                .build()));
+        Route route = new Route();
+        route.setCompany("Mustermann Bus GmbH");
+        route.setId("123");
+        route.setRouteNumber("405");
+        Mockito.when(routeService.getRoutesByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(route));
         ResponseEntity<Void> responseEntity = routesController.deleteRoutesByCompany("Mustermann Bus GmbH");
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         //Second test - do not supply company.

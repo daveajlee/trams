@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class DriversController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned drivers")})
     public ResponseEntity<DriversResponse> getDriversAndName (final String company, final Optional<String> name) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the drivers for this company.
@@ -59,16 +58,14 @@ public class DriversController {
         //Otherwise convert to drivers response and return.
         DriverResponse[] driverResponses = new DriverResponse[drivers.size()];
         for ( int i = 0; i < driverResponses.length; i++ ) {
-            driverResponses[i] = DriverResponse.builder()
-                    .company(drivers.get(i).getCompany())
-                    .name(drivers.get(i).getName())
-                    .contractedHours(drivers.get(i).getContractedHours())
-                    .startDate(DateUtils.convertLocalDateTimeToDate(drivers.get(i).getStartDate()))
-                    .build();
+            DriverResponse driverResponse = new DriverResponse();
+            driverResponse.setName(drivers.get(i).getName());
+            driverResponse.setContractedHours(drivers.get(i).getContractedHours());
+            driverResponse.setStartDate(DateUtils.convertLocalDateTimeToDate(drivers.get(i).getStartDate()));
+            driverResponse.setCompany(drivers.get(i).getCompany());
+            driverResponses[i] = driverResponse;
         }
-        return ResponseEntity.ok(DriversResponse.builder()
-                .count((long) driverResponses.length)
-                .driverResponses(driverResponses).build());
+        return ResponseEntity.ok(new DriversResponse((long) driverResponses.length, driverResponses));
     }
 
     /**
@@ -82,7 +79,7 @@ public class DriversController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted drivers")})
     public ResponseEntity<Void> deleteDrivers (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete all drivers for this company.

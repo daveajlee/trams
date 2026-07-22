@@ -1,6 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,11 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * This class represents an address which is mapped to a particular stop. This stop is the closest stop to this address.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 @Document
 public class Address {
 
@@ -43,4 +37,54 @@ public class Address {
      */
     private int durationInMins;
 
+    public Address() {
+    }
+
+    public Address(ObjectId id, String addressOperator, String address, Stop stop, int durationInMins) {
+        this.id = id;
+        this.addressOperator = addressOperator;
+        this.address = address;
+        this.stop = stop;
+        this.durationInMins = durationInMins;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getAddressOperator() {
+        return addressOperator;
+    }
+
+    public void setAddressOperator(String addressOperator) {
+        this.addressOperator = addressOperator;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Stop getStop() {
+        return stop;
+    }
+
+    public void setStop(Stop stop) {
+        this.stop = stop;
+    }
+
+    public int getDurationInMins() {
+        return durationInMins;
+    }
+
+    public void setDurationInMins(int durationInMins) {
+        this.durationInMins = durationInMins;
+    }
 }

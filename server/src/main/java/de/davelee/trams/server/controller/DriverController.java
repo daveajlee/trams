@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,29 +40,29 @@ public class DriverController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully employed driver"), @ApiResponse(responseCode = "409", description = "Driver conflicted with a driver that already exists")})
     public ResponseEntity<EmployDriverResponse> employDriver(@RequestBody EmployDriverRequest employDriverRequest) {
         //Check that the request is valid.
-        if (StringUtils.isBlank(employDriverRequest.getCompany()) || StringUtils.isBlank(employDriverRequest.getName())
-                || StringUtils.isBlank(employDriverRequest.getStartDate()) || employDriverRequest.getContractedHours() <= 0) {
+        if (employDriverRequest.getCompany() == null || employDriverRequest.getName() == null ||
+                employDriverRequest.getStartDate() == null || employDriverRequest.getCompany().isBlank() || employDriverRequest.getName().isBlank()
+                || employDriverRequest.getStartDate().isBlank() || employDriverRequest.getContractedHours() <= 0) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this driver does not already exist.
         List<Driver> drivers = driverService.retrieveDriversByCompanyAndName(employDriverRequest.getCompany(), employDriverRequest.getName());
         System.out.println(drivers);
         if (drivers != null && !drivers.isEmpty()) {
-            return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(409).build();
+            return ResponseEntity.of(Optional.of(new EmployDriverResponse(false, 0))).status(409).build();
         }
         //Construct the driver and add it to the database.
-        Driver driver = Driver.builder()
-                .company(employDriverRequest.getCompany())
-                .name(employDriverRequest.getName())
-                .contractedHours(employDriverRequest.getContractedHours())
-                .startDate(DateUtils.convertDateToLocalDateTime(employDriverRequest.getStartDate()))
-                .build();
+        Driver driver = new Driver();
+        driver.setCompany(employDriverRequest.getCompany());
+        driver.setName(employDriverRequest.getName());
+        driver.setContractedHours(employDriverRequest.getContractedHours());
+        driver.setStartDate(DateUtils.convertDateToLocalDateTime(employDriverRequest.getStartDate()));
         if (driverService.addDriver(driver)) {
             //Return the hiring costs for the driver if they were employed successfully.
-            return ResponseEntity.ok(EmployDriverResponse.builder().employed(true).employmentCost(500).build());
+            return ResponseEntity.ok(new EmployDriverResponse(true, 500));
         }
         //Otherwise return an empty 500 response.
-        return ResponseEntity.of(Optional.of(EmployDriverResponse.builder().employmentCost(0).employed(false).build())).status(500).build();
+        return ResponseEntity.of(Optional.of(new EmployDriverResponse(false, 0))).status(500).build();
     }
 
     /**
@@ -78,7 +77,7 @@ public class DriverController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted driver")})
     public ResponseEntity<Void> deleteDriver (final String company, final String name ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company) && StringUtils.isBlank(name)) {
+        if (company.isBlank() && name.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete the driver.

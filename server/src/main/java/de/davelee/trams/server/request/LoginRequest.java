@@ -1,16 +1,9 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request for a login with username and password.
  * @author Dave Lee
  */
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class LoginRequest {
 
     /**
@@ -28,4 +21,36 @@ public class LoginRequest {
      */
     private String password;
 
+    public LoginRequest() {
+    }
+
+    public LoginRequest(String company, String username, String password) {
+        this.company = company;
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

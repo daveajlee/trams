@@ -17,14 +17,14 @@ public class CustomerRequestTest {
      */
     @Test
     public void testBuilderToString() {
-        CustomerRequest customerRequest = CustomerRequest.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .address("1 Max Way, Musterdorf")
-                .telephoneNumber("01234 567890")
-                .emailAddress("max@mustermann.de")
-                .company("Mustermann GmbH").build();
+        CustomerRequest customerRequest = new CustomerRequest();
+        customerRequest.setTitle("Mr");
+        customerRequest.setFirstName("Max");
+        customerRequest.setLastName("Mustermann");
+        customerRequest.setAddress("1 Max Way, Musterdorf");
+        customerRequest.setTelephoneNumber("01234 567890");
+        customerRequest.setEmailAddress("max@mustermann.de");
+        customerRequest.setCompany("Mustermann GmbH");
         assertEquals("Mr", customerRequest.getTitle());
         assertEquals("Max", customerRequest.getFirstName());
         assertEquals("Mustermann", customerRequest.getLastName());
@@ -32,7 +32,7 @@ public class CustomerRequestTest {
         assertEquals("01234 567890", customerRequest.getTelephoneNumber());
         assertEquals("max@mustermann.de", customerRequest.getEmailAddress());
         assertEquals("Mustermann GmbH", customerRequest.getCompany());
-        assertEquals("CustomerRequest(title=Mr, firstName=Max, lastName=Mustermann, emailAddress=max@mustermann.de, telephoneNumber=01234 567890, address=1 Max Way, Musterdorf, company=Mustermann GmbH)", customerRequest.toString());
+        assertEquals("CustomerRequest{title='Mr', firstName='Max', lastName='Mustermann', emailAddress='max@mustermann.de', telephoneNumber='01234 567890', address='1 Max Way, Musterdorf', company='Mustermann GmbH'}", customerRequest.toString());
     }
 
     /**

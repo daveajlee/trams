@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ public class TimetablesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted timetables")})
     public ResponseEntity<Void> deleteTimetables (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Delete all timetables for this company.
@@ -63,7 +62,7 @@ public class TimetablesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned timetables")})
     public ResponseEntity<TimetablesResponse> getTimetables (final String company, final String routeNumber ) {
         //First of all, check if the company and/or route number field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
+        if (company.isBlank() || routeNumber.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -76,18 +75,18 @@ public class TimetablesController {
         //Otherwise convert to timetables response and return.
         TimetableResponse[] timetableResponses = new TimetableResponse[timetables.size()];
         for ( int i = 0; i < timetableResponses.length; i++ ) {
-            timetableResponses[i] = TimetableResponse.builder()
-                    .company(timetables.get(i).getCompany())
-                    .name(timetables.get(i).getName())
-                    .routeNumber(timetables.get(i).getRouteNumber())
-                    .validFromDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidFromDate()))
-                    .validToDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidToDate()))
-                    .frequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternsToFrequencyPatternResponses(timetables.get(i).getFrequencyPatterns()))
-                    .build();
+            timetableResponses[i] = new TimetableResponse();
+            timetableResponses[i].setCompany(timetables.get(i).getCompany());
+            timetableResponses[i].setName(timetables.get(i).getName());
+            timetableResponses[i].setRouteNumber(timetables.get(i).getRouteNumber());
+            timetableResponses[i].setValidFromDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidFromDate()));
+            timetableResponses[i].setValidToDate(DateUtils.convertLocalDateTimeToDate(timetables.get(i).getValidToDate()));
+            timetableResponses[i].setFrequencyPatterns(FrequencyPatternUtils.convertFrequencyPatternsToFrequencyPatternResponses(timetables.get(i).getFrequencyPatterns()));
         }
-        return ResponseEntity.ok(TimetablesResponse.builder()
-                .count((long) timetableResponses.length)
-                .timetableResponses(timetableResponses).build());
+        TimetablesResponse timetablesResponse = new TimetablesResponse();
+        timetablesResponse.setCount((long) timetableResponses.length);
+        timetablesResponse.setTimetableResponses(timetableResponses);
+        return ResponseEntity.ok(timetablesResponse);
     }
 
 }

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class MessagesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned messages"), @ApiResponse(responseCode="204",description="Successful but no messages found")})
     public ResponseEntity<MessagesResponse> getMessages (final String company, final Optional<String> folder, final Optional<String> sender, final Optional<String> date ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the messages.
@@ -58,18 +57,11 @@ public class MessagesController {
         //Otherwise convert to messages response and return.
         MessageResponse[] messageResponses = new MessageResponse[messages.size()];
         for ( int i = 0; i < messageResponses.length; i++ ) {
-            messageResponses[i] = MessageResponse.builder()
-                    .company(messages.get(i).getCompany())
-                    .dateTime(DateUtils.convertLocalDateTimeToDate(messages.get(i).getDateTime()))
-                    .subject(messages.get(i).getSubject())
-                    .text(messages.get(i).getText())
-                    .sender(messages.get(i).getSender())
-                    .folder(messages.get(i).getFolder())
-                    .build();
+            messageResponses[i] = new MessageResponse(messages.get(i).getCompany(), messages.get(i).getSubject(),
+                    messages.get(i).getText(), messages.get(i).getSender(), messages.get(i).getFolder(),
+                    DateUtils.convertLocalDateTimeToDate(messages.get(i).getDateTime()));
         }
-        return ResponseEntity.ok(MessagesResponse.builder()
-                .count((long) messageResponses.length)
-                .messageResponses(messageResponses).build());
+        return ResponseEntity.ok(new MessagesResponse((long) messageResponses.length, messageResponses));
     }
 
     /**
@@ -82,7 +74,7 @@ public class MessagesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted messages"),@ApiResponse(responseCode="204",description="Successful but no messages found")})
     public ResponseEntity<Void> deleteMessagesByCompany (final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the messages for this company.

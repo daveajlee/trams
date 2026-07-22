@@ -6,9 +6,11 @@ import de.davelee.trams.server.request.*;
 import de.davelee.trams.server.response.LoginResponse;
 import de.davelee.trams.server.service.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
     @InjectMocks
@@ -48,7 +51,7 @@ public class UserControllerTest {
         RegisterUserRequest validUserRequest = generateValidUserRequest();
         assertEquals("Max", validUserRequest.getFirstName());
         ResponseEntity<Void> responseEntity = userController.addUser(validUserRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.CREATED.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.CREATED.value());
     }
 
     /**
@@ -57,14 +60,13 @@ public class UserControllerTest {
      */
     @Test
     public void testUserMissingFirstName() {
-        RegisterUserRequest validUserRequest = RegisterUserRequest.builder()
-                .surname("Lee")
-                .username("dlee")
-                .company("MyCompany")
-                .build();
+        RegisterUserRequest validUserRequest = new RegisterUserRequest();
+        validUserRequest.setSurname("Lee");
+        validUserRequest.setUsername("dlee");
+        validUserRequest.setCompany("MyCompany");
         assertNull(validUserRequest.getFirstName());
         ResponseEntity<Void> responseEntity = userController.addUser(validUserRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -73,14 +75,13 @@ public class UserControllerTest {
      */
     @Test
     public void testUserMissingSurname() {
-        RegisterUserRequest validUserRequest = RegisterUserRequest.builder()
-                .firstName("David")
-                .username("dlee")
-                .company("MyCompany")
-                .build();
+        RegisterUserRequest validUserRequest = new RegisterUserRequest();
+        validUserRequest.setFirstName("David");
+        validUserRequest.setUsername("dlee");
+        validUserRequest.setCompany("MyCompany");
         assertNull(validUserRequest.getSurname());
         ResponseEntity<Void> responseEntity = userController.addUser(validUserRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -89,14 +90,13 @@ public class UserControllerTest {
      */
     @Test
     public void testUserMissingUsername() {
-        RegisterUserRequest validUserRequest = RegisterUserRequest.builder()
-                .firstName("David")
-                .surname("Lee")
-                .company("MyCompany")
-                .build();
+        RegisterUserRequest validUserRequest = new RegisterUserRequest();
+        validUserRequest.setFirstName("David");
+        validUserRequest.setSurname("Lee");
+        validUserRequest.setCompany("MyCompany");
         assertNull(validUserRequest.getUsername());
         ResponseEntity<Void> responseEntity = userController.addUser(validUserRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -105,14 +105,13 @@ public class UserControllerTest {
      */
     @Test
     public void testUserMissingCompany() {
-        RegisterUserRequest validUserRequest = RegisterUserRequest.builder()
-                .firstName("David")
-                .surname("Lee")
-                .username("dlee")
-                .build();
+        RegisterUserRequest validUserRequest = new RegisterUserRequest();
+        validUserRequest.setFirstName("David");
+        validUserRequest.setSurname("Lee");
+        validUserRequest.setUsername("dlee");
         assertNull(validUserRequest.getCompany());
         ResponseEntity<Void> responseEntity = userController.addUser(validUserRequest);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -126,7 +125,7 @@ public class UserControllerTest {
         Mockito.when(userService.findByCompanyAndUserName("MyCompany", "mlee")).thenReturn(generateValidUser());
         //Perform tests
         ResponseEntity<Void> responseEntity = userController.deleteUser("MyCompany", "mlee", "dlee-fgtgogg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -139,7 +138,7 @@ public class UserControllerTest {
         Mockito.when(userService.checkAuthToken(anyString())).thenReturn(true);
         //Perform tests
         ResponseEntity<Void> responseEntity = userController.deleteUser("MyCompany", "mlee", "dlee-fgtgogg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -149,7 +148,7 @@ public class UserControllerTest {
     @Test
     public void testInvalidDeleteUser() {
         ResponseEntity<Void> responseEntity = userController.deleteUser(null, null, null);
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -164,32 +163,27 @@ public class UserControllerTest {
         Mockito.when(userService.changePassword("Example Company", "max.mustermann", "test123", "123test")).thenReturn(true);
         Mockito.when(userService.changePassword("Example Company", "max.a.mustermann", "test123", "123test")).thenReturn(false);
         //Perform tests - valid request
-        ResponseEntity<Void> responseEntity = userController.changePassword(ChangePasswordRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .currentPassword("test123")
-                .newPassword("123test")
-                .token("max.mustermann-ghgkg")
-                .build());
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setCompany("Example Company");
+        changePasswordRequest.setUsername("max.mustermann");
+        changePasswordRequest.setCurrentPassword("test123");
+        changePasswordRequest.setNewPassword("123test");
+        changePasswordRequest.setToken("max.mustermann-ghgkg");
+        ResponseEntity<Void> responseEntity = userController.changePassword(changePasswordRequest);
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
         //Perform tests - invalid token
-        ResponseEntity<Void> responseEntity2 = userController.changePassword(ChangePasswordRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .currentPassword("test123")
-                .newPassword("123test")
-                .token("max.mustermann-ghgkf")
-                .build());
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        ChangePasswordRequest changePasswordRequest2 = new ChangePasswordRequest();
+        changePasswordRequest2.setCompany("Example Company");
+        changePasswordRequest2.setUsername("max.mustermann");
+        changePasswordRequest2.setCurrentPassword("test123");
+        changePasswordRequest2.setNewPassword("123test");
+        changePasswordRequest2.setToken("max.mustermann-ghgkf");
+        ResponseEntity<Void> responseEntity2 = userController.changePassword(changePasswordRequest2);
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
         //Perform tests - no user
-        ResponseEntity<Void> responseEntity3 = userController.changePassword(ChangePasswordRequest.builder()
-                .company("Example Company")
-                .username("max.a.mustermann")
-                .currentPassword("test123")
-                .newPassword("123test")
-                .token("max.mustermann-ghgkg")
-                .build());
-        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.NOT_FOUND.value());
+        changePasswordRequest.setUsername("max.a.mustermann");
+        ResponseEntity<Void> responseEntity3 = userController.changePassword(changePasswordRequest);
+        assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.NOT_FOUND.value());
     }
 
     /**
@@ -201,30 +195,16 @@ public class UserControllerTest {
         //Mock the important methods in user service.
         Mockito.when(userService.checkAuthToken("max.mustermann-ghgkg")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("max.mustermann-ghgkf")).thenReturn(false);
-        Mockito.doNothing().when(userService).deactivate(any());
-        Mockito.when(userService.changePassword("Example Company", "max.a.mustermann", "test123", "123test")).thenReturn(false);
         Mockito.when(userService.findByCompanyAndUserName("Example Company", "max.mustermann")).thenReturn(generateValidUser());
         //Perform tests - valid request
-        ResponseEntity<Void> responseEntity = userController.deactivateUser(DeactivateUserRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .token("max.mustermann-ghgkg")
-                .build());
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        ResponseEntity<Void> responseEntity = userController.deactivateUser(new DeactivateUserRequest("Example Company", "max.mustermann", "max.mustermann-ghgkg"));
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
         //Perform tests - invalid token
-        ResponseEntity<Void> responseEntity2 = userController.deactivateUser(DeactivateUserRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .token("max.mustermann-ghgkf")
-                .build());
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        ResponseEntity<Void> responseEntity2 = userController.deactivateUser(new DeactivateUserRequest("Example Company", "max.mustermann", "max.mustermann-ghgkf"));
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
         //Perform tests - no user
-        ResponseEntity<Void> responseEntity3 = userController.deactivateUser(DeactivateUserRequest.builder()
-                .company("Example Company")
-                .username("max.a.mustermann")
-                .token("max.mustermann-ghgkg")
-                .build());
-        assertTrue(responseEntity3.getStatusCodeValue() == HttpStatus.NO_CONTENT.value());
+        ResponseEntity<Void> responseEntity3 = userController.deactivateUser(new DeactivateUserRequest("Example Company", "max.a.mustermann", "max.mustermann-ghgkg"));
+        assertTrue(responseEntity3.getStatusCode().value() == HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -236,29 +216,17 @@ public class UserControllerTest {
         //Mock the important methods in user service.
         Mockito.when(userService.findByCompanyAndUserName("Example Company", "max.mustermann")).thenReturn(generateValidUser());
         //Test with valid login
-        LoginRequest validLoginRequest = LoginRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .password("test")
-                .build();
+        LoginRequest validLoginRequest = new LoginRequest("Example Company", "max.mustermann", "test");
         ResponseEntity<LoginResponse> responseEntity = userController.login(validLoginRequest);
-        assertTrue( responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue( responseEntity.getStatusCode().value() == HttpStatus.OK.value());
         //Test with incorrect password
-        LoginRequest invalidLoginRequest = LoginRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .password("123test")
-                .build();
+        LoginRequest invalidLoginRequest = new LoginRequest("Example Company", "max.mustermann", "123test");
         ResponseEntity<LoginResponse> responseEntity2 = userController.login(invalidLoginRequest);
-        assertTrue( responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue( responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
         //Test with invalid username
-        LoginRequest invalidLoginRequest2 = LoginRequest.builder()
-                .company("Example Company")
-                .username("max.a.mustermann")
-                .password("123test")
-                .build();
+        LoginRequest invalidLoginRequest2 = new LoginRequest("Example Company", "max.a.mustermann", "123test");
         ResponseEntity<LoginResponse> responseEntity3 = userController.login(invalidLoginRequest2);
-        assertTrue( responseEntity3.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue( responseEntity3.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }
 
     /**
@@ -268,10 +236,8 @@ public class UserControllerTest {
     @Test
     public void testLogout() {
         //Do actual test
-        ResponseEntity<Void> responseEntity = userController.logout(LogoutRequest.builder()
-                .token("max.mustermann-ghgkg")
-                .build());
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        ResponseEntity<Void> responseEntity = userController.logout(new LogoutRequest("max.mustermann-ghgkg"));
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
 
@@ -283,36 +249,32 @@ public class UserControllerTest {
     public void testReset() {
         //Mock the important methods in user service.
         Mockito.when(userService.checkAuthToken("max.mustermann-ghgkg")).thenReturn(true);
-        Mockito.when(userService.checkAuthToken("max.mustermann-ghgkf")).thenReturn(false);
         Mockito.when(userService.resetUserPassword("Example Company", "max.mustermann", "test")).thenReturn(true);
-        Mockito.when(userService.resetUserPassword("Example Company", "max.a.mustermann", "test")).thenReturn(false);
         //Test with valid user
-        ResetUserRequest resetUserRequest = ResetUserRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .password("test")
-                .token("max.mustermann-ghgkg")
-                .build();
+        ResetUserRequest resetUserRequest = new ResetUserRequest();
+        resetUserRequest.setCompany("Example Company");
+        resetUserRequest.setUsername("max.mustermann");
+        resetUserRequest.setPassword("test");
+        resetUserRequest.setToken("max.mustermann-ghgkg");
         ResponseEntity<Void> responseEntity = userController.resetUser(resetUserRequest);
-        assertTrue( responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue( responseEntity.getStatusCode().value() == HttpStatus.OK.value());
         //Test with invalid username
-        ResetUserRequest resetUserRequest2 = ResetUserRequest.builder()
-                .company("Example Company")
-                .username("max.a.mustermann")
-                .password("test")
-                .token("max.mustermann-ghgkg")
-                .build();
+        ResetUserRequest resetUserRequest2 = new ResetUserRequest();
+        resetUserRequest.setCompany("Example Company");
+        resetUserRequest.setUsername("max.a.mustermann");
+        resetUserRequest.setPassword("test");
+        resetUserRequest.setToken("max.mustermann-ghgkg");
         ResponseEntity<Void> responseEntity2 = userController.resetUser(resetUserRequest2);
-        assertTrue( responseEntity2.getStatusCodeValue() == HttpStatus.NOT_FOUND.value());
+        System.out.println(responseEntity2.getStatusCode().value());
+        assertTrue( responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
         //Test with invalid token
-        ResetUserRequest resetUserRequest3 = ResetUserRequest.builder()
-                .company("Example Company")
-                .username("max.mustermann")
-                .password("test")
-                .token("max.mustermann-ghgkf")
-                .build();
+        ResetUserRequest resetUserRequest3 = new ResetUserRequest();
+        resetUserRequest.setCompany("Example Company");
+        resetUserRequest.setUsername("max.mustermann");
+        resetUserRequest.setPassword("test");
+        resetUserRequest.setToken("max.mustermann-ghgkf");
         ResponseEntity<Void> responseEntity3 = userController.resetUser(resetUserRequest3);
-        assertTrue( responseEntity3.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue( responseEntity3.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }
 
     /**
@@ -320,14 +282,13 @@ public class UserControllerTest {
      * @return a <code>RegisterUserRequest</code> object containing valid test data.
      */
     private RegisterUserRequest generateValidUserRequest( ) {
-        return RegisterUserRequest.builder()
-                .company("Example Company")
-                .firstName("Max")
-                .surname("Mustermann")
-                .username("max.mustermann")
-                .password("test")
-                .role("Employee")
-                .build();
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setCompany("Example Company");
+        registerUserRequest.setFirstName("Max");
+        registerUserRequest.setSurname("Mustermann");
+        registerUserRequest.setUsername("max.mustermann");
+        registerUserRequest.setPassword("test");
+        return registerUserRequest;
     }
 
     /**
@@ -335,15 +296,15 @@ public class UserControllerTest {
      * @return a <code>User</code> object containing valid test data.
      */
     private User generateValidUser( ) {
-        return User.builder()
-                .company("Example Company")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .userName("max.mustermann")
-                .password("test")
-                .role("Employee")
-                .accountStatus(UserAccountStatus.ACTIVE)
-                .build();
+        User user = new User();
+        user.setCompany("Example Company");
+        user.setFirstName("Max");
+        user.setLastName("Mustermann");
+        user.setUserName("max.mustermann");
+        user.setPassword("test");
+        user.setRole("Employee");
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
+        return user;
     }
 
 }

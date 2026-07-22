@@ -1,16 +1,9 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to deactivate a particular user.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class DeactivateUserRequest {
 
     /**
@@ -28,4 +21,36 @@ public class DeactivateUserRequest {
      */
     private String token;
 
+    public DeactivateUserRequest() {
+    }
+
+    public DeactivateUserRequest(String company, String username, String token) {
+        this.company = company;
+        this.username = username;
+        this.token = token;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

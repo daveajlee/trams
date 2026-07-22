@@ -1,6 +1,6 @@
 mongo:
   databaseName: trams
-  url: ${MONGODB_URI:mongodb://trams:myTraMSpassword@localhost:27017/trams}
+  url: ${MONGODB_URI:mongodb://mongoadmin:mymongodb@localhost:27017/trams}
 spring:
   application:
     name: trams-server
@@ -15,12 +15,12 @@ storage:
 
 server:
   port: 8160
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-  instance:
-    preferIpAddress: true
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+#  instance:
+#    preferIpAddress: true
 #Length of authentification tokens
 token:
   length: 10

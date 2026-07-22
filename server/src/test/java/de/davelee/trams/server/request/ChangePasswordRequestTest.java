@@ -27,13 +27,12 @@ public class ChangePasswordRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder() {
-        ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.builder()
-                .company("MyCompany")
-                .username("dlee")
-                .token("dlee-ghgkg")
-                .currentPassword("test123")
-                .newPassword("super1strong")
-                .build();
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setCompany("MyCompany");
+        changePasswordRequest.setUsername("dlee");
+        changePasswordRequest.setToken("dlee-ghgkg");
+        changePasswordRequest.setCurrentPassword("test123");
+        changePasswordRequest.setNewPassword("super1strong");
         assertEquals("MyCompany", changePasswordRequest.getCompany());
         assertEquals("dlee", changePasswordRequest.getUsername());
         assertEquals("dlee-ghgkg", changePasswordRequest.getToken());

@@ -11,9 +11,11 @@ import de.davelee.trams.server.response.VehiclesResponse;
 import de.davelee.trams.server.service.VehicleService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class VehiclesControllerTest {
 
     @InjectMocks
@@ -46,43 +49,45 @@ public class VehiclesControllerTest {
      */
     @Test
     public void testGetVehiclesEndpoint() {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLivery("Green with red text");
+        vehicle.setFleetNumber("213");
+        vehicle.setAllocatedRoute("1");
+        vehicle.setAllocatedTour("1");
+        vehicle.setVehicleType(VehicleType.BUS);
+        vehicle.setTypeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"));
+        vehicle.setDeliveryDate(LocalDateTime.of(2017,3,25,0,0));
+        vehicle.setInspectionDate(LocalDateTime.of(2017,4,25,0,0));
+        vehicle.setCompany("Lee Buses");
+        vehicle.setVehicleStatus(VehicleStatus.DELIVERED);
+        // Train
+        Vehicle vehicleTrain = new Vehicle();
+        vehicleTrain.setLivery("Red with green text");
+        vehicleTrain.setFleetNumber("2134");
+        vehicleTrain.setAllocatedRoute("RE1");
+        vehicleTrain.setAllocatedTour("1");
+        vehicleTrain.setVehicleType(VehicleType.TRAIN);
+        vehicleTrain.setTypeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"));
+        vehicleTrain.setDeliveryDate(LocalDateTime.of(2009,3,25,0,0));
+        vehicleTrain.setInspectionDate(LocalDateTime.of(2009,4,25,0,0));
+        vehicleTrain.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicleTrain.setCompany("Lee Buses");
+        // Tram
+        Vehicle vehicleTram = new Vehicle();
+        vehicleTram.setLivery("Red with blue text");
+        vehicleTram.setFleetNumber("4213");
+        vehicleTram.setAllocatedRoute("121");
+        vehicleTram.setAllocatedTour("1");
+        vehicleTram.setVehicleType(VehicleType.TRAM);
+        vehicleTram.setTypeSpecificInfos(Collections.singletonMap("Bidirectional", "false"));
+        vehicleTram.setDeliveryDate(LocalDateTime.of(2010,3,25,0,0));
+        vehicleTram.setInspectionDate(LocalDateTime.of(2010,4,25,0,0));
+        vehicleTram.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicleTram.setCompany("Lee Buses");
         //First test is for only retrieving by company
-        Mockito.when(vehicleService.retrieveVehiclesByCompany("Lee Buses")).thenReturn(Lists.newArrayList(Vehicle.builder()
-                .livery("Green with red text")
-                .fleetNumber("213")
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
-                .deliveryDate(LocalDateTime.of(2017,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2017,4,25,0,0))
-                .company("Lee Buses")
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .build(),
-                Vehicle.builder()
-                .livery("Red with green text")
-                .fleetNumber("2134")
-                .allocatedRoute("RE1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.TRAIN)
-                .typeSpecificInfos(Collections.singletonMap("Power Mode", "Electric"))
-                .deliveryDate(LocalDateTime.of(2009,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2009,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .company("Lee Buses")
-                .build(),
-                Vehicle.builder()
-                .livery("Red with blue text")
-                .fleetNumber("4213")
-                .allocatedRoute("121")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.TRAM)
-                .typeSpecificInfos(Collections.singletonMap("Bidirectional", "false"))
-                .deliveryDate(LocalDateTime.of(2010,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2010,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .company("Lee Buses")
-                .build()));
+        Mockito.when(vehicleService.retrieveVehiclesByCompany("Lee Buses")).thenReturn(Lists.newArrayList(vehicle,
+                vehicleTrain,
+                vehicleTram));
         ResponseEntity<VehiclesResponse> responseEntity = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -96,27 +101,22 @@ public class VehiclesControllerTest {
         assertEquals("Inspection Due!", responseEntity.getBody().getVehicleResponses()[2].getInspectionStatus());
         assertEquals(0, responseEntity.getBody().getVehicleResponses()[2].getNextInspectionDueInDays());
         //Second test is for retrieving by fleet number and company.
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "21")).thenReturn(Lists.newArrayList(Vehicle.builder()
-                .livery("Green with red text")
-                .fleetNumber("213")
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
-                .company("Lee Buses")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .vehicleHistoryEntryList(List.of(VehicleHistoryEntry.builder()
-                                .vehicleHistoryReason(VehicleHistoryReason.PURCHASED)
-                                .date(LocalDateTime.of(2021,3,1,0,0))
-                                .comment("Purchased!")
-                        .build(), VehicleHistoryEntry.builder()
-                        .vehicleHistoryReason(VehicleHistoryReason.DELIVERED)
-                        .date(LocalDateTime.of(2021,3,25,0,0))
-                        .comment("Delivered!")
-                        .build()))
-                .build()));
+        Vehicle vehicle2 = new Vehicle();
+        vehicle2.setLivery("Green with red text");
+        vehicle2.setFleetNumber("213");
+        vehicle2.setAllocatedRoute("1");
+        vehicle2.setAllocatedTour("1");
+        vehicle2.setVehicleType(VehicleType.BUS);
+        vehicle2.setTypeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"));
+        vehicle2.setCompany("Lee Buses");
+        vehicle2.setDeliveryDate(LocalDateTime.of(2021,3,25,0,0));
+        vehicle2.setInspectionDate(LocalDateTime.of(2021,4,25,0,0));
+        vehicle2.setVehicleStatus(VehicleStatus.DELIVERED);
+        vehicle2.setVehicleHistoryEntryList(List.of(
+                new VehicleHistoryEntry(null, LocalDateTime.of(2021,3,1,0,0),VehicleHistoryReason.PURCHASED, "Purchased!"),
+                new VehicleHistoryEntry(null, LocalDateTime.of(2021,3,25,0,0), VehicleHistoryReason.DELIVERED, "Delivered!")
+        ));
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndFleetNumber("Lee Buses", "21")).thenReturn(Lists.newArrayList(vehicle2));
         ResponseEntity<VehiclesResponse> responseEntity2 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.of("21"), Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
         assertNotNull(responseEntity2.getBody());
@@ -129,27 +129,7 @@ public class VehiclesControllerTest {
         assertEquals("Inspection Due!",responseEntity2.getBody().getVehicleResponses()[0].getInspectionStatus());
         assertTrue(responseEntity2.getBody().getVehicleResponses()[0].getNextInspectionDueInDays() > -1);
         //Third test is for retrieving by route number and company.
-        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(Lists.newArrayList(Vehicle.builder()
-                .livery("Green with red text")
-                .fleetNumber("213")
-                .allocatedRoute("1")
-                .allocatedTour("1")
-                .vehicleType(VehicleType.BUS)
-                .typeSpecificInfos(Collections.singletonMap("registrationNumber", "XXX2 BBB"))
-                .company("Lee Buses")
-                .deliveryDate(LocalDateTime.of(2021,3,25,0,0))
-                .inspectionDate(LocalDateTime.of(2021,4,25,0,0))
-                .vehicleStatus(VehicleStatus.DELIVERED)
-                .vehicleHistoryEntryList(List.of(VehicleHistoryEntry.builder()
-                        .vehicleHistoryReason(VehicleHistoryReason.PURCHASED)
-                        .date(LocalDateTime.of(2021,3,1,0,0))
-                        .comment("Purchased!")
-                        .build(), VehicleHistoryEntry.builder()
-                        .vehicleHistoryReason(VehicleHistoryReason.DELIVERED)
-                        .date(LocalDateTime.of(2021,3,25,0,0))
-                        .comment("Delivered!")
-                        .build()))
-                .build()));
+        Mockito.when(vehicleService.retrieveVehiclesByCompanyAndAllocatedRoute("Lee Buses", "1")).thenReturn(Lists.newArrayList(vehicle2));
         ResponseEntity<VehiclesResponse> responseEntity3 = vehiclesController.getVehiclesByCompanyAndFleetNumber("Lee Buses", Optional.empty(), Optional.of("1"));
         assertEquals(HttpStatus.OK, responseEntity3.getStatusCode());
         assertNotNull(responseEntity3.getBody());
@@ -175,41 +155,25 @@ public class VehiclesControllerTest {
         //Mock important methods.
         Mockito.when(vehicleService.addVehicle(any())).thenReturn(true);
         //Create test data.
-        LoadVehiclesRequest loadVehiclesRequest = LoadVehiclesRequest.builder()
-                .count(1L)
-                .loadVehicleRequests(new LoadVehicleRequest[] { LoadVehicleRequest.builder()
-                        .fleetNumber("1213")
-                        .company("Lee Buses")
-                        .deliveryDate("25-04-2021")
-                        .inspectionDate("25-05-2021")
-                        .vehicleType("Tram")
-                        .vehicleStatus("DELIVERED")
-                        .seatingCapacity(50)
-                        .standingCapacity(80)
-                        .modelName("Bendy Bus 2000")
-                        .livery("Blue with orange text")
-                        .allocatedTour("1/2")
-                        .additionalTypeInformationMap(Map.of("Bidirectional", "true"))
-                        .userHistory(List.of(VehicleHistoryRequest.builder().vehicleHistoryReason("PURCHASED")
-                                .comment("Love on first sight").date("25-04-2021").build()))
-                        .timesheet(Map.of("01-11-2021", 8))
-                        .build(), LoadVehicleRequest.builder()
-                        .fleetNumber("1213")
-                        .company("Lee Buses")
-                        .deliveryDate("25-04-2021")
-                        .inspectionDate("25-05-2021")
-                        .vehicleType("")
-                        .vehicleStatus("DELIVERED")
-                        .seatingCapacity(50)
-                        .standingCapacity(80)
-                        .modelName("Bendy Bus 2000")
-                        .livery("Blue with orange text")
-                        .allocatedTour("1/2")
-                        .additionalTypeInformationMap(Map.of("Bidirectional", "true"))
-                        .userHistory(List.of(VehicleHistoryRequest.builder().vehicleHistoryReason("PURCHASED")
-                                .comment("Love on first sight").date("25-04-2021").build()))
-                        .timesheet(Map.of("01-11-2021", 8))
-                        .build() }).build();
+        LoadVehicleRequest loadVehicleRequest = new LoadVehicleRequest();
+        loadVehicleRequest.setFleetNumber("1213");
+        loadVehicleRequest.setCompany("Lee Buses");
+        loadVehicleRequest.setDeliveryDate("25-04-2021");
+        loadVehicleRequest.setInspectionDate("25-05-2021");
+        loadVehicleRequest.setVehicleType("Tram");
+        loadVehicleRequest.setVehicleStatus("DELIVERED");
+        loadVehicleRequest.setSeatingCapacity(50);
+        loadVehicleRequest.setStandingCapacity(80);
+        loadVehicleRequest.setModelName("Bendy Bus 2000");
+        loadVehicleRequest.setLivery("Blue with orange text");
+        loadVehicleRequest.setAllocatedTour("1/2");
+        loadVehicleRequest.setAdditionalTypeInformationMap(Map.of("Bidirectional", "true"));
+        loadVehicleRequest.setUserHistory(List.of(new VehicleHistoryRequest("25-04-2021", "PURCHASED", "Love on first sight")));
+        loadVehicleRequest.setTimesheet(Map.of("01-11-2021", 8));
+
+        LoadVehiclesRequest loadVehiclesRequest = new LoadVehiclesRequest(1L, new LoadVehicleRequest[] {
+                loadVehicleRequest,
+                loadVehicleRequest});
         //Perform actual test.
         assertEquals(HttpStatus.OK, vehiclesController.loadVehicles(loadVehiclesRequest).getStatusCode());
         //Perform test where database does not work.

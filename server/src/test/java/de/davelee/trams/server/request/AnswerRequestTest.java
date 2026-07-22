@@ -17,14 +17,11 @@ public class AnswerRequestTest {
      */
     @Test
     public void testBuilderToString() {
-        AnswerRequest answerRequest = AnswerRequest.builder()
-                .objectId("615824bd6d0c882034e85964")
-                .answer("Thanks for the answer")
-                .token("mmustermann-ghgkg").build();
+        AnswerRequest answerRequest = new AnswerRequest("615824bd6d0c882034e85964", "Thanks for the answer", "mmustermann-ghgkg");
         assertEquals("615824bd6d0c882034e85964", answerRequest.getObjectId());
         assertEquals("Thanks for the answer", answerRequest.getAnswer());
         assertEquals("mmustermann-ghgkg", answerRequest.getToken());
-        assertEquals("AnswerRequest(objectId=615824bd6d0c882034e85964, answer=Thanks for the answer, token=mmustermann-ghgkg)", answerRequest.toString());
+        assertEquals("AnswerRequest{objectId='615824bd6d0c882034e85964', answer='Thanks for the answer', token='mmustermann-ghgkg'}", answerRequest.toString());
     }
 
     /**

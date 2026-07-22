@@ -14,10 +14,7 @@ public class LoginRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder ( ) {
-        LoginRequest loginRequest = LoginRequest.builder()
-                .username("testuser")
-                .password("testpwd")
-                .build();
+        LoginRequest loginRequest = new LoginRequest("Mustermann GmbH", "testuser", "testpwd");
         assertEquals("testuser", loginRequest.getUsername());
         assertEquals("testpwd", loginRequest.getPassword());
     }

@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,9 +41,9 @@ public class TicketController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created ticket")})
     public ResponseEntity<Void> addTicket (@RequestBody final TicketRequest ticketRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(ticketRequest.getShortId()) || StringUtils.isBlank(ticketRequest.getType())
-                || StringUtils.isBlank(ticketRequest.getDescription()) || StringUtils.isBlank(ticketRequest.getCompany())
-                || StringUtils.isBlank(ticketRequest.getToken()) || ticketRequest.getPriceList() == null) {
+        if (ticketRequest.getShortId().isBlank() || ticketRequest.getType().isBlank()
+                || ticketRequest.getDescription().isBlank() || ticketRequest.getCompany().isBlank()
+                || ticketRequest.getToken().isBlank() || ticketRequest.getPriceList() == null) {
             return ResponseEntity.badRequest().build();
         }
         //Check that the user has logged in, otherwise forbidden.
@@ -52,15 +51,15 @@ public class TicketController {
             return ResponseEntity.status(403).build();
         }
         //Now create ticket object and save to ticket service. Return 201 if saved successfully.
-        return ticketService.save(Ticket.builder()
-                .shortId(ticketRequest.getShortId())
-                .type(ticketRequest.getType())
-                .company(ticketRequest.getCompany())
-                .description(ticketRequest.getDescription())
-                .sortOrder(ticketRequest.getSortOrder())
-                .priceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()))
-                .company(ticketRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Ticket ticket = new Ticket();
+        ticket.setShortId(ticketRequest.getShortId());
+        ticket.setType(ticketRequest.getType());
+        ticket.setCompany(ticketRequest.getCompany());
+        ticket.setDescription(ticketRequest.getDescription());
+        ticket.setSortOrder(ticketRequest.getSortOrder());
+        ticket.setPriceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()));
+        ticket.setCompany(ticketRequest.getCompany());
+        return ticketService.save(ticket) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
 }

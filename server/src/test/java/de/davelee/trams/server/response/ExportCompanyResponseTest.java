@@ -27,7 +27,7 @@ public class ExportCompanyResponseTest {
         exportCompanyResponse.setSatisfactionRate(100.0);
         exportCompanyResponse.setScenarioName("Landuff");
         exportCompanyResponse.setTime("28-12-2020 14:22");
-        assertEquals("ExportCompanyResponse(name=Mustermann GmbH und Co, balance=20000.0, playerName=Max Mustermann, satisfactionRate=100.0, time=28-12-2020 14:22, scenarioName=Landuff, difficultyLevel=HARD, routes={number=\"1A\"}, drivers={name=\"Max Mustermann\"}, vehicles={Type=\"Bus\"}, messages={subject=\"Test\"})", exportCompanyResponse.toString());
+        assertEquals("ExportCompanyResponse{name='Mustermann GmbH und Co', balance=20000.0, playerName='Max Mustermann', satisfactionRate=100.0, time='28-12-2020 14:22', scenarioName='Landuff', difficultyLevel='HARD', routes='{number=\"1A\"}', drivers='{name=\"Max Mustermann\"}', vehicles='{Type=\"Bus\"}', messages='{subject=\"Test\"}'}", exportCompanyResponse.toString());
     }
 
 }

@@ -3,9 +3,11 @@ package de.davelee.trams.server.service;
 import de.davelee.trams.server.model.*;
 import de.davelee.trams.server.repository.DriverRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class DriverServiceTest {
 
     @InjectMocks
@@ -30,12 +33,11 @@ public class DriverServiceTest {
      */
     @Test
     public void testAddDriver() {
-        Driver driver = Driver.builder()
-                .name("Max Mustermann")
-                .startDate(LocalDateTime.of(2021, 3, 25, 0, 0))
-                .contractedHours(35)
-                .company("Lee Buses")
-                .build();
+        Driver driver = new Driver();
+        driver.setName("Max Mustermann");
+        driver.setStartDate(LocalDateTime.of(2021, 3, 25, 0, 0));
+        driver.setContractedHours(35);
+        driver.setCompany("Lee Buses");
         Mockito.when(driverRepository.insert(driver)).thenReturn(driver);
         assertTrue(driverService.addDriver(driver));
     }

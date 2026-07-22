@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class CustomersController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found customer(s)"), @ApiResponse(responseCode = "204", description = "Successful but no customers found")})
     public ResponseEntity<CustomersResponse> getCustomers(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company == null || company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the customers based on the company.
@@ -56,9 +55,6 @@ public class CustomersController {
         for (int i = 0; i < customers.size(); i++) {
             customerResponses[i] = CustomerUtils.convertCustomerToCustomerResponse(customers.get(i));
         }
-        return ResponseEntity.ok(CustomersResponse.builder()
-                .count((long) customerResponses.length)
-                .customerResponses(customerResponses)
-                .build());
+        return ResponseEntity.ok(new CustomersResponse((long) customerResponses.length, customerResponses));
     }
 }

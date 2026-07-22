@@ -8,9 +8,11 @@ import de.davelee.trams.server.service.FeedbackService;
 import de.davelee.trams.server.service.UserService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,7 @@ import static org.mockito.ArgumentMatchers.eq;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class FeedbacksControllerTest {
 
     @InjectMocks
@@ -48,12 +51,11 @@ public class FeedbacksControllerTest {
     @Test
     public void testValidFindCustomers() {
         //Mock the important methods in customer service.
-        Mockito.when(customerService.findByCompanyAndEmailAddress("Mustermann GmbH", "max@mustermann.de")).thenReturn(generateValidCustomer());
         Mockito.when(feedbackService.findByCompanyAndCustomer(eq("Mustermann GmbH"), any())).thenReturn(List.of(generateValidFeedback()));
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Perform tests
         ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de", "mmustermann-ghgkg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -62,14 +64,13 @@ public class FeedbacksControllerTest {
      */
     @Test
     public void testInvalidFindCustomers() {
-        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Perform tests
         ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", null, "mmustermann-ghgkg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Perform test for forbidden.
         ResponseEntity<FeedbacksResponse> responseEntity2 = feedbacksController.getFeedbacksByCompanyAndEmail("Mustermann GmbH", "max@mustermann.de", "mmustermann-djkf");
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }
 
     /**
@@ -83,7 +84,7 @@ public class FeedbacksControllerTest {
         Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         //Perform tests
         ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany("Mustermann GmbH", "mmustermann-ghgkg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -92,14 +93,13 @@ public class FeedbacksControllerTest {
      */
     @Test
     public void testInvalidFindCompany() {
-        Mockito.when(userService.checkAuthToken("mmustermann-ghgkg")).thenReturn(true);
         Mockito.when(userService.checkAuthToken("mmustermann-djkf")).thenReturn(false);
         //Perform tests
         ResponseEntity<FeedbacksResponse> responseEntity = feedbacksController.getFeedbacksByCompany(null, "mmustermann-ghgkg");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
         //Perform test for forbidden.
         ResponseEntity<FeedbacksResponse> responseEntity2 = feedbacksController.getFeedbacksByCompany("Mustermann GmbH", "mmustermann-djkf");
-        assertTrue(responseEntity2.getStatusCodeValue() == HttpStatus.FORBIDDEN.value());
+        assertTrue(responseEntity2.getStatusCode().value() == HttpStatus.FORBIDDEN.value());
     }
 
     /**
@@ -107,14 +107,14 @@ public class FeedbacksControllerTest {
      * @return a <code>Feedback</code> object containing valid test data.
      */
     private Feedback generateValidFeedback( ) {
-        return Feedback.builder()
-                .id(new ObjectId("615824bd6d0c882034e85964"))
-                .customer(generateValidCustomer())
-                .message("Very good transport company")
-                .company("Mustermann GmbH")
-                .answer("Thanks for the feedback")
-                .extraInfos(Map.of("Punctuality","10"))
-                .build();
+        Feedback feedback = new Feedback();
+        feedback.setId(new ObjectId("615824bd6d0c882034e85964"));
+        feedback.setCustomer(generateValidCustomer());
+        feedback.setMessage("Very good transport company");
+        feedback.setCompany("Mustermann GmbH");
+        feedback.setAnswer("Thanks for the feedback");
+        feedback.setExtraInfos(Map.of("Punctuality","10"));
+        return feedback;
     }
 
     /**
@@ -122,15 +122,15 @@ public class FeedbacksControllerTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }

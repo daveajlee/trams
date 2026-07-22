@@ -1,5 +1,6 @@
 package de.davelee.trams.server.model;
 
+import de.davelee.trams.server.request.CustomerRequest;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
@@ -19,15 +20,14 @@ public class CustomerTest {
      */
     @Test
     public void testBuilderToString() {
-        Customer customer = Customer.builder()
-                .id(ObjectId.get())
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .address("1 Max Way, Musterdorf")
-                .telephoneNumber("01234 567890")
-                .emailAddress("max@mustermann.de").build();
-        assertNotNull(customer.getId());
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
         assertEquals("Mr", customer.getTitle());
         assertEquals("Max", customer.getFirstName());
         assertEquals("Mustermann", customer.getLastName());

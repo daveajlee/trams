@@ -5,9 +5,11 @@ import de.davelee.trams.server.model.StopTime;
 import de.davelee.trams.server.repository.StopTimeRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.DayOfWeek;
@@ -24,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class StopTimeServiceTest {
 
     @InjectMocks
@@ -179,19 +182,17 @@ public class StopTimeServiceTest {
      * @return a <code>StopTime</code> object which contains all data filled for a test StopTimeModel object.
      */
     private StopTime createStopTime (final LocalTime arrivalTime, final LocalTime departureTime, final String journeyNumber, final int count ) {
-        return StopTime.builder()
-                .arrivalTime(arrivalTime)
-                .departureTime(departureTime)
-                .destination("Greenfield")
-                .journeyNumber(journeyNumber)
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY))
-                        .specialOperatingDays(List.of(LocalDateTime.of(2020,12,25,0,0)))
-                        .build())
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build();
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(arrivalTime);
+        stopTime.setDepartureTime(departureTime);
+        stopTime.setDestination("Greenfield");
+        stopTime.setJourneyNumber(journeyNumber);
+        stopTime.setOperatingDays(new OperatingDays(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                        List.of(LocalDateTime.of(2020,12,25,0,0)), null));
+        stopTime.setRouteNumber("405A");
+        stopTime.setStopName("Lakeside");
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
+        return stopTime;
     }
 }

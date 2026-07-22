@@ -4,9 +4,11 @@ import de.davelee.trams.server.model.Order;
 import de.davelee.trams.server.repository.OrderRepository;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
     @InjectMocks
@@ -43,15 +46,15 @@ public class OrderServiceTest {
      * @return a <code>Order</code> object containing valid test data.
      */
     private Order generateValidOrder( ) {
-        return Order.builder()
-                .id(ObjectId.get())
-                .confirmationId("feko04o24")
-                .paymentType("Credit Card")
-                .quantity(1)
-                .ticketTargetGroup("Adult")
-                .ticketType("Single")
-                .qrCodeText("Adult Single 10.10.2021 12:30")
-                .build();
+        Order order = new Order();
+        order.setId(ObjectId.get());
+        order.setConfirmationId("feko04o24");
+        order.setPaymentType("Credit Card");
+        order.setQuantity(1);
+        order.setTicketTargetGroup("Adult");
+        order.setTicketType("Single");
+        order.setQrCodeText("Adult Single 10.10.2021 12:30");
+        return order;
     }
 
 }

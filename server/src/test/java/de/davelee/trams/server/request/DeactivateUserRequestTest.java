@@ -26,11 +26,7 @@ public class DeactivateUserRequestTest {
      */
     @Test
     public void testBuilder() {
-        DeactivateUserRequest deactivateUserRequest = DeactivateUserRequest.builder()
-                .company("MyCompany")
-                .username("dlee")
-                .token("dlee-ghgkg")
-                .build();
+        DeactivateUserRequest deactivateUserRequest = new DeactivateUserRequest("MyCompany", "dlee", "dlee-ghgkg");
         assertEquals("MyCompany", deactivateUserRequest.getCompany());
         assertEquals("dlee", deactivateUserRequest.getUsername());
         assertEquals("dlee-ghgkg", deactivateUserRequest.getToken());

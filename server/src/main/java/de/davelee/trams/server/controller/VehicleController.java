@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,36 +45,38 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully purchased vehicles"), @ApiResponse(responseCode="409",description="Vehicle conflicted with a vehicle that already exists")})
     public ResponseEntity<PurchaseVehicleResponse> purchaseVehicle (@RequestBody PurchaseVehicleRequest purchaseVehicleRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(purchaseVehicleRequest.getCompany()) || StringUtils.isBlank(purchaseVehicleRequest.getFleetNumber())
-        || StringUtils.isBlank(purchaseVehicleRequest.getVehicleType()) || StringUtils.isBlank(purchaseVehicleRequest.getLivery())
+        if ( purchaseVehicleRequest.getCompany() == null || purchaseVehicleRequest.getFleetNumber() == null ||
+                purchaseVehicleRequest.getVehicleType() == null || purchaseVehicleRequest.getLivery() == null ||
+                purchaseVehicleRequest.getModelName() == null ||
+                purchaseVehicleRequest.getCompany().isBlank() || purchaseVehicleRequest.getFleetNumber().isBlank()
+        || purchaseVehicleRequest.getVehicleType().isBlank() || purchaseVehicleRequest.getLivery().isBlank()
         || purchaseVehicleRequest.getSeatingCapacity() <= 0 || purchaseVehicleRequest.getStandingCapacity() <= 0 ||
-        StringUtils.isBlank(purchaseVehicleRequest.getModelName())) {
+        purchaseVehicleRequest.getModelName().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle does not already exist.
         List<Vehicle> vehicles = vehicleService.retrieveVehiclesByCompanyAndFleetNumber(purchaseVehicleRequest.getCompany(), purchaseVehicleRequest.getFleetNumber());
         if ( vehicles != null && vehicles.size() != 0 ) {
-            return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(409).build();
+            return ResponseEntity.of(Optional.of(new PurchaseVehicleResponse(false, 0))).status(409).build();
         }
         //Construct the vehicle and add it to the database.
-        Vehicle vehicle = Vehicle.builder()
-                .company(purchaseVehicleRequest.getCompany())
-                .deliveryDate(LocalDateTime.now().plusDays(7))
-                .fleetNumber(purchaseVehicleRequest.getFleetNumber())
-                .vehicleType(VehicleType.valueOf(purchaseVehicleRequest.getVehicleType()))
-                .livery(purchaseVehicleRequest.getLivery())
-                .typeSpecificInfos(purchaseVehicleRequest.getAdditionalTypeInformationMap())
-                .seatingCapacity(purchaseVehicleRequest.getSeatingCapacity())
-                .standingCapacity(purchaseVehicleRequest.getStandingCapacity())
-                .modelName(purchaseVehicleRequest.getModelName())
-                .build();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setCompany(purchaseVehicleRequest.getCompany());
+        vehicle.setDeliveryDate(LocalDateTime.now().plusDays(7));
+        vehicle.setFleetNumber(purchaseVehicleRequest.getFleetNumber());
+        vehicle.setVehicleType(VehicleType.valueOf(purchaseVehicleRequest.getVehicleType()));
+        vehicle.setLivery(purchaseVehicleRequest.getLivery());
+        vehicle.setTypeSpecificInfos(purchaseVehicleRequest.getAdditionalTypeInformationMap());
+        vehicle.setSeatingCapacity(purchaseVehicleRequest.getSeatingCapacity());
+        vehicle.setStandingCapacity(purchaseVehicleRequest.getStandingCapacity());
+        vehicle.setModelName(purchaseVehicleRequest.getModelName());
         vehicle.addVehicleHistoryEntry(LocalDateTime.now(), VehicleHistoryReason.PURCHASED, "Vehicle Purchased for " + vehicle.getVehicleType().getPurchasePrice());
         if ( vehicleService.addVehicle(vehicle) ) {
             //Return the purchase price for the bus if it was purchased successfully.
-            return ResponseEntity.ok(PurchaseVehicleResponse.builder().purchased(true).purchasePrice(vehicle.getVehicleType().getPurchasePrice().doubleValue()).build());
+            return ResponseEntity.ok(new PurchaseVehicleResponse(true, vehicle.getVehicleType().getPurchasePrice().doubleValue()));
         }
         //Otherwise return an empty 500 response.
-        return ResponseEntity.of(Optional.of(PurchaseVehicleResponse.builder().purchasePrice(0).purchased(false).build())).status(500).build();
+        return ResponseEntity.of(Optional.of(new PurchaseVehicleResponse(false, 0))).status(500).build();
     }
 
     /**
@@ -89,8 +90,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added hours"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> addHoursForDate (@RequestBody AddVehicleHoursRequest addVehicleHoursRequest) {
         //Check valid request
-        if (StringUtils.isBlank(addVehicleHoursRequest.getCompany()) || StringUtils.isBlank(addVehicleHoursRequest.getFleetNumber()) ||
-                StringUtils.isBlank(addVehicleHoursRequest.getDate()) || addVehicleHoursRequest.getHours() <= 0) {
+        if (addVehicleHoursRequest.getCompany().isBlank() || addVehicleHoursRequest.getFleetNumber().isBlank() ||
+                addVehicleHoursRequest.getDate().isBlank() || addVehicleHoursRequest.getHours() <= 0) {
             return ResponseEntity.badRequest().build();
         }
         //Now retrieve the vehicle based on company and fleet number.
@@ -116,8 +117,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully retrieved hours"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleHoursResponse> getHoursForDate(final String company, final String fleetNumber, final String date) {
         //Check valid request
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber) ||
-                StringUtils.isBlank(date)) {
+        if (company.isBlank() || fleetNumber.isBlank() ||
+                date.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Now retrieve the vehicle based on company and fleet number.
@@ -127,11 +128,11 @@ public class VehicleController {
         }
         //Otherwise retrieve the hours and build response.
         int numberOfHoursSoFar = vehicles.get(0).getHoursForDate(DateUtils.convertDateToLocalDateTime(date));
-        return ResponseEntity.ok(VehicleHoursResponse.builder()
-                        .maximumHoursReached(numberOfHoursSoFar >= vehicles.get(0).getVehicleType().getMaximumHoursPerDay())
-                        .numberOfHoursAvailable(vehicles.get(0).getVehicleType().getMaximumHoursPerDay()-numberOfHoursSoFar)
-                        .numberOfHoursSoFar(numberOfHoursSoFar)
-                .build());
+        VehicleHoursResponse vehicleHoursResponse = new VehicleHoursResponse();
+        vehicleHoursResponse.setMaximumHoursReached(numberOfHoursSoFar >= vehicles.get(0).getVehicleType().getMaximumHoursPerDay());
+        vehicleHoursResponse.setNumberOfHoursAvailable(vehicles.get(0).getVehicleType().getMaximumHoursPerDay()-numberOfHoursSoFar);
+        vehicleHoursResponse.setNumberOfHoursSoFar(numberOfHoursSoFar);
+        return ResponseEntity.ok(vehicleHoursResponse);
     }
 
     /**
@@ -144,9 +145,9 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added history entry"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> addHistoryEntry (@RequestBody AddHistoryEntryRequest addHistoryEntryRequest) {
         //Check valid request
-        if (StringUtils.isBlank(addHistoryEntryRequest.getCompany()) || StringUtils.isBlank(addHistoryEntryRequest.getFleetNumber()) ||
-                StringUtils.isBlank(addHistoryEntryRequest.getComment()) || StringUtils.isBlank(addHistoryEntryRequest.getReason()) ||
-                StringUtils.isBlank(addHistoryEntryRequest.getDate())) {
+        if (isBlankString(addHistoryEntryRequest.getCompany()) || isBlankString(addHistoryEntryRequest.getFleetNumber()) ||
+                isBlankString(addHistoryEntryRequest.getComment()) || isBlankString(addHistoryEntryRequest.getReason()) ||
+                isBlankString(addHistoryEntryRequest.getDate())) {
             return ResponseEntity.badRequest().build();
         }
         //Now retrieve the vehicle based on company and fleet number.
@@ -160,6 +161,10 @@ public class VehicleController {
                 ResponseEntity.status(200).build() : ResponseEntity.status(500).build();
     }
 
+    private boolean isBlankString(String string) {
+        return string == null || string.isBlank();
+    }
+
     /**
      * Sell the vehicle matching the supplied company and fleet number. The purchase price of the vehicle will be returned without depreciation.
      * @param sellVehicleRequest a <code>SellVehicleRequest</code> object containing the information about the vehicle which should be sold.
@@ -170,7 +175,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully sold vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<SellVehicleResponse> sellVehicle (@RequestBody SellVehicleRequest sellVehicleRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(sellVehicleRequest.getCompany()) || StringUtils.isBlank(sellVehicleRequest.getFleetNumber())) {
+        if ( sellVehicleRequest.getCompany() == null || sellVehicleRequest.getFleetNumber() == null ||
+                sellVehicleRequest.getCompany().isBlank() || sellVehicleRequest.getFleetNumber().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise it cannot be sold.
@@ -181,10 +187,7 @@ public class VehicleController {
         //Now sell the vehicle.
         BigDecimal soldPrice = vehicleService.sellVehicle(vehicles.get(0));
         //Return response of selling the vehicle with sold price that is 0 if vehicle could not be sold.
-        return ResponseEntity.ok(SellVehicleResponse.builder()
-                .sold(soldPrice.doubleValue() > 0)
-                .soldPrice(soldPrice.doubleValue())
-                .build());
+        return ResponseEntity.ok(new SellVehicleResponse(soldPrice.doubleValue() > 0, soldPrice.doubleValue()));
     }
 
     /**
@@ -197,7 +200,8 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully inspected vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<InspectVehicleResponse> inspectVehicle (@RequestBody InspectVehicleRequest inspectVehicleRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(inspectVehicleRequest.getCompany()) || StringUtils.isBlank(inspectVehicleRequest.getFleetNumber())) {
+        if ( inspectVehicleRequest.getCompany() == null || inspectVehicleRequest.getFleetNumber() == null ||
+                inspectVehicleRequest.getCompany().isBlank() || inspectVehicleRequest.getFleetNumber().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise it cannot be inspected.
@@ -208,10 +212,7 @@ public class VehicleController {
         //Now inspect the vehicle.
         BigDecimal inspectionPrice = vehicleService.inspectVehicle(vehicles.get(0));
         //Return response of inspecting the vehicle with price that is 0 if vehicle could not be inspected.
-        return ResponseEntity.ok(InspectVehicleResponse.builder()
-                .inspected(inspectionPrice.doubleValue() > 0)
-                .inspectionPrice(inspectionPrice.doubleValue())
-                .build());
+        return ResponseEntity.ok(new InspectVehicleResponse(inspectionPrice.doubleValue() > 0, inspectionPrice.doubleValue()));
     }
 
     /**
@@ -224,8 +225,9 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully allocated vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> allocateVehicle (@RequestBody AllocateVehicleRequest allocateVehicleRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(allocateVehicleRequest.getCompany()) || StringUtils.isBlank(allocateVehicleRequest.getFleetNumber())
-                || StringUtils.isBlank(allocateVehicleRequest.getAllocatedTour()) ) {
+        if ( allocateVehicleRequest.getCompany() == null || allocateVehicleRequest.getFleetNumber() == null ||
+                allocateVehicleRequest.getAllocatedTour() == null || allocateVehicleRequest.getCompany().isBlank() || allocateVehicleRequest.getFleetNumber().isBlank()
+                || allocateVehicleRequest.getAllocatedTour().isBlank() ) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise it cannot be allocated.
@@ -250,7 +252,7 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully retrieved vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleResponse> getAllocatedVehicle (final String company, final String allocatedRoute, final String allocatedTour) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(company) || StringUtils.isBlank(allocatedTour)) {
+        if ( company.isBlank() || allocatedTour.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that a single vehicle is allocated to this tour, otherwise return no content.
@@ -259,25 +261,25 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Return the vehicle information.
-        return ResponseEntity.ok(VehicleResponse.builder()
-                .allocatedRoute(vehicles.get(0).getAllocatedRoute())
-                .allocatedTour(vehicles.get(0).getAllocatedTour())
-                .delayInMinutes(vehicles.get(0).getDelayInMinutes())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .livery(vehicles.get(0).getLivery())
-                .company(vehicles.get(0).getCompany())
-                .additionalTypeInformationMap(vehicles.get(0).getTypeSpecificInfos())
-                .vehicleType(vehicles.get(0).getVehicleType().getTypeName())
-                .userHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()))
-                .modelName(vehicles.get(0).getModelName())
-                .purchasePrice(vehicles.get(0).getVehicleType().getPurchasePrice().doubleValue())
-                .seatingCapacity(vehicles.get(0).getSeatingCapacity())
-                .standingCapacity(vehicles.get(0).getStandingCapacity())
-                .deliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getDeliveryDate()))
-                .inspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getInspectionDate()))
-                .vehicleStatus(vehicles.get(0).getVehicleStatus() != null ? vehicles.get(0).getVehicleStatus().name() : null)
-                .timesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(0).getTimesheet()))
-                .build());
+        VehicleResponse vehicleResponse = new VehicleResponse();
+        vehicleResponse.setAllocatedRoute(vehicles.get(0).getAllocatedRoute());
+        vehicleResponse.setAllocatedTour(vehicles.get(0).getAllocatedTour());
+        vehicleResponse.setDelayInMinutes(vehicles.get(0).getDelayInMinutes());
+        vehicleResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleResponse.setLivery(vehicles.get(0).getLivery());
+        vehicleResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleResponse.setAdditionalTypeInformationMap(vehicles.get(0).getTypeSpecificInfos());
+        vehicleResponse.setVehicleType(vehicles.get(0).getVehicleType().getTypeName());
+        vehicleResponse.setUserHistory(VehicleUtils.convertHistoryEntriesToResponse(vehicles.get(0).getVehicleHistoryEntryList()));
+        vehicleResponse.setModelName(vehicles.get(0).getModelName());
+        vehicleResponse.setPurchasePrice(vehicles.get(0).getVehicleType().getPurchasePrice().doubleValue());
+        vehicleResponse.setSeatingCapacity(vehicles.get(0).getSeatingCapacity());
+        vehicleResponse.setStandingCapacity(vehicles.get(0).getStandingCapacity());
+        vehicleResponse.setDeliveryDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getDeliveryDate()));
+        vehicleResponse.setInspectionDate(DateUtils.convertLocalDateTimeToDate(vehicles.get(0).getInspectionDate()));
+        vehicleResponse.setVehicleStatus(vehicles.get(0).getVehicleStatus() != null ? vehicles.get(0).getVehicleStatus().name() : null);
+        vehicleResponse.setTimesheet(VehicleUtils.convertTimesheetToResponse(vehicles.get(0).getTimesheet()));
+        return ResponseEntity.ok(vehicleResponse);
     }
 
     /**
@@ -291,7 +293,7 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully removed allocation"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<Void> removeVehicleAllocation (final String company, final String fleetNumber) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber)) {
+        if ( company.isBlank() || fleetNumber.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise allocations cannot be removed.
@@ -314,7 +316,7 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully adjusted delay of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleDelayResponse> adjustVehicleDelay (@RequestBody AdjustVehicleDelayRequest adjustVehicleDelayRequest) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(adjustVehicleDelayRequest.getCompany()) || StringUtils.isBlank(adjustVehicleDelayRequest.getFleetNumber())) {
+        if ( adjustVehicleDelayRequest.getCompany().isBlank() || adjustVehicleDelayRequest.getFleetNumber().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise the delay cannot be adjusted.
@@ -323,11 +325,11 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
         //Now adjust the delay of the vehicle and return current delay.
-        return ResponseEntity.ok(VehicleDelayResponse.builder()
-                .company(vehicles.get(0).getCompany())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .delayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()))
-                .build());
+        VehicleDelayResponse vehicleDelayResponse = new VehicleDelayResponse();
+        vehicleDelayResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleDelayResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleDelayResponse.setDelayInMinutes(vehicleService.adjustVehicleDelay(vehicles.get(0), adjustVehicleDelayRequest.getDelayInMinutes()));
+        return ResponseEntity.ok(vehicleDelayResponse);
     }
 
     /**
@@ -342,7 +344,7 @@ public class VehicleController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully calculated value of vehicle"), @ApiResponse(responseCode="204",description="No vehicle found")})
     public ResponseEntity<VehicleValueResponse> getValue (final String company, final String fleetNumber, final String date) {
         //Check that the request is valid.
-        if ( StringUtils.isBlank(company) || StringUtils.isBlank(fleetNumber) || StringUtils.isBlank(date)) {
+        if ( company.isBlank() || fleetNumber.isBlank() || date.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that this vehicle exists otherwise the value cannot be calculated.
@@ -357,11 +359,11 @@ public class VehicleController {
         //A value below 0 is not allowed.
         value = value < 0 ? 0.0 : value;
         //Now adjust the delay of the vehicle and return current delay.
-        return ResponseEntity.ok(VehicleValueResponse.builder()
-                .company(vehicles.get(0).getCompany())
-                .fleetNumber(vehicles.get(0).getFleetNumber())
-                .value(value)
-                .build());
+        VehicleValueResponse vehicleValueResponse = new VehicleValueResponse();
+        vehicleValueResponse.setCompany(vehicles.get(0).getCompany());
+        vehicleValueResponse.setFleetNumber(vehicles.get(0).getFleetNumber());
+        vehicleValueResponse.setValue(value);
+        return ResponseEntity.ok(vehicleValueResponse);
     }
 
 }

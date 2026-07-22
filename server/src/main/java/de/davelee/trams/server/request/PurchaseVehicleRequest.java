@@ -1,7 +1,5 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 import java.util.Map;
 
 /**
@@ -9,12 +7,6 @@ import java.util.Map;
  * company fulfilling the details supplied.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@ToString
 public class PurchaseVehicleRequest {
 
     /**
@@ -57,4 +49,95 @@ public class PurchaseVehicleRequest {
      */
     private String modelName;
 
+    public PurchaseVehicleRequest() {
+    }
+
+    public PurchaseVehicleRequest(String fleetNumber, String company, String vehicleType, String livery, Map<String, String> additionalTypeInformationMap, int seatingCapacity, int standingCapacity, String modelName) {
+        this.fleetNumber = fleetNumber;
+        this.company = company;
+        this.vehicleType = vehicleType;
+        this.livery = livery;
+        this.additionalTypeInformationMap = additionalTypeInformationMap;
+        this.seatingCapacity = seatingCapacity;
+        this.standingCapacity = standingCapacity;
+        this.modelName = modelName;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getLivery() {
+        return livery;
+    }
+
+    public void setLivery(String livery) {
+        this.livery = livery;
+    }
+
+    public Map<String, String> getAdditionalTypeInformationMap() {
+        return additionalTypeInformationMap;
+    }
+
+    public void setAdditionalTypeInformationMap(Map<String, String> additionalTypeInformationMap) {
+        this.additionalTypeInformationMap = additionalTypeInformationMap;
+    }
+
+    public int getSeatingCapacity() {
+        return seatingCapacity;
+    }
+
+    public void setSeatingCapacity(int seatingCapacity) {
+        this.seatingCapacity = seatingCapacity;
+    }
+
+    public int getStandingCapacity() {
+        return standingCapacity;
+    }
+
+    public void setStandingCapacity(int standingCapacity) {
+        this.standingCapacity = standingCapacity;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    @Override
+    public String toString() {
+        return "PurchaseVehicleRequest{" +
+                "fleetNumber='" + fleetNumber + '\'' +
+                ", company='" + company + '\'' +
+                ", vehicleType='" + vehicleType + '\'' +
+                ", livery='" + livery + '\'' +
+                ", additionalTypeInformationMap=" + additionalTypeInformationMap +
+                ", seatingCapacity=" + seatingCapacity +
+                ", standingCapacity=" + standingCapacity +
+                ", modelName='" + modelName + '\'' +
+                '}';
+    }
 }

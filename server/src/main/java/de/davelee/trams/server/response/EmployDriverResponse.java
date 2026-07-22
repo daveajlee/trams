@@ -1,17 +1,10 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a response to a request to employ a driver
  * and contains the costs of employing the driver.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class EmployDriverResponse {
 
     /**
@@ -24,5 +17,28 @@ public class EmployDriverResponse {
      */
     private double employmentCost;
 
+    public EmployDriverResponse() {
+    }
+
+    public EmployDriverResponse(boolean employed, double employmentCost) {
+        this.employed = employed;
+        this.employmentCost = employmentCost;
+    }
+
+    public boolean isEmployed() {
+        return employed;
+    }
+
+    public void setEmployed(boolean employed) {
+        this.employed = employed;
+    }
+
+    public double getEmploymentCost() {
+        return employmentCost;
+    }
+
+    public void setEmploymentCost(double employmentCost) {
+        this.employmentCost = employmentCost;
+    }
 }
 

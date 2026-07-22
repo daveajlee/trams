@@ -18,15 +18,14 @@ public class UserTest {
      * Expected Result: valid values and string.
      */
     public void testBuilderToString() {
-        User user = User.builder()
-                .firstName("Max")
-                .lastName("Mustermann")
-                .company("Example Company")
-                .userName("mmustermann")
-                .password("test123")
-                .role("Admin")
-                .accountStatus(UserAccountStatus.ACTIVE)
-                .build();
+        User user = new User();
+        user.setFirstName("Max");
+        user.setLastName("Mustermann");
+        user.setCompany("Example Company");
+        user.setUserName("mmustermann");
+        user.setPassword("test123");
+        user.setRole("Admin");
+        user.setAccountStatus(UserAccountStatus.ACTIVE);
         assertEquals("Max", user.getFirstName());
         assertEquals("Mustermann", user.getLastName());
         assertEquals("Example Company", user.getCompany());

@@ -5,9 +5,11 @@ import de.davelee.trams.server.response.TicketsResponse;
 import de.davelee.trams.server.service.TicketService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class TicketsControllerTest {
 
     @InjectMocks
@@ -37,20 +40,20 @@ public class TicketsControllerTest {
      */
     @Test
     public void testValidGetByCompany() {
+        Ticket ticket = new Ticket();
+        ticket.setId(ObjectId.get());
+        ticket.setShortId("single");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setType("Single Ticket");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", new BigDecimal("0.80")));
         //Mock important methods
         Mockito.when(ticketService.findByCompany("Mustermann GmbH")).thenReturn(
-                List.of(Ticket.builder()
-                        .id(ObjectId.get())
-                        .shortId("single")
-                        .company("Mustermann GmbH")
-                        .description("Valid for 1 hour")
-                        .type("Single Ticket")
-                        .sortOrder(1)
-                        .priceList(Map.of("adult", new BigDecimal("0.80")))
-                        .build()));
+                List.of(ticket));
         //Perform test
         ResponseEntity<TicketsResponse> responseEntity = ticketsController.getTicketsByCompany("Mustermann GmbH");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.OK.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.OK.value());
     }
 
     /**
@@ -61,7 +64,7 @@ public class TicketsControllerTest {
     public void testInvalidGetByCompany() {
         //Perform test
         ResponseEntity<TicketsResponse> responseEntity = ticketsController.getTicketsByCompany("");
-        assertTrue(responseEntity.getStatusCodeValue() == HttpStatus.BAD_REQUEST.value());
+        assertTrue(responseEntity.getStatusCode().value() == HttpStatus.BAD_REQUEST.value());
     }
 
 }

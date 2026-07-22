@@ -82,29 +82,29 @@ public class ImportGTFSDataService {
                 }
             }
 
+            for (org.onebusaway.gtfs.model.Stop gtfsStop : store.getAllStops()) {
+                //Do not add duplicate stops to the database.
+                if (!StopUtils.hasStopAlreadyBeenImported(gtfsStop.getName(), store.getAgencyForId(gtfsStop.getId().getAgencyId()).getName(), stopRepository)) {
+                    importStop(gtfsStop, store.getAgencyForId(gtfsStop.getId().getAgencyId()).getName());
+                }
+            }
+
             //Import the stop time information.
             for (org.onebusaway.gtfs.model.StopTime gtfsStopTime : store.getAllStopTimes()) {
                 if ((!routesToImport.isEmpty() && shouldRouteBeImported(gtfsStopTime.getTrip().getRoute(), routesToImport))) {
-
-                    //Do not add duplicate stops to the database.
-                    if (!StopUtils.hasStopAlreadyBeenImported(gtfsStopTime.getStop().getName(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName(), stopRepository)) {
-                        importStop(gtfsStopTime.getStop(), store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName());
-                    }
-
                     //Add the StopTime information to the database.
                     List<ServiceCalendar> serviceCalendarList = store.getAllCalendars().stream().filter(sc -> sc.getServiceId().getId().contentEquals(gtfsStopTime.getTrip().getServiceId().getId())).collect(Collectors.toList());
-                    StopTime stopTime = StopTime.builder()
-                            .company(store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName())
-                            .departureTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime())))
-                            .arrivalTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime())))
-                            .stopName(gtfsStopTime.getStop().getName())
-                            .destination(gtfsStopTime.getTrip().getTripHeadsign())
-                            .routeNumber(gtfsStopTime.getTrip().getRoute().getShortName())
-                            .journeyNumber(gtfsStopTime.getTrip().getId().getId())
-                            .validFromDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay(), 0,0): null )
-                            .validToDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay(), 0, 0): null )
-                            .operatingDays(serviceCalendarList.size() == 1 ? getOperatingDays(serviceCalendarList.get(0)) : null)
-                            .build();
+                    StopTime stopTime = new StopTime();
+                    stopTime.setCompany(store.getAgencyForId(gtfsStopTime.getTrip().getId().getAgencyId()).getName());
+                    stopTime.setDepartureTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getDepartureTime())));
+                    stopTime.setArrivalTime(DateUtils.convertTimeToLocalTime(convertTimeToHoursAndMinutes(gtfsStopTime.getArrivalTime())));
+                    stopTime.setStopName(gtfsStopTime.getStop().getName());
+                    stopTime.setDestination(gtfsStopTime.getTrip().getTripHeadsign());
+                    stopTime.setRouteNumber(gtfsStopTime.getTrip().getRoute().getShortName());
+                    stopTime.setJourneyNumber(gtfsStopTime.getTrip().getId().getId());
+                    stopTime.setValidFromDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getStartDate().getYear(), serviceCalendarList.get(0).getStartDate().getMonth(), serviceCalendarList.get(0).getStartDate().getDay(), 0,0): null );
+                    stopTime.setValidToDate( serviceCalendarList.size() == 1 ? LocalDateTime.of(serviceCalendarList.get(0).getEndDate().getYear(), serviceCalendarList.get(0).getEndDate().getMonth(), serviceCalendarList.get(0).getEndDate().getDay(), 0, 0): null );
+                    stopTime.setOperatingDays(serviceCalendarList.size() == 1 ? getOperatingDays(serviceCalendarList.get(0)) : null);
                     stopTimeRepository.insert(stopTime);
                     stopTimeCounter++;
                 }
@@ -138,11 +138,11 @@ public class ImportGTFSDataService {
      */
     private void importRoute (final org.onebusaway.gtfs.model.Route route, final Agency agency ) {
         if ( !RouteUtils.hasRouteAlreadyBeenImported(route.getShortName(), agency.getName(), routeRepository) ) {
-            routeRepository.insert( Route.builder()
-                    .routeNumber(route.getShortName())
-                    .id(route.getId().getId())
-                    .company(agency.getName())
-                    .build());
+            Route routeObj = new Route();
+            routeObj.setRouteNumber(route.getShortName());
+            routeObj.setId(route.getId().getId());
+            routeObj.setCompany(agency.getName());
+            routeRepository.insert(routeObj);
         }
     }
 
@@ -152,13 +152,13 @@ public class ImportGTFSDataService {
      * @param company a <code>String</code> with the name of the company serving the stop.
      */
     private void importStop ( final org.onebusaway.gtfs.model.Stop stop, final String company ) {
-        stopRepository.insert(Stop.builder()
-                .id(stop.getId().getId())
-                .latitude(stop.getLat())
-                .longitude(stop.getLon())
-                .name(stop.getName())
-                .company(company)
-                .build());
+        Stop stopObj = new Stop();
+        stopObj.setId(stop.getId().getId());
+        stopObj.setLatitude(stop.getLat());
+        stopObj.setLongitude(stop.getLon());
+        stopObj.setName(stop.getName());
+        stopObj.setCompany(company);
+        stopRepository.insert(stopObj);
     }
 
     /**
@@ -218,7 +218,7 @@ public class ImportGTFSDataService {
             operatingDays.add(DayOfWeek.SUNDAY);
         }
         //Return complete list of operating days.
-        return OperatingDays.builder().operatingDays(operatingDays).build();
+        return new OperatingDays(operatingDays, null, null);
     }
 
 }

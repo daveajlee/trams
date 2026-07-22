@@ -3,9 +3,11 @@ package de.davelee.trams.server.service;
 import de.davelee.trams.server.model.Customer;
 import de.davelee.trams.server.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
 
     @InjectMocks
@@ -86,15 +89,15 @@ public class CustomerServiceTest {
      * @return a <code>Customer</code> object containing valid test data.
      */
     private Customer generateValidCustomer( ) {
-        return Customer.builder()
-                .title("Mr")
-                .firstName("Max")
-                .lastName("Mustermann")
-                .emailAddress("max@mustermann.de")
-                .telephoneNumber("01234 567890")
-                .address("1 Max Way, Musterdorf")
-                .company("Mustermann GmbH")
-                .build();
+        Customer customer = new Customer();
+        customer.setTitle("Mr");
+        customer.setFirstName("Max");
+        customer.setLastName("Mustermann");
+        customer.setEmailAddress("max@mustermann.de");
+        customer.setTelephoneNumber("01234 567890");
+        customer.setAddress("1 Max Way, Musterdorf");
+        customer.setCompany("Mustermann GmbH");
+        return customer;
     }
 
 }

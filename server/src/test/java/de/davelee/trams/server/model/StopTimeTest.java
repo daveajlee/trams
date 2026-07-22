@@ -21,23 +21,22 @@ public class StopTimeTest {
      */
     @Test
     public void testBuilderGetterSetterToString ( ) {
-        //Test builder
-        StopTime stopTime = StopTime.builder()
-                .arrivalTime(LocalTime.of(19, 46))
-                .company("Mustermann Bus GmbH")
-                .departureTime(LocalTime.of(19,48))
-                .destination("Greenfield")
-                .footnote("Continues as 405B to Brownfield")
-                .journeyNumber("123")
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
-                        .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0)))
-                        .build())
-                .routeNumber("405A")
-                .stopName("Lakeside")
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build();
+        OperatingDays operatingDays = new OperatingDays();
+        operatingDays.setOperatingDays(Arrays.asList(DayOfWeek.MONDAY));
+        operatingDays.setSpecialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0)));
+        //Test stop time constructor.
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(LocalTime.of(19, 46));
+        stopTime.setCompany("Mustermann Bus GmbH");
+        stopTime.setDepartureTime(LocalTime.of(19,48));
+        stopTime.setDestination("Greenfield");
+        stopTime.setFootnote("Continues as 405B to Brownfield");
+        stopTime.setJourneyNumber("123");
+        stopTime.setOperatingDays(operatingDays);
+        stopTime.setRouteNumber("405A");
+        stopTime.setStopName("Lakeside");
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
         //Verify the builder functionality through getter methods
         assertEquals(LocalTime.of(19,46), stopTime.getArrivalTime());
         assertEquals(LocalTime.of(19,48), stopTime.getDepartureTime());
@@ -50,7 +49,7 @@ public class StopTimeTest {
         assertEquals(LocalDateTime.of(2021,12,11,0,0), stopTime.getValidToDate());
         assertEquals("Continues as 405B to Brownfield", stopTime.getFootnote());
         //Verify the toString method
-        assertEquals("StopTime(id=null, stopName=Lakeside, company=Mustermann Bus GmbH, arrivalTime=19:46, departureTime=19:48, destination=Greenfield, routeNumber=405A, service=null, validFromDate=2020-12-12T00:00, validToDate=2021-12-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=123, footnote=Continues as 405B to Brownfield)", stopTime.toString());
+        assertEquals("StopTime{id=null, stopName='Lakeside', company='Mustermann Bus GmbH', arrivalTime=19:46, departureTime=19:48, destination='Greenfield', routeNumber='405A', service=null, validFromDate=2020-12-12T00:00, validToDate=2021-12-11T00:00, operatingDays=OperatingDays{operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null}, journeyNumber='123', footnote='Continues as 405B to Brownfield'}", stopTime.toString());
         //Now use the setter methods
         stopTime.setArrivalTime(LocalTime.of(20, 46));
         stopTime.setCompany("Mustermann Bus GmbH");
@@ -58,17 +57,14 @@ public class StopTimeTest {
         stopTime.setDestination("Lake Way");
         stopTime.setFootnote(null);
         stopTime.setJourneyNumber("1234");
-        stopTime.setOperatingDays(OperatingDays.builder()
-                .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
-                .specialOperatingDays(Arrays.asList(LocalDateTime.of(2020,12,25,0,0)))
-                .build());
+        stopTime.setOperatingDays(operatingDays);
         stopTime.setRouteNumber("405B");
         stopTime.setStopName("Old Town");
         stopTime.setValidFromDate(LocalDateTime.of(2020,11,12,0,0));
         stopTime.setValidToDate(LocalDateTime.of(2021,11,11,0,0));
         //And verify again through the toString methods
         //assertEquals("", stopTime.getOperatingDays().toString());
-        assertEquals("StopTime(id=null, stopName=Old Town, company=Mustermann Bus GmbH, arrivalTime=20:46, departureTime=20:48, destination=Lake Way, routeNumber=405B, service=null, validFromDate=2020-11-12T00:00, validToDate=2021-11-11T00:00, operatingDays=OperatingDays(operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null), journeyNumber=1234, footnote=null)", stopTime.toString());
+        assertEquals("StopTime{id=null, stopName='Old Town', company='Mustermann Bus GmbH', arrivalTime=20:46, departureTime=20:48, destination='Lake Way', routeNumber='405B', service=null, validFromDate=2020-11-12T00:00, validToDate=2021-11-11T00:00, operatingDays=OperatingDays{operatingDays=[MONDAY], specialOperatingDays=[2020-12-25T00:00], disruptedOperatingDays=null}, journeyNumber='1234', footnote='null'}", stopTime.toString());
     }
 
     /**
@@ -76,19 +72,18 @@ public class StopTimeTest {
      */
     @Test
     public void testGetTime () {
+        OperatingDays operatingDays = new OperatingDays();
+        operatingDays.setOperatingDays(Arrays.asList(DayOfWeek.MONDAY));
         //Create Test Date
-        StopTime stopTime = StopTime.builder()
-                .arrivalTime(LocalTime.of(19, 46))
-                .departureTime(LocalTime.of(19,48))
-                .destination("Greenfield")
-                .journeyNumber("123")
-                .operatingDays(OperatingDays.builder()
-                        .operatingDays(Arrays.asList(DayOfWeek.MONDAY))
-                        .build())
-                .routeNumber("405A")
-                .validFromDate(LocalDateTime.of(2020,12,12,0,0))
-                .validToDate(LocalDateTime.of(2021,12,11,0,0))
-                .build();
+        StopTime stopTime = new StopTime();
+        stopTime.setArrivalTime(LocalTime.of(19, 46));
+        stopTime.setDepartureTime(LocalTime.of(19,48));
+        stopTime.setDestination("Greenfield");
+        stopTime.setJourneyNumber("123");
+        stopTime.setOperatingDays(operatingDays);
+        stopTime.setRouteNumber("405A");
+        stopTime.setValidFromDate(LocalDateTime.of(2020,12,12,0,0));
+        stopTime.setValidToDate(LocalDateTime.of(2021,12,11,0,0));
         // Test retrieval of departure time.
         assertEquals(stopTime.getTime("Departure"), LocalTime.of(19, 48));
         // Test retrieval of arrival time.

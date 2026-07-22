@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,18 +38,17 @@ public class RouteController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully add route")})
     public ResponseEntity<Void> addRoute (@RequestBody final AddRouteRequest routeRequest ) {
         //Check that the request is valid, otherwise bad request.
-        if (StringUtils.isBlank(routeRequest.getCompany()) || StringUtils.isBlank(routeRequest.getRouteNumber())) {
+        if (routeRequest.getCompany().isBlank() || routeRequest.getRouteNumber().isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Convert the RouteRequest to the Route object.
-        Route route = Route.builder()
-                .company(routeRequest.getCompany())
-                .routeNumber(routeRequest.getRouteNumber())
-                .startStop(routeRequest.getStartStop())
-                .endStop(routeRequest.getEndStop())
-                .stops(routeRequest.getStops())
-                .nightRoute(routeRequest.isNightRoute())
-                .build();
+        Route route = new Route();
+        route.setCompany(routeRequest.getCompany());
+        route.setRouteNumber(routeRequest.getRouteNumber());
+        route.setStartStop(routeRequest.getStartStop());
+        route.setEndStop(routeRequest.getEndStop());
+        route.setStops(routeRequest.getStops());
+        route.setNightRoute(routeRequest.isNightRoute());
         //Attempt to add the route to the database.
         return routeService.addRoute(route) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
@@ -67,7 +65,7 @@ public class RouteController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned route")})
     public ResponseEntity<RouteResponse> getRoute (final String company, final String routeNumber) {
         //Check that the request is valid, otherwise bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
+        if (company.isBlank() || routeNumber.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Route> routes = routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber);
@@ -77,13 +75,13 @@ public class RouteController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //Translate route response and return.
-        return ResponseEntity.ok(RouteResponse.builder()
-                .routeNumber(routes.getFirst().getRouteNumber())
-                .company(routes.getFirst().getCompany())
-                .startStop(routes.getFirst().getStartStop())
-                .stops(routes.getFirst().getStops())
-                .endStop(routes.getFirst().getEndStop())
-                .build());
+        RouteResponse routeResponse = new RouteResponse();
+        routeResponse.setRouteNumber(routes.getFirst().getRouteNumber());
+        routeResponse.setCompany(routes.getFirst().getCompany());
+        routeResponse.setStartStop(routes.getFirst().getStartStop());
+        routeResponse.setStops(routes.getFirst().getStops());
+        routeResponse.setEndStop(routes.getFirst().getEndStop());
+        return ResponseEntity.ok(routeResponse);
     }
 
     /**
@@ -98,7 +96,7 @@ public class RouteController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted route")})
     public ResponseEntity<Void> deleteRoute (final String company, final String routeNumber) {
         //Check that the request is valid, otherwise bad request.
-        if (StringUtils.isBlank(company) || StringUtils.isBlank(routeNumber)) {
+        if (company.isBlank() || routeNumber.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<Route> routes = routeService.getRoutesByCompanyAndRouteNumber(company, routeNumber);

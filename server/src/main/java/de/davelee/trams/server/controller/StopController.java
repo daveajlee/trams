@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,7 @@ public class StopController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully add stop")})
     public ResponseEntity<Void> addStop ( @RequestBody final AddStopRequest stopRequest ) {
         //Check that the request is valid, otherwise bad request.
-        if (StringUtils.isBlank(stopRequest.getCompany()) || StringUtils.isBlank(stopRequest.getName())) {
+        if (stopRequest.getCompany().isBlank() || stopRequest.getName().isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         // Build the distances map from the two lists in the request.
@@ -54,14 +53,13 @@ public class StopController {
             }
         }
         //Convert the StopRequest to the Stop object.
-        Stop stop = Stop.builder()
-                .company(stopRequest.getCompany())
-                .name(stopRequest.getName())
-                .waitingTime(stopRequest.getWaitingTime())
-                .distances(distances)
-                .latitude(stopRequest.getLatitude())
-                .longitude(stopRequest.getLongitude())
-                .build();
+        Stop stop = new Stop();
+        stop.setCompany(stopRequest.getCompany());
+        stop.setName(stopRequest.getName());
+        stop.setWaitingTime(stopRequest.getWaitingTime());
+        stop.setDistances(distances);
+        stop.setLatitude(stopRequest.getLatitude());
+        stop.setLongitude(stopRequest.getLongitude());
         //Attempt to add the stop to the database.
         return stopService.addStop(stop) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }

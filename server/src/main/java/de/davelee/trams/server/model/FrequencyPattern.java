@@ -1,10 +1,5 @@
 package de.davelee.trams.server.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import java.time.LocalTime;
 
 /**
@@ -12,10 +7,6 @@ import java.time.LocalTime;
  * A frequency pattern contains information about the frequency between stops on particular days.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@ToString
 public class FrequencyPattern {
 
     /**
@@ -63,4 +54,93 @@ public class FrequencyPattern {
      */
     private int numTours;
 
+    public FrequencyPattern() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public OperatingDays getDaysOfOperation() {
+        return daysOfOperation;
+    }
+
+    public void setDaysOfOperation(OperatingDays daysOfOperation) {
+        this.daysOfOperation = daysOfOperation;
+    }
+
+    public String getStartStop() {
+        return startStop;
+    }
+
+    public void setStartStop(String startStop) {
+        this.startStop = startStop;
+    }
+
+    public String getEndStop() {
+        return endStop;
+    }
+
+    public void setEndStop(String endStop) {
+        this.endStop = endStop;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getFrequencyInMinutes() {
+        return frequencyInMinutes;
+    }
+
+    public void setFrequencyInMinutes(int frequencyInMinutes) {
+        this.frequencyInMinutes = frequencyInMinutes;
+    }
+
+    public int getNumTours() {
+        return numTours;
+    }
+
+    public void setNumTours(int numTours) {
+        this.numTours = numTours;
+    }
+
+    @Override
+    public String toString() {
+        return "FrequencyPattern{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", daysOfOperation=" + daysOfOperation +
+                ", startStop='" + startStop + '\'' +
+                ", endStop='" + endStop + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", frequencyInMinutes=" + frequencyInMinutes +
+                ", numTours=" + numTours +
+                '}';
+    }
 }

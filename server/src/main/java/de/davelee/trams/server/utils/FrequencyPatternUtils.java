@@ -24,16 +24,15 @@ public class FrequencyPatternUtils {
     public static FrequencyPattern[] convertFrequencyPatternRequestsToFrequencyPatterns (final FrequencyPatternRequest[] frequencyPatternRequests) {
         FrequencyPattern[] frequencyPatterns = new FrequencyPattern[frequencyPatternRequests.length];
         for ( int i = 0; i < frequencyPatternRequests.length; i++ ) {
-            frequencyPatterns[i] = FrequencyPattern.builder()
-                    .frequencyInMinutes(frequencyPatternRequests[i].getFrequencyInMinutes())
-                    .startStop(frequencyPatternRequests[i].getStartStop())
-                    .startTime(DateUtils.convertTimeToLocalTime(frequencyPatternRequests[i].getStartTime()))
-                    .endStop(frequencyPatternRequests[i].getEndStop())
-                    .endTime(DateUtils.convertTimeToLocalTime(frequencyPatternRequests[i].getEndTime()))
-                    .daysOfOperation(FrequencyPatternUtils.convertDaysOfOperation(frequencyPatternRequests[i].getDaysOfOperation()))
-                    .name(frequencyPatternRequests[i].getName())
-                    .numTours(frequencyPatternRequests[i].getNumTours())
-                    .build();
+            frequencyPatterns[i] = new FrequencyPattern();
+            frequencyPatterns[i].setFrequencyInMinutes(frequencyPatternRequests[i].getFrequencyInMinutes());
+            frequencyPatterns[i].setStartStop(frequencyPatternRequests[i].getStartStop());
+            frequencyPatterns[i].setStartTime(DateUtils.convertTimeToLocalTime(frequencyPatternRequests[i].getStartTime()));
+            frequencyPatterns[i].setEndStop(frequencyPatternRequests[i].getEndStop());
+            frequencyPatterns[i].setEndTime(DateUtils.convertTimeToLocalTime(frequencyPatternRequests[i].getEndTime()));
+            frequencyPatterns[i].setDaysOfOperation(FrequencyPatternUtils.convertDaysOfOperation(frequencyPatternRequests[i].getDaysOfOperation()));
+            frequencyPatterns[i].setName(frequencyPatternRequests[i].getName());
+            frequencyPatterns[i].setNumTours(frequencyPatternRequests[i].getNumTours());
         }
         return frequencyPatterns;
     }
@@ -50,10 +49,9 @@ public class FrequencyPatternUtils {
             dayOfWeekList.add(DayOfWeek.valueOf(daysOfOperation[i].toUpperCase()));
         }
         // Return the operating days.
-        return OperatingDays
-                .builder()
-                .operatingDays(dayOfWeekList)
-                .build();
+        OperatingDays operatingDays = new OperatingDays();
+        operatingDays.setOperatingDays(dayOfWeekList);
+        return operatingDays;
     }
 
     /**
@@ -65,16 +63,15 @@ public class FrequencyPatternUtils {
     public static FrequencyPatternResponse[] convertFrequencyPatternsToFrequencyPatternResponses (final FrequencyPattern[] frequencyPatterns) {
         FrequencyPatternResponse[] frequencyPatternResponses = new FrequencyPatternResponse[frequencyPatterns.length];
         for ( int i = 0; i < frequencyPatternResponses.length; i++ ) {
-            frequencyPatternResponses[i] = FrequencyPatternResponse.builder()
-                    .frequencyInMinutes(frequencyPatterns[i].getFrequencyInMinutes())
-                    .startStop(frequencyPatterns[i].getStartStop())
-                    .startTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getStartTime()))
-                    .endStop(frequencyPatterns[i].getEndStop())
-                    .endTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getEndTime()))
-                    .daysOfOperation(FrequencyPatternUtils.convertOperatingDays(frequencyPatterns[i].getDaysOfOperation()))
-                    .name(frequencyPatterns[i].getName())
-                    .numTours(frequencyPatterns[i].getNumTours())
-                    .build();
+            frequencyPatternResponses[i] = new FrequencyPatternResponse();
+            frequencyPatternResponses[i].setFrequencyInMinutes(frequencyPatterns[i].getFrequencyInMinutes());
+            frequencyPatternResponses[i].setStartStop(frequencyPatterns[i].getStartStop());
+            frequencyPatternResponses[i].setStartTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getStartTime()));
+            frequencyPatternResponses[i].setEndStop(frequencyPatterns[i].getEndStop());
+            frequencyPatternResponses[i].setEndTime(DateUtils.convertLocalTimeToTime(frequencyPatterns[i].getEndTime()));
+            frequencyPatternResponses[i].setDaysOfOperation(FrequencyPatternUtils.convertOperatingDays(frequencyPatterns[i].getDaysOfOperation()));
+            frequencyPatternResponses[i].setName(frequencyPatterns[i].getName());
+            frequencyPatternResponses[i].setNumTours(frequencyPatterns[i].getNumTours());
         }
         return frequencyPatternResponses;
     }

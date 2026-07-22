@@ -6,9 +6,11 @@ import de.davelee.trams.server.service.StopService;
 import de.davelee.trams.server.service.StopTimeService;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class StopsControllerTest {
 
     @InjectMocks
@@ -39,19 +42,19 @@ public class StopsControllerTest {
      */
     @Test
     public void testStopsEndpoint() {
-        Mockito.when(stopService.getStopsByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(Stop.builder()
-                .id("123")
-                .name("Greenfield")
-                .company("Mustermann Bus GmbH")
-                .latitude(50.03)
-                .longitude(123.04)
-                .build(), Stop.builder()
-                .id("123")
-                .name("City Centre")
-                .company("Mustermann Bus GmbH")
-                .latitude(50.03)
-                .longitude(123.04)
-                .build()));
+        Stop stop = new Stop();
+        stop.setId("123");
+        stop.setName("Greenfield");
+        stop.setCompany("Mustermann Bus GmbH");
+        stop.setLatitude(50.03);
+        stop.setLongitude(123.04);
+        Stop stop2 = new Stop();
+        stop2.setId("124");
+        stop2.setName("City Centre");
+        stop2.setCompany("Mustermann Bus GmbH");
+        stop2.setLatitude(50.03);
+        stop2.setLongitude(123.04);
+        Mockito.when(stopService.getStopsByCompany("Mustermann Bus GmbH")).thenReturn(Lists.newArrayList(stop, stop2));
         ResponseEntity<StopsResponse> responseEntity = stopsController.getStops("Mustermann Bus GmbH", Optional.empty());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(2, responseEntity.getBody().getStopResponses().length);

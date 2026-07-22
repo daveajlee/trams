@@ -1,17 +1,11 @@
 package de.davelee.trams.server.model;
 
-import lombok.*;
 import org.bson.types.ObjectId;
 
 /**
  * Class to represent users who are allowed to view and answer feedbacks in TraMS Server.
  * @author Dave Lee
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
 public class User {
 
     /**
@@ -54,4 +48,81 @@ public class User {
      */
     private UserAccountStatus accountStatus;
 
+    public User() {
+    }
+
+    public User(ObjectId id, String firstName, String lastName, String userName, String password, String company, String role, UserAccountStatus accountStatus) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.password = password;
+        this.company = company;
+        this.role = role;
+        this.accountStatus = accountStatus;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public UserAccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(UserAccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
+    }
 }

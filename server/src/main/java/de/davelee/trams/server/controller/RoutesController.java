@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class RoutesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully returned routes"),@ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<RoutesResponse> getRoutesByCompany ( final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the routes for this company.
@@ -57,17 +56,17 @@ public class RoutesController {
         //Otherwise convert to routes response and return.
         RouteResponse[] routeResponses = new RouteResponse[routes.size()];
         for ( int i = 0; i < routeResponses.length; i++ ) {
-            routeResponses[i] = RouteResponse.builder()
-                    .company(routes.get(i).getCompany())
-                    .routeNumber(routes.get(i).getRouteNumber())
-                    .startStop(routes.get(i).getStartStop())
-                    .stops(routes.get(i).getStops())
-                    .endStop(routes.get(i).getEndStop())
-                    .build();
+            routeResponses[i] = new RouteResponse();
+            routeResponses[i].setCompany(routes.get(i).getCompany());
+            routeResponses[i].setRouteNumber(routes.get(i).getRouteNumber());
+            routeResponses[i].setStartStop(routes.get(i).getStartStop());
+            routeResponses[i].setStops(routes.get(i).getStops());
+            routeResponses[i].setEndStop(routes.get(i).getEndStop());
         }
-        return ResponseEntity.ok(RoutesResponse.builder()
-                .count((long) routeResponses.length)
-                .routeResponses(routeResponses).build());
+        RoutesResponse routesResponse = new RoutesResponse();
+        routesResponse.setCount((long) routeResponses.length);
+        routesResponse.setRouteResponses(routeResponses);
+        return ResponseEntity.ok(routesResponse);
     }
 
 
@@ -96,14 +95,14 @@ public class RoutesController {
         //Otherwise convert to routes response and return.
         RouteResponse[] routeResponses = new RouteResponse[routes.size()];
         for ( int i = 0; i < routeResponses.length; i++ ) {
-            routeResponses[i] = RouteResponse.builder()
-                    .company(routes.get(i).getCompany())
-                    .routeNumber(routes.get(i).getRouteNumber())
-                    .build();
+            routeResponses[i] = new RouteResponse();
+            routeResponses[i].setCompany(routes.get(i).getCompany());
+            routeResponses[i].setRouteNumber(routes.get(i).getRouteNumber());
         }
-        return ResponseEntity.ok(RoutesResponse.builder()
-                .count((long) routeResponses.length)
-                .routeResponses(routeResponses).build());
+        RoutesResponse routesResponse = new RoutesResponse();
+        routesResponse.setCount((long) routeResponses.length);
+        routesResponse.setRouteResponses(routeResponses);
+        return ResponseEntity.ok(routesResponse);
     }
 
     /**
@@ -117,7 +116,7 @@ public class RoutesController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully deleted routes"),@ApiResponse(responseCode="204",description="Successful but no vehicles found")})
     public ResponseEntity<Void> deleteRoutesByCompany ( final String company ) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Retrieve the routes for this company.

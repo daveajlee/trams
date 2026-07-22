@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,20 +37,23 @@ public class MessageController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created message")})
     public ResponseEntity<Void> addMessage (@RequestBody final MessageRequest messageRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(messageRequest.getCompany()) || StringUtils.isBlank(messageRequest.getDateTime())
-                || StringUtils.isBlank(messageRequest.getFolder()) || StringUtils.isBlank(messageRequest.getSender())
-                || StringUtils.isBlank(messageRequest.getSubject()) || StringUtils.isBlank(messageRequest.getText())) {
+        if (messageRequest.getCompany() == null || messageRequest.getDateTime() == null ||
+                messageRequest.getFolder() == null || messageRequest.getSender() == null ||
+                messageRequest.getSubject() == null || messageRequest.getText() == null ||
+                messageRequest.getCompany().isBlank() || messageRequest.getDateTime().isBlank()
+                || messageRequest.getFolder().isBlank() || messageRequest.getSender().isBlank()
+                || messageRequest.getSubject().isBlank() || messageRequest.getText().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Now create message object and save to message service. Return 201 if saved successfully.
-        return messageService.save(Message.builder()
-                .folder(messageRequest.getFolder())
-                .dateTime(DateUtils.convertDateToLocalDateTime(messageRequest.getDateTime()))
-                .sender(messageRequest.getSender())
-                .subject(messageRequest.getSubject())
-                .text(messageRequest.getText())
-                .company(messageRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Message message = new Message();
+        message.setFolder(messageRequest.getFolder());
+        message.setDateTime(DateUtils.convertDateToLocalDateTime(messageRequest.getDateTime()));
+        message.setSender(messageRequest.getSender());
+        message.setSubject(messageRequest.getSubject());
+        message.setText(messageRequest.getText());
+        message.setCompany(messageRequest.getCompany());
+        return messageService.save(message) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
 }

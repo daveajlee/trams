@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class TicketsController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successfully found ticket(s)"), @ApiResponse(responseCode = "204", description = "Successful but no tickets found")})
     public ResponseEntity<TicketsResponse> getTicketsByCompany(@RequestParam("company") final String company) {
         //First of all, check if the company field is empty or null, then return bad request.
-        if (StringUtils.isBlank(company)) {
+        if (company.isBlank()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         //Now retrieve the ticket data.
@@ -48,19 +47,15 @@ public class TicketsController {
         //Convert to TicketResponse object and return 200.
         TicketResponse[] ticketResponses = new TicketResponse[tickets.size()];;
         for (int i = 0; i < tickets.size(); i++) {
-            ticketResponses[i] = TicketResponse.builder()
-                    .shortId(tickets.get(i).getShortId())
-                    .company(tickets.get(i).getCompany())
-                    .description(tickets.get(i).getDescription())
-                    .sortOrder(tickets.get(i).getSortOrder())
-                    .type(tickets.get(i).getType())
-                    .priceList(TicketUtils.convertPriceListToDouble(tickets.get(i).getPriceList()))
-                    .build();
+            ticketResponses[i] = new TicketResponse();
+            ticketResponses[i].setShortId(tickets.get(i).getShortId());
+            ticketResponses[i].setCompany(tickets.get(i).getCompany());
+            ticketResponses[i].setDescription(tickets.get(i).getDescription());
+            ticketResponses[i].setSortOrder(tickets.get(i).getSortOrder());
+            ticketResponses[i].setType(tickets.get(i).getType());
+            ticketResponses[i].setPriceList(TicketUtils.convertPriceListToDouble(tickets.get(i).getPriceList()));
         }
-        return ResponseEntity.ok(TicketsResponse.builder()
-                .count((long) ticketResponses.length)
-                .ticketResponses(ticketResponses)
-                .build());
+        return ResponseEntity.ok(new TicketsResponse((long) ticketResponses.length, ticketResponses));
     }
 
     @Operation(summary = "Add a collection of available tickets", description="Method to add available tickets")
@@ -76,15 +71,15 @@ public class TicketsController {
         // Go through the list of tickets.
         for ( TicketRequest ticketRequest : ticketRequests ) {
             // Save the ticket.
-            boolean result = ticketService.save(Ticket.builder()
-                    .shortId(ticketRequest.getShortId())
-                    .type(ticketRequest.getType())
-                    .company(ticketRequest.getCompany())
-                    .description(ticketRequest.getDescription())
-                    .sortOrder(ticketRequest.getSortOrder())
-                    .priceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()))
-                    .company(ticketRequest.getCompany())
-                    .build());
+            Ticket ticket = new Ticket();
+            ticket.setShortId(ticketRequest.getShortId());
+            ticket.setType(ticketRequest.getType());
+            ticket.setCompany(ticketRequest.getCompany());
+            ticket.setDescription(ticketRequest.getDescription());
+            ticket.setSortOrder(ticketRequest.getSortOrder());
+            ticket.setPriceList(TicketUtils.convertPriceListToBigDecimal(ticketRequest.getPriceList()));
+            ticket.setCompany(ticketRequest.getCompany());
+            boolean result = ticketService.save(ticket);
             if ( !result ) {
                 // Return 500 if ticket could not be saved.
                 return ResponseEntity.status(500).build();

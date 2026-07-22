@@ -1,18 +1,9 @@
 package de.davelee.trams.server.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * This class defines a model for a schedule belonging to a route.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@ToString
 public class RouteSchedule {
 
     /**
@@ -43,4 +34,22 @@ public class RouteSchedule {
         return this.routeNumber + "/" + this.scheduleId;
     }
 
+    public RouteSchedule() {
+    }
+
+    public String getRouteNumber() {
+        return routeNumber;
+    }
+
+    public void setRouteNumber(String routeNumber) {
+        this.routeNumber = routeNumber;
+    }
+
+    public String getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
+    }
 }

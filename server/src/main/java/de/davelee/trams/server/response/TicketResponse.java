@@ -1,7 +1,5 @@
 package de.davelee.trams.server.response;
 
-import lombok.*;
-
 import java.util.Map;
 
 /**
@@ -9,12 +7,6 @@ import java.util.Map;
  * containing type, description, sorting order, price list and company.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class TicketResponse {
 
     /**
@@ -47,4 +39,75 @@ public class TicketResponse {
      */
     private String company;
 
+    public TicketResponse() {
+    }
+
+    public TicketResponse(String shortId, String type, String description, int sortOrder, Map<String, Double> priceList, String company) {
+        this.shortId = shortId;
+        this.type = type;
+        this.description = description;
+        this.sortOrder = sortOrder;
+        this.priceList = priceList;
+        this.company = company;
+    }
+
+    public String getShortId() {
+        return shortId;
+    }
+
+    public void setShortId(String shortId) {
+        this.shortId = shortId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public Map<String, Double> getPriceList() {
+        return priceList;
+    }
+
+    public void setPriceList(Map<String, Double> priceList) {
+        this.priceList = priceList;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    @Override
+    public String toString() {
+        return "TicketResponse{" +
+                "shortId='" + shortId + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", sortOrder=" + sortOrder +
+                ", priceList=" + priceList +
+                ", company='" + company + '\'' +
+                '}';
+    }
 }

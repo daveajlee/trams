@@ -14,14 +14,13 @@ public class RegisterUserRequestTest {
      * Test the builder and ensure variables are set together using the getter methods.
      */
     public void testBuilder ( ) {
-        RegisterUserRequest registerUserRequest = RegisterUserRequest.builder()
-                .firstName("Max")
-                .surname("Mustermann")
-                .company("Mustermann GmbH")
-                .username("mmustermann")
-                .password("pwd")
-                .role("Employee")
-                .build();
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setFirstName("Max");
+        registerUserRequest.setSurname("Mustermann");
+        registerUserRequest.setCompany("Mustermann GmbH");
+        registerUserRequest.setUsername("mmustermann");
+        registerUserRequest.setPassword("pwd");
+        registerUserRequest.setRole("Employee");
         assertEquals("Max", registerUserRequest.getFirstName());
         assertEquals("Mustermann", registerUserRequest.getSurname());
         assertEquals("Mustermann GmbH", registerUserRequest.getCompany());

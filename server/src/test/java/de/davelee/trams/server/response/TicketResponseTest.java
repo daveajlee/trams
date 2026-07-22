@@ -20,21 +20,20 @@ public class TicketResponseTest {
      */
     @Test
     public void testBuilderToString() {
-        TicketResponse ticket = TicketResponse.builder()
-                .shortId("single")
-                .company("Mustermann GmbH")
-                .description("Valid for 1 hour")
-                .type("Single Ticket")
-                .sortOrder(1)
-                .priceList(Map.of("adult", 0.80))
-                .build();
+        TicketResponse ticket = new TicketResponse();
+        ticket.setShortId("single");
+        ticket.setCompany("Mustermann GmbH");
+        ticket.setDescription("Valid for 1 hour");
+        ticket.setType("Single Ticket");
+        ticket.setSortOrder(1);
+        ticket.setPriceList(Map.of("adult", 0.80));
         assertEquals("single", ticket.getShortId());
         assertEquals("Mustermann GmbH", ticket.getCompany());
         assertEquals("Valid for 1 hour", ticket.getDescription());
         assertEquals("Single Ticket", ticket.getType());
         assertEquals(1, ticket.getSortOrder());
         assertEquals(1, ticket.getPriceList().size());
-        assertEquals("TicketResponse(shortId=single, type=Single Ticket, description=Valid for 1 hour, sortOrder=1, priceList={adult=0.8}, company=Mustermann GmbH)", ticket.toString());
+        assertEquals("TicketResponse{shortId='single', type='Single Ticket', description='Valid for 1 hour', sortOrder=1, priceList={adult=0.8}, company='Mustermann GmbH'}", ticket.toString());
     }
 
     /**

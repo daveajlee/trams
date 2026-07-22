@@ -15,10 +15,9 @@ public class RouteResponseTest {
      */
     @Test
     public void testCreateResponse() {
-        RouteResponse routeResponse = RouteResponse.builder()
-                .company("Mustermann Bus GmbH")
-                .routeNumber("405")
-                .build();
+        RouteResponse routeResponse = new RouteResponse();
+        routeResponse.setCompany("Mustermann Bus GmbH");
+        routeResponse.setRouteNumber("405");
         assertEquals("405", routeResponse.getRouteNumber());
         assertEquals("Mustermann Bus GmbH", routeResponse.getCompany());
         routeResponse.setCompany("Mustermann Buses GmbH");
@@ -28,7 +27,7 @@ public class RouteResponseTest {
         routeResponse.setEndStop("Airport");
         assertEquals("405A", routeResponse.getRouteNumber());
         assertEquals("Mustermann Buses GmbH", routeResponse.getCompany());
-        assertEquals("RouteResponse(routeNumber=405A, company=Mustermann Buses GmbH, startStop=Beach, endStop=Airport, stops=[City Centre, Hospital ], nightRoute=false)", routeResponse.toString());
+        assertEquals("RouteResponse{routeNumber='405A', company='Mustermann Buses GmbH', startStop='Beach', endStop='Airport', stops=[City Centre, Hospital ], nightRoute=false}", routeResponse.toString());
     }
 
 }

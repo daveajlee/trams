@@ -14,12 +14,11 @@ public class EmployDriverRequestTest {
      */
     @Test
     public void testBuilder ( ) {
-        EmployDriverRequest employDriverRequest = EmployDriverRequest.builder()
-                .company("Mustermann GmbH")
-                .name("Max Mustermann")
-                .contractedHours(35)
-                .startDate("29-06-2024 00:00")
-                .build();
+        EmployDriverRequest employDriverRequest = new EmployDriverRequest();
+        employDriverRequest.setCompany("Mustermann GmbH");
+        employDriverRequest.setName("Max Mustermann");
+        employDriverRequest.setContractedHours(35);
+        employDriverRequest.setStartDate("29-06-2024 00:00");
         assertEquals("Mustermann GmbH", employDriverRequest.getCompany());
         assertEquals("Max Mustermann", employDriverRequest.getName());
         assertEquals(35, employDriverRequest.getContractedHours());

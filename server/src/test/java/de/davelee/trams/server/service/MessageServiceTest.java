@@ -3,9 +3,11 @@ package de.davelee.trams.server.service;
 import de.davelee.trams.server.model.Message;
 import de.davelee.trams.server.repository.MessageRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.swing.text.html.Option;
@@ -21,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Dave Lee
  */
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class MessageServiceTest {
 
     @InjectMocks

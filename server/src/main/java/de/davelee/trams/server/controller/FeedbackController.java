@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,8 +45,8 @@ public class FeedbackController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created feedback")})
     public ResponseEntity<Void> addFeedback (@RequestBody final FeedbackRequest feedbackRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(feedbackRequest.getEmailAddress()) || StringUtils.isBlank(feedbackRequest.getCompany())
-                || StringUtils.isBlank(feedbackRequest.getMessage()) || !Pattern.matches(".*@.*[.]?.*$", feedbackRequest.getEmailAddress())) {
+        if (feedbackRequest.getEmailAddress().isBlank() || feedbackRequest.getCompany().isBlank()
+                || feedbackRequest.getMessage().isBlank() || !Pattern.matches(".*@.*[.]?.*$", feedbackRequest.getEmailAddress())) {
             return ResponseEntity.badRequest().build();
         }
         //Retrieve the matching customer data. If not successful, then also bad request.
@@ -56,13 +55,13 @@ public class FeedbackController {
             return ResponseEntity.badRequest().build();
         }
         //Now create feedback object and save to feedback service. Return 201 if saved successfully.
-        return feedbackService.save(Feedback.builder()
-                .customer(customer)
-                .message(feedbackRequest.getMessage())
-                .extraInfos(feedbackRequest.getExtraInfos())
-                .emailAddress(customer.getEmailAddress())
-                .company(feedbackRequest.getCompany())
-                .build()) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
+        Feedback feedback = new Feedback();
+        feedback.setCustomer(customer);
+        feedback.setMessage(feedbackRequest.getMessage());
+        feedback.setExtraInfos(feedbackRequest.getExtraInfos());
+        feedback.setEmailAddress(customer.getEmailAddress());
+        feedback.setCompany(feedbackRequest.getCompany());
+        return feedbackService.save(feedback) ? ResponseEntity.status(201).build() : ResponseEntity.status(500).build();
     }
 
     /**
@@ -75,8 +74,8 @@ public class FeedbackController {
     @ApiResponses(value = {@ApiResponse(responseCode="200",description="Successfully added answer")})
     public ResponseEntity<Void> addAnswer (@RequestBody final AnswerRequest answerRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(answerRequest.getObjectId()) || StringUtils.isBlank(answerRequest.getAnswer()) ||
-            StringUtils.isBlank(answerRequest.getToken())) {
+        if (answerRequest.getObjectId().isBlank() || answerRequest.getAnswer().isBlank() ||
+            answerRequest.getToken().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Check that the user has logged in, otherwise forbidden.

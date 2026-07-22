@@ -17,14 +17,13 @@ public class StopResponseTest {
      */
     @Test
     public void testCreateResponse() {
-        StopResponse stopResponse = StopResponse.builder()
-                .company("Mustermann Bus GmbH")
-                .name("Greenfield")
-                .waitingTime(1)
-                .distances(Map.of("City Centre",20))
-                .latitude(50.03)
-                .longitude(123.04)
-                .build();
+        StopResponse stopResponse = new StopResponse();
+        stopResponse.setCompany("Mustermann Bus GmbH");
+        stopResponse.setName("Greenfield");
+        stopResponse.setWaitingTime(1);
+        stopResponse.setDistances(Map.of("City Centre",20));
+        stopResponse.setLatitude(50.03);
+        stopResponse.setLongitude(123.04);
         assertEquals("Greenfield", stopResponse.getName());
         assertEquals("Mustermann Bus GmbH", stopResponse.getCompany());
         assertEquals(50.03, stopResponse.getLatitude());
@@ -37,7 +36,7 @@ public class StopResponseTest {
         assertEquals("Mustermann Buses GmbH", stopResponse.getCompany());
         assertEquals(50.04, stopResponse.getLatitude());
         assertEquals(122.04, stopResponse.getLongitude());
-        assertEquals("StopResponse(name=Greenerfield, company=Mustermann Buses GmbH, waitingTime=1, distances={City Centre=20}, latitude=50.04, longitude=122.04)", stopResponse.toString());
+        assertEquals("StopResponse{name='Greenerfield', company='Mustermann Buses GmbH', waitingTime=1, distances={City Centre=20}, latitude=50.04, longitude=122.04}", stopResponse.toString());
     }
 
 }

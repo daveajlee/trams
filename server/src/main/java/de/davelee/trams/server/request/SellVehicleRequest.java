@@ -1,17 +1,10 @@
 package de.davelee.trams.server.request;
 
-import lombok.*;
-
 /**
  * This class is part of the TraMS Server REST API. It represents a request to sell a vehicle for the particular
  * company fulfilling the details supplied.
  * @author Dave Lee
  */
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 public class SellVehicleRequest {
 
     /**
@@ -24,4 +17,27 @@ public class SellVehicleRequest {
      */
     private String company;
 
+    public SellVehicleRequest() {
+    }
+
+    public SellVehicleRequest(String fleetNumber, String company) {
+        this.fleetNumber = fleetNumber;
+        this.company = company;
+    }
+
+    public String getFleetNumber() {
+        return fleetNumber;
+    }
+
+    public void setFleetNumber(String fleetNumber) {
+        this.fleetNumber = fleetNumber;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 }

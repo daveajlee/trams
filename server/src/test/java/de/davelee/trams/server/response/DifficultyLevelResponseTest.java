@@ -20,7 +20,7 @@ public class DifficultyLevelResponseTest {
        difficultyLevelResponse.setCompany("Lee Transport");
        assertEquals("HARD", difficultyLevelResponse.getDifficultyLevel());
        assertEquals("Lee Transport", difficultyLevelResponse.getCompany());
-       assertEquals("DifficultyLevelResponse(company=Lee Transport, difficultyLevel=HARD)", difficultyLevelResponse.toString());
+       assertEquals("DifficultyLevelResponse{company='Lee Transport', difficultyLevel='HARD'}", difficultyLevelResponse.toString());
     }
 
 

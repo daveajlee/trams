@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +37,11 @@ public class UserController {
     @ApiResponses(value = {@ApiResponse(responseCode="201",description="Successfully created user")})
     public ResponseEntity<Void> addUser (@RequestBody final RegisterUserRequest registerUserRequest ) {
         //First of all, check if any of the fields are empty or null, then return bad request.
-        if (StringUtils.isBlank(registerUserRequest.getFirstName()) || StringUtils.isBlank(registerUserRequest.getSurname())
-                || StringUtils.isBlank(registerUserRequest.getCompany()) || StringUtils.isBlank(registerUserRequest.getUsername())
-                || StringUtils.isBlank(registerUserRequest.getPassword())) {
+        if (registerUserRequest.getFirstName() == null || registerUserRequest.getSurname() == null ||
+                registerUserRequest.getCompany() == null || registerUserRequest.getUsername() == null ||
+                registerUserRequest.getPassword() == null || registerUserRequest.getFirstName().isBlank() || registerUserRequest.getSurname().isBlank()
+                || registerUserRequest.getCompany().isBlank() || registerUserRequest.getUsername().isBlank()
+                || registerUserRequest.getPassword().isBlank()) {
             return ResponseEntity.badRequest().build();
         }
         //Now convert to user object.
@@ -138,11 +139,11 @@ public class UserController {
     public ResponseEntity<LoginResponse> login (@RequestBody final LoginRequest loginRequest) {
         User user = userService.findByCompanyAndUserName(loginRequest.getCompany(), loginRequest.getUsername());
         if ( user != null && user.getAccountStatus()== UserAccountStatus.ACTIVE && user.getPassword().contentEquals(loginRequest.getPassword()) ) {
-            return ResponseEntity.ok().body(LoginResponse.builder().token(userService.generateAuthToken(loginRequest.getUsername())).build());
+            return ResponseEntity.ok().body(new LoginResponse("", userService.generateAuthToken(loginRequest.getUsername())));
         } else if ( user != null ) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(LoginResponse.builder().errorMessage("Password was incorrect!").build());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("Password was incorrect!", null));
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(LoginResponse.builder().errorMessage("User was not found").build());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new LoginResponse("User was not found", null));
     }
 
     /**
@@ -187,7 +188,7 @@ public class UserController {
      */
     private HttpStatus validateAndAuthenticateRequest ( final String company, final String username, final String token ) {
         //First of all, check if the username field is empty or null, then return bad request.
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(company)) {
+        if ( username == null || company == null || username.isBlank() || company.isBlank()) {
             return HttpStatus.BAD_REQUEST;
         }
         //Verify that user is logged in.

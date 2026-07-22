@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.davelee</groupId>
         <artifactId>ci-springboot-parent-pom</artifactId>
-        <version>4.0.0</version>
+        <version>5.0.0</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.davelee.trams</groupId>
@@ -14,8 +14,8 @@
     <description>TraMS Server is a RESTful Web Service for everything for the backend processes of managing a transport company.</description>
 
     <properties>
-        <java.version>21</java.version>
-        <spring-cloud.version>2023.0.2</spring-cloud.version>
+        <java.version>25</java.version>
+        <spring-cloud.version>2025.1.2</spring-cloud.version>
     </properties>
 
     <!-- Git Connection -->
@@ -74,10 +74,10 @@
         </dependency>
 
         <!-- Add dependency for eureka -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -85,64 +85,59 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-        </dependency>
 
         <!-- GTFS Importer -->
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-gtfs</artifactId>
-            <version>1.3.4</version>
+            <version>14.2.0</version>
         </dependency>
 
         <!-- CSV Reader -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.11.0</version>
+            <version>1.14.1</version>
         </dependency>
 
         <!-- Commons library to process strings -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.12.0</version>
+            <version>1.15.0</version>
         </dependency>
 
         <!-- MongoDB as NoSQL persistence -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
-            <version>4.3.1</version>
+            <version>5.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-core</artifactId>
-            <version>5.1.1</version>
+            <version>5.9.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>5.1.1</version>
+            <version>5.9.0</version>
         </dependency>
 
         <!-- Springdoc for API Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.5.0</version>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- QR Code Generator -->
         <dependency>
             <groupId>com.github.kenglxn.qrgen</groupId>
             <artifactId>javase</artifactId>
-            <version>2.6.0</version>
+            <version>3.0.1</version>
         </dependency>
 
         <!-- Test dependencies -->
@@ -207,7 +202,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 

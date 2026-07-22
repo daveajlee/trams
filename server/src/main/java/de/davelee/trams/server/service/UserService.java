@@ -3,7 +3,7 @@ package de.davelee.trams.server.service;
 import de.davelee.trams.server.model.User;
 import de.davelee.trams.server.model.UserAccountStatus;
 import de.davelee.trams.server.repository.UserRepository;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
