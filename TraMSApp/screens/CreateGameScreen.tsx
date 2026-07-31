@@ -1,10 +1,9 @@
-import { Appearance, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Appearance, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
-//import { Dropdown } from "react-native-element-dropdown";
-//import DatePicker from "react-native-date-picker";
 import { Game } from "../models/game";
 //import { fetchGame, insertGame } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
+import IconButton from "../utilities/IconButton";
 
 type NavigationStackParams = {
   navigate: Function;
@@ -22,7 +21,7 @@ function CreateGameScreen() {
 
     const [companyName, setCompanyName] = useState('');
     const [playerName, setPlayerName] = useState('');
-    const [levelValue, setLevelValue] = useState(null);
+    const [levelValue, setLevelValue] = useState('');
     //const [openLevelDropdown, setOpenLevelDropdown] = useState(false);
     /*const [levelItems, setLevelItems] = useState([
         {label: 'Easy', value: 'easy'},
@@ -31,6 +30,8 @@ function CreateGameScreen() {
       ]);*/
     const [startDate, setStartDate] = useState(new Date());
     const colorScheme = Appearance.getColorScheme();
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     /**
      * Set the company name that the user entered.
@@ -73,21 +74,11 @@ function CreateGameScreen() {
                     })
             );            
         }*/ 
-        
     }
 
-    /**
-     * Render the item on the level dropdown list with the label and the appropriate styling.
-     * @param item the item to be displayed on the level dropdown list.
-     * @returns the appropriate components to display to the user.
-     */
-    /*const _renderLevelItem = (item: any) => {
-        return (
-            <View>
-                <Text style={colorScheme === 'dark' ? styles.levelItemDark : styles.levelItemLight}>{item.label}</Text>
-            </View>
-        );
-    };*/
+    function chooseLevel() {
+        setModalVisible(true);
+    }
 
     /**
      * Display the screen with a title and fields to enter company name,
@@ -96,33 +87,30 @@ function CreateGameScreen() {
     return (
         <ScrollView contentContainerStyle={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <View style={styles.headerContainer}>
-                <Text style={[styles.headerText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Welcome to TraMS</Text>
+                <Image style={styles.welcomeLogo}
+                    source={require('../assets/images/trams-welcome-logo.png')}
+                />
             </View>
             <View style={styles.bodyContainer}>
-                <View style={styles.companyNameContainer}>
-                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company Name:</Text>
-                    <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Company Name' onChangeText={companyNameInputHandler} value={companyName}/>
+                <View style={styles.introContainer}>
+                    <Text style={[styles.introText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Welcome! You are about to manage your own transport company!
+                        What is your name and what is the name of your company?
+                        Are you playing for fun or would you like a real challenge?</Text>
                 </View>
-                <View style={styles.playerNameContainer}>
-                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Player Name:</Text>
-                    <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Name' onChangeText={playerNameInputHandler} value={playerName}/>
-                </View>
-                <View style={styles.levelContainer}>
-                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Level:</Text>
-                    <Text style={[styles.bodyText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Easy, Medium or Hard</Text>
-                    {/*<Dropdown
-                        style={colorScheme === 'dark' ? styles.levelDropdownDark : styles.levelDropdownLight}
-                        data={levelItems}
-                        labelField="label"
-                        valueField="value"
-                        placeholder="Easy"
-                        value={levelValue}
-                        onChange={item => {
-                            setLevelValue(item.value);
-                            console.log('selected', item);                  
-                        }}
-                        renderItem={item => _renderLevelItem(item)}
-                    />*/}
+                <View style={styles.inputContainer}>
+                    <View style={styles.textFieldContainer}>
+                        <Text style={[styles.fieldText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Company Name:</Text>
+                        <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Company Name' onChangeText={companyNameInputHandler} value={companyName}/>
+                    </View>
+                    <View style={styles.textFieldContainer}>
+                        <Text style={[styles.fieldText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Player Name:</Text>
+                        <TextInput style={colorScheme === 'dark' ? styles.textInputDark : styles.textInputLight} placeholder='Your Name' onChangeText={playerNameInputHandler} value={playerName}/>
+                    </View>
+                    <View style={styles.textFieldContainer}>
+                        <Text style={[styles.fieldText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Level:</Text>
+                        <Text style={[styles.entryText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{levelValue ? levelValue : 'Easy'}</Text>
+                        <IconButton icon="chevron-forward" size={24} color="black" onPress={chooseLevel}/>
+                    </View>
                 </View>
             </View>
             <View style={styles.buttonContainer}>
@@ -130,6 +118,25 @@ function CreateGameScreen() {
                     <Text style={styles.buttonText}>Create Game</Text>
                 </TouchableOpacity>
             </View>
+            <Modal 
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                 }}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText}>Hello World!</Text>
+                            <Pressable
+                                style={[styles.modalButton, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)}>
+                                <Text style={styles.textStyle}>Hide Modal</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+            </Modal>
         </ScrollView>
     );
 
@@ -142,7 +149,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     lightBackground: {
-        backgroundColor: '#f2ffe6',
+        backgroundColor: '#ecf0e8',
     },
     darkText: {
         color: 'white'
@@ -158,10 +165,9 @@ const styles = StyleSheet.create({
     headerContainer: {
         paddingTop: 10
     },
-    headerText: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center'
+    welcomeLogo: {
+        width: 512,
+        height: 161
     },
     bodyContainer: {
         paddingTop: 20,
@@ -169,24 +175,42 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    introContainer: {
+        justifyContent: 'space-evenly',
+    },
+    introText: {
+        fontSize: 20,
+        fontWeight: 'normal',
+        textAlign: 'justify',
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingBottom: 30
+    },
     bodyText: {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         paddingBottom: 16
     },
+    fieldText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        width: '45%'
+    },
     buttonContainer: {
-        marginTop: 20,
-        flexDirection: 'row'
+        marginTop: 40,
+        flexDirection: 'row',
     },
     textInputLight: {
-        borderWidth: 1,
-        borderColor: '#e4d0ff',
-        backgroundColor: 'white',
-        color: '#120438',
-        borderRadius: 6,
-        width: '100%',
-        padding: 8
+        paddingLeft: 10,
+        fontSize: 18,
+        width: '50%'
+    },
+    entryText: {
+        paddingLeft: 10,
+        fontSize: 18,
+        width: '40%'
     },
     textInputDark: {
         borderWidth: 1,
@@ -197,14 +221,18 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 8
     },
-    companyNameContainer: {
+    inputContainer: {
         flexDirection: 'column',
-        width: '80%',
+        width: '90%',
+        borderRadius: 25,
+        backgroundColor: '#b5de90',
+        paddingBottom: 10
     },
-    playerNameContainer: {
-        flexDirection: 'column',
-        width: '80%',
-        marginTop: 10
+    textFieldContainer: {
+        flexDirection: 'row',
+        paddingTop: 20,
+        paddingLeft: 10,
+        paddingRight: 10
     },
     levelContainer: {
         flexDirection: 'column',
@@ -213,19 +241,13 @@ const styles = StyleSheet.create({
         marginBottom: 10
 
     },
-    dateContainer: {
-        flexDirection: 'column',
-        width: '80%',
-        marginTop: 10,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
     button: {
         alignItems: "center",
         backgroundColor: "#5e7947",
         width: '90%',
         padding: 10,
         marginBottom: 30,
+        borderRadius: 25
     },
     buttonText: {
         color: 'white',
@@ -233,29 +255,44 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    levelDropdownLight: {
-        borderWidth: 1,
-        borderColor: '#e4d0ff',
-        backgroundColor: 'white',
-        color: 'black',
-        padding: 2,
+    centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: '#b5de90',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    levelDropdownDark: {
-        borderWidth: 1,
-        borderColor: '#e4d0ff',
-        backgroundColor: 'gray',
-        color: 'white',
-        padding: 2,
-    },
-    levelItemLight: {
-        color: 'black',
-        fontSize: 18,
-        marginLeft: 5
-    },
-    levelItemDark: {
-        color: 'white',
-        backgroundColor: 'black',
-        fontSize: 18,
-        marginLeft: 5
-    }
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '100%',
+    height: '100%'
+  },
+  modalButton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginTop: 30,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
 });
