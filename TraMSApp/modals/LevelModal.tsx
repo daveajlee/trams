@@ -6,28 +6,32 @@ import { useEffect, useState } from "react";
 type LevelModalProperties = {
   modalVisible: boolean;
   setModalVisible: Function;
+  setOriginSelectedItem: Function;
 }
 
-function LevelModal({modalVisible, setModalVisible}: LevelModalProperties) {
+function LevelModal({modalVisible, setModalVisible, setOriginSelectedItem}: LevelModalProperties) {
 
     const [levels, setLevels] = useState<Level[]>([]);
+    const [selectedLevel, setSelectedLevel] = useState<Level>();
 
     useEffect(() => {
         async function loadLevels() {
             let myLevels: Level[] = [];
             myLevels.push(
-                new Level('Easy', 'Less delays and less challenges to solve on a regular basis.', true),
-                new Level('Medium', 'Regular delays and new challenges to solve on a regular basis.', false),
-                new Level('Difficult', 'Heavy delays and lots of challenges to solve on a regular basis.', false)
+                new Level('Easy', 'Less delays and less challenges to solve on a regular basis.'),
+                new Level('Medium', 'Regular delays and new challenges to solve on a regular basis.'),
+                new Level('Difficult', 'Heavy delays and lots of challenges to solve on a regular basis.')
             );
             setLevels(myLevels);
+            setSelectedLevel(myLevels[0]);
         }
     
         loadLevels();
     }, []);
 
-    function selectValue() {
-
+    function selectValue(level: Level) {
+        setSelectedLevel(level);
+        setOriginSelectedItem(level.name);
     }
 
     return (
@@ -47,13 +51,13 @@ function LevelModal({modalVisible, setModalVisible}: LevelModalProperties) {
                     </View>
                     { levels.map((level, _) => (
                         <View key={level.name} style={styles.optionBoxContainer}>
-                            <Pressable onPress={selectValue}>
+                            <Pressable onPress={selectValue.bind(null, level)}>
                                 <View style={styles.optionContainer}>
                                     <View style={styles.nameOptionContainer}>
                                         {level.name && <Text style={styles.nameOption}>{level.name}</Text> }
                                     </View>
                                     <View style={styles.valueOptionContainer}>
-                                        {level.selected && <IconButton icon="checkmark" size={48} color="black" onPress={selectValue}/>}
+                                        {selectedLevel.name === level.name && <IconButton icon="checkmark" size={48} color="black" onPress={selectValue.bind(null, level)}/>}
                                     </View>
                                 </View>
                                 <View style={styles.infoOptionContainer}>

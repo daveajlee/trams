@@ -2,12 +2,10 @@ class Level {
 
     name: string;
     description: string;
-    selected: boolean;
 
-    constructor(name: string, description: string, selected: boolean) {
+    constructor(name: string, description: string) {
         this.name = name;
         this.description = description;
-        this.selected = selected;
     }
 
 }

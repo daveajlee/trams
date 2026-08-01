@@ -1,5 +1,5 @@
 import { Appearance, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Game } from "../models/game";
 //import { fetchGame, insertGame } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
@@ -34,6 +34,14 @@ function CreateGameScreen() {
 
     const [modalVisible, setModalVisible] = useState(false);
 
+    useEffect(() => {
+        async function setDefault() {
+            setLevelValue('Easy');
+        }
+    
+        setDefault();
+    }, []);
+
     /**
      * Set the company name that the user entered.
      * @param {string} enteredText the text that the user entered in the company name field.
@@ -56,12 +64,7 @@ function CreateGameScreen() {
      */
     async function createGameHandler() {
         // Create game - if level is not set then use default easy level.
-        var game;
-        if ( !levelValue ) {
-            game = new Game(companyName, playerName, '', 'easy', startDate);
-        } else {
-            game = new Game(companyName, playerName, '', levelValue, startDate);
-        }
+        var game = new Game(companyName, playerName, '', levelValue.toLowerCase(), startDate);
         // WHen creating a game, then check if the company already exists then show an alert and do not add.
         //const fetchedGame: Game[] = await fetchGame(companyName);
         /*if ( fetchedGame.length > 0 ) {
@@ -109,7 +112,7 @@ function CreateGameScreen() {
                     </View>
                     <View style={styles.textFieldContainer}>
                         <Text style={[styles.fieldText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Level:</Text>
-                        <Text style={[styles.entryText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{levelValue ? levelValue : 'Easy'}</Text>
+                        <Text style={[styles.entryText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{levelValue}</Text>
                         <IconButton icon="chevron-forward" size={24} color="black" onPress={chooseLevel}/>
                     </View>
                 </View>
@@ -119,7 +122,7 @@ function CreateGameScreen() {
                     <Text style={styles.buttonText}>Create Game</Text>
                 </TouchableOpacity>
             </View>
-            <LevelModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
+            <LevelModal modalVisible={modalVisible} setModalVisible={setModalVisible} setOriginSelectedItem={setLevelValue}/>
         </ScrollView>
     );
 
