@@ -1,9 +1,10 @@
-import { Alert, Appearance, Image, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Appearance, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useState } from "react";
 import { Game } from "../models/game";
 //import { fetchGame, insertGame } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
 import IconButton from "../utilities/IconButton";
+import LevelModal from "../modals/LevelModal";
 
 type NavigationStackParams = {
   navigate: Function;
@@ -118,25 +119,7 @@ function CreateGameScreen() {
                     <Text style={styles.buttonText}>Create Game</Text>
                 </TouchableOpacity>
             </View>
-            <Modal 
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    setModalVisible(!modalVisible);
-                 }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>Hello World!</Text>
-                            <Pressable
-                                style={[styles.modalButton, styles.buttonClose]}
-                                onPress={() => setModalVisible(!modalVisible)}>
-                                <Text style={styles.textStyle}>Hide Modal</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-            </Modal>
+            <LevelModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
         </ScrollView>
     );
 
@@ -255,44 +238,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: '#b5de90',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '100%',
-    height: '100%'
-  },
-  modalButton: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginTop: 30,
-    marginBottom: 15,
-    textAlign: 'center',
-  },
 });
