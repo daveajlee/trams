@@ -9,7 +9,7 @@ import { StatusBar, useColorScheme } from 'react-native';
 import { SafeAreaProvider, /*useSafeAreaInsets,*/ } from 'react-native-safe-area-context';
 import CreateGameScreen from './screens/CreateGameScreen';
 import { useEffect, useState } from 'react';
-//import { fetchGames, init } from './utilities/sqlite';
+import { fetchGames, init } from './utilities/sqlite';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import LoadGameScreen from './screens/LoadGameScreen';
@@ -42,38 +42,42 @@ function AppContent() {
 
   const [firstScreen, setFirstScreen] = useState('');
 
-  /*const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [dbInitialized, setDbInitialized] = useState(false);*/
+  const [dbInitialized, setDbInitialized] = useState(false);
 
   useEffect(() => {
-    /*async function prepare() {
+    async function prepare() {
       try {
+        console.log('Starting init of database');
         init().then(() => {
           setDbInitialized(true);
         })
       } catch (err) {
         console.log(err);
       }
-    }*/
+    }
 
-    //prepare();
-    setFirstScreen('CreateGameScreen');
+    prepare();
 
-    /*fetchGames().then(
+    fetchGames().then(
         (games: Game[]) => {
+          console.log(games);
           setFirstScreen(!games || games.length === 0 ? 'CreateGameScreen' : 'LoadGameScreen');
+          if ( games.length > 0 ) {
+              console.log('Setting first screen to LoadGameScreen?');
+          }
           setLoading(false);
         }
       ).catch((error) => {
         setLoading(false);
         console.error('Setting default screen because of error ', error);
-        setFirstScreen('CreateGameScreen');})*/
+        setFirstScreen('CreateGameScreen');})
   }, []);
 
-  /*if (!dbInitialized || loading) {
+  if (!dbInitialized || loading) {
     return null;
-  }*/
+  }
 
   return (
     <>

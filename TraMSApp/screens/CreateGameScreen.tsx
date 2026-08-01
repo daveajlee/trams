@@ -1,7 +1,7 @@
-import { Appearance, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Appearance, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Game } from "../models/game";
-//import { fetchGame, insertGame } from "../utilities/sqlite";
+import { fetchGame, insertGame } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
 import IconButton from "../utilities/IconButton";
 import LevelModal from "../modals/LevelModal";
@@ -23,13 +23,6 @@ function CreateGameScreen() {
     const [companyName, setCompanyName] = useState('');
     const [playerName, setPlayerName] = useState('');
     const [levelValue, setLevelValue] = useState('');
-    //const [openLevelDropdown, setOpenLevelDropdown] = useState(false);
-    /*const [levelItems, setLevelItems] = useState([
-        {label: 'Easy', value: 'easy'},
-        {label: 'Intermediate', value: 'intermediate'},
-        {label: 'Hard', value: 'hard'},
-      ]);*/
-    const [startDate, setStartDate] = useState(new Date());
     const colorScheme = Appearance.getColorScheme();
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -64,10 +57,10 @@ function CreateGameScreen() {
      */
     async function createGameHandler() {
         // Create game - if level is not set then use default easy level.
-        var game = new Game(companyName, playerName, '', levelValue.toLowerCase(), startDate);
+        var game = new Game(companyName, playerName, '', levelValue.toLowerCase(), new Date());
         // WHen creating a game, then check if the company already exists then show an alert and do not add.
-        //const fetchedGame: Game[] = await fetchGame(companyName);
-        /*if ( fetchedGame.length > 0 ) {
+        const fetchedGame: Game[] = await fetchGame(companyName);
+        if ( fetchedGame.length > 0 ) {
             Alert.alert('Duplicate Company', 'Please choose another company name');
         }
         else{
@@ -77,7 +70,7 @@ function CreateGameScreen() {
                     playerName: playerName,
                     })
             );            
-        }*/ 
+        }
     }
 
     function chooseLevel() {

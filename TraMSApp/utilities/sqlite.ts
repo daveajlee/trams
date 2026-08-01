@@ -1,7 +1,7 @@
 import { Game } from "../models/game";
 import AdditionalTour from '../models/additionalTour';
 import Assignment from "../models/assignment";
-import { open, QueryResult } from '@op-engineering/op-sqlite';
+import { open } from 'react-native-nitro-sqlite';
 
 /**
  * Define the file where the database will be stored by SQLite.
@@ -16,35 +16,13 @@ export const database = open({
  * @returns a promise with either a success result or an error message.
  */
 export async function init(): Promise<void> {
-  // Create games table.
-  let createGameRes: QueryResult = await database.execute(`CREATE TABLE IF NOT EXISTS games (
-                id INTEGER PRIMARY KEY NOT NULL,
-                companyName TEXT NOT NULL,
-                playerName TEXT NOT NULL,
-                scenarioName TEXT NOT NULL,
-                level TEXT NOT NULL,
-                startDate TEXT NOT NULL
-   )`);
-  console.log(createGameRes);
-  // Create assignments table.
-  let createAssignmentsRes: QueryResult = await database.execute(`CREATE TABLE IF NOT EXISTS assignments (
-                    id INTEGER PRIMARY KEY NOT NULL,
-                    routeNumber TEXT NOT NULL,
-                    tourNumber INTEGER NOT NULL,
-                    fleetNumber INTEGER NOT NULL,
-                    scenarioName TEXT NOT NULL,
-                    company TEXT NOT NULL
-                )`);
-  console.log(createAssignmentsRes);
-  // Create additional tours table.
-  let additionalToursRes: QueryResult = await database.execute(`CREATE TABLE IF NOT EXISTS additionalTours (
-                    id INTEGER PRIMARY KEY NOT NULL,
-                    routeNumber TEXT NOT NULL,
-                    tourNumber INTEGER NOT NULL,
-                    scenarioName TEXT NOT NULL,
-                    company TEXT NOT NULL
-                )`);
-  console.log(additionalToursRes);
+  // Create tables.
+  const commands = [
+    {query: 'CREATE TABLE IF NOT EXISTS games (id INTEGER PRIMARY KEY NOT NULL, companyName TEXT NOT NULL, playerName TEXT NOT NULL, scenarioName TEXT NOT NULL, level TEXT NOT NULL, startDate TEXT NOT NULL)'},
+    {query: 'CREATE TABLE IF NOT EXISTS assignments (id INTEGER PRIMARY KEY NOT NULL, routeNumber TEXT NOT NULL, tourNumber INTEGER NOT NULL, fleetNumber INTEGER NOT NULL, scenarioName TEXT NOT NULL, company TEXT NOT NULL)'},
+    {query: 'CREATE TABLE IF NOT EXISTS additionalTours (id INTEGER PRIMARY KEY NOT NULL, routeNumber TEXT NOT NULL, tourNumber INTEGER NOT NULL, scenarioName TEXT NOT NULL, company TEXT NOT NULL)'}
+  ];
+  const { rowsAffected } = database.executeBatch(commands);
 }
 
 /**
@@ -54,7 +32,7 @@ export async function init(): Promise<void> {
  * @returns a promise with either a success result or an error message.
  */
 export async function insertGame(game: Game): Promise<number> {
-    let insertResult: QueryResult = await database.execute(`INSERT INTO games (companyName, playerName, scenarioName, level, startDate) VALUES (?, ?, ?, ?, ?)`,
+    const {insertResult} = await database.executeAsync(`INSERT INTO games (companyName, playerName, scenarioName, level, startDate) VALUES (?, ?, ?, ?, ?)`,
       [game.companyName, game.playerName, game.scenarioName, game.level, game.startDate.toDateString()]);
     return insertResult.insertId ? insertResult.insertId : 0;
 }
@@ -66,7 +44,7 @@ export async function insertGame(game: Game): Promise<number> {
  * @returns a promise with either a success result or error message
  */
 export async function insertAssignment(assignmentToAdd: Assignment): Promise<number> {
-  let insertResult: QueryResult = await database.execute(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?)`,
+  const {insertResult} = await database.executeAsync(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?)`,
     [assignmentToAdd.routeNumber, assignmentToAdd.tourNumber, assignmentToAdd.fleetNumber, assignmentToAdd.scenarioName, assignmentToAdd.company]);
   return insertResult.insertId ? insertResult.insertId : 0;
 }
@@ -77,10 +55,12 @@ export async function insertAssignment(assignmentToAdd: Assignment): Promise<num
  */
 export async function fetchGames(): Promise<Game[]> {
   const games = <Game[]>[];
-  let {rows} = await database.execute(`SELECT * FROM games`);
-  rows.forEach(game => {
-    games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, new Date(game.date?.toString()!), parseInt(game.id?.toString()!, 10)));
-  })
+  const {rows} = await database.executeAsync(`SELECT * FROM games`);
+  if ( rows && rows.length > 0 ) {
+    rows._array.forEach(game => {
+      games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, new Date(game.date?.toString()!), parseInt(game.id?.toString()!, 10)));
+    })
+  }
   return games;
 }
 
@@ -91,10 +71,12 @@ export async function fetchGames(): Promise<Game[]> {
  */
 export async function fetchGame(companyName: string): Promise<Game[]> {
   const games = <Game[]>[];
-  let result: QueryResult = await database.execute(`SELECT * FROM games where companyName = ?`, [companyName]);
-  result.rows.forEach(game => {
-    games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, new Date(game.date?.toString()!), parseInt(game.id?.toString()!, 10)));
-  })
+  const {results} = await database.executeAsync(`SELECT * FROM games where companyName = ?`, [companyName]);
+  if ( results ) {
+    results.forEach((game) => {
+        games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, new Date(game.date?.toString()!), parseInt(game.id?.toString()!, 10)));
+    })
+  }
   return games;
 }
 
@@ -104,7 +86,7 @@ export async function fetchGame(companyName: string): Promise<Game[]> {
  * @returns a promise with either a success result or error message
  */
 export async function deleteGame(companyName: string): Promise<number> {
-  let deleteResult: QueryResult = await database.execute(`DELETE FROM games WHERE companyName = ?`, [companyName]);
+  const {deleteResult} = await database.executeAsync(`DELETE FROM games WHERE companyName = ?`, [companyName]);
   return deleteResult.insertId ? deleteResult.insertId : 0;
 }
 
@@ -115,7 +97,7 @@ export async function deleteGame(companyName: string): Promise<number> {
  * @returns a promise with either a success result or error message
  */
 export async function setScenarioNameForGame(companyName: string, scenarioName: string): Promise<number> {
-  let updateResult: QueryResult = await database.execute(`UPDATE games SET scenarioName = ? WHERE companyName = ?`, [scenarioName, companyName]);
+  const {updateResult} = await database.executeAsync(`UPDATE games SET scenarioName = ? WHERE companyName = ?`, [scenarioName, companyName]);
   return updateResult.insertId ? updateResult.insertId : 0;
 }
 
@@ -127,7 +109,7 @@ export async function setScenarioNameForGame(companyName: string, scenarioName: 
 export async function fetchAssignments(company: string): Promise<Assignment[]> {
   const assignments = <Assignment[]>[];
   try {
-    let result: QueryResult = await database.execute(`SELECT * FROM assignments where company = ?`, [company]);
+    const {result} = await database.executeAsync(`SELECT * FROM assignments where company = ?`, [company]);
     result.rows.forEach(assignment => {
       assignments.push(new Assignment(assignment.routeNumber?.toString()!, parseInt(assignment.tourNumber?.toString()!, 10), parseInt(assignment.fleetNumber?.toString()!, 10), assignment.scenarioName?.toString()!, assignment.company?.toString()!));
     });
@@ -149,7 +131,7 @@ export async function fetchAssignments(company: string): Promise<Assignment[]> {
  */
 export async function deleteAssignment(routeNumber: string, tourNumber: number, company: string) : Promise<number> {
     console.log('Calling delete assignment with ' + company + ', ' + routeNumber + ', ' + tourNumber);
-    let deleteResult: QueryResult = await database.execute(`DELETE FROM assignments WHERE company = ? AND routeNumber = ? AND tourNumber = ?`, [company, routeNumber, tourNumber]);
+    const {deleteResult} = await database.executeAsync(`DELETE FROM assignments WHERE company = ? AND routeNumber = ? AND tourNumber = ?`, [company, routeNumber, tourNumber]);
     return deleteResult.insertId ? deleteResult.insertId : 0;
 }
 
@@ -159,7 +141,7 @@ export async function deleteAssignment(routeNumber: string, tourNumber: number, 
  * @returns a promise with either a success result or error message
  */
 export async function insertAdditionalTour(additionalTour: AdditionalTour) {
-  let insertResult: QueryResult = await database.execute(`INSERT INTO additionalTours (routeNumber, tourNumber, scenarioName, company) VALUES (?, ?, ?, ?)`,
+  const {insertResult} = await database.executeAsync(`INSERT INTO additionalTours (routeNumber, tourNumber, scenarioName, company) VALUES (?, ?, ?, ?)`,
     [additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.scenarioName, additionalTour.company]);
   return insertResult.insertId ? insertResult.insertId : 0;
 }
@@ -171,7 +153,7 @@ export async function insertAdditionalTour(additionalTour: AdditionalTour) {
  */
 export async function fetchAdditionalTours(company: string): Promise<AdditionalTour[]> {
   const additionalTours = <AdditionalTour[]>[];
-  let result: QueryResult = await database.execute(`SELECT * FROM additionalTours WHERE company = ?`, [company]);
+  const {result} = await database.executeAsync(`SELECT * FROM additionalTours WHERE company = ?`, [company]);
   result.rows.forEach(additionalTour => {
     additionalTours.push(new AdditionalTour(additionalTour.routeNumber?.toString()!, parseInt(additionalTour.tourNumber?.toString()!, 10), additionalTour.scenarioName?.toString()!, additionalTour.company?.toString()!));
   });
