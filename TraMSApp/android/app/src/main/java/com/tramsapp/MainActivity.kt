@@ -1,4 +1,4 @@
-package com.tramsapp
+package de.davelee.trams
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
