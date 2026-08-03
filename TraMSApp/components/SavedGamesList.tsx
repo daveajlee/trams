@@ -1,6 +1,6 @@
 import { FlatList, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
-//import { fetchGames } from "../utilities/sqlite";
+import { fetchGames } from "../utilities/sqlite";
 import { Game } from "../models/game";
 
 type SavedGamesListProps = {
@@ -21,8 +21,8 @@ function SavedGamesList({navigation}: SavedGamesListProps) {
      */
     useEffect(() => {
         async function loadGames() {
-            /*const games = await fetchGames();
-            setLoadedGames(games);*/
+            const games = await fetchGames();
+            setLoadedGames(games);
         }
 
         loadGames();

@@ -1,7 +1,7 @@
 import { Appearance, View, Text, FlatList, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-//import { deleteAssignment } from "../utilities/sqlite";
+import { deleteAssignment } from "../utilities/sqlite";
 
 type AssignmentListProps = {
     items: any;
@@ -19,11 +19,11 @@ function AssignmentList({items, companyName, scenarioName}: AssignmentListProps)
     const colorScheme = Appearance.getColorScheme();
 
     async function deleteAssignmentFromDB(routeNumber: string, tourNumber: string) {
-        /*deleteAssignment(routeNumber, parseInt(tourNumber, 10), companyName).then(
+        deleteAssignment(routeNumber, parseInt(tourNumber, 10), companyName).then(
             navigation.navigate("MainMenuScreen", {
                 company: companyName,
                 scenarioName: scenarioName
-            }));*/
+            }));
         
     }
 

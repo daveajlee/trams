@@ -4,7 +4,7 @@ import { Ionicons } from '@react-native-vector-icons/ionicons';
 import Route from "../models/route";
 import { useNavigation } from "@react-navigation/native";
 import Assignment from "../models/assignment";
-//import { fetchAssignments, deleteAssignment } from "../utilities/sqlite";
+import { fetchAssignments, deleteAssignment } from "../utilities/sqlite";
 
 type RouteDetailsProps = {
   route: Route;
@@ -37,8 +37,8 @@ function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
         loadAssignments();
 
         async function loadAssignments() {
-            /*const fetchedAssignments = await fetchAssignments(companyName);
-            setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));*/
+            const fetchedAssignments = await fetchAssignments(companyName);
+            setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));
         }
 
     }, [route.number, route.numberTours, companyName]);
@@ -52,9 +52,9 @@ function RouteDetails({route, companyName, scenarioName}: RouteDetailsProps) {
     }
 
     async function deleteAssignmentFromDB(routeTourAssigment: string) {
-        /*deleteAssignment(routeTourAssigment.split("/")[0], parseInt(routeTourAssigment.split("/")[1], 10), companyName);
+        deleteAssignment(routeTourAssigment.split("/")[0], parseInt(routeTourAssigment.split("/")[1], 10), companyName);
         const fetchedAssignments = await fetchAssignments(companyName);
-        setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));*/
+        setAssignments(fetchedAssignments.filter((assignment) => assignment.routeNumber === route.number));
     }
 
     function getAssignedVehicle(routeTourAssignment: string) {

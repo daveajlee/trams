@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-//import { setScenarioNameForGame } from "../utilities/sqlite";
+import { setScenarioNameForGame } from "../utilities/sqlite";
 
 type ScenarioCardProps = {
   image: ImageSourcePropType;
@@ -34,7 +34,7 @@ function ScenarioCard ({image, title, description, targets, navigation, companyN
      * @param {string} scenarioName 
      */
     async function selectScenarioHandler(scenarioName: any) {
-        //setScenarioNameForGame(companyName, scenarioName.title);
+        setScenarioNameForGame(companyName, scenarioName.title);
         navigation.navigate("MainMenuScreen", {
             company: companyName,
             scenarioName: scenarioName.title

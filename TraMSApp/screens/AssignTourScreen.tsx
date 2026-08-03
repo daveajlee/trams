@@ -4,7 +4,7 @@ import { MDORF_NAME, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
 import { LONGTS_NAME, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import { useEffect, useState } from "react";
 import Assignment from "../models/assignment";
-//import { fetchAssignments, insertAssignment } from "../utilities/sqlite";
+import { fetchAssignments, insertAssignment } from "../utilities/sqlite";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import Vehicle from '../models/vehicle.ts';
@@ -49,8 +49,8 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
         }
 
         async function loadAssignments() {
-            /*const fetchedAssignments = await fetchAssignments(route.params.company);
-            setAssignments(fetchedAssignments);*/
+            const fetchedAssignments = await fetchAssignments(route.params.company);
+            setAssignments(fetchedAssignments);
         }
             
         loadVehicles();
@@ -67,7 +67,7 @@ function AssignTourScreen({route}: AssignTourScreenProps) {
             return;
         }
         var assignment = new Assignment(route.params.routeTourAssignment.split("/")[0], parseInt(route.params.routeTourAssignment.split("/")[1], 10), fleetNumber, scenarioName, route.params.company);
-        //insertAssignment(assignment).then(routePress);
+        insertAssignment(assignment).then(routePress);
     }
 
     function isVehicleAssigned(fleetNumber: number) {

@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import SavedGamesList from "../components/SavedGamesList";
-//import { fetchGames } from "../utilities/sqlite";
+import { fetchGames } from "../utilities/sqlite";
 import { Appearance, View, StyleSheet } from "react-native";
 import { Game } from '../models/game.ts';
 
@@ -14,8 +14,8 @@ function SavedGamesScreen() {
     const isFocused = useIsFocused;
     useEffect(() => {
         async function loadGames() {
-            /*const games = await fetchGames();
-            setLoadedGames(games);*/
+            const games = await fetchGames();
+            setLoadedGames(games);
         }
 
         if ( isFocused() ) {

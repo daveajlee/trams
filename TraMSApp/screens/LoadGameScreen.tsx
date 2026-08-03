@@ -1,6 +1,13 @@
 import { Appearance, View, StyleSheet } from "react-native";
 import SavedGamesList from "../components/SavedGamesList";
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from "react";
+import IconButton from "../utilities/IconButton";
+
+type NavigationStackParams = {
+  navigate: Function;
+  setOptions: Function;
+}
 
 /**
  * This screen represents the load game screen on a Smartphone.
@@ -9,9 +16,22 @@ import { useNavigation } from '@react-navigation/native';
  */
 function LoadGameScreen() {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationStackParams>();
 
     const colorScheme = Appearance.getColorScheme();
+
+    useEffect(() => {
+        navigation.setOptions({
+            title: 'Saved Games',
+            headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
+                <IconButton icon="add" size={24} color="black" onPress={onCreateGame}/>
+                </View>,
+        });
+    });
+
+    function onCreateGame() {
+        navigation.navigate("CreateGameScreen");
+    }
 
     return <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
         <View style={styles.bodyContainer}>

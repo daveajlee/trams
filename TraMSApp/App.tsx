@@ -6,7 +6,7 @@
  */
 
 import { StatusBar, useColorScheme } from 'react-native';
-import { SafeAreaProvider, /*useSafeAreaInsets,*/ } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CreateGameScreen from './screens/CreateGameScreen';
 import { useEffect, useState } from 'react';
 import { fetchGames, init } from './utilities/sqlite';
@@ -21,7 +21,7 @@ import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
-//import { Game } from './models/game.ts';
+import { Game } from './models/game.ts';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -38,7 +38,6 @@ function App() {
 }
 
 function AppContent() {
-  //const safeAreaInsets = useSafeAreaInsets();
 
   const [firstScreen, setFirstScreen] = useState('');
 
@@ -49,7 +48,6 @@ function AppContent() {
   useEffect(() => {
     async function prepare() {
       try {
-        console.log('Starting init of database');
         init().then(() => {
           setDbInitialized(true);
         })
@@ -64,9 +62,6 @@ function AppContent() {
         (games: Game[]) => {
           console.log(games);
           setFirstScreen(!games || games.length === 0 ? 'CreateGameScreen' : 'LoadGameScreen');
-          if ( games.length > 0 ) {
-              console.log('Setting first screen to LoadGameScreen?');
-          }
           setLoading(false);
         }
       ).catch((error) => {
@@ -82,7 +77,7 @@ function AppContent() {
   return (
     <>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={'CreateGameScreen'}>
+      <Stack.Navigator initialRouteName={firstScreen}>
         <Stack.Screen name="CreateGameScreen" component={CreateGameScreen} options={() => ({
           headerShown: false
         })}/>

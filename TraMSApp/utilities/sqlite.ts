@@ -31,10 +31,9 @@ export async function init(): Promise<void> {
  * @param {Game} game the information to be saved
  * @returns a promise with either a success result or an error message.
  */
-export async function insertGame(game: Game): Promise<number> {
-    const {insertResult} = await database.executeAsync(`INSERT INTO games (companyName, playerName, scenarioName, level, startDate) VALUES (?, ?, ?, ?, ?)`,
+export async function insertGame(game: Game): Promise<void> {
+    await database.executeAsync(`INSERT INTO games (companyName, playerName, scenarioName, level, startDate) VALUES (?, ?, ?, ?, ?)`,
       [game.companyName, game.playerName, game.scenarioName, game.level, game.startDate.toDateString()]);
-    return insertResult.insertId ? insertResult.insertId : 0;
 }
 
 /**
@@ -43,10 +42,9 @@ export async function insertGame(game: Game): Promise<number> {
  * @param {Assignment} assignmentToAdd the information to be saved
  * @returns a promise with either a success result or error message
  */
-export async function insertAssignment(assignmentToAdd: Assignment): Promise<number> {
-  const {insertResult} = await database.executeAsync(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?)`,
+export async function insertAssignment(assignmentToAdd: Assignment): Promise<void> {
+  await database.executeAsync(`INSERT INTO assignments (routeNumber, tourNumber, fleetNumber, scenarioName, company) VALUES (?, ?, ?, ?, ?)`,
     [assignmentToAdd.routeNumber, assignmentToAdd.tourNumber, assignmentToAdd.fleetNumber, assignmentToAdd.scenarioName, assignmentToAdd.company]);
-  return insertResult.insertId ? insertResult.insertId : 0;
 }
 
 /**
@@ -85,9 +83,8 @@ export async function fetchGame(companyName: string): Promise<Game[]> {
  * @param {string} companyName the company name to delete
  * @returns a promise with either a success result or error message
  */
-export async function deleteGame(companyName: string): Promise<number> {
-  const {deleteResult} = await database.executeAsync(`DELETE FROM games WHERE companyName = ?`, [companyName]);
-  return deleteResult.insertId ? deleteResult.insertId : 0;
+export async function deleteGame(companyName: string): Promise<void> {
+  await database.executeAsync(`DELETE FROM games WHERE companyName = ?`, [companyName]);
 }
 
 /**
@@ -96,9 +93,8 @@ export async function deleteGame(companyName: string): Promise<number> {
  * @param scenarioName the scenario name to set.
  * @returns a promise with either a success result or error message
  */
-export async function setScenarioNameForGame(companyName: string, scenarioName: string): Promise<number> {
-  const {updateResult} = await database.executeAsync(`UPDATE games SET scenarioName = ? WHERE companyName = ?`, [scenarioName, companyName]);
-  return updateResult.insertId ? updateResult.insertId : 0;
+export async function setScenarioNameForGame(companyName: string, scenarioName: string): Promise<void> {
+  await database.executeAsync(`UPDATE games SET scenarioName = ? WHERE companyName = ?`, [scenarioName, companyName]);
 }
 
 /**
@@ -109,10 +105,12 @@ export async function setScenarioNameForGame(companyName: string, scenarioName: 
 export async function fetchAssignments(company: string): Promise<Assignment[]> {
   const assignments = <Assignment[]>[];
   try {
-    const {result} = await database.executeAsync(`SELECT * FROM assignments where company = ?`, [company]);
-    result.rows.forEach(assignment => {
-      assignments.push(new Assignment(assignment.routeNumber?.toString()!, parseInt(assignment.tourNumber?.toString()!, 10), parseInt(assignment.fleetNumber?.toString()!, 10), assignment.scenarioName?.toString()!, assignment.company?.toString()!));
-    });
+    const {rows} = await database.executeAsync(`SELECT * FROM assignments where company = ?`, [company]);
+    if ( rows && rows.length > 0 ) {
+      rows._array.forEach(assignment => {
+        assignments.push(new Assignment(assignment.routeNumber?.toString()!, parseInt(assignment.tourNumber?.toString()!, 10), parseInt(assignment.fleetNumber?.toString()!, 10), assignment.scenarioName?.toString()!, assignment.company?.toString()!));
+      })
+    }
     return assignments;
   }
   catch (error) {
@@ -129,10 +127,9 @@ export async function fetchAssignments(company: string): Promise<Assignment[]> {
  * @param {string} company the name of the company to delete the assignment
  * @returns a promise with either a success result or error message
  */
-export async function deleteAssignment(routeNumber: string, tourNumber: number, company: string) : Promise<number> {
+export async function deleteAssignment(routeNumber: string, tourNumber: number, company: string) : Promise<void> {
     console.log('Calling delete assignment with ' + company + ', ' + routeNumber + ', ' + tourNumber);
-    const {deleteResult} = await database.executeAsync(`DELETE FROM assignments WHERE company = ? AND routeNumber = ? AND tourNumber = ?`, [company, routeNumber, tourNumber]);
-    return deleteResult.insertId ? deleteResult.insertId : 0;
+    await database.executeAsync(`DELETE FROM assignments WHERE company = ? AND routeNumber = ? AND tourNumber = ?`, [company, routeNumber, tourNumber]);
 }
 
 /**
@@ -141,9 +138,8 @@ export async function deleteAssignment(routeNumber: string, tourNumber: number, 
  * @returns a promise with either a success result or error message
  */
 export async function insertAdditionalTour(additionalTour: AdditionalTour) {
-  const {insertResult} = await database.executeAsync(`INSERT INTO additionalTours (routeNumber, tourNumber, scenarioName, company) VALUES (?, ?, ?, ?)`,
+  await database.executeAsync(`INSERT INTO additionalTours (routeNumber, tourNumber, scenarioName, company) VALUES (?, ?, ?, ?)`,
     [additionalTour.routeNumber, additionalTour.tourNumber, additionalTour.scenarioName, additionalTour.company]);
-  return insertResult.insertId ? insertResult.insertId : 0;
 }
 
 /**

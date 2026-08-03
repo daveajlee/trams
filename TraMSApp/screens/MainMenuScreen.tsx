@@ -1,7 +1,7 @@
 import { Alert, Appearance, StyleSheet, View } from "react-native";
 import { useEffect } from "react";
 import IconButton from "../utilities/IconButton";
-//import { deleteGame, fetchGames } from "../utilities/sqlite";
+import { deleteGame, fetchGames } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
 import IconTextButton from "../components/IconTextButton";
 
@@ -38,12 +38,12 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
             'Are you sure you want to delete this transport company?',
             [
               {text: 'Yes', onPress: async () => {
-                /*await deleteGame(route.params.company);
+                await deleteGame(route.params.company);
                 if ( (await fetchGames()).length > 0 ) {
                     navigation.navigate("LoadGameScreen");
                 } else {
                     navigation.navigate("CreateGameScreen");
-                }*/
+                }
               }},
               {text: 'No', onPress: async () => {
                 // Do nothing if no is clicked.

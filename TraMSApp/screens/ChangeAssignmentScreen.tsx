@@ -4,7 +4,7 @@ import AssignmentList from "../components/AssignmentList";
 import { LANDUFF_ROUTES, LANDUFF_VEHICLES } from "../scenarios/landuff-scenario";
 import { LONGTS_ROUTES, LONGTS_VEHICLES } from "../scenarios/longts-scenario";
 import { MDORF_ROUTES, MDORF_VEHICLES } from "../scenarios/mdorf-scenario";
-//import { deleteAssignment, fetchAssignments, insertAdditionalTour, fetchAdditionalTours } from "../utilities/sqlite";
+import { deleteAssignment, fetchAssignments, insertAdditionalTour, fetchAdditionalTours } from "../utilities/sqlite";
 import AdditionalTour from "../models/additionalTour";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from '@react-navigation/native';
@@ -28,11 +28,11 @@ function ChangeAssignmentScreen({route}: ChangeAssignmentScreenProps) {
 
     useEffect(() => {
         async function loadAssignments() {
-            /*const fetchedAssignments: Assignment[] = await fetchAssignments(route.params.company);
+            const fetchedAssignments: Assignment[] = await fetchAssignments(route.params.company);
             setAssignments(fetchedAssignments);
             if ( fetchedAssignments.length > 3 ) {
                 performRandomSituation();
-            }*/
+            }
         }
 
         loadAssignments();
@@ -46,7 +46,7 @@ function ChangeAssignmentScreen({route}: ChangeAssignmentScreenProps) {
     }
 
     async function performRandomSituation() {
-        /*var number = Math.floor(Math.random() * 10);
+        var number = Math.floor(Math.random() * 10);
         setAssignments(await fetchAssignments(route.params.company));
         if ( number % 2 === 0 ) {
             // Vehicle broke down so delete assignment automatically. 
@@ -64,7 +64,7 @@ function ChangeAssignmentScreen({route}: ChangeAssignmentScreenProps) {
             var tourNumber = await getNumberTours(routeNumber, scenarioName) + 1;
             await insertAdditionalTour(new AdditionalTour(routeNumber, tourNumber, scenarioName, companyName));
             Alert.alert('Congestion', 'Route ' + routeNumber + ' is crowded! Adding additional tour ' + tourNumber + ' to increase capacity!')
-        }*/
+        }
     }
 
     async function getNumberTours(routeNumber: string, scenarioName: string) {
