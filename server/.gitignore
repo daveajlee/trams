@@ -32,3 +32,6 @@ target/
 
 #Backup files
 *.bkp
+
+# Environment files
+.env
