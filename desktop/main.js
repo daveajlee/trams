@@ -28,7 +28,7 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   win.on('close', e => { // Line 49
     e.preventDefault()
