@@ -34,10 +34,15 @@ function RouteScreen({route}: RouteScreenProps) {
             title: route.params.company + ' - Routes',
             headerRight: () => <View style={{marginLeft: 10, flexDirection: 'row'}}>             
                 <IconButton icon="add" size={24} color="black" onPress={onCreateRoute}/>
+                <IconButton icon="document" size={24} color="black" onPress={onUploadDataFile}/>
                 </View>,
         });
 
         async function onCreateRoute() {
+            Alert.alert("Coming Soon!", "Not yet available!");
+        }
+
+        async function onUploadDataFile() {
             Alert.alert("Coming Soon!", "Not yet available!");
         }
 

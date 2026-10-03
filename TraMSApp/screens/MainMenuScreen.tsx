@@ -1,8 +1,9 @@
-import { Alert, Appearance, StyleSheet, View } from "react-native";
+import { Alert, Appearance, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useEffect } from "react";
 import IconButton from "../utilities/IconButton";
 import { deleteGame, fetchGames } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
+import {SafeAreaView} from "react-native-safe-area-context";
 import IconTextButton from "../components/IconTextButton";
 
 type MainMenuScreenProps = {
@@ -79,41 +80,115 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
     }
 
     async function onDriverPress() {
-        Alert.alert("Coming Soon!", "Not yet available!");
+        navigation.navigate("DriverScreen", {
+            company: route.params.company,
+            scenarioName: route.params.scenarioName,
+        });
     }
 
     async function onMessagePress() {
-        Alert.alert("Coming Soon!", "Not yet available!");
+        navigation.navigate("MessagesScreen", {
+            company: route.params.company,
+            scenarioName: route.params.scenarioName,
+        });
     }
 
     async function onScenarioPress() {
-        Alert.alert("Coming Soon!", "Not yet available!");
+        navigation.navigate("ScenarioScreen", {
+            company: route.params.company,
+            scenarioName: route.params.scenarioName,
+        });
     }
 
     async function onSimulationPress() {
-        Alert.alert("Coming Soon!", "Not yet available!");
+        navigation.navigate("LiveSituationScreen", {
+            company: route.params.company,
+            scenarioName: route.params.scenarioName,
+        });
     }
 
     return (
-        <View style={[styles.container, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
-            <View style={styles.bodyContainer}>
-                <View style={styles.row}>
-                    <IconTextButton icon="person-outline" text="Drivers" onPress={onDriverPress}/>
-                    <IconTextButton icon="subway-sharp" text="Fleet" onPress={onFleetPress}/>
-                </View>
-                <View style={styles.break}></View>
-                <View style={styles.row}>
-                    <IconTextButton icon="film-outline" text="Live Situation" onPress={onSimulationPress}/>
-                    <IconTextButton icon="mail-outline" text="Messages" onPress={onMessagePress}/>
-                </View>
-                <View style={styles.break}></View>
-                <View style={styles.row}>
-                    <IconTextButton icon="swap-horizontal" text="Routes" onPress={onRoutePress}/>
-                    <IconTextButton icon="location-outline" text="Scenario" onPress={onScenarioPress}/>
-                    
-                </View>
+        <SafeAreaView style={styles.centeredView}>
+        <ScrollView contentContainerStyle={styles.container}>
+          {/*<View style={styles.infoContainer}>
+            <View style={styles.titleContainer}>
+              <IconButton icon="information-circle" size={36} color="black"/>
+              <Text style={styles.balanceText}>{t('balance')}:</Text>
+              <Text style={styles.balanceText}>{balance}€</Text>
             </View>
-        </View>
+            <View style={styles.notesContainer}>
+              <View style={styles.noteContainer}>
+                <Text style={[styles.noteText, styles.fiveColour]}>5</Text>
+                <Text style={styles.amount}>{fiveAmount}</Text>
+              </View>
+              <View style={styles.noteContainer}>
+                <Text style={[styles.noteText, styles.tenColour]}>10</Text>
+                <Text style={styles.amount}>{tenAmount}</Text>
+              </View>
+            </View>
+            <View style={styles.notesContainer}>
+              <View style={styles.noteContainer}>
+                <Text style={[styles.noteText, styles.twentyColour]}>20</Text>
+                <Text style={styles.amount}>{twentyAmount}</Text>
+              </View>
+              <View style={styles.noteContainer}>
+                <Text style={[styles.noteText, styles.fiftyColour]}>50</Text>
+                <Text style={styles.amount}>{fiftyAmount}</Text>
+              </View>
+            </View>
+            <View style={styles.notesContainer}>
+              <View style={styles.noteContainer}>
+                <Text style={[styles.noteText, styles.hundredColour]}>100</Text>
+                <Text style={styles.amount}>{hundredAmount}</Text>
+              </View>
+            </View>
+          </View> */}
+          
+          
+          <View style={styles.menuContainer}>
+                <View style={styles.menuButtonLeft}>
+                    <Pressable onPress={onDriverPress}>
+                        <IconButton icon="person-outline" size={48} color="black" onPress={onDriverPress}/>
+                        <Text style={styles.textStyle}>{"Drivers"}</Text>
+                    </Pressable>
+                </View>
+                <View style={styles.menuButtonRight}>
+                    <Pressable onPress={onFleetPress}>
+                        <IconButton icon="subway-sharp" size={48} color="black" onPress={onFleetPress}/>
+                        <Text style={styles.textStyle}>{"Fleet"}</Text>
+                    </Pressable>     
+                </View>
+          </View>
+          <View style={styles.menuContainer}>
+                <View style={styles.menuButtonLeft}>
+                    <Pressable onPress={onSimulationPress}>
+                        <IconButton icon="film-outline" size={48} color="black" onPress={onSimulationPress}/>
+                        <Text style={styles.textStyle}>{"Live Situation"}</Text>
+                    </Pressable>
+                </View>
+                <View style={styles.menuButtonRight}>
+                    <Pressable onPress={onMessagePress}>
+                        <IconButton icon="mail-outline" size={48} color="black" onPress={onMessagePress}/>
+                        <Text style={styles.textStyle}>{"Messages"}</Text>
+                    </Pressable>
+                </View>
+          </View>
+          <View style={styles.menuContainer}>
+                <View style={styles.menuButtonLeft}>
+                    <Pressable onPress={onRoutePress}>
+                        <IconButton icon="swap-horizontal" size={48} color="black" onPress={onRoutePress}/>
+                        <Text style={styles.textStyle}>{"Routes"}</Text>
+                    </Pressable>
+                </View>
+                <View style={styles.menuButtonRight}>
+                    <Pressable onPress={onScenarioPress}>
+                        <IconButton icon="location-outline" size={48} color="black" onPress={onScenarioPress}/>
+                        <Text style={styles.textStyle}>{"Scenario"}</Text>
+                    </Pressable>
+                </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     )
 
 }
@@ -121,56 +196,146 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
 export default MainMenuScreen;
 
 const styles = StyleSheet.create({
-    darkBackground: {
-        backgroundColor: 'black',
-    },
-    lightBackground: {
-        backgroundColor: '#f2ffe6',
-    },
-    darkText: {
-        color: 'white'
-    },
-    lightText: {
-        color: 'black'
-    },
-    container: {
+    centeredView: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    headerContainer: {
-        paddingTop: 10
-    },
-    header: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    bodyContainer: {
-        flex: 4,
         width: '100%',
         alignItems: 'center',
-        marginTop: 30
-    },
-    button: {
-        alignItems: "center",
-        backgroundColor: "#5e7947",
-        width: '90%',
-        padding: 20,
-        marginBottom: 20,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
+        justifyContent: 'center'
+  },
+  container: {
+    color: 'black',
+    alignItems: 'center',
+  },
+  infoContainer: {
+    borderRadius: 25,
+    backgroundColor: '#f2e9e9',
+    width: '90%',
+    marginBottom: '10%',
+    borderStyle: 'solid',
+    borderWidth: 3,
+    borderColor: 'black'
+  },
+  balanceText: {
+    color: 'black',
+    marginLeft: 10,
+    fontSize: 24,
+    fontWeight: "bold"
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'center',
+    marginTop: 5,
+  },
+  menuContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  menuButtonLeft: {
+    flexDirection: 'column',
+    width: '45%',
+    borderRadius: 25,
+    backgroundColor: '#c2f3ce',
+    padding: 10,
+    marginBottom: 10,
+    marginRight: 10,
+  },
+  menuButtonRight: {
+    flexDirection: 'column',
+    width: '45%',
+    borderRadius: 25,
+    backgroundColor: '#c2f3ce',
+    padding: 10,
+    marginLeft: 10,
+    marginBottom: 10
+  },
+  notesContainer: {
+    flexDirection: 'row',
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  noteContainer: {
+    flexDirection: 'row'
+  },
+  noteText: {
+    alignItems: 'center',
+    width: '30%',
+    padding: 0,
+    marginTop: 10,
+    height: 35,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: 'white'
+  },
+  darkModeText: {
+    color: 'black',
+  },
+  lightModeText: {
+    color: 'black',
+  },
+  stepContainer: {
+    gap: 24,
+    marginBottom: 24,
+    flexDirection: 'row',
+  },
+  logo: {
+    height: '100%',
+    width: '100%',
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  fiveColour: {
+    backgroundColor: 'gray',
+  },
+  tenColour: {
+    backgroundColor: 'red',
+  },
+  twentyColour: {
+    backgroundColor: 'blue',
+  },
+  fiftyColour: {
+    backgroundColor: 'orange',
+  },
+  hundredColour: {
+    backgroundColor: 'green',
+  },
+  amount: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: 24,
+    marginTop: 10,
+    width: 75,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginRight: 10,
+        marginLeft: 10,
+        height: 50,
+        width: '40%',  
+        backgroundColor: '#f2d6d3ff'
+  },
+  textStyle: {
+        color: 'black',
         fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '100%',
-    },
-    break: {
-        marginTop: 20
-    }
+        textAlign: 'center',
+        fontSize: 20,
+        marginTop: 10
+  },
 })

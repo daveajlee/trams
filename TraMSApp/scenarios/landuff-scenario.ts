@@ -22,3 +22,5 @@ export const LANDUFF_VEHICLES = [
     new Vehicle(201,'23-LATS-102','SimpleChassisDD','Easy Low Double','Low Floor, Electronic Display, Double-Decker','White'),
     new Vehicle(401,'23-LATS-103','SimpleChassisSD','Easy Low Mini','Low Floor, Electronic Display, Minibus','White'),
 ];
+
+export const LANDUFF_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann","Daniel Mustermann"];
