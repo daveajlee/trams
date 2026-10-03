@@ -25,3 +25,5 @@ export const LONGTS_VEHICLES = [
     new Vehicle(3002,'23-LONG-3002','LongChassisSD','Easy Low Mini','Low Floor, Electronic Display, Minibus','White'),
     new Vehicle(3003,'23-LONG-3003','LongChassisSD','Easy Low Mini','Low Floor, Electronic Display, Minibus','White'),
 ];
+
+export const LONGTS_DRIVERS = ["Max Mustermann","Robert Mustermann"];

@@ -72,10 +72,17 @@ export async function fetchGame(companyName: string): Promise<Game[]> {
   const {results} = await database.executeAsync(`SELECT * FROM games where companyName = ?`, [companyName]);
   if ( results ) {
     results.forEach((game) => {
-        games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, new Date(game.date?.toString()!), parseInt(game.id?.toString()!, 10)));
+        games.push(new Game(game.companyName?.toString()!, game.playerName?.toString()!, game.scenarioName?.toString()!, game.level?.toString()!, convertStringToDate(game.startDate?.toString()), parseInt(game.id?.toString()!, 10)));
     })
   }
   return games;
+}
+
+function convertStringToDate(date: string | undefined): Date | null {
+  if ( date ) {
+    return new Date(Date.parse(date));
+  }
+  return new Date();
 }
 
 /**

@@ -25,3 +25,5 @@ export const MDORF_VEHICLES = [
     new Vehicle(302,'23-MDOR-301','MBuildChassisSD','Easy Low Mini','Low Floor, Electronic Display, Minibus','White'),
     new Vehicle(303,'23-MDOR-302','MBuildChassisSD','Easy Low Mini','Low Floor, Electronic Display, Minibus','White'),
 ];
+
+export const MDORF_DRIVERS = ["Max Mustermann","Robert Mustermann","Daniela Mustermann"];

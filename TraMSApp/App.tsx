@@ -17,11 +17,15 @@ import ChooseScenarioScreen from './screens/ChooseScenarioScreen';
 import MainMenuScreen from './screens/MainMenuScreen';
 import RouteScreen from './screens/overview/RouteScreen.tsx';
 import FleetScreen from './screens/overview/FleetScreen.tsx';
+import DriverScreen from './screens/overview/DriverScreen.tsx';
 import RouteDetailScreen from './screens/RouteDetailScreen.tsx';
 import VehicleScreen from './screens/VehicleScreen';
 import AssignTourScreen from './screens/AssignTourScreen';
 import ChangeAssignmentScreen from './screens/ChangeAssignmentScreen';
 import { Game } from './models/game.ts';
+import ScenarioScreen from './screens/overview/ScenarioScreen.tsx';
+import LiveSituationScreen from './screens/overview/LiveSituationScreen.tsx';
+import MessagesScreen from './screens/overview/MessagesScreen.tsx';
 
 // Define stack navigation
 const Stack = createNativeStackNavigator();
@@ -96,6 +100,18 @@ function AppContent() {
         }}/>
         <Stack.Screen name="FleetScreen" component={FleetScreen} options={{
           title: 'Fleet'
+        }}/>
+        <Stack.Screen name="DriverScreen" component={DriverScreen} options={{
+          title: 'Driver'
+        }}/>
+        <Stack.Screen name="LiveSituationScreen" component={LiveSituationScreen} options={{
+          title: 'Live Situation'
+        }}/>
+        <Stack.Screen name="MessagesScreen" component={MessagesScreen} options={{
+          title: 'Messages'
+        }}/>
+        <Stack.Screen name="ScenarioScreen" component={ScenarioScreen} options={{
+          title: 'Scenario'
         }}/>
         <Stack.Screen name="RouteDetailScreen" component={RouteDetailScreen} options={{
           title: 'Route Details',

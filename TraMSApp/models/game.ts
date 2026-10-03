@@ -10,6 +10,8 @@ export class Game {
   scenarioName: string;
   level: string;
   startDate: Date;
+  balance: number;
+  passengerSatisfaction: number;
   id?: number;
 
     constructor(companyName: string, playerName: string, scenarioName: string, level: string, startDate: Date, id?: number) {
@@ -18,6 +20,8 @@ export class Game {
         this.scenarioName = scenarioName;
         this.level = level;
         this.startDate = startDate;
+        this.balance = 200000;
+        this.passengerSatisfaction = 100;
         this.id = id;
     }
 }
