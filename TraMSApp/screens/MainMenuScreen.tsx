@@ -1,10 +1,10 @@
 import { Alert, Appearance, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import IconButton from "../utilities/IconButton";
-import { deleteGame, fetchGames } from "../utilities/sqlite";
+import { deleteGame, fetchGame, fetchGames } from "../utilities/sqlite";
 import { useNavigation } from '@react-navigation/native';
 import {SafeAreaView} from "react-native-safe-area-context";
-import IconTextButton from "../components/IconTextButton";
+import { Game } from "../models/game";
 
 type MainMenuScreenProps = {
   route: any;
@@ -20,6 +20,8 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
     const colorScheme = Appearance.getColorScheme();
     const navigation = useNavigation<NavigationStackParams>();
 
+    const [game, setGame] = useState<Game>();
+
     useEffect(() => {
         navigation.setOptions({
             title: route.params.company,
@@ -30,38 +32,32 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
                 </View>,
         });
 
+        async function loadGame() {
+            const fetchedGames: Game[] = await fetchGame(route.params.company);
+            setGame(fetchedGames[0]);
+        }
+        
+        loadGame();
+
         /**
-     * If the current game is the only game remaining then back to create game otherwise load game menu.
-     */
-    async function onDeleteGame() {
-        Alert.alert(
-            'Delete ' + route.params.company,
-            'Are you sure you want to delete this transport company?',
-            [
-              {text: 'Yes', onPress: async () => {
-                await deleteGame(route.params.company);
-                if ( (await fetchGames()).length > 0 ) {
-                    navigation.navigate("LoadGameScreen");
-                } else {
-                    navigation.navigate("CreateGameScreen");
-                }
-              }},
-              {text: 'No', onPress: async () => {
-                // Do nothing if no is clicked.
-              }},
-            ],
-            {cancelable: true},
-          );
-       
-    }
+         * If the current game is the only game remaining then back to create game otherwise load game menu.
+         */
+        async function onDeleteGame() {
+            await deleteGame(route.params.company);
+            if ( (await fetchGames()).length > 0 ) {
+                navigation.navigate("LoadGameScreen");
+            } else {
+                navigation.navigate("CreateGameScreen");
+            }   
+        }
 
-    function onCreateGame() {
-        navigation.navigate("CreateGameScreen");
-    }
+        function onCreateGame() {
+            navigation.navigate("CreateGameScreen");
+        }
 
-    function onLoadGame() {
-        navigation.navigate("LoadGameScreen");
-    }
+        function onLoadGame() {
+            navigation.navigate("LoadGameScreen");
+        }
 
       }, [navigation, route.params.company]); // pass method directly here
 
@@ -107,42 +103,41 @@ function MainMenuScreen({route}: MainMenuScreenProps) {
         });
     }
 
+    function convertDateToString(date: Date | undefined): String {
+        if ( date ) {
+            return addZeroPrefix(date.getDate()) + "." + addZeroPrefix(date.getMonth()+1) + "." + addZeroPrefix(date.getFullYear()) + " " + addZeroPrefix(date.getHours()) + ":" + addZeroPrefix(date.getMinutes());
+        }
+        return "";
+    }
+
+    function addZeroPrefix(numberToPrefix: number): string {
+        if ( numberToPrefix > 9 ) {
+            return "" + numberToPrefix;
+        } else {
+            return "0" + numberToPrefix;
+        }
+    }
+
     return (
         <SafeAreaView style={styles.centeredView}>
         <ScrollView contentContainerStyle={styles.container}>
-          {/*<View style={styles.infoContainer}>
+          <View style={styles.infoContainer}>
             <View style={styles.titleContainer}>
-              <IconButton icon="information-circle" size={36} color="black"/>
-              <Text style={styles.balanceText}>{t('balance')}:</Text>
-              <Text style={styles.balanceText}>{balance}€</Text>
+              <IconButton icon="calendar-outline" size={28} color="black"/>
+              <Text style={styles.leftInfoText}>Date:</Text>
+              <Text style={styles.rightInfoText}>{convertDateToString(game?.startDate)}</Text>
             </View>
-            <View style={styles.notesContainer}>
-              <View style={styles.noteContainer}>
-                <Text style={[styles.noteText, styles.fiveColour]}>5</Text>
-                <Text style={styles.amount}>{fiveAmount}</Text>
-              </View>
-              <View style={styles.noteContainer}>
-                <Text style={[styles.noteText, styles.tenColour]}>10</Text>
-                <Text style={styles.amount}>{tenAmount}</Text>
-              </View>
+            <View style={styles.titleContainer}>
+              <IconButton icon="wallet-outline" size={28} color="black"/>
+              <Text style={styles.leftInfoText}>Balance:</Text>
+              <Text style={styles.rightInfoText}>{game?.balance}€</Text>
             </View>
-            <View style={styles.notesContainer}>
-              <View style={styles.noteContainer}>
-                <Text style={[styles.noteText, styles.twentyColour]}>20</Text>
-                <Text style={styles.amount}>{twentyAmount}</Text>
-              </View>
-              <View style={styles.noteContainer}>
-                <Text style={[styles.noteText, styles.fiftyColour]}>50</Text>
-                <Text style={styles.amount}>{fiftyAmount}</Text>
-              </View>
+            <View style={styles.titleContainer}>
+              <IconButton icon="star" size={28} color="black"/>
+              <Text style={styles.leftInfoText}>Approval:</Text>
+              <Text style={styles.rightInfoText}>{game?.passengerSatisfaction}%</Text>
             </View>
-            <View style={styles.notesContainer}>
-              <View style={styles.noteContainer}>
-                <Text style={[styles.noteText, styles.hundredColour]}>100</Text>
-                <Text style={styles.amount}>{hundredAmount}</Text>
-              </View>
-            </View>
-          </View> */}
+          </View>
           
           
           <View style={styles.menuContainer}>
@@ -215,18 +210,28 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'black'
   },
-  balanceText: {
+  leftInfoText: {
     color: 'black',
     marginLeft: 10,
-    fontSize: 24,
+    fontSize: 20,
+    width: '30%',
     fontWeight: "bold"
+  },
+  rightInfoText: {
+    color: 'black',
+    marginLeft: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: 'right',
+    width: '45%',
   },
   titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 8,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     marginTop: 5,
+    marginLeft: 15,
   },
   menuContainer: {
     flexDirection: 'row',
