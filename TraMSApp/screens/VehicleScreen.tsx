@@ -76,7 +76,8 @@ function VehicleScreen({route}: VehicleScreenProps) {
     if ( selectedVehicle ) {
         return <ScrollView contentContainerStyle={[styles.rootContainer, colorScheme === 'dark' ? styles.darkBackground : styles.lightBackground]}>
             <VehicleDetails fleetNumber={selectedVehicle.fleetNumber} registrationNumber={selectedVehicle.registrationNumber} 
-            chassisType={selectedVehicle.chassisType} bodyType={selectedVehicle.bodyType} specialFeatures={selectedVehicle.specialFeatures}
+            chassisType={selectedVehicle.chassisType} modelName={selectedVehicle.modelName} seatingCapacity={selectedVehicle.seatingCapacity}
+            standingCapacity={selectedVehicle.standingCapacity} value={selectedVehicle.value}
             livery={selectedVehicle.livery}/>
             <TouchableOpacity style={styles.button} onPress={fleetScreenPress}>
                 <Text style={styles.buttonText}>Fleet</Text>

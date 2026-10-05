@@ -13,9 +13,10 @@ function FleetList({items}: FleetListProps) {
             <View style={styles.details}>
                 <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{itemData.item.fleetNumber} - {itemData.item.registrationNumber}</Text>
                 <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Chassis Type: {itemData.item.chassisType}</Text>
-                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Body Type: {itemData.item.bodyType}</Text>
-                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Special Features: {itemData.item.specialFeatures}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Model Name: {itemData.item.modelName}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Seating (Standing Capacity): {itemData.item.seatingCapacity + "(" + itemData.item.standingCapacity + ")"}</Text>
                 <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Livery: {itemData.item.livery}</Text>
+                <Text style={[styles.detailText, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>Value: {itemData.item.value}</Text>
                 <View style={[styles.lineStyle, colorScheme === 'dark' ? styles.darkLine : styles.lightLine]}/>
             </View>
         )
