@@ -6,12 +6,14 @@ type VehicleDetailsProps = {
   fleetNumber: number;
   registrationNumber: string;
   chassisType: string;
-  bodyType: string;
-  specialFeatures: string;
+  modelName: string;
+  seatingCapacity: number;
+  standingCapacity: number;
   livery: string;
+  value: number;
 }
 
-function VehicleDetails({fleetNumber, registrationNumber, chassisType, bodyType, specialFeatures, livery}: VehicleDetailsProps) {
+function VehicleDetails({fleetNumber, registrationNumber, chassisType, modelName, seatingCapacity, standingCapacity, livery, value}: VehicleDetailsProps) {
 
     const colorScheme = Appearance.getColorScheme();
 
@@ -20,9 +22,10 @@ function VehicleDetails({fleetNumber, registrationNumber, chassisType, bodyType,
         <Text style={[styles.heading, colorScheme === 'dark' ? styles.darkText : styles.lightText]}>{fleetNumber}</Text>
         <VehicleDetailEntry label="Registration Number" value={registrationNumber}/>
         <VehicleDetailEntry label="Chassis Type" value={chassisType}/>
-        <VehicleDetailEntry label="Body Type" value={bodyType}/>
-        <VehicleDetailEntry label="Special Features" value={specialFeatures} showAsList={true}/>
+        <VehicleDetailEntry label="Model Name" value={modelName}/>
+        <VehicleDetailEntry label="Seating (Standing) Capacity" value={seatingCapacity + "(" + standingCapacity + ")"}/>
         <VehicleDetailEntry label="Livery" value={livery}/>
+        <VehicleDetailEntry label="Value" value={"" + value}/>
     </View>
 }
 

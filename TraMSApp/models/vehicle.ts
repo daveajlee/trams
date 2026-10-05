@@ -2,17 +2,21 @@ class Vehicle {
 
   fleetNumber: number;
   registrationNumber: string;
+  modelName: string;
   chassisType: string;
-  bodyType: string;
-  specialFeatures: string;
+  seatingCapacity: number;
+  standingCapacity: number;
+  value: number;
   livery: string;
 
-    constructor(fleetNumber: number, registrationNumber: string, chassisType: string, bodyType: string, specialFeatures: string, livery: string) {
+    constructor(fleetNumber: number, registrationNumber: string, modelName: string, chassisType: string, seatingCapacity: number, standingCapacity: number, value: number, livery: string) {
         this.fleetNumber = fleetNumber;
         this.registrationNumber = registrationNumber;
+        this.modelName = modelName;
         this.chassisType = chassisType;
-        this.bodyType = bodyType;
-        this.specialFeatures = specialFeatures;
+        this.seatingCapacity = seatingCapacity;
+        this.standingCapacity = standingCapacity;
+        this.value = value;
         this.livery = livery;
     }
 }
